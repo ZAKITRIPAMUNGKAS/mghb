@@ -2,26 +2,75 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MGHB — Checklist Bawaan & Magang BNI</title>
-  <meta name="description" content="Sistem checklist interaktif untuk perlengkapan Jakarta/Wisuda UMS dan SOP Harian MagangHub BNI.">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📋</text></svg>">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>MGHB — Checklist Bawaan & SOP Magang BNI</title>
+  <meta name="description" content="Workspace checklist minimalis untuk persiapan dinas Jakarta, wisuda, dan rutinitas operasional MagangHub BNI.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary: #f26522;
-      --primary-dark: #d9531e;
-      --bni-teal: #005e6a;
-      --bni-teal-light: #e0f2f1;
-      --bg: #f8fafc;
-      --card-bg: #ffffff;
-      --text: #0f172a;
-      --text-muted: #64748b;
-      --border: #e2e8f0;
-      --border-subtle: #f1f5f9;
-      --success: #10b981;
-      --radius: 12px;
-      --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.08), 0 1px 2px -1px rgb(0 0 0 / 0.06);
-      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.09), 0 2px 4px -2px rgb(0 0 0 / 0.07);
+      --font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      
+      /* Light theme (default) */
+      --bg: #fafafa;
+      --surface: #ffffff;
+      --surface-elevated: #ffffff;
+      --surface-hover: #f4f4f5;
+      --border: #e4e4e7;
+      --border-subtle: #f4f4f5;
+      --border-strong: #d4d4d8;
+      
+      --text-primary: #09090b;
+      --text-secondary: #71717a;
+      --text-tertiary: #a1a1aa;
+      
+      --accent: #005e6a; /* BNI signature teal */
+      --accent-hover: #004d57;
+      --accent-subtle: #e6f2f3;
+      --accent-contrast: #ffffff;
+      
+      --highlight: #e05315; /* BNI corporate orange */
+      --highlight-subtle: #fff4ed;
+      
+      --success: #15803d;
+      --success-subtle: #f0fdf4;
+      
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-card: 0 1px 3px 0 rgb(0 0 0 / 0.04), 0 1px 2px -1px rgb(0 0 0 / 0.02);
+      
+      --radius-sm: 6px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-pill: 9999px;
+    }
+
+    [data-theme="dark"] {
+      --bg: #09090b;
+      --surface: #121215;
+      --surface-elevated: #18181b;
+      --surface-hover: #202024;
+      --border: #27272a;
+      --border-subtle: #1c1c20;
+      --border-strong: #3f3f46;
+      
+      --text-primary: #f4f4f5;
+      --text-secondary: #a1a1aa;
+      --text-tertiary: #71717a;
+      
+      --accent: #14b8a6;
+      --accent-hover: #0d9488;
+      --accent-subtle: #132e2b;
+      --accent-contrast: #09090b;
+      
+      --highlight: #f97316;
+      --highlight-subtle: #2b170a;
+      
+      --success: #22c55e;
+      --success-subtle: #0d2818;
+      
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.5);
+      --shadow-card: 0 1px 3px 0 rgb(0 0 0 / 0.4);
     }
 
     * {
@@ -32,839 +81,1451 @@
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-family: var(--font);
       background-color: var(--bg);
-      color: var(--text);
+      color: var(--text-primary);
       line-height: 1.5;
-      padding-bottom: 60px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      padding-bottom: 72px;
+      transition: background-color 0.15s ease, color 0.15s ease;
     }
 
-    .container {
-      max-width: 520px;
+    .app-shell {
+      max-width: 580px;
       margin: 0 auto;
       padding: 0 16px;
     }
 
-    /* Header */
-    header {
+    /* Top Navigation Bar */
+    header.sticky-header {
       position: sticky;
       top: 0;
-      background: rgba(248, 250, 252, 0.92);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      padding: 18px 0 12px;
+      background: rgba(250, 250, 250, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 14px 0 10px;
       z-index: 50;
       border-bottom: 1px solid var(--border);
+      transition: background-color 0.15s ease, border-color 0.15s ease;
     }
 
-    .header-top {
+    [data-theme="dark"] header.sticky-header {
+      background: rgba(9, 9, 11, 0.85);
+    }
+
+    .header-bar {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      margin-bottom: 12px;
+      justify-content: space-between;
+      gap: 12px;
     }
 
-    .logo-badge {
+    .brand-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-logo {
+      font-size: 0.88rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .badge {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      background: var(--bni-teal-light);
-      color: var(--bni-teal);
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-size: 0.75rem;
-      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: var(--radius-pill);
+      font-size: 0.68rem;
+      font-weight: 600;
       letter-spacing: 0.04em;
       text-transform: uppercase;
+      background: var(--surface-hover);
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
     }
 
-    .app-title {
-      font-size: 1.35rem;
-      font-weight: 800;
-      color: var(--text);
-      letter-spacing: -0.02em;
+    .badge-accent {
+      background: var(--accent-subtle);
+      color: var(--accent);
+      border-color: transparent;
     }
 
-    .app-sub {
-      color: var(--text-muted);
-      font-size: 0.82rem;
-      margin-top: 2px;
-    }
-
-    /* Tabs */
-    .tab-nav {
-      display: flex;
-      background: #e2e8f0;
-      border-radius: 10px;
-      padding: 3px;
-      margin: 12px 0;
-      gap: 4px;
-    }
-
-    .tab-btn {
-      flex: 1;
-      padding: 8px 12px;
-      border: none;
-      background: transparent;
-      color: var(--text-muted);
-      font-size: 0.85rem;
-      font-weight: 600;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.2s ease;
+    .actions-cluster {
       display: flex;
       align-items: center;
-      justify-content: center;
       gap: 6px;
     }
 
-    .tab-btn.active {
-      background: #ffffff;
-      color: var(--primary);
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    }
-
-    /* Progress & Controls */
-    .progress-wrap {
-      margin-top: 10px;
-    }
-
-    .bar {
-      height: 8px;
-      background: #e2e8f0;
-      border-radius: 999px;
-      overflow: hidden;
-    }
-
-    .bar-fill {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, var(--primary), #fb923c);
-      border-radius: 999px;
-      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .meta {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 8px;
-      font-size: 0.82rem;
-    }
-
-    .counter-text {
-      font-weight: 700;
-      color: var(--text);
-    }
-
-    .reset-btn {
-      background: #ffffff;
+    .btn-icon {
+      background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 4px 10px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--text-muted);
+      color: var(--text-secondary);
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       cursor: pointer;
       transition: all 0.15s ease;
     }
 
-    .reset-btn:hover {
-      background: #f1f5f9;
-      color: #ef4444;
-      border-color: #fca5a5;
+    .btn-icon:hover {
+      background: var(--surface-hover);
+      color: var(--text-primary);
+      border-color: var(--border-strong);
     }
 
-    /* Content Cards */
-    .tab-pane {
+    .btn-icon svg {
+      width: 15px;
+      height: 15px;
+      stroke-width: 1.75;
+    }
+
+    /* Segmented Tab Control */
+    .segmented-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background: var(--surface-hover);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 3px;
+      margin-top: 12px;
+      gap: 2px;
+    }
+
+    .tab-trigger {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 7px 12px;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 500;
+      border-radius: calc(var(--radius-md) - 3px);
+      cursor: pointer;
+      transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .tab-trigger svg {
+      width: 14px;
+      height: 14px;
+      stroke-width: 1.75;
+    }
+
+    .tab-trigger.active {
+      background: var(--surface);
+      color: var(--text-primary);
+      font-weight: 600;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border-subtle);
+    }
+
+    /* Overview & Metric Row */
+    .overview-row {
+      margin-top: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 4px;
+      background: var(--border);
+      border-radius: var(--radius-pill);
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--accent);
+      border-radius: var(--radius-pill);
+      transition: width 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .metric-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.76rem;
+      color: var(--text-secondary);
+    }
+
+    .metric-count {
+      font-variant-numeric: tabular-nums;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    /* Filter & Utility Row */
+    .toolbar-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 14px;
+      margin-bottom: 6px;
+    }
+
+    .search-box {
+      flex: 1;
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 9px;
+      width: 14px;
+      height: 14px;
+      color: var(--text-tertiary);
+      pointer-events: none;
+    }
+
+    .search-input {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 6px 9px 6px 28px;
+      font-family: inherit;
+      font-size: 0.78rem;
+      color: var(--text-primary);
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+
+    .search-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent);
+    }
+
+    .search-input::placeholder {
+      color: var(--text-tertiary);
+    }
+
+    .filter-pills {
+      display: flex;
+      gap: 4px;
+    }
+
+    .filter-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: var(--radius-sm);
+      padding: 5px 8px;
+      font-family: inherit;
+      font-size: 0.74rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .filter-btn:hover {
+      background: var(--surface-hover);
+      color: var(--text-primary);
+    }
+
+    .filter-btn.active {
+      background: var(--surface);
+      border-color: var(--border);
+      color: var(--text-primary);
+      font-weight: 600;
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* Checklist Groups & Cards */
+    .tab-content {
       display: none;
     }
 
-    .tab-pane.active {
+    .tab-content.active {
       display: block;
-      animation: fadeIn 0.25s ease-out;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(4px); }
-      to { opacity: 1; transform: translateY(0); }
+    .category-group {
+      margin-top: 18px;
     }
 
-    .section-card {
-      background: var(--card-bg);
-      border-radius: var(--radius);
-      padding: 14px 16px;
-      margin-top: 14px;
-      box-shadow: var(--shadow);
-      border: 1px solid var(--border);
-    }
-
-    .section-title {
-      font-size: 0.78rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--primary);
-      margin-bottom: 8px;
+    .category-header {
       display: flex;
       align-items: center;
-      gap: 6px;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      padding: 0 4px;
     }
 
-    .checklist-item {
+    .category-title {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+    }
+
+    .category-stats {
+      font-size: 0.7rem;
+      font-variant-numeric: tabular-nums;
+      color: var(--text-tertiary);
+      font-weight: 500;
+    }
+
+    .checklist-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: var(--shadow-card);
+    }
+
+    .task-row {
       display: flex;
       align-items: flex-start;
       gap: 12px;
-      padding: 9px 0;
+      padding: 10px 14px;
       cursor: pointer;
       border-bottom: 1px solid var(--border-subtle);
+      transition: background-color 0.12s ease;
       user-select: none;
     }
 
-    .checklist-item:last-child {
+    .task-row:last-child {
       border-bottom: none;
     }
 
-    .checklist-item input[type="checkbox"] {
-      width: 19px;
-      height: 19px;
+    .task-row:hover {
+      background-color: var(--surface-hover);
+    }
+
+    /* Custom Checkbox */
+    .checkbox-box {
+      width: 17px;
+      height: 17px;
+      border-radius: 4px;
+      border: 1.5px solid var(--border-strong);
+      background: transparent;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       margin-top: 2px;
-      accent-color: var(--primary);
       flex-shrink: 0;
-      cursor: pointer;
+      transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .item-info {
+    .checkbox-box svg {
+      width: 11px;
+      height: 11px;
+      stroke: var(--accent-contrast);
+      stroke-width: 2.2;
+      opacity: 0;
+      transform: scale(0.6);
+      transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .task-row input[type="checkbox"] {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .task-row input[type="checkbox"]:checked ~ .checkbox-box {
+      background-color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .task-row input[type="checkbox"]:checked ~ .checkbox-box svg {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .task-body {
       flex: 1;
+      min-width: 0;
     }
 
-    .item-label {
-      font-size: 0.92rem;
+    .task-label {
+      font-size: 0.85rem;
       font-weight: 500;
-      color: var(--text);
+      color: var(--text-primary);
+      line-height: 1.4;
+      transition: color 0.15s ease, opacity 0.15s ease;
+    }
+
+    .task-detail {
+      font-size: 0.74rem;
+      color: var(--text-secondary);
       line-height: 1.35;
-      transition: color 0.15s ease;
-    }
-
-    .item-sub {
+      margin-top: 1px;
       display: block;
-      font-size: 0.76rem;
-      color: var(--text-muted);
-      margin-top: 2px;
+      transition: color 0.15s ease, opacity 0.15s ease;
     }
 
-    .checklist-item input[type="checkbox"]:checked ~ .item-info .item-label {
+    .task-row input[type="checkbox"]:checked ~ .task-body .task-label {
       text-decoration: line-through;
-      color: #94a3b8;
+      color: var(--text-tertiary);
     }
 
-    .checklist-item input[type="checkbox"]:checked ~ .item-info .item-sub {
-      color: #cbd5e1;
+    .task-row input[type="checkbox"]:checked ~ .task-body .task-detail {
+      color: var(--text-tertiary);
+      opacity: 0.7;
     }
 
-    /* Completed Banner */
-    .congrats-card {
+    /* Hidden when filtered */
+    .task-row.is-hidden {
+      display: none !important;
+    }
+
+    .category-group.is-empty {
+      display: none !important;
+    }
+
+    /* Complete State Card */
+    .completion-banner {
       display: none;
-      background: linear-gradient(135deg, #ecfdf5, #d1fae5);
-      border: 1px solid #a7f3d0;
-      border-radius: var(--radius);
-      padding: 16px;
-      margin-top: 16px;
-      text-align: center;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      margin-top: 20px;
     }
 
-    .congrats-title {
-      font-size: 0.95rem;
-      font-weight: 700;
-      color: #065f46;
+    .completion-banner.visible {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      animation: slideUp 0.2s ease-out;
     }
 
-    .congrats-desc {
-      font-size: 0.8rem;
-      color: #047857;
-      margin-top: 4px;
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Footer Info */
-    footer {
-      text-align: center;
-      margin-top: 32px;
-      font-size: 0.75rem;
-      color: var(--text-muted);
+    .completion-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: var(--radius-pill);
+      background: var(--accent-subtle);
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
     }
 
-    footer a {
-      color: var(--bni-teal);
-      text-decoration: none;
+    .completion-icon svg {
+      width: 15px;
+      height: 15px;
+    }
+
+    .completion-text h4 {
+      font-size: 0.82rem;
       font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .completion-text p {
+      font-size: 0.74rem;
+      color: var(--text-secondary);
+      margin-top: 1px;
+    }
+
+    /* Utility action drawer at bottom */
+    .utility-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 24px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+      font-size: 0.74rem;
+      color: var(--text-secondary);
+    }
+
+    .utility-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-family: inherit;
+      font-size: 0.74rem;
+      font-weight: 500;
+      cursor: pointer;
+      padding: 4px 6px;
+      border-radius: var(--radius-sm);
+      transition: all 0.15s ease;
+    }
+
+    .utility-btn:hover {
+      background: var(--surface-hover);
+      color: var(--text-primary);
+    }
+
+    .utility-btn svg {
+      width: 13px;
+      height: 13px;
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--surface-elevated);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+      padding: 8px 14px;
+      border-radius: var(--radius-pill);
+      font-size: 0.76rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 100;
+    }
+
+    .toast.visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* Empty search result */
+    .empty-search {
+      display: none;
+      text-align: center;
+      padding: 36px 16px;
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+    }
+
+    .empty-search.visible {
+      display: block;
+    }
+
+    /* Footnote */
+    footer.app-footer {
+      margin-top: 36px;
+      text-align: center;
+      font-size: 0.72rem;
+      color: var(--text-tertiary);
+    }
+
+    footer.app-footer p + p {
+      margin-top: 2px;
     }
   </style>
 </head>
 <body>
 
-<div class="container">
-  <header>
-    <div class="header-top">
-      <div>
-        <h1 class="app-title">MGHB Checklist</h1>
-        <p class="app-sub" id="active-subtitle">Persiapan Jakarta &amp; Wisuda UMS · 24–27 Sep 2026</p>
+<div class="app-shell">
+  <!-- Sticky Header -->
+  <header class="sticky-header">
+    <div class="header-bar">
+      <div class="brand-meta">
+        <span class="brand-logo">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--highlight);">
+            <path d="M9 11l3 3L22 4"></path>
+            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+          </svg>
+          MGHB
+        </span>
+        <span class="badge badge-accent" id="badge-context">Dinas Jakarta</span>
+        <span class="badge">BNI SSE</span>
       </div>
-      <div class="logo-badge">BNI · SSE</div>
+
+      <div class="actions-cluster">
+        <button class="btn-icon" id="btn-theme" title="Ganti Tema" onclick="toggleTheme()">
+          <svg id="icon-sun" style="display: none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          <svg id="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+      </div>
     </div>
 
-    <!-- Navigation Tabs -->
-    <div class="tab-nav">
-      <button class="tab-btn active" data-tab="packing" onclick="switchTab('packing')">
-        🎒 Packing Jakarta
+    <!-- Segmented Tab Navigation -->
+    <div class="segmented-tabs">
+      <button class="tab-trigger active" data-tab="packing" onclick="selectTab('packing')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+          <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+        </svg>
+        Bawaan &amp; Wisuda
       </button>
-      <button class="tab-btn" data-tab="magang" onclick="switchTab('magang')">
-        🏢 SOP &amp; Magang
+      <button class="tab-trigger" data-tab="magang" onclick="selectTab('magang')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect>
+          <path d="M9 22v-4h6v4"></path>
+          <path d="M8 6h.01"></path><path d="M16 6h.01"></path><path d="M12 6h.01"></path>
+          <path d="M8 10h.01"></path><path d="M16 10h.01"></path><path d="M12 10h.01"></path>
+          <path d="M8 14h.01"></path><path d="M16 14h.01"></path><path d="M12 14h.01"></path>
+        </svg>
+        SOP &amp; MagangHub
       </button>
     </div>
 
-    <!-- Progress Indicator -->
-    <div class="progress-wrap">
-      <div class="bar">
-        <div class="bar-fill" id="progress-fill"></div>
+    <!-- Progress Track -->
+    <div class="overview-row">
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-bar"></div>
       </div>
-      <div class="meta">
-        <span class="counter-text" id="progress-text">0/0 Siap</span>
-        <button class="reset-btn" id="btn-reset" onclick="resetCurrentTab()">Reset Centang</button>
+      <div class="metric-bar">
+        <span id="label-subcontext">Jakarta &amp; Wisuda UMS (24–27 Sep 2026)</span>
+        <span class="metric-count" id="metric-counter">0/0 selesai (0%)</span>
+      </div>
+    </div>
+
+    <!-- Filter & Search Toolbar -->
+    <div class="toolbar-row">
+      <div class="search-box">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" class="search-input" id="search-input" placeholder="Cari item (tekan '/' untuk fokus)..." oninput="handleSearch(this.value)">
+      </div>
+
+      <div class="filter-pills">
+        <button class="filter-btn active" data-filter="all" onclick="setFilter('all')">Semua</button>
+        <button class="filter-btn" data-filter="pending" onclick="setFilter('pending')">Belum</button>
+        <button class="filter-btn" data-filter="done" onclick="setFilter('done')">Selesai</button>
       </div>
     </div>
   </header>
 
   <!-- TAB 1: PACKING CHECKLIST -->
-  <main id="pane-packing" class="tab-pane active">
-    <!-- Pakaian Kerja -->
-    <section class="section-card">
-      <h2 class="section-title">👔 Pakaian Kerja &amp; Formal</h2>
-      <label class="checklist-item">
-        <input type="checkbox" id="pk1" data-tab="packing">
-        <div class="item-info">
-          <span class="item-label">Kemeja formal x2</span>
-          <span class="item-sub">Senin–Selasa: business formal BNI</span>
-        </div>
-      </label>
-      <label class="checklist-item">
-        <input type="checkbox" id="pk2" data-tab="packing">
-        <div class="item-info">
-          <span class="item-label">Batik lengan panjang x2</span>
-          <span class="item-sub">Rabu–Kamis: lengan tidak dilipat</span>
-        </div>
-      </label>
-      <label class="checklist-item">
-        <input type="checkbox" id="pk3" data-tab="packing">
-        <div class="item-info">
-          <span class="item-label">Kemeja berkerah + blazer/outer</span>
-          <span class="item-sub">Jumat: business casual BNI, sneakers diperbolehkan</span>
-        </div>
-      </label>
-      <label class="checklist-item">
-        <input type="checkbox" id="pk4" data-tab="packing">
-        <div class="item-info">
-          <span class="item-label">Kemeja formal untuk wisuda</span>
-          <span class="item-sub">Jumat 25 Sep: dipakai di bawah toga</span>
-        </div>
-      </label>
-      <label class="checklist-item">
-        <input type="checkbox" id="pk5" data-tab="packing">
-        <div class="item-info">
-          <span class="item-label">Kaos dalam putih x4</span>
-          <span class="item-sub">Standar kerapian dalaman kemeja</span>
-        </div>
-      </label>
-      <label class="checklist-item">
-        <input type="checkbox" id="pk6" data-tab="packing">
-        <div class="item-info">
-          <span class="item-label">Celana bahan / chino gelap x2</span>
-          <span class="item-sub">Wajib bahan kain / non-jeans</span>
-        </div>
-      </label>
-      <label class="checklist-item">
-        <input type="checkbox" id="pk7" data-tab="packing">
-        <div class="item-info">
-          <span class="item-label">Sepatu pantofel + kaos kaki serasi</span>
-          <span class="item-sub">Sepatu hitam/gelap untuk hari formal</span>
-        </div>
-      </label>
-      <label class="checklist-item">
-        <input type="checkbox" id="pk8" data-tab="packing">
-        <div class="item-info">
-          <span class="item-label">Ikat pinggang kulit formal</span>
-          <span class="item-sub">Warna senada dengan sepatu</span>
-        </div>
-      </label>
-      <label class="checklist-item">
-        <input type="checkbox" id="pk9" data-tab="packing">
-        <div class="item-info">
-          <span class="item-label">Sneakers casual</span>
-          <span class="item-sub">Cadangan Jumat santai &amp; perjalanan</span>
-        </div>
-      </label>
-      <label class="checklist-item">
-        <input type="checkbox" id="pk10" data-tab="packing">
-        <div class="item-info">
-          <span class="item-label">Pakaian santai &amp; dalam secukupnya</span>
-          <span class="item-sub">Untuk istirahat / ganti di penginapan</span>
-        </div>
-      </label>
-    </section>
+  <main id="view-packing" class="tab-content active">
+    <!-- Category: Pakaian Kerja -->
+    <div class="category-group" data-cat="pakaian">
+      <div class="category-header">
+        <span class="category-title">Pakaian Kerja &amp; Formal BNI</span>
+        <span class="category-stats" id="stat-pakaian">0/10</span>
+      </div>
+      <div class="checklist-card">
+        <label class="task-row">
+          <input type="checkbox" id="pk1" data-cat="pakaian" data-tab="packing">
+          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+          <div class="task-body">
+            <div class="task-label">Kemeja formal lengan panjang (x2)</div>
+            <span class="task-detail">Senin–Selasa: standar business formal perbankan</span>
+          </div>
+        </label>
+        <label class="task-row">
+          <input type="checkbox" id="pk2" data-cat="pakaian" data-tab="packing">
+          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+          <div class="task-body">
+            <div class="task-label">Batik lengan panjang (x2)</div>
+            <span class="task-detail">Rabu–Kamis: motif sopan, lengan tidak dilipat</span>
+          </div>
+        </label>
+        <label class="task-row">
+          <input type="checkbox" id="pk3" data-cat="pakaian" data-tab="packing">
+          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+          <div class="task-body">
+            <div class="task-label">Kemeja berkerah + blazer / outer</div>
+            <span class="task-detail">Jumat: business casual BNI, diperkenankan sneakers rapi</span>
+          </div>
+        </label>
+        <label class="task-row">
+          <input type="checkbox" id="pk4" data-cat="pakaian" data-tab="packing">
+          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+          <div class="task-body">
+            <div class="task-label">Kemeja formal wisuda UMS</div>
+            <span class="task-detail">Jumat 25 Sep: kemeja putih/terang untuk dalaman toga</span>
+          </div>
+        </label>
+        <label class="task-row">
+          <input type="checkbox" id="pk5" data-cat="pakaian" data-tab="packing">
+          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+          <div class="task-body">
+            <div class="task-label">Kaos dalam putih bersih (x4)</div>
+            <span class="task-detail">Menjaga kerapian pakaian kerja formal</span>
+          </div>
+        </label>
+        <label class="task-row">
+          <input type="checkbox" id="pk6" data-cat="pakaian" data-tab="packing">
+          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+          <div class="task-body">
+            <div class="task-label">Celana bahan / chino gelap (x2)</div>
+            <span class="task-detail">Wajib bahan kain standar kantor, bukan jeans</span>
+          </div>
+        </label>
+        <label class="task-row">
+          <input type="checkbox" id="pk7" data-cat="pakaian" data-tab="packing">
+          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+          <div class="task-body">
+            <div class="task-label">Sepatu pantofel &amp; kaos kaki gelap serasi</div>
+            <span class="task-detail">Wajib sepatu formal tertutup</span>
+          </div>
+        </label>
+        <label class="task-row">
+          <input type="checkbox" id="pk8" data-cat="pakaian" data-tab="packing">
+          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+          <div class="task-body">
+            <div class="task-label">Ikat pinggang kulit formal</div>
+            <span class="task-detail">Warna senada sepatu pantofel</span>
+          </div>
+        </label>
+        <label class="task-row">
+          <input type="checkbox" id="pk9" data-cat="pakaian" data-tab="packing">
+          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+          <div class="task-body">
+            <div class="task-label">Sneakers casual bersih</div>
+            <span class="task-detail">Cadangan hari Jumat santai &amp; perjalanan luar kantor</span>
+          </div>
+        </label>
+        <label class="task-row">
+          <input type="checkbox" id="pk10" data-cat="pakaian" data-tab="packing">
+          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+          <div class="task-body">
+            <div class="task-label">Pakaian ganti santai &amp; pakaian dalam</div>
+            <span class="task-detail">Secukupnya untuk istirahat di penginapan</span>
+          </div>
+        </label>
+      </div>
+    </div>
 
-    <!-- Dokumen -->
-    <section class="section-card">
-      <h2 class="section-title">📄 Dokumen &amp; Tiket</h2>
-      <label class="checklist-item">
-        <input type="checkbox" id="doc1" data-tab="packing">
-        <div class="item-info">
-          <span class="item-label">KTP asli + fotokopi</span>
-          <span class="item-sub">Kartu identitas resmi</span>
-        </div>
-      </label>
-      <label class="checklist-item">
-        <input type="checkbox" id="doc2" data-tab="packing">
-        <div class="item-info">
-          <span class="item-label">Tiket kereta Kamis malam</span>
-          <span class="item-sub">Gambir / Pasar Senen → Solo</span>
-        </div>
-      </label>
-      <label class="checklist-item">
-        <input type="checkbox" id="doc3" data-tab="packing">
-        <div class="item-info">
-          <span class="item-label">Tiket balik Minggu</span>
-          <span class="item-sub">Solo → Jakarta</span>
-        </div>
-      </label>
-      <label class="checklist-item">
-        <input type="checkbox" id="doc4" data-tab="packing">
-        <div class="item-info">
-          <span class="item-label">Undangan wisuda UMS</span>
-          <span class="item-sub">Bukti pengajuan izin ke mentor Pak Guruh</span>
-        </div>
-      </label>
-      <label class="checklist-item">
-        <input type="checkbox" id="doc5" data-tab="packing">
-        <div class="item-info">
-          <span class="item-label">Fotokopi Perjanjian Pemagangan (PKM)</span>
-          <span class="item-sub">Dokumen resmi PKM-0026-PKM-II-2026</span>
-        </div>
-      </label>
-      <label class="checklist-item">
-        <input type="checkbox" id="doc6" data-tab="packing">
-        <div class="item-info">
-          <span class="item-label">Kartu BPJS / Asuransi + Pas Foto</span>
-          <span class="item-sub">Jaminan kesehatan &amp; arsip darurat</span>
-        </div>
-      </label>
-    </section>
+    <!-- Category: Dokumen -->
+    <div class="category-group" data-cat="dokumen">
+      <div class="category-header">
+        <span class="category-title">Dokumen &amp; Tiket Perjalanan</span>
+        <span class="category-stats" id="stat-dokumen">0/6</span>
+      </div>
+      <div class="checklist-card">
+        <label class="task-row">
+          <input type="checkbox" id="doc1" data-cat="dokumen" data-tab="packing">
+          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+          <div class="task-body">
+            <div class="task-label">KTP elektronik asli &amp; salinan fotokopi</div>
+            <span class="task-detail">Identitas wajib verifikasi gedung &amp; transportasi</span>
+          </div>
+        </label>
+        <label class="task-row">
+          <input type="checkbox" id="doc2" data-cat="dokumen" data-tab="packing">
+          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+          <div class="task-body">
+            <div class="task-label">E-Ticket kereta api keberangkatan (Kamis malam)</div>
+            <span class="task-detail">Stasiun Gambir / Pasar Senen → Stasiun Solo Balapan / Purwosari</span>
+          </div>
+        </label>
+        <label class="task-row">
+          <input type="checkbox" id="doc3" data-cat="dokumen" data-tab="packing">
+          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+          <div class="task-body">
+            <div class="task-label">E-Ticket kereta api kembali ke Jakarta (Minggu)</div>
+            <span class="task-detail">Persiapan jadwal dinas Senin pagi di Menara BNI</span>
+          </div>
+        </label>
+        <label class="task-row">
+          <input type="checkbox" id="doc4" data-cat="dokumen" data-tab="packing">
+          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+          <div class="task-body">
+            <div class="task-label">Undangan wisuda UMS &amp; berkas izin</div>
+            <span class="task-detail">Lampiran fisik/digital pengajuan izin ke mentor Pak Guruh</span>
+          </div>
+        </label>
+        <label class="task-row">
+          <input type="checkbox" id="doc5" data-cat="dokumen" data-tab="packing">
+          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+          <div class="task-body">
+            <div class="task-label">Salinan Perjanjian Pemagangan (PKM)</div>
+            <span class="task-detail">Arsip nomor PKM-0026-PKM-II-2026</span>
+          </div>
+        </label>
+        <label class="task-row">
+          <input type="checkbox" id="doc6" data-cat="dokumen" data-tab="packing">
+          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+          <div class="task-body">
+            <div class="task-label">Kartu BPJS Kesehatan &amp; Pas Foto cadangan</div>
+            <span class="task-detail">Jaminan darurat &amp; kebutuhan administrasi mendadak</span>
+          </div>
+        </label>
+      </div>
+    </div>
 
-    <!-- Elektronik -->
-    <section class="section-card">
-      <h2 class="section-title">💻 Perangkat Elektronik</h2>
-      <label class="checklist-item">
-        <input type="checkbox" id="el1" data-tab="packing">
-        <div class="item-info">
-          <span class="item-label">Laptop kerja + charger</span>
-          <span class="item-sub">Siap pakai untuk tugas divisi SSE</span>
-        </div>
-      </label>
-      <label class="checklist-item">
-        <input type="checkbox" id="el2" data-tab="packing">
-        <div class="item-info">
-          <span class="item-label">Charger HP + kabel data</span>
-          <span class="item-sub">Daya utama smartphone</span>
-        </div>
-      </label>
-      <label class="checklist-item">
-        <input type="checkbox" id="el3" data-tab="packing">
-        <div class="item-info">
-          <span class="item-label">Power bank terisi penuh</span>
-          <span class="item-sub">Wajib untuk perjalanan kereta api</span>
-        </div>
-      </label>
-      <label class="checklist-item">
-        <input type="checkbox" id="el4" data-tab="packing">
-        <div class="item-info">
-          <span class="item-label">Earphone / headset</span>
-          <span class="item-sub">Meeting online &amp; hiburan perjalanan</span>
-        </div>
-      </label>
-    </section>
+    <!-- Category: Elektronik -->
+    <div class="category-group" data-cat="elektronik">
+      <div class="category-header">
+        <span class="category-title">Perangkat Elektronik</span>
+        <span class="category-stats" id="stat-elektronik">0/4</span>
+      </div>
+      <div class="checklist-card">
+        <label class="task-row">
+          <input type="checkbox" id="el1" data-cat="elektronik" data-tab="packing">
+          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+          <div class="task-body">
+            <div class="task-label">Laptop kerja &amp; kabel adaptor charger</div>
+            <span class="task-detail">Perangkat utama tugas divisi Sales Strategy &amp; Execution</span>
+          </div>
+        </label>
+        <label class="task-row">
+          <input type="checkbox" id="el2" data-cat="elektronik" data-tab="packing">
+          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+          <div class="task-body">
+            <div class="task-label">Smartphone &amp; kabel charger USB</div>
+            <span class="task-detail">Presensi MagangHub Kemnaker &amp; koordinasi tim</span>
+          </div>
+        </label>
+        <label class="task-row">
+          <input type="checkbox" id="el3" data-cat="elektronik" data-tab="packing">
+          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+          <div class="task-body">
+            <div class="task-label">Power bank (terisi daya penuh)</div>
+            <span class="task-detail">Cadangan esensial selama perjalanan kereta malam</span>
+          </div>
+        </label>
+        <label class="task-row">
+          <input type="checkbox" id="el4" data-cat="elektronik" data-tab="packing">
+          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+          <div class="task-body">
+            <div class="task-label">Earphone / headset</div>
+            <span class="task-detail">Komunikasi meeting daring &amp; fokus kerja</span>
+          </div>
+        </label>
+      </div>
+    </div>
 
-    <!-- Toiletries -->
-    <section class="section-card">
-      <h2 class="section-title">🧴 Toiletries &amp; Kebersihan</h2>
-      <label class="checklist-item">
-        <input type="checkbox" id="tl1" data-tab="packing">
-        <div class="item-info">
-          <span class="item-label">Sikat + pasta gigi</span>
-        </div>
-      </label>
-      <label class="checklist-item">
-        <input type="checkbox" id="tl2" data-tab="packing">
-        <div class="item-info">
-          <span class="item-label">Sabun &amp; sampo travel size</span>
-        </div>
-      </label>
-      <label class="checklist-item">
-        <input type="checkbox" id="tl3" data-tab="packing">
-        <div class="item-info">
-          <span class="item-label">Deodoran &amp; parfum</span>
-          <span class="item-sub">Standar wangi dan segar di ruang kantor</span>
-        </div>
-      </label>
-      <label class="checklist-item">
-        <input type="checkbox" id="tl4" data-tab="packing">
-        <div class="item-info">
-          <span class="item-label">Alat cukur / razor</span>
-          <span class="item-sub">Menjaga kerapian kumis &amp; jenggot</span>
-        </div>
-      </label>
-      <label class="checklist-item">
-        <input type="checkbox" id="tl5" data-tab="packing">
-        <div class="item-info">
-          <span class="item-label">Handuk kecil travel</span>
-        </div>
-      </label>
-      <label class="checklist-item">
-        <input type="checkbox" id="tl6" data-tab="packing">
-        <div class="item-info">
-          <span class="item-label">Sisir &amp; minyak rambut</span>
-        </div>
-      </label>
-    </section>
+    <!-- Category: Toiletries -->
+    <div class="category-group" data-cat="toiletries">
+      <div class="category-header">
+        <span class="category-title">Perawatan &amp; Toiletries</span>
+        <span class="category-stats" id="stat-toiletries">0/6</span>
+      </div>
+      <div class="checklist-card">
+        <label class="task-row">
+          <input type="checkbox" id="tl1" data-cat="toiletries" data-tab="packing">
+          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+          <div class="task-body">
+            <div class="task-label">Sikat gigi &amp; pasta gigi travel</div>
+            <span class="task-detail">Perlengkapan mandi praktis</span>
+          </div>
+        </label>
+        <label class="task-row">
+          <input type="checkbox" id="tl2" data-cat="toiletries" data-tab="packing">
+          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+          <div class="task-body">
+            <div class="task-label">Sabun &amp; sampo cair botol kecil</div>
+            <span class="task-detail">Ukuran ramah tas ransel</span>
+          </div>
+        </label>
+        <label class="task-row">
+          <input type="checkbox" id="tl3" data-cat="toiletries" data-tab="packing">
+          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+          <div class="task-body">
+            <div class="task-label">Deodoran &amp; parfum segar</div>
+            <span class="task-detail">Standar grooming dan kenyamanan ruang kantor BNI</span>
+          </div>
+        </label>
+        <label class="task-row">
+          <input type="checkbox" id="tl4" data-cat="toiletries" data-tab="packing">
+          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+          <div class="task-body">
+            <div class="task-label">Alat cukur kumis / jenggot</div>
+            <span class="task-detail">Kepatuhan standar profesional penampilan pria BNI</span>
+          </div>
+        </label>
+        <label class="task-row">
+          <input type="checkbox" id="tl5" data-cat="toiletries" data-tab="packing">
+          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+          <div class="task-body">
+            <div class="task-label">Handuk micro-fiber travel</div>
+            <span class="task-detail">Cepat kering dan ringkas</span>
+          </div>
+        </label>
+        <label class="task-row">
+          <input type="checkbox" id="tl6" data-cat="toiletries" data-tab="packing">
+          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+          <div class="task-body">
+            <div class="task-label">Sisir saku &amp; penata rambut</div>
+            <span class="task-detail">Mempertahankan kerapian rambut sepanjang hari</span>
+          </div>
+        </label>
+      </div>
+    </div>
 
-    <!-- Obat & Pribadi -->
-    <section class="section-card">
-      <h2 class="section-title">💊 Kesehatan &amp; Obat Pribadi</h2>
-      <label class="checklist-item">
-        <input type="checkbox" id="ob1" data-tab="packing">
-        <div class="item-info">
-          <span class="item-label">Obat resep pribadi</span>
-        </div>
-      </label>
-      <label class="checklist-item">
-        <input type="checkbox" id="ob2" data-tab="packing">
-        <div class="item-info">
-          <span class="item-label">Obat bebas: Tolak Angin, Paracetamol, Plester</span>
-        </div>
-      </label>
-      <label class="checklist-item">
-        <input type="checkbox" id="ob3" data-tab="packing">
-        <div class="item-info">
-          <span class="item-label">Masker medis cadangan</span>
-        </div>
-      </label>
-      <label class="checklist-item">
-        <input type="checkbox" id="ob4" data-tab="packing">
-        <div class="item-info">
-          <span class="item-label">Hand sanitizer pocket</span>
-        </div>
-      </label>
-    </section>
+    <!-- Category: Kesehatan -->
+    <div class="category-group" data-cat="kesehatan">
+      <div class="category-header">
+        <span class="category-title">Kesehatan &amp; Obat Pribadi</span>
+        <span class="category-stats" id="stat-kesehatan">0/4</span>
+      </div>
+      <div class="checklist-card">
+        <label class="task-row">
+          <input type="checkbox" id="ob1" data-cat="kesehatan" data-tab="packing">
+          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+          <div class="task-body">
+            <div class="task-label">Obat-obatan rutin pribadi</div>
+            <span class="task-detail">Persediaan obat resep jika ada</span>
+          </div>
+        </label>
+        <label class="task-row">
+          <input type="checkbox" id="ob2" data-cat="kesehatan" data-tab="packing">
+          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+          <div class="task-body">
+            <div class="task-label">Tolak Angin, Paracetamol &amp; Plester luka</div>
+            <span class="task-detail">P3K dasar antisipasi kelelahan perjalanan</span>
+          </div>
+        </label>
+        <label class="task-row">
+          <input type="checkbox" id="ob3" data-cat="kesehatan" data-tab="packing">
+          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+          <div class="task-body">
+            <div class="task-label">Masker medis higienis cadangan</div>
+            <span class="task-detail">Untuk mobilitas di stasiun &amp; transportasi publik</span>
+          </div>
+        </label>
+        <label class="task-row">
+          <input type="checkbox" id="ob4" data-cat="kesehatan" data-tab="packing">
+          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+          <div class="task-body">
+            <div class="task-label">Hand sanitizer botol saku</div>
+            <span class="task-detail">Higienitas tangan setiap saat</span>
+          </div>
+        </label>
+      </div>
+    </div>
 
-    <!-- Lain-lain -->
-    <section class="section-card">
-      <h2 class="section-title">🎒 Perlengkapan Tambahan</h2>
-      <label class="checklist-item">
-        <input type="checkbox" id="ot1" data-tab="packing">
-        <div class="item-info">
-          <span class="item-label">Sajadah travel</span>
-        </div>
-      </label>
-      <label class="checklist-item">
-        <input type="checkbox" id="ot2" data-tab="packing">
-        <div class="item-info">
-          <span class="item-label">Payung lipat kecil</span>
-          <span class="item-sub">Antisipasi hujan Jakarta</span>
-        </div>
-      </label>
-      <label class="checklist-item">
-        <input type="checkbox" id="ot3" data-tab="packing">
-        <div class="item-info">
-          <span class="item-label">Tumbler / botol minum</span>
-        </div>
-      </label>
-      <label class="checklist-item">
-        <input type="checkbox" id="ot4" data-tab="packing">
-        <div class="item-info">
-          <span class="item-label">Daypack / tas kecil kantor</span>
-        </div>
-      </label>
-      <label class="checklist-item">
-        <input type="checkbox" id="ot5" data-tab="packing">
-        <div class="item-info">
-          <span class="item-label">Kantong plastik baju kotor</span>
-        </div>
-      </label>
-      <label class="checklist-item">
-        <input type="checkbox" id="ot6" data-tab="packing">
-        <div class="item-info">
-          <span class="item-label">Dompet, e-Money/Flazz, &amp; uang tunai</span>
-        </div>
-      </label>
-    </section>
+    <!-- Category: Esensial Lainnya -->
+    <div class="category-group" data-cat="lainnya">
+      <div class="category-header">
+        <span class="category-title">Perlengkapan Tambahan &amp; Esensial</span>
+        <span class="category-stats" id="stat-lainnya">0/6</span>
+      </div>
+      <div class="checklist-card">
+        <label class="task-row">
+          <input type="checkbox" id="ot1" data-cat="lainnya" data-tab="packing">
+          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+          <div class="task-body">
+            <div class="task-label">Sajadah travel tipis</div>
+            <span class="task-detail">Kemudahan beribadah di perjalanan &amp; kantor</span>
+          </div>
+        </label>
+        <label class="task-row">
+          <input type="checkbox" id="ot2" data-cat="lainnya" data-tab="packing">
+          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+          <div class="task-body">
+            <div class="task-label">Payung lipat ringkas</div>
+            <span class="task-detail">Antisipasi cuaca hujan di area Pejompongan / Jakarta</span>
+          </div>
+        </label>
+        <label class="task-row">
+          <input type="checkbox" id="ot3" data-cat="lainnya" data-tab="packing">
+          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+          <div class="task-body">
+            <div class="task-label">Tumbler / botol minum portabel</div>
+            <span class="task-detail">Menjaga hidrasi harian</span>
+          </div>
+        </label>
+        <label class="task-row">
+          <input type="checkbox" id="ot4" data-cat="lainnya" data-tab="packing">
+          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+          <div class="task-body">
+            <div class="task-label">Ransel kerja / daypack kantor</div>
+            <span class="task-detail">Membawa laptop &amp; dokumen ke Menara BNI</span>
+          </div>
+        </label>
+        <label class="task-row">
+          <input type="checkbox" id="ot5" data-cat="lainnya" data-tab="packing">
+          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+          <div class="task-body">
+            <div class="task-label">Kantong laundry / plastik pakaian kotor</div>
+            <span class="task-detail">Pemisah pakaian bekas pakai di koper</span>
+          </div>
+        </label>
+        <label class="task-row">
+          <input type="checkbox" id="ot6" data-cat="lainnya" data-tab="packing">
+          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+          <div class="task-body">
+            <div class="task-label">Dompet, kartu uang elektronik (Flazz/e-Money), &amp; uang tunai</div>
+            <span class="task-detail">Akses KRL, MRT, TransJakarta, dan konsumsi darurat</span>
+          </div>
+        </label>
+      </div>
+    </div>
 
-    <!-- Done Message -->
-    <div id="congrats-packing" class="congrats-card">
-      <div class="congrats-title">🎉 Semua Perlengkapan Siap!</div>
-      <div class="congrats-desc">Semua barang bawaan lengkap. Selamat berangkat ke Jakarta dan sukses wisudanya!</div>
+    <!-- Complete Banner -->
+    <div class="completion-banner" id="banner-complete-packing">
+      <div class="completion-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      </div>
+      <div class="completion-text">
+        <h4>Seluruh Item Bawaan Lengkap</h4>
+        <p>Semua perlengkapan dinas &amp; wisuda telah siap di dalam koper.</p>
+      </div>
     </div>
   </main>
 
-  <!-- TAB 2: MAGANGHUB & BNI SOP CHECKLIST -->
-  <main id="pane-magang" class="tab-pane">
-    <!-- Rutinitas Harian -->
-    <section class="section-card">
-      <h2 class="section-title">⏰ Rutinitas Harian Magang</h2>
-      <label class="checklist-item">
-        <input type="checkbox" id="mg1" data-tab="magang">
-        <div class="item-info">
-          <span class="item-label">Presensi Pagi di MagangHub</span>
-          <span class="item-sub">Lakukan check-in kehadiran tepat waktu</span>
-        </div>
-      </label>
-      <label class="checklist-item">
-        <input type="checkbox" id="mg2" data-tab="magang">
-        <div class="item-info">
-          <span class="item-label">Standar Kerapian &amp; Dresscode BNI</span>
-          <span class="item-sub">Senin-Selasa Formal, Rabu-Kamis Batik, Jumat Casual</span>
-        </div>
-      </label>
-      <label class="checklist-item">
-        <input type="checkbox" id="mg3" data-tab="magang">
-        <div class="item-info">
-          <span class="item-label">Briefing / Penugasan Mentor Divisi SSE</span>
-          <span class="item-sub">Koordinasi dengan mentor Pak Guruh Sri Handoyo</span>
-        </div>
-      </label>
-      <label class="checklist-item">
-        <input type="checkbox" id="mg4" data-tab="magang">
-        <div class="item-info">
-          <span class="item-label">Eksekusi Tugas &amp; Pengolahan Data Harian</span>
-          <span class="item-sub">Kerjakan proyek analisis/operasional di folder divisi</span>
-        </div>
-      </label>
-      <label class="checklist-item">
-        <input type="checkbox" id="mg5" data-tab="magang">
-        <div class="item-info">
-          <span class="item-label">Catat Aktivitas Logbook Harian</span>
-          <span class="item-sub">Tuliskan deskripsi kegiatan, capaian, dan tantangan</span>
-        </div>
-      </label>
-      <label class="checklist-item">
-        <input type="checkbox" id="mg6" data-tab="magang">
-        <div class="item-info">
-          <span class="item-label">Presensi Pulang di MagangHub</span>
-          <span class="item-sub">Check-out saat jam operasional kantor berakhir</span>
-        </div>
-      </label>
-    </section>
+  <!-- TAB 2: MAGANGHUB & SOP BNI -->
+  <main id="view-magang" class="tab-content">
+    <!-- Category: Rutinitas Harian -->
+    <div class="category-group" data-cat="harian">
+      <div class="category-header">
+        <span class="category-title">Rutinitas Harian Kerja</span>
+        <span class="category-stats" id="stat-harian">0/6</span>
+      </div>
+      <div class="checklist-card">
+        <label class="task-row">
+          <input type="checkbox" id="mg1" data-cat="harian" data-tab="magang">
+          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+          <div class="task-body">
+            <div class="task-label">Presensi Pagi (MagangHub Kemnaker)</div>
+            <span class="task-detail">Lakukan check-in online tepat waktu di lokasi kantor</span>
+          </div>
+        </label>
+        <label class="task-row">
+          <input type="checkbox" id="mg2" data-cat="harian" data-tab="magang">
+          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+          <div class="task-body">
+            <div class="task-label">Standar Grooming BNI HCS</div>
+            <span class="task-detail">Senin-Selasa Formal, Rabu-Kamis Batik, Jumat Business Casual</span>
+          </div>
+        </label>
+        <label class="task-row">
+          <input type="checkbox" id="mg3" data-cat="harian" data-tab="magang">
+          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+          <div class="task-body">
+            <div class="task-label">Briefing Penugasan Mentor Divisi SSE</div>
+            <span class="task-detail">Konfirmasi target kerja harian bersama Pak Guruh Sri Handoyo</span>
+          </div>
+        </label>
+        <label class="task-row">
+          <input type="checkbox" id="mg4" data-cat="harian" data-tab="magang">
+          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+          <div class="task-body">
+            <div class="task-label">Eksekusi Tugas &amp; Olah Data Strategi Penjualan</div>
+            <span class="task-detail">Pengerjaan proyek analitik di folder 04_Divisi SSE</span>
+          </div>
+        </label>
+        <label class="task-row">
+          <input type="checkbox" id="mg5" data-cat="harian" data-tab="magang">
+          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+          <div class="task-body">
+            <div class="task-label">Pencatatan Logbook Harian MagangHub</div>
+            <span class="task-detail">Dokumentasikan aktivitas, capaian, dan solusi kendala harian</span>
+          </div>
+        </label>
+        <label class="task-row">
+          <input type="checkbox" id="mg6" data-cat="harian" data-tab="magang">
+          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+          <div class="task-body">
+            <div class="task-label">Presensi Pulang (MagangHub Kemnaker)</div>
+            <span class="task-detail">Check-out saat jam operasional kantor Menara BNI selesai</span>
+          </div>
+        </label>
+      </div>
+    </div>
 
-    <!-- Rutinitas Mingguan & Bulanan -->
-    <section class="section-card">
-      <h2 class="section-title">📊 Evaluasi Mingguan &amp; Bulanan</h2>
-      <label class="checklist-item">
-        <input type="checkbox" id="mg7" data-tab="magang">
-        <div class="item-info">
-          <span class="item-label">Submit Logbook Harian ke Portal Kemnaker</span>
-          <span class="item-sub">Pastikan tidak ada hari kerja yang terlewat</span>
-        </div>
-      </label>
-      <label class="checklist-item">
-        <input type="checkbox" id="mg8" data-tab="magang">
-        <div class="item-info">
-          <span class="item-label">Konfirmasi Approval Logbook ke Mentor</span>
-          <span class="item-sub">Mentor memvalidasi aktivitas mingguan peserta</span>
-        </div>
-      </label>
-      <label class="checklist-item">
-        <input type="checkbox" id="mg9" data-tab="magang">
-        <div class="item-info">
-          <span class="item-label">Rekap Data &amp; Bahan Laporan Bulanan</span>
-          <span class="item-sub">Simpan berkas evaluasi di folder 06_Presentasi &amp; Laporan</span>
-        </div>
-      </label>
-      <label class="checklist-item">
-        <input type="checkbox" id="mg10" data-tab="magang">
-        <div class="item-info">
-          <span class="item-label">Penyusunan Slide Evaluasi Capaian Magang</span>
-          <span class="item-sub">Paparan berkala hasil kontribusi di Divisi SSE BNI</span>
-        </div>
-      </label>
-    </section>
+    <!-- Category: Evaluasi Berkala -->
+    <div class="category-group" data-cat="evaluasi">
+      <div class="category-header">
+        <span class="category-title">Evaluasi Mingguan &amp; Bulanan</span>
+        <span class="category-stats" id="stat-evaluasi">0/4</span>
+      </div>
+      <div class="checklist-card">
+        <label class="task-row">
+          <input type="checkbox" id="mg7" data-cat="evaluasi" data-tab="magang">
+          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+          <div class="task-body">
+            <div class="task-label">Submit Logbook Mingguan ke Portal Kemnaker</div>
+            <span class="task-detail">Pastikan rekapan 5 hari kerja tersimpan tanpa kekosongan</span>
+          </div>
+        </label>
+        <label class="task-row">
+          <input type="checkbox" id="mg8" data-cat="evaluasi" data-tab="magang">
+          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+          <div class="task-body">
+            <div class="task-label">Konfirmasi Approval Logbook ke Mentor</div>
+            <span class="task-detail">Validasi laporan mingguan oleh mentor SSE</span>
+          </div>
+        </label>
+        <label class="task-row">
+          <input type="checkbox" id="mg9" data-cat="evaluasi" data-tab="magang">
+          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+          <div class="task-body">
+            <div class="task-label">Arsip Berkas Laporan Bulanan</div>
+            <span class="task-detail">Simpan rekap di folder 06_Presentasi &amp; Laporan Bulanan</span>
+          </div>
+        </label>
+        <label class="task-row">
+          <input type="checkbox" id="mg10" data-cat="evaluasi" data-tab="magang">
+          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+          <div class="task-body">
+            <div class="task-label">Penyusunan Slide Evaluasi Progres Magang</div>
+            <span class="task-detail">Bahan tinjauan berkala pencapaian target dan kontribusi divisi</span>
+          </div>
+        </label>
+      </div>
+    </div>
 
-    <!-- Tata Tertib & Komik SOP -->
-    <section class="section-card">
-      <h2 class="section-title">🛡️ Kepatuhan &amp; Integritas BNI</h2>
-      <label class="checklist-item">
-        <input type="checkbox" id="mg11" data-tab="magang">
-        <div class="item-info">
-          <span class="item-label">Kerahasiaan Data Nasabah &amp; Perbankan</span>
-          <span class="item-sub">Dilarang membocorkan data internal BNI / nasabah</span>
-        </div>
-      </label>
-      <label class="checklist-item">
-        <input type="checkbox" id="mg12" data-tab="magang">
-        <div class="item-info">
-          <span class="item-label">Etika Komunikasi Korporat</span>
-          <span class="item-sub">Bersikap sopan, santun, dan proaktif dalam tim</span>
-        </div>
-      </label>
-      <label class="checklist-item">
-        <input type="checkbox" id="mg13" data-tab="magang">
-        <div class="item-info">
-          <span class="item-label">K3 &amp; Keselamatan Kerja Lingkungan Kantor</span>
-          <span class="item-sub">Patuhi prosedur keselamatan kerja di Menara BNI</span>
-        </div>
-      </label>
-    </section>
+    <!-- Category: Kepatuhan -->
+    <div class="category-group" data-cat="kepatuhan">
+      <div class="category-header">
+        <span class="category-title">Kepatuhan &amp; Integritas Perbankan</span>
+        <span class="category-stats" id="stat-kepatuhan">0/3</span>
+      </div>
+      <div class="checklist-card">
+        <label class="task-row">
+          <input type="checkbox" id="mg11" data-cat="kepatuhan" data-tab="magang">
+          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+          <div class="task-body">
+            <div class="task-label">Kerahasiaan Data Nasabah &amp; Bank BNI</div>
+            <span class="task-detail">Kepatuhan penuh NDA &amp; larangan penyebaran data internal</span>
+          </div>
+        </label>
+        <label class="task-row">
+          <input type="checkbox" id="mg12" data-cat="kepatuhan" data-tab="magang">
+          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+          <div class="task-body">
+            <div class="task-label">Tata Krama &amp; Komunikasi Profesional</div>
+            <span class="task-detail">Bersikap santun, adaptif, dan responsif terhadap arahan kerja</span>
+          </div>
+        </label>
+        <label class="task-row">
+          <input type="checkbox" id="mg13" data-cat="kepatuhan" data-tab="magang">
+          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+          <div class="task-body">
+            <div class="task-label">Disiplin K3 &amp; Keamanan Fisik Kantor</div>
+            <span class="task-detail">Menaati protokol keamanan di lingkungan Menara BNI Pejompongan</span>
+          </div>
+        </label>
+      </div>
+    </div>
 
-    <!-- Done Message -->
-    <div id="congrats-magang" class="congrats-card">
-      <div class="congrats-title">🌟 Target Magang Selesai!</div>
-      <div class="congrats-desc">Seluruh checklist SOP harian &amp; kepatuhan telah terpenuhi secara prima!</div>
+    <!-- Complete Banner -->
+    <div class="completion-banner" id="banner-complete-magang">
+      <div class="completion-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      </div>
+      <div class="completion-text">
+        <h4>Semua Standar SOP Terpenuhi</h4>
+        <p>Seluruh kepatuhan dan alur operasional magang telah dieksekusi dengan baik.</p>
+      </div>
     </div>
   </main>
 
-  <footer>
-    <p>MGHB App · Zaki Tri Pamungkas · Divisi SSE Menara BNI Pejompongan</p>
+  <div class="empty-search" id="empty-search-state">
+    Tidak ada item checklist yang cocok dengan pencarian.
+  </div>
+
+  <!-- Bottom Utility Bar -->
+  <div class="utility-bar">
+    <button class="utility-btn" onclick="copyPendingList()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+      </svg>
+      Salin yang Belum Siap
+    </button>
+    <button class="utility-btn" onclick="resetActiveTab()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+        <path d="M3 3v5h5"></path>
+      </svg>
+      Reset Tab
+    </button>
+  </div>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <p>MGHB Workspace · Zaki Tri Pamungkas</p>
+    <p>Divisi Sales Strategy &amp; Execution · Menara BNI Pejompongan</p>
   </footer>
 </div>
 
-<script>
-  let currentTab = 'packing';
-  const STORAGE_KEY = 'mghb_checklist_state_v1';
+<!-- Toast notification -->
+<div class="toast" id="app-toast">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><polyline points="20 6 9 17 4 12"></polyline></svg>
+  <span id="toast-message">Disalin ke clipboard</span>
+</div>
 
-  // State Management
-  function getSavedState() {
+<script>
+  let activeTab = 'packing';
+  let currentFilter = 'all';
+  let searchQuery = '';
+  const STORAGE_KEY = 'mghb_state_clean_v2';
+  const THEME_KEY = 'mghb_theme_mode';
+
+  // --- Storage & State Management ---
+  function getStoredState() {
     try {
       return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-    } catch (e) {
+    } catch {
       return {};
     }
   }
 
-  function saveItemState(id, isChecked) {
-    const state = getSavedState();
+  function setItemState(id, isChecked) {
+    const state = getStoredState();
     if (isChecked) {
       state[id] = true;
     } else {
       delete state[id];
     }
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    updateProgress();
+    updateMetrics();
   }
 
-  // Tab Switcher
-  function switchTab(tab) {
-    currentTab = tab;
+  // --- Theme Management ---
+  function initTheme() {
+    const saved = localStorage.getItem(THEME_KEY);
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const theme = saved || (prefersDark ? 'dark' : 'light');
+    applyTheme(theme);
+  }
 
-    // Update buttons
-    document.querySelectorAll('.tab-btn').forEach(btn => {
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem(THEME_KEY, theme);
+    const isDark = theme === 'dark';
+    document.getElementById('icon-sun').style.display = isDark ? 'block' : 'none';
+    document.getElementById('icon-moon').style.display = isDark ? 'none' : 'block';
+  }
+
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || 'light';
+    applyTheme(current === 'dark' ? 'light' : 'dark');
+  }
+
+  // --- Tab Selection ---
+  function selectTab(tab) {
+    activeTab = tab;
+
+    // Trigger buttons
+    document.querySelectorAll('.tab-trigger').forEach(btn => {
       btn.classList.toggle('active', btn.getAttribute('data-tab') === tab);
     });
 
-    // Update panes
-    document.querySelectorAll('.tab-pane').forEach(pane => {
-      pane.classList.remove('active');
-    });
-    const activePane = document.getElementById('pane-' + tab);
-    if (activePane) activePane.classList.add('active');
+    // Pane visibility
+    document.getElementById('view-packing').classList.toggle('active', tab === 'packing');
+    document.getElementById('view-magang').classList.toggle('active', tab === 'magang');
 
-    // Update subtitle
-    const sub = document.getElementById('active-subtitle');
+    // Context badges & labels
+    const badgeEl = document.getElementById('badge-context');
+    const labelEl = document.getElementById('label-subcontext');
     if (tab === 'packing') {
-      sub.textContent = 'Persiapan Jakarta & Wisuda UMS · 24–27 Sep 2026';
+      badgeEl.textContent = 'Dinas Jakarta';
+      labelEl.textContent = 'Jakarta & Wisuda UMS (24–27 Sep 2026)';
     } else {
-      sub.textContent = 'SOP MagangHub & Harian Divisi Sales Strategy & Execution';
+      badgeEl.textContent = 'Operasional';
+      labelEl.textContent = 'Rutinitas Magang & Kepatuhan SSE';
     }
 
-    updateProgress();
+    applyFiltering();
+    updateMetrics();
   }
 
-  // Update Progress for Active Tab
-  function updateProgress() {
-    const activePane = document.getElementById('pane-' + currentTab);
-    if (!activePane) return;
+  // --- Filtering & Searching ---
+  function setFilter(filter) {
+    currentFilter = filter;
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.getAttribute('data-filter') === filter);
+    });
+    applyFiltering();
+  }
 
-    const checkboxes = Array.from(activePane.querySelectorAll('input[type="checkbox"]'));
-    const total = checkboxes.length;
-    const checked = checkboxes.filter(cb => cb.checked).length;
+  function handleSearch(val) {
+    searchQuery = (val || '').trim().toLowerCase();
+    applyFiltering();
+  }
 
+  function applyFiltering() {
+    const currentView = document.getElementById(activeTab === 'packing' ? 'view-packing' : 'view-magang');
+    if (!currentView) return;
+
+    const rows = currentView.querySelectorAll('.task-row');
+    let visibleCount = 0;
+
+    rows.forEach(row => {
+      const checkbox = row.querySelector('input[type="checkbox"]');
+      const isChecked = checkbox.checked;
+      const text = row.innerText.toLowerCase();
+
+      // Check filter condition
+      let matchesFilter = true;
+      if (currentFilter === 'pending') matchesFilter = !isChecked;
+      else if (currentFilter === 'done') matchesFilter = isChecked;
+
+      // Check search condition
+      let matchesSearch = true;
+      if (searchQuery) matchesSearch = text.includes(searchQuery);
+
+      const isVisible = matchesFilter && matchesSearch;
+      row.classList.toggle('is-hidden', !isVisible);
+      if (isVisible) visibleCount++;
+    });
+
+    // Check category group empties
+    currentView.querySelectorAll('.category-group').forEach(group => {
+      const hasVisibleRows = Array.from(group.querySelectorAll('.task-row')).some(r => !r.classList.contains('is-hidden'));
+      group.classList.toggle('is-empty', !hasVisibleRows);
+    });
+
+    // Empty state
+    const emptyEl = document.getElementById('empty-search-state');
+    emptyEl.classList.toggle('visible', visibleCount === 0);
+  }
+
+  // --- Metrics & Category Counters ---
+  function updateMetrics() {
+    const currentView = document.getElementById(activeTab === 'packing' ? 'view-packing' : 'view-magang');
+    if (!currentView) return;
+
+    const allCheckboxes = Array.from(currentView.querySelectorAll('input[type="checkbox"]'));
+    const total = allCheckboxes.length;
+    const checked = allCheckboxes.filter(cb => cb.checked).length;
     const pct = total === 0 ? 0 : Math.round((checked / total) * 100);
 
-    const fillEl = document.getElementById('progress-fill');
-    const textEl = document.getElementById('progress-text');
-    const congratsEl = document.getElementById('congrats-' + currentTab);
+    // Progress bar & label
+    document.getElementById('progress-bar').style.width = pct + '%';
+    document.getElementById('metric-counter').textContent = `${checked}/${total} selesai (${pct}%)`;
 
-    if (fillEl) fillEl.style.width = pct + '%';
-    if (textEl) textEl.textContent = `${checked}/${total} Siap (${pct}%)`;
-
-    if (congratsEl) {
-      congratsEl.style.display = (total > 0 && checked === total) ? 'block' : 'none';
+    // Completion banner
+    const bannerId = activeTab === 'packing' ? 'banner-complete-packing' : 'banner-complete-magang';
+    const banner = document.getElementById(bannerId);
+    if (banner) {
+      banner.classList.toggle('visible', total > 0 && checked === total);
     }
+
+    // Category stats update
+    const categoryGroups = currentView.querySelectorAll('.category-group');
+    categoryGroups.forEach(group => {
+      const cat = group.getAttribute('data-cat');
+      const catBoxes = Array.from(group.querySelectorAll('input[type="checkbox"]'));
+      const catTotal = catBoxes.length;
+      const catDone = catBoxes.filter(c => c.checked).length;
+      const statEl = document.getElementById('stat-' + cat);
+      if (statEl) statEl.textContent = `${catDone}/${catTotal}`;
+    });
   }
 
-  // Reset Current Tab
-  function resetCurrentTab() {
-    const activePane = document.getElementById('pane-' + currentTab);
-    if (!activePane) return;
+  // --- Copy Pending Items ---
+  function copyPendingList() {
+    const currentView = document.getElementById(activeTab === 'packing' ? 'view-packing' : 'view-magang');
+    if (!currentView) return;
 
-    const tabName = currentTab === 'packing' ? 'Packing Checklist' : 'Checklist SOP Magang';
-    if (confirm(`Reset semua centangan pada tab ${tabName}?`)) {
-      const checkboxes = activePane.querySelectorAll('input[type="checkbox"]');
-      const state = getSavedState();
+    const pending = [];
+    currentView.querySelectorAll('.task-row').forEach(row => {
+      const cb = row.querySelector('input[type="checkbox"]');
+      if (!cb.checked) {
+        const label = row.querySelector('.task-label').innerText.trim();
+        const detail = row.querySelector('.task-detail').innerText.trim();
+        pending.push(`• ${label} (${detail})`);
+      }
+    });
 
-      checkboxes.forEach(cb => {
-        cb.checked = false;
-        delete state[cb.id];
-      });
-
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-      updateProgress();
+    if (pending.length === 0) {
+      showToast('Semua item pada tab ini sudah selesai!');
+      return;
     }
+
+    const title = activeTab === 'packing' ? '[Checklist Bawaan Belum Siap]' : '[SOP Magang Belum Selesai]';
+    const textToCopy = `${title}\n` + pending.join('\n');
+
+    navigator.clipboard.writeText(textToCopy).then(() => {
+      showToast(`${pending.length} item disalin ke clipboard`);
+    }).catch(() => {
+      showToast('Gagal menyalin item');
+    });
   }
 
-  // Init App
-  function init() {
-    const state = getSavedState();
+  // --- Reset Tab ---
+  function resetActiveTab() {
+    const tabName = activeTab === 'packing' ? 'Bawaan & Wisuda' : 'SOP & MagangHub';
+    if (!confirm(`Reset seluruh centangan pada tab ${tabName}?`)) return;
 
-    // Migrate old packing-checklist key if present
+    const currentView = document.getElementById(activeTab === 'packing' ? 'view-packing' : 'view-magang');
+    const state = getStoredState();
+
+    currentView.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+      cb.checked = false;
+      delete state[cb.id];
+    });
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    applyFiltering();
+    updateMetrics();
+    showToast('Centangan berhasil direset');
+  }
+
+  // --- Toast ---
+  let toastTimer = null;
+  function showToast(msg) {
+    const toast = document.getElementById('app-toast');
+    document.getElementById('toast-message').textContent = msg;
+    toast.classList.add('visible');
+
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => {
+      toast.classList.remove('visible');
+    }, 2400);
+  }
+
+  // --- Keyboard Shortcuts ---
+  window.addEventListener('keydown', e => {
+    if (e.key === '/' && document.activeElement !== document.getElementById('search-input')) {
+      e.preventDefault();
+      document.getElementById('search-input').focus();
+    }
+    if (e.key === 'Escape' && document.activeElement === document.getElementById('search-input')) {
+      document.getElementById('search-input').value = '';
+      handleSearch('');
+      document.getElementById('search-input').blur();
+    }
+  });
+
+  // --- Initialization & Backward Compatibility ---
+  function initApp() {
+    initTheme();
+    const state = getStoredState();
+
+    // Migrate from v1 if present
     try {
-      const oldKeys = JSON.parse(localStorage.getItem('packing-checklist-v1') || '[]');
-      if (Array.isArray(oldKeys) && oldKeys.length > 0) {
-        oldKeys.forEach(oldId => {
-          // old ids were i1..i36
-          const num = parseInt(oldId.replace('i', ''), 10);
-          let newId = null;
-          if (num >= 1 && num <= 10) newId = 'pk' + num;
-          else if (num >= 11 && num <= 16) newId = 'doc' + (num - 10);
-          else if (num >= 17 && num <= 20) newId = 'el' + (num - 16);
-          else if (num >= 21 && num <= 26) newId = 'tl' + (num - 20);
-          else if (num >= 27 && num <= 30) newId = 'ob' + (num - 26);
-          else if (num >= 31 && num <= 36) newId = 'ot' + (num - 30);
-          if (newId) state[newId] = true;
-        });
+      const v1 = JSON.parse(localStorage.getItem('mghb_checklist_state_v1') || '{}');
+      if (Object.keys(v1).length > 0 && Object.keys(state).length === 0) {
+        Object.assign(state, v1);
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
       }
-    } catch (e) {}
+    } catch {}
 
-    // Attach events & restore states
-    document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+    // Attach row events
+    document.querySelectorAll('.task-row').forEach(row => {
+      const cb = row.querySelector('input[type="checkbox"]');
       if (state[cb.id]) {
         cb.checked = true;
       }
+
       cb.addEventListener('change', () => {
-        saveItemState(cb.id, cb.checked);
+        setItemState(cb.id, cb.checked);
+        applyFiltering();
       });
     });
 
-    updateProgress();
+    applyFiltering();
+    updateMetrics();
   }
 
-  window.addEventListener('DOMContentLoaded', init);
+  window.addEventListener('DOMContentLoaded', initApp);
 </script>
-
 </body>
 </html>
