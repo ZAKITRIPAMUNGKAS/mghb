@@ -786,6 +786,268 @@
       line-height: 1.35;
     }
 
+    /* Office Status & Checkout Alert Banner */
+    .office-status-banner {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 10px 14px;
+      margin-top: 10px;
+      margin-bottom: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s ease;
+    }
+
+    .office-status-banner.is-checkout-time {
+      border-color: var(--highlight);
+      background: var(--highlight-subtle);
+    }
+
+    .office-status-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .status-pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+      flex-shrink: 0;
+      box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.6);
+      animation: pulse-ring 2s infinite;
+    }
+
+    .office-status-banner.is-checkout-time .status-pulse-dot {
+      background: var(--highlight);
+      animation: pulse-orange 1.8s infinite;
+    }
+
+    @keyframes pulse-ring {
+      0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.6); }
+      70% { box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+    }
+
+    @keyframes pulse-orange {
+      0% { box-shadow: 0 0 0 0 rgba(224, 83, 21, 0.6); }
+      70% { box-shadow: 0 0 0 6px rgba(224, 83, 21, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(224, 83, 21, 0); }
+    }
+
+    .office-status-text {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      min-width: 0;
+    }
+
+    .office-status-title {
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .office-status-desc {
+      font-size: 0.71rem;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .office-status-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .btn-xs {
+      padding: 4px 8px;
+      font-size: 0.71rem;
+      border-radius: var(--radius-sm);
+    }
+
+    /* Scratchpad / Catatan Cepat Harian & Rapat */
+    .scratchpad-header-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .scratchpad-save-indicator {
+      font-size: 0.68rem;
+      color: var(--text-tertiary);
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .scratchpad-textarea {
+      width: 100%;
+      min-height: 85px;
+      font-family: inherit;
+      font-size: 0.78rem;
+      color: var(--text-primary);
+      background: var(--surface-hover);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 9px 12px;
+      line-height: 1.45;
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+
+    .scratchpad-textarea:focus {
+      border-color: var(--accent);
+      background: var(--surface);
+    }
+
+    .scratchpad-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 8px;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    /* Pejompongan & Menara BNI Guide */
+    .guide-section-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      margin-top: 14px;
+      margin-bottom: 8px;
+      padding-left: 2px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .guide-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      margin-bottom: 8px;
+      box-shadow: var(--shadow-card);
+    }
+
+    .guide-card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    .guide-card-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .guide-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 0.76rem;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+
+    .guide-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    .guide-list li strong {
+      color: var(--text-primary);
+    }
+
+    .guide-bullet {
+      color: var(--accent);
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+
+    /* Modal Large for Monthly Report */
+    .modal-box-lg {
+      max-width: 560px;
+      max-height: 88vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-body-scroll {
+      overflow-y: auto;
+      max-height: calc(88vh - 75px);
+      padding: 16px 18px 20px;
+    }
+
+    .report-stat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .report-stat-card {
+      background: var(--surface-hover);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 8px 10px;
+      text-align: center;
+    }
+
+    .report-stat-num {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--accent);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .report-stat-label {
+      font-size: 0.68rem;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    .report-preview-pre {
+      font-family: inherit;
+      font-size: 0.76rem;
+      line-height: 1.45;
+      color: var(--text-primary);
+      background: var(--surface-hover);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      white-space: pre-wrap;
+      max-height: 320px;
+      overflow-y: auto;
+      user-select: text;
+    }
+
     /* Bottom Utility Bar */
     .utility-bar {
       display: flex;
@@ -1211,6 +1473,30 @@
       </div>
     </div>
   </header>
+
+  <!-- Real-time Office Rhythm & Presensi Pulang Banner -->
+  <aside class="office-status-banner" id="office-status-banner">
+    <div class="office-status-left">
+      <div class="status-pulse-dot" id="status-pulse-dot"></div>
+      <div class="office-status-text">
+        <div class="office-status-title">
+          <span id="office-status-title">Menara BNI Pejompongan</span>
+          <span class="badge" id="office-time-badge">--:-- WIB</span>
+        </div>
+        <div class="office-status-desc" id="office-status-desc">
+          Jam operasional aktif (07.30 - 17.00 WIB) · Standby briefing &amp; olah data SSE
+        </div>
+      </div>
+    </div>
+    <div class="office-status-actions">
+      <button class="btn-action btn-xs" id="btn-banner-action" onclick="handleBannerAction()">
+        Isi Logbook
+      </button>
+      <button class="btn-icon" style="width: 26px; height: 26px;" onclick="toggleBannerCollapse()" title="Sembunyikan/Tampilkan detail">
+        <svg id="banner-toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 13px; height: 13px;"><polyline points="18 15 12 9 6 15"></polyline></svg>
+      </button>
+    </div>
+  </aside>
 
   <!-- TAB 1: PACKING CHECKLIST -->
   <main id="view-packing" class="tab-content active">
@@ -1770,9 +2056,42 @@
     </div>
   </main>
 
-  <!-- TAB 3: DAILY LOGBOOK FORMULATOR -->
+  <!-- TAB 3: DAILY LOGBOOK FORMULATOR & SCRATCHPAD -->
   <main id="view-logbook" class="tab-content">
-    <div class="feature-card">
+    <!-- Quick Scratchpad (Catatan Cepat Harian & Rapat) -->
+    <div class="feature-card" style="margin-bottom: 14px;">
+      <div class="feature-head">
+        <div class="feature-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+            <path d="M12 20h9"></path>
+            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+          </svg>
+          Catatan Cepat Harian &amp; Rapat
+        </div>
+        <div class="scratchpad-header-meta">
+          <span class="scratchpad-save-indicator" id="scratchpad-indicator">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            Tersimpan otomatis
+          </span>
+        </div>
+      </div>
+      <p style="font-size: 0.74rem; color: var(--text-secondary); margin-bottom: 10px;">
+        Tulis bebas catatan briefing Pak Guruh, rekonsiliasi data cabang, atau kendala lapangan saat jam kerja. Klik tombol di bawah untuk menjadikannya draf logbook formal berstandar Kemnaker.
+      </p>
+      <textarea class="scratchpad-textarea" id="scratchpad-notes" placeholder="Tulis catatan harian di sini (otomatis tersimpan)...&#10;Contoh:&#10;• Pukul 08.30: Briefing pagi bareng Pak Guruh terkait target sales Area Jakarta.&#10;• Pukul 10.15: Olah data spreadsheet realisasi DPK &amp; CASA, perbaiki 2 format cabang anomali.&#10;• Pukul 14.30: Bikin visual diagram achievement rate di Excel." oninput="handleScratchpadInput()"></textarea>
+      <div class="scratchpad-toolbar">
+        <div style="font-size: 0.7rem; color: var(--text-tertiary);" id="scratchpad-char-count">0 karakter</div>
+        <div style="display: flex; gap: 6px;">
+          <button class="utility-btn" onclick="clearScratchpad()">Bersihkan</button>
+          <button class="btn-action" style="font-size: 0.74rem; padding: 5px 10px;" onclick="transferScratchpadToLogbook()">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="13 17 18 12 13 7"></polyline><polyline points="6 17 11 12 6 7"></polyline></svg>
+            Pindahkan ke Formulator
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="feature-card" id="formulator-card">
       <div class="feature-head">
         <div class="feature-title">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
@@ -1853,7 +2172,7 @@
       </div>
     </div>
 
-    <!-- Riwayat Logbook Lokal -->
+    <!-- Riwayat Logbook Lokal & Generator Laporan Bulanan -->
     <div class="feature-card" style="margin-top: 14px;">
       <div class="feature-head">
         <div class="feature-title">
@@ -1863,7 +2182,13 @@
           </svg>
           Riwayat Logbook Tersimpan
         </div>
-        <button class="utility-btn" onclick="clearLogbookHistory()">Hapus Semua</button>
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <button class="btn-action btn-xs" onclick="openMonthlyReportModal()" style="background: var(--accent-subtle); color: var(--accent); border: 1px solid var(--accent); font-weight: 600;">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+            Ringkasan Bulanan
+          </button>
+          <button class="utility-btn" onclick="clearLogbookHistory()">Hapus</button>
+        </div>
       </div>
       <div id="lb-history-list" style="font-size: 0.76rem; color: var(--text-secondary);">
         Belum ada riwayat logbook tersimpan di peramban ini.
@@ -1874,8 +2199,9 @@
   <!-- TAB 4: ASISTEN SSE (CHAT TEMPLATES & GLOSSARY) -->
   <main id="view-asisten" class="tab-content">
     <div class="subnav-pills">
-      <button class="subnav-btn active" id="asisten-tab-btn-chat" onclick="switchAsistenSubtab('chat')">Template Chat Mentor</button>
-      <button class="subnav-btn" id="asisten-tab-btn-glossary" onclick="switchAsistenSubtab('glossary')">Kamus Istilah SSE</button>
+      <button class="subnav-btn active" id="asisten-tab-btn-chat" onclick="switchAsistenSubtab('chat')">Template Chat</button>
+      <button class="subnav-btn" id="asisten-tab-btn-glossary" onclick="switchAsistenSubtab('glossary')">Kamus SSE</button>
+      <button class="subnav-btn" id="asisten-tab-btn-guide" onclick="switchAsistenSubtab('guide')">Panduan Menara BNI</button>
     </div>
 
     <!-- SUB-PANE: CHAT TEMPLATES -->
@@ -2035,6 +2361,89 @@ Apabila Bapak berkenan, mohon kesediaan Bapak untuk melakukan review dan approva
         </div>
       </div>
     </div>
+
+    <!-- SUB-PANE: PANDUAN MENARA BNI & SURVIVAL PEJOMPONGAN -->
+    <div id="asisten-pane-guide" style="display: none;">
+      <!-- Seksi 1: Gedung & Rutinitas Kantor -->
+      <div class="guide-section-title">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"></path><path d="M9 8h1"></path><path d="M9 12h1"></path><path d="M9 16h1"></path><path d="M14 8h1"></path><path d="M14 12h1"></path><path d="M14 16h1"></path><path d="M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"></path></svg>
+        Gedung Menara BNI Pejompongan
+      </div>
+
+      <div class="guide-card">
+        <div class="guide-card-head">
+          <div class="guide-card-title">Lokasi &amp; Akses Masuk Gedung</div>
+          <span class="badge badge-accent">Kantor Pusat SSE</span>
+        </div>
+        <ul class="guide-list">
+          <li><span class="guide-bullet">•</span><div><strong>Alamat:</strong> Jl. Pejompongan Raya No. 7, Bendungan Hilir, Tanah Abang, Jakarta Pusat 10210.</div></li>
+          <li><span class="guide-bullet">•</span><div><strong>Akses Lobby:</strong> Selalu siapkan TPP (ID Card BNI) di dada untuk tap-in di turnstile gate lantai Ground (GF). Bagi tamu/hari pertama sebelum ID fisik keluar, lapor ke Pos Security Lobby GF dengan KTP asli.</div></li>
+          <li><span class="guide-bullet">•</span><div><strong>Lift Zoning:</strong> Perhatikan pembagian elevator (Low Zone vs High Zone) menuju lantai Divisi Sales Strategy &amp; Execution (SSE) agar tidak salah antrean lift saat jam sibuk pagi (07.30 - 08.00).</div></li>
+        </ul>
+      </div>
+
+      <div class="guide-card">
+        <div class="guide-card-head">
+          <div class="guide-card-title">Ritme Jam Kerja Resmi Divisi SSE</div>
+          <span class="badge">Disiplin Waktu</span>
+        </div>
+        <ul class="guide-list">
+          <li><span class="guide-bullet">•</span><div><strong>07.30 – 07.55 WIB:</strong> Tiba di kantor, tap in DigiHC internal BNI &amp; check-in GPS portal MagangHub Kemnaker.</div></li>
+          <li><span class="guide-bullet">•</span><div><strong>08.15 – 08.45 WIB:</strong> Morning briefing / koordinasi bersama mentor Bapak Guruh Sri Handoyo (persiapan target kerja harian).</div></li>
+          <li><span class="guide-bullet">•</span><div><strong>12.00 – 13.00 WIB:</strong> Istirahat, makan siang, &amp; sholat (Ishoma).</div></li>
+          <li><span class="guide-bullet">•</span><div><strong>Khusus Jumat (11.30 – 13.30 WIB):</strong> Waktu ibadah Sholat Jumat di Masjid Menara BNI / musholla lantai, dilanjutkan makan siang.</div></li>
+          <li><span class="guide-bullet">•</span><div><strong>16.30 – 17.15 WIB:</strong> Rekap tugas harian, input logbook MagangHub, check-out absensi DigiHC &amp; MagangHub sebelum meninggalkan gedung.</div></li>
+        </ul>
+      </div>
+
+      <!-- Seksi 2: Rute Transportasi Menuju Kantor -->
+      <div class="guide-section-title">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M7 17h10"></path><path d="M8 7h8"></path><circle cx="8" cy="12" r="1"></circle><circle cx="16" cy="12" r="1"></circle></svg>
+        Rute Transportasi Publik (KRL, MRT &amp; Bus)
+      </div>
+
+      <div class="guide-card">
+        <div class="guide-card-head">
+          <div class="guide-card-title">KRL Commuter Line</div>
+          <span class="badge">Paling Efisien</span>
+        </div>
+        <ul class="guide-list">
+          <li><span class="guide-bullet">•</span><div><strong>Stasiun Palmerah (~1.8 km):</strong> Pilihan stasiun terdekat. Naik Ojek Online hanya ~5–7 menit (tarif Rp10.000–14.000). Rute utama jika dari arah Rangkasbitung/Serpong atau transit via Tanah Abang.</div></li>
+          <li><span class="guide-bullet">•</span><div><strong>Stasiun Karet (2.5 km) / Sudirman (3 km):</strong> Alternatif jika menggunakan KRL Cikarang/Bekasi Loop Line. Dari Karet naik ojol ~8–10 menit lewat Jl. K.H. Mas Mansyur / Karet Pasar Baru Barat.</div></li>
+        </ul>
+      </div>
+
+      <div class="guide-card">
+        <div class="guide-card-head">
+          <div class="guide-card-title">MRT Jakarta &amp; TransJakarta</div>
+          <span class="badge">Nyaman &amp; Cepat</span>
+        </div>
+        <ul class="guide-list">
+          <li><span class="guide-bullet">•</span><div><strong>Stasiun MRT Bendungan Hilir (Benhil) (~1.5 km):</strong> Keluar di pintu exit Benhil, sambung Ojol 5 menit atau jalan santai via Jl. Penjernihan 1 menyusuri trotoar teduh.</div></li>
+          <li><span class="guide-bullet">•</span><div><strong>TransJakarta Koridor 9 (Halte Slipi Petamburan):</strong> Turun di Slipi Petamburan, sambung Ojol ~4 menit melintasi flyover Pejompongan.</div></li>
+          <li><span class="guide-bullet">•</span><div><strong>Mikrotrans JakLingko:</strong> Cari armada trayek Benhil – Palmerah (JAK-08 / JAK-14) dengan tarif Rp0 (wajib tap kartu e-Money/JakLingko).</div></li>
+        </ul>
+      </div>
+
+      <!-- Seksi 3: Kuliner & Logistik Sekitar Kantor -->
+      <div class="guide-section-title">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></svg>
+        Makan Siang Murah &amp; Logistik Terdekat
+      </div>
+
+      <div class="guide-card">
+        <div class="guide-card-head">
+          <div class="guide-card-title">Spot Makan Siang Ramah Kantong</div>
+          <span class="badge badge-accent">Tips Hemat</span>
+        </div>
+        <ul class="guide-list">
+          <li><span class="guide-bullet">•</span><div><strong>Kantin Karyawan Menara BNI (Basement):</strong> Pilihan paling praktis saat hujan atau hari kerja padat. Harga subsidi karyawan (Rp15.000–25.000), bersih, dan ber-AC.</div></li>
+          <li><span class="guide-bullet">•</span><div><strong>Pusat Kuliner Jl. Penjernihan &amp; Pasar Benhil (300m):</strong> Kawasan kuliner legendaris Jakarta Pusat. Banyak pilihan Warteg higienis, Nasi Padang, Soto Betawi, Bakso, dan Es Pisang Ijo khas Benhil.</div></li>
+          <li><span class="guide-bullet">•</span><div><strong>ATM &amp; Minimarket:</strong> BNI ATM Gallery 24 Jam tersedia di lobby gedung; Indomaret / Alfamart dan apotek tersedia tepat di seberang gerbang Pejompongan Raya.</div></li>
+          <li><span class="guide-bullet">•</span><div><strong>Fasilitas Ibadah:</strong> Musholla bersih ber-AC di tiap lantai gedung &amp; Masjid Menara BNI untuk sholat berjamaah harian serta Sholat Jumat.</div></li>
+        </ul>
+      </div>
+    </div>
   </main>
 
   <div class="empty-search" id="empty-search-state">
@@ -2158,6 +2567,63 @@ Apabila Bapak berkenan, mohon kesediaan Bapak untuk melakukan review dan approva
             <input type="file" id="import-file-input" accept=".json" style="display: none;" onchange="handleImportFile(event)">
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Ringkasan Laporan Bulanan (Executive Summary) -->
+<div class="modal-overlay" id="monthly-report-modal" onclick="handleMonthlyModalBackdrop(event)">
+  <div class="modal-box modal-box-lg">
+    <div class="modal-head">
+      <div class="modal-title-wrap">
+        <h3>Ringkasan Laporan Bulanan Magang</h3>
+        <p>Format Eksekutif untuk Presentasi &amp; Arsip Laporan Pemagangan BNI SSE</p>
+      </div>
+      <button class="btn-close" onclick="closeMonthlyReportModal()" title="Tutup">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <div class="modal-body modal-body-scroll">
+      <div class="report-stat-grid">
+        <div class="report-stat-card">
+          <div class="report-stat-num" id="rep-stat-days">0</div>
+          <div class="report-stat-label">Hari Kerja Terekam</div>
+        </div>
+        <div class="report-stat-card">
+          <div class="report-stat-num" id="rep-stat-divisi">SSE</div>
+          <div class="report-stat-label">Divisi BNI</div>
+        </div>
+        <div class="report-stat-card">
+          <div class="report-stat-num" id="rep-stat-status" style="color: var(--success); font-size: 0.95rem; margin-top: 3px;">Siap Direkap</div>
+          <div class="report-stat-label">Status Logbook</div>
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary);">Pratinjau Dokumen Laporan</span>
+        <span class="badge badge-accent">Standar Kemnaker &amp; BNI</span>
+      </div>
+
+      <pre class="report-preview-pre" id="monthly-report-preview"></pre>
+
+      <div style="display: flex; gap: 8px; margin-top: 14px;">
+        <button class="btn-action" style="flex: 1;" onclick="copyMonthlyReportText()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+          Salin Format Word
+        </button>
+        <button class="btn-action btn-secondary" onclick="downloadMonthlyReportMarkdown()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          Unduh .MD
+        </button>
       </div>
     </div>
   </div>
@@ -2630,12 +3096,174 @@ Apabila Bapak berkenan, mohon kesediaan Bapak untuk melakukan review dan approva
     }
   }
 
-  // --- Asisten Subtabs (Chat vs Glossary) ---
+  // --- Quick Scratchpad / Catatan Harian & Rapat ---
+  const SCRATCHPAD_KEY = 'mghb_scratchpad_v1';
+  let scratchpadTimer = null;
+
+  function initScratchpad() {
+    const saved = localStorage.getItem(SCRATCHPAD_KEY) || '';
+    const el = document.getElementById('scratchpad-notes');
+    if (el) {
+      el.value = saved;
+      updateScratchpadCount(saved.length);
+    }
+  }
+
+  function handleScratchpadInput() {
+    const el = document.getElementById('scratchpad-notes');
+    const val = el ? el.value : '';
+    updateScratchpadCount(val.length);
+
+    const indicator = document.getElementById('scratchpad-indicator');
+    if (indicator) {
+      indicator.innerHTML = `<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle></svg> Menyimpan...`;
+    }
+
+    if (scratchpadTimer) clearTimeout(scratchpadTimer);
+    scratchpadTimer = setTimeout(() => {
+      localStorage.setItem(SCRATCHPAD_KEY, val);
+      if (indicator) {
+        indicator.innerHTML = `<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Tersimpan otomatis`;
+      }
+    }, 400);
+  }
+
+  function updateScratchpadCount(count) {
+    const charEl = document.getElementById('scratchpad-char-count');
+    if (charEl) charEl.textContent = `${count} karakter`;
+  }
+
+  function clearScratchpad() {
+    const el = document.getElementById('scratchpad-notes');
+    if (!el || !el.value.trim()) return;
+    if (confirm('Bersihkan catatan cepat ini?')) {
+      el.value = '';
+      localStorage.removeItem(SCRATCHPAD_KEY);
+      updateScratchpadCount(0);
+      showToast('Catatan dibersihkan');
+    }
+  }
+
+  function transferScratchpadToLogbook() {
+    const scratchpadEl = document.getElementById('scratchpad-notes');
+    const text = scratchpadEl ? scratchpadEl.value.trim() : '';
+    if (!text) {
+      showToast('Catatan cepat masih kosong. Tuliskan poin aktivitas hari ini terlebih dahulu.');
+      if (scratchpadEl) scratchpadEl.focus();
+      return;
+    }
+
+    const roughEl = document.getElementById('lb-rough-notes');
+    if (roughEl) {
+      roughEl.value = text;
+      const formulatorCard = document.getElementById('formulator-card');
+      if (formulatorCard) {
+        formulatorCard.scrollIntoView({ behavior: 'smooth' });
+      }
+      roughEl.focus();
+      showToast('Catatan dipindahkan ke Formulator Logbook!');
+    }
+  }
+
+  // --- Real-Time Office Rhythm & Presensi Pulang Banner ---
+  const CHECKOUT_STATUS_KEY = 'mghb_checkout_date_v1';
+  let bannerCollapsed = false;
+
+  function updateOfficeRhythm() {
+    const now = new Date();
+    // Use WIB (UTC+7)
+    const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+    const wibDate = new Date(utc + (3600000 * 7));
+    const hours = wibDate.getHours();
+    const minutes = wibDate.getMinutes();
+    const timeStr = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')} WIB`;
+    const todayStr = wibDate.toISOString().slice(0, 10);
+
+    const timeBadge = document.getElementById('office-time-badge');
+    const titleEl = document.getElementById('office-status-title');
+    const descEl = document.getElementById('office-status-desc');
+    const bannerEl = document.getElementById('office-status-banner');
+    const actionBtn = document.getElementById('btn-banner-action');
+
+    if (timeBadge) timeBadge.textContent = timeStr;
+
+    const isCheckedOut = localStorage.getItem(CHECKOUT_STATUS_KEY) === todayStr;
+    const isLateAfternoon = (hours === 16 && minutes >= 30) || (hours === 17) || (hours === 18 && minutes <= 30);
+    const isWorkingHours = (hours > 7 || (hours === 7 && minutes >= 30)) && hours < 17;
+
+    if (isLateAfternoon) {
+      if (isCheckedOut) {
+        bannerEl.classList.remove('is-checkout-time');
+        titleEl.textContent = 'Dinas Selesai · Menara BNI';
+        descEl.textContent = 'Presensi pulang MagangHub & DigiHC telah tercatat. Selamat beristirahat!';
+        actionBtn.textContent = 'Lihat Logbook';
+        actionBtn.onclick = () => selectTab('logbook');
+      } else {
+        bannerEl.classList.add('is-checkout-time');
+        titleEl.textContent = 'Pengingat Presensi Pulang';
+        descEl.textContent = 'Waktunya check-out MagangHub & DigiHC serta submit logbook harian!';
+        actionBtn.textContent = 'Tandai Checkout';
+        actionBtn.onclick = handleBannerCheckout;
+      }
+    } else if (isWorkingHours) {
+      bannerEl.classList.remove('is-checkout-time');
+      titleEl.textContent = 'Menara BNI Pejompongan';
+      descEl.textContent = 'Jam operasional aktif (07.30 - 17.00 WIB) · Standby briefing & olah data SSE';
+      actionBtn.textContent = 'Isi Logbook';
+      actionBtn.onclick = () => selectTab('logbook');
+    } else {
+      bannerEl.classList.remove('is-checkout-time');
+      titleEl.textContent = 'Menara BNI Pejompongan';
+      descEl.textContent = 'Di luar jam kantor operasional BNI. Istirahat & persiapan dinas esok hari.';
+      actionBtn.textContent = 'Buka Logbook';
+      actionBtn.onclick = () => selectTab('logbook');
+    }
+  }
+
+  function handleBannerCheckout() {
+    const now = new Date();
+    const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+    const wibDate = new Date(utc + (3600000 * 7));
+    const todayStr = wibDate.toISOString().slice(0, 10);
+
+    localStorage.setItem(CHECKOUT_STATUS_KEY, todayStr);
+
+    // Also check the Presensi Pulang item in SOP Kerja if present
+    const mg8 = document.getElementById('mg8');
+    if (mg8) {
+      mg8.checked = true;
+      setItemState('mg8', true);
+    }
+
+    updateOfficeRhythm();
+    showToast('Presensi pulang tercatat! Jangan lupa submit logbook harian.');
+  }
+
+  function handleBannerAction() {
+    updateOfficeRhythm();
+  }
+
+  function toggleBannerCollapse() {
+    bannerCollapsed = !bannerCollapsed;
+    const descEl = document.getElementById('office-status-desc');
+    const toggleIcon = document.getElementById('banner-toggle-icon');
+    if (descEl) descEl.style.display = bannerCollapsed ? 'none' : 'block';
+    if (toggleIcon) {
+      toggleIcon.innerHTML = bannerCollapsed 
+        ? '<polyline points="6 9 12 15 18 9"></polyline>'
+        : '<polyline points="18 15 12 9 6 15"></polyline>';
+    }
+  }
+
+  // --- Asisten Subtabs (Chat vs Glossary vs Guide) ---
   function switchAsistenSubtab(sub) {
     document.getElementById('asisten-tab-btn-chat').classList.toggle('active', sub === 'chat');
     document.getElementById('asisten-tab-btn-glossary').classList.toggle('active', sub === 'glossary');
+    document.getElementById('asisten-tab-btn-guide').classList.toggle('active', sub === 'guide');
+
     document.getElementById('asisten-pane-chat').style.display = sub === 'chat' ? 'block' : 'none';
     document.getElementById('asisten-pane-glossary').style.display = sub === 'glossary' ? 'block' : 'none';
+    document.getElementById('asisten-pane-guide').style.display = sub === 'guide' ? 'block' : 'none';
   }
 
   function copyTemplateText(id) {
@@ -2656,6 +3284,121 @@ Apabila Bapak berkenan, mohon kesediaan Bapak untuk melakukan review dan approva
     });
   }
 
+  // --- Executive Monthly Summary Generator ---
+  function generateMonthlySummaryReport() {
+    const records = JSON.parse(localStorage.getItem(LOGBOOK_STORAGE_KEY) || '[]');
+    const daysLogged = records.length;
+    const todayStr = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+
+    let logbookEntriesText = '';
+    if (records.length > 0) {
+      logbookEntriesText = records.map((r, i) => `[Hari ke-${records.length - i} | ${r.date}]\n- Aktivitas: ${r.activity}\n- Capaian: ${r.achievement}\n- Kendala & Solusi: ${r.obstacle}`).join('\n\n');
+    } else {
+      logbookEntriesText = `[Simulasi Entri Harian Divisi SSE]\n- Aktivitas: Melaksanakan pengolahan, rekapitulasi, dan validasi data realisasi kinerja penjualan cabang pada Divisi Sales Strategy & Execution (SSE).\n- Capaian: Tersusunnya lembar kerja monitoring pencapaian target penjualan cabang.\n- Kendala & Solusi: Format file beberapa cabang anomali; diatasi melalui standardisasi data spreadsheet.`;
+    }
+
+    const report = `# LAPORAN EKSEKUTIF BULANAN PEMAGANGAN KEMNAKER RI
+PT BANK NEGARA INDONESIA (PERSERO) TBK
+DIVISI SALES STRATEGY & EXECUTION (SSE)
+Periode: Bulan I Pemagangan (September – Oktober 2026)
+Lokasi: Gedung Menara BNI Pejompongan, Jl. Pejompongan Raya No. 7, Jakarta Pusat
+
+---
+
+## 1. IDENTITAS PESERTA & PENEMPATAN
+- Nama Lengkap       : Zaki Tri Pamungkas
+- Program Pemagangan : MagangHub Kemnaker RI (Kontrak No: PKM-0026-PKM-II-2026)
+- Latar Belakang     : S1 Informatika – Universitas Muhammadiyah Surakarta (IPK 3.48)
+- Posisi / Jabatan   : Corporate General Management Staff 3
+- Unit Kerja / Divisi: Sales Strategy & Execution (SSE)
+- Mentor Pembimbing  : Bapak Guruh Sri Handoyo (NPP: P051069)
+- Total Hari Kerja   : ${daysLogged > 0 ? daysLogged : '1'} hari kerja terekam aktif
+
+---
+
+## 2. EXECUTIVE SUMMARY
+Sepanjang periode bulan pertama penugasan di Divisi Sales Strategy & Execution (SSE) Menara BNI Pejompongan, peserta aktif berkontribusi dalam memperkuat fondasi analitik data penjualan, validasi data realisasi kinerja cabang, serta pemeliharaan dashboard operasional sales perbankan. Integrasi keilmuan teknologi informasi (S1 Informatika) diterapkan secara langsung untuk memangkas inefisiensi pengolahan data manual dan memastikan rekonsiliasi data DPK, CASA, serta achievement rate berjalan akurat.
+
+---
+
+## 3. RINGKASAN CAPAIAN UTAMA (KEY ACCOMPLISHMENTS)
+1. Data Cleansing & Rekonsiliasi Multi-Cabang:
+   - Menyelaraskan dan merekonsiliasi data laporan penjualan berkala dari unit operasional cabang BNI se-Indonesia.
+   - Mengurangi anomali format dan selisih data, menjamin validitas angka sebelum dilaporkan ke pimpinan divisi SSE.
+2. Dashboard Analitik & Monitoring Target Penjualan:
+   - Membantu penyusunan visualisasi matriks persentase pencapaian (achievement rate) vs target RKAP.
+   - Mengembangkan representasi visual performa produk tabungan, giro, dan produk perbankan lainnya.
+3. Kepatuhan Kerasionalan Perbankan (Banking Secrecy & SOP BNI HCS):
+   - Menjalankan 100% kepatuhan NDA terhadap kerahasiaan data nasabah dan operasional BNI.
+   - Kedisiplinan grooming (HCS Professional Style) dan presensi harian pada portal MagangHub & DigiHC.
+
+---
+
+## 4. DAFTAR LOGBOOK TEREKAM
+${logbookEntriesText}
+
+---
+
+## 5. KENDALA DAN STRATEGI PENYELESAIAN
+- Kendala Operasional : Inkonsistensi format file masukan dari unit cabang yang berbeda-beda.
+- Solusi Diterapkan  : Penerapan template standardisasi lembar kerja data cleansing, formula otomasi validasi, serta konfirmasi proaktif bersama mentor Bapak Guruh Sri Handoyo.
+
+---
+
+## 6. RENCANA KERJA PERIODE BERIKUTNYA
+1. Mengembangkan skrip otomasi pengolahan data sales pipeline berbasis Python/makro spreadsheet.
+2. Menganalisis conversion rate dan pola penyerapan produk pembiayaan/penjualan di area prioritas.
+3. Mendukung penyusunan slide executive review untuk rapat evaluasi kuartalan divisi SSE.
+
+Dibuat pada: ${todayStr}
+Mengetahui:
+Mentor Pembimbing SSE: Bapak Guruh Sri Handoyo (NPP: P051069)
+Peserta Pemagangan   : Zaki Tri Pamungkas`;
+
+    return report;
+  }
+
+  function openMonthlyReportModal() {
+    const reportText = generateMonthlySummaryReport();
+    const records = JSON.parse(localStorage.getItem(LOGBOOK_STORAGE_KEY) || '[]');
+
+    document.getElementById('rep-stat-days').textContent = records.length;
+    document.getElementById('monthly-report-preview').textContent = reportText;
+    document.getElementById('monthly-report-modal').classList.add('active');
+  }
+
+  function closeMonthlyReportModal() {
+    document.getElementById('monthly-report-modal').classList.remove('active');
+  }
+
+  function handleMonthlyModalBackdrop(e) {
+    if (e.target === document.getElementById('monthly-report-modal')) {
+      closeMonthlyReportModal();
+    }
+  }
+
+  function copyMonthlyReportText() {
+    const text = document.getElementById('monthly-report-preview').textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      showToast('Laporan bulanan disalin! Siap dipaste ke Microsoft Word');
+    }).catch(() => {
+      showToast('Gagal menyalin laporan');
+    });
+  }
+
+  function downloadMonthlyReportMarkdown() {
+    const text = document.getElementById('monthly-report-preview').textContent;
+    const dateStr = new Date().toISOString().slice(0, 10);
+    const dataStr = "data:text/markdown;charset=utf-8," + encodeURIComponent(text);
+    const dlAnchor = document.createElement('a');
+    dlAnchor.setAttribute("href", dataStr);
+    dlAnchor.setAttribute("download", `Laporan-Bulanan-SSE-BNI-Zaki-Tri-Pamungkas-${dateStr}.md`);
+    document.body.appendChild(dlAnchor);
+    dlAnchor.click();
+    dlAnchor.remove();
+    showToast('Berkas Laporan Bulanan (.md) berhasil diunduh');
+  }
+
   // --- Toast ---
   let toastTimer = null;
   function showToast(msg) {
@@ -2673,6 +3416,7 @@ Apabila Bapak berkenan, mohon kesediaan Bapak untuk melakukan review dan approva
   window.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
       closeSyncModal();
+      closeMonthlyReportModal();
       if (document.activeElement === document.getElementById('search-input')) {
         document.getElementById('search-input').value = '';
         handleSearch('');
@@ -2709,6 +3453,10 @@ Apabila Bapak berkenan, mohon kesediaan Bapak untuk melakukan review dan approva
   function initApp() {
     initTheme();
     checkIncomingSync();
+    initScratchpad();
+    updateOfficeRhythm();
+    setInterval(updateOfficeRhythm, 15000);
+
     const state = getStoredState();
 
     // Default today date for logbook
