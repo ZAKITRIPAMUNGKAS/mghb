@@ -4576,6 +4576,74 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
 
     container.innerHTML = html;
     filterNewsTopic(activeNewsTopic);
+
+    // Asynchronously resolve real og:image from source article via /api/extract-og
+    enrichNewsWithLiveOgImages(items);
+  }
+
+  // --- Dynamic OpenGraph / Tag Image Scraper & Enricher ---
+  const OG_CACHE_PREFIX = 'mghb_og_v1_';
+
+  async function enrichNewsWithLiveOgImages(items) {
+    if (!items || !Array.isArray(items)) return;
+
+    const candidateItems = items.filter(item => 
+      item.link && 
+      item.link.startsWith('http') && 
+      !item.link.includes('news.google.com')
+    );
+
+    for (const item of candidateItems) {
+      const hashKey = OG_CACHE_PREFIX + btoa(encodeURIComponent(item.link)).substring(0, 32);
+      const cachedImg = localStorage.getItem(hashKey);
+
+      if (cachedImg) {
+        if (cachedImg !== item.image) {
+          item.image = cachedImg;
+          updateNewsCardImageInDom(item.link, cachedImg);
+        }
+        continue;
+      }
+
+      // Fetch from Vercel Serverless Function /api/extract-og
+      try {
+        const apiUrl = `/api/extract-og?url=${encodeURIComponent(item.link)}`;
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), 4500);
+
+        const res = await fetch(apiUrl, { signal: controller.signal });
+        clearTimeout(timer);
+
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.image) {
+            item.image = data.image;
+            localStorage.setItem(hashKey, data.image);
+            updateNewsCardImageInDom(item.link, data.image);
+          }
+        }
+      } catch {
+        // Fallback silently if offline or serverless unavailable
+      }
+    }
+  }
+
+  function updateNewsCardImageInDom(link, imageUrl) {
+    const cards = document.querySelectorAll('#news-feed-list .news-card');
+    cards.forEach(card => {
+      const a = card.querySelector('.news-title a');
+      if (a && a.getAttribute('href') === link) {
+        let img = card.querySelector('.news-thumb-img');
+        if (img) {
+          img.src = imageUrl;
+        } else {
+          const wrap = document.createElement('div');
+          wrap.className = 'news-thumb-wrap';
+          wrap.innerHTML = `<img src="${imageUrl}" alt="${a.textContent}" class="news-thumb-img" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null; this.parentElement.style.display='none';">`;
+          card.insertBefore(wrap, card.firstChild);
+        }
+      }
+    });
   }
 
   function filterNewsTopic(topic) {
