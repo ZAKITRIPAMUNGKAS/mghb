@@ -4292,81 +4292,81 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   }
 
   // --- MagangHub Live News Feed Engine ---
-  const NEWS_CACHE_KEY = 'mghb_news_cache_v3';
+  const NEWS_CACHE_KEY = 'mghb_news_cache_v4';
   let newsLoadedOnce = false;
   let activeNewsTopic = 'all';
 
   const CURATED_MAGANG_NEWS = [
     {
-      title: 'Cek Pengumuman Magang Kemnaker 2026 Batch 2 serta Tahapan Administrasinya',
+      title: 'Pengumuman Magang Kemnaker 2026 Batch 2: Cek Hasil Kelulusan di MagangHub',
       source: 'Detikcom',
       sourceClass: 'source-detik',
-      pubDate: '16 Sep 2026',
-      link: 'https://www.detik.com/edu/detikpedia/d-7541290/cek-pengumuman-magang-kemnaker-2026-batch-2-serta-tahapan-berikutnya',
-      snippet: 'Kementerian Ketenagakerjaan resmi mengumumkan hasil seleksi administrasi Program Pemagangan Nasional Batch 2 tahun 2026. Peserta lolos diwajibkan melakukan konfirmasi penerimaan dan penempatan di unit kerja mitra.',
+      pubDate: '18 Sep 2026',
+      link: 'https://www.detik.com/sumbagsel/berita/d-8662651/pengumuman-magang-kemnaker-besok-cek-hasil-kelulusan-di-maganghub',
+      snippet: 'Hasil seleksi program pemagangan nasional MagangHub Batch 2 Kemnaker diumumkan. Peserta lolos dapat memeriksa status penerimaan di dashboard akun SIAPkerja masing-masing.',
       topic: 'pengumuman',
-      image: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=640&q=80'
+      image: 'https://akcdn.detik.net.id/api/wm/2026/09/02/magang-kemnaker-2026-batch-2-1788346807178_169.png?wid=54&w=1200&v=1&t=jpeg'
     },
     {
-      title: 'Siap-siap! Hasil Evaluasi MagangHub Batch 2 Diumumkan di Akun SIAPkerja',
+      title: 'Siap-siap, Hasil Seleksi MagangHub Batch 2 Angkatan II Diumumkan Jumat Ini',
       source: 'Kompas.com',
       sourceClass: 'source-kompas',
       pubDate: '17 Sep 2026',
-      link: 'https://money.kompas.com/read/2026/09/17/hasil-seleksi-maganghub-kemnaker-batch-2',
-      snippet: 'Proses seleksi penempatan pemagangan fresh graduate Kemnaker mulai diumumkan bertahap. Program ini membekali lulusan perguruan tinggi dengan pengalaman kerja industri dan sertifikasi kompetensi.',
+      link: 'https://money.kompas.com/read/2026/09/17/084300426/siap-siap-hasil-seleksi-maganghub-batch-2-angkatan-ii-diumumkan-jumat-esok',
+      snippet: 'Kementerian Ketenagakerjaan merilis jadwal resmi pengumuman hasil seleksi MagangHub Batch 2. Peserta diminta memantau akun resmi SIAPkerja untuk proses onboarding berikutnya.',
       topic: 'pengumuman',
-      image: 'https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=640&q=80'
+      image: 'https://asset.kompas.com/crops/xtQK1VlOuT2wgLdJgVqnuXUqcHM=/0x0:2880x1440/1200x675/filters:watermark(data/photo/2026/01/30/697c815e7ef28.png,0,-0,1)/data/photo/2026/06/29/6a422eea317b1.png'
     },
     {
-      title: 'Kemnaker Sinkronkan Program Pemagangan Nasional dengan Standar Sertifikasi BNSP',
-      source: 'ANTARA News',
-      sourceClass: 'source-antara',
-      pubDate: '15 Sep 2026',
-      link: 'https://www.antaranews.com/berita/4329011/kemnaker-perkuat-sertifikasi-bnsp-peserta-magang-nasional',
-      snippet: 'Seluruh peserta pemagangan nasional berpeluang mendapatkan pengakuan kompetensi resmi dari Badan Nasional Sertifikasi Profesi (BNSP) setelah menyelesaikan masa pemagangan dan evaluasi mentor.',
-      topic: 'sertifikasi',
-      image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=640&q=80'
-    },
-    {
-      title: 'Uang Saku & Hak Perlindungan Peserta Magang: Ketentuan Resmi Kemnaker',
+      title: 'MagangHub Batch 2 Angkatan II Diumumkan Hari Ini, Simak Link dan Tahapannya',
       source: 'CNBC Indonesia',
       sourceClass: 'source-antara',
       pubDate: '18 Sep 2026',
-      link: 'https://www.cnbcindonesia.com/news/20260918-aturan-uang-saku-dan-hak-peserta-maganghub',
-      snippet: 'Peserta pemagangan MagangHub berhak memperoleh uang saku bulanan, kepesertaan jaminan kecelakaan kerja & kematian BPJS Ketenagakerjaan, serta bimbingan intensif dari mentor industri.',
-      topic: 'regulasi',
-      image: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=640&q=80'
+      link: 'https://www.cnbcindonesia.com/news/20260916105008-4-768295/maganghub-batch-2-angkatan-ii-diumumkan-18-september-2026-ini-linknya',
+      snippet: 'Para calon peserta magang nasional bersiap mengecek akun MagangHub Kemnaker. Program ini menjadi jembatan strategis mempersiapkan lulusan perguruan tinggi memasuki dunia industri perbankan dan korporasi.',
+      topic: 'pengumuman',
+      image: 'https://akcdn.detik.net.id/visual/2025/10/13/warga-membuka-aplikasi-magang-hub-di-jakarta-senin-13102025-1760345197423_169.jpeg?w=650&q=90'
     },
     {
-      title: 'Kemitraan Strategis BNI & Kemnaker: Menyiapkan Talenta Digital dan Perbankan Unggul',
-      source: 'Kemnaker RI',
-      sourceClass: 'source-kemnaker',
-      pubDate: '12 Sep 2026',
-      link: 'https://kemnaker.go.id/news',
-      snippet: 'PT Bank Negara Indonesia (Persero) Tbk berkolaborasi dengan Kementerian Ketenagakerjaan memfasilitasi lulusan sarjana dalam pemagangan di divisi strategis korporat termasuk analitik dan sales strategy.',
+      title: 'Menaker Pantau Implementasi Program Pemagangan Nasional di Kantor BNI',
+      source: 'ANTARA News',
+      sourceClass: 'source-antara',
+      pubDate: '16 Sep 2026',
+      link: 'https://jatim.antaranews.com/berita/1008413/menaker-pantau-program-magang-2025-di-kantor-bni',
+      snippet: 'Menteri Ketenagakerjaan meninjau langsung pelaksanaan program magang talenta muda di kantor BNI, mengapresiasi keterlibatan perbankan nasional dalam membina kompetensi kerja nyata.',
       topic: 'kemnaker',
-      image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=640&q=80'
+      image: 'https://cdn.antaranews.com/cache/1200x800/2025/11/28/1000096979.jpg'
     },
     {
-      title: 'Tata Tertib Presensi GPS & Pengisian Logbook Harian MagangHub Kemnaker',
-      source: 'Detikcom',
-      sourceClass: 'source-detik',
-      pubDate: '10 Sep 2026',
-      link: 'https://www.detik.com/edu/tata-tertib-presensi-gps-dan-logbook-maganghub-kemnaker',
-      snippet: 'Disiplin presensi harian berbasis geolokasi GPS serta pengisian logbook capaian kerja di portal MagangHub menjadi dasar utama penilaian dan validasi rekomendasi uang saku peserta magang.',
+      title: 'Kemnaker Perkuat Ekosistem MagangHub yang Transparan, Akuntabel, dan Terarah',
+      source: 'ANTARA News',
+      sourceClass: 'source-antara',
+      pubDate: '15 Sep 2026',
+      link: 'https://jambi.antaranews.com/berita/660857/kemnaker-perkuat-ekosistem-maganghub-yang-transparan-dan-efektif',
+      snippet: 'Menteri Ketenagakerjaan menekankan pentingnya tata kelola pemagangan yang akuntabel, monitoring kehadiran, pengisian logbook berkala, serta sertifikasi kompetensi industri pasca-program.',
+      topic: 'sertifikasi',
+      image: 'https://cdn.antaranews.com/cache/1200x800/2026/07/07/3292d4bd-5309-424c-b025-7feaafedb9a1.jpeg'
+    },
+    {
+      title: 'Regulasi Hak & Uang Saku Pemagangan MagangHub Kemnaker: Simak Ketentuannya',
+      source: 'ANTARA News',
+      sourceClass: 'source-kemnaker',
+      pubDate: '14 Sep 2026',
+      link: 'https://jogja.antaranews.com/berita/843492/pendaftaran-maganghub-2026-tahap-1-masih-dibuka-hingga-28-juli',
+      snippet: 'Kementerian Ketenagakerjaan RI menegaskan jaminan perlindungan BPJS Ketenagakerjaan serta pencairan uang saku peserta magang berbasis validasi presensi dan logbook bulanan.',
       topic: 'regulasi',
-      image: 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&w=640&q=80'
+      image: 'https://cdn.antaranews.com/cache/1200x800/2026/04/09/394407e6-484c-4d13-a2e6-6e87093b701b.jpeg'
     }
   ];
 
   function getTopicFallbackImage(topic) {
     const map = {
-      pengumuman: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=640&q=80',
-      regulasi: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=640&q=80',
-      sertifikasi: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=640&q=80',
-      kemnaker: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=640&q=80'
+      pengumuman: 'https://akcdn.detik.net.id/api/wm/2026/09/02/magang-kemnaker-2026-batch-2-1788346807178_169.png?wid=54&w=1200&v=1&t=jpeg',
+      regulasi: 'https://cdn.antaranews.com/cache/1200x800/2026/04/09/394407e6-484c-4d13-a2e6-6e87093b701b.jpeg',
+      sertifikasi: 'https://cdn.antaranews.com/cache/1200x800/2026/07/07/3292d4bd-5309-424c-b025-7feaafedb9a1.jpeg',
+      kemnaker: 'https://cdn.antaranews.com/cache/1200x800/2025/11/28/1000096979.jpg'
     };
-    return map[topic] || 'https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=640&q=80';
+    return map[topic] || 'https://akcdn.detik.net.id/visual/2025/10/13/warga-membuka-aplikasi-magang-hub-di-jakarta-senin-13102025-1760345197423_169.jpeg?w=650&q=90';
   }
 
   function formatNewsDate(dateString) {
@@ -4551,7 +4551,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
         <article class="news-card" data-topic="${item.topic || 'all'}">
           ${item.image ? `
           <div class="news-thumb-wrap">
-            <img src="${item.image}" alt="${item.title}" class="news-thumb-img" loading="lazy" onerror="this.onerror=null; this.parentElement.style.display='none';">
+            <img src="${item.image}" alt="${item.title}" class="news-thumb-img" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null; this.parentElement.style.display='none';">
           </div>` : ''}
           <div class="news-meta-row">
             <span class="news-source-tag ${item.sourceClass || 'source-antara'}">
