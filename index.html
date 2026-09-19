@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MGHB — Checklist Bawaan & Magang BNI</title>
+  <meta name="description" content="Sistem checklist interaktif untuk perlengkapan Jakarta/Wisuda UMS dan SOP Harian MagangHub BNI.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📋</text></svg>">
+  <style>
+    :root {
+      --primary: #f26522;
+      --primary-dark: #d9531e;
+      --bni-teal: #005e6a;
+      --bni-teal-light: #e0f2f1;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --border-subtle: #f1f5f9;
+      --success: #10b981;
+      --radius: 12px;
+      --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.08), 0 1px 2px -1px rgb(0 0 0 / 0.06);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.09), 0 2px 4px -2px rgb(0 0 0 / 0.07);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding-bottom: 60px;
+    }
+
+    .container {
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 0 16px;
+    }
+
+    /* Header */
+    header {
+      position: sticky;
+      top: 0;
+      background: rgba(248, 250, 252, 0.92);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding: 18px 0 12px;
+      z-index: 50;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .logo-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bni-teal-light);
+      color: var(--bni-teal);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .app-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+
+    .app-sub {
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      margin-top: 2px;
+    }
+
+    /* Tabs */
+    .tab-nav {
+      display: flex;
+      background: #e2e8f0;
+      border-radius: 10px;
+      padding: 3px;
+      margin: 12px 0;
+      gap: 4px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 8px 12px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .tab-btn.active {
+      background: #ffffff;
+      color: var(--primary);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Progress & Controls */
+    .progress-wrap {
+      margin-top: 10px;
+    }
+
+    .bar {
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--primary), #fb923c);
+      border-radius: 999px;
+      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 8px;
+      font-size: 0.82rem;
+    }
+
+    .counter-text {
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .reset-btn {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .reset-btn:hover {
+      background: #f1f5f9;
+      color: #ef4444;
+      border-color: #fca5a5;
+    }
+
+    /* Content Cards */
+    .tab-pane {
+      display: none;
+    }
+
+    .tab-pane.active {
+      display: block;
+      animation: fadeIn 0.25s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .section-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      margin-top: 14px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+    }
+
+    .section-title {
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--primary);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .checklist-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 9px 0;
+      cursor: pointer;
+      border-bottom: 1px solid var(--border-subtle);
+      user-select: none;
+    }
+
+    .checklist-item:last-child {
+      border-bottom: none;
+    }
+
+    .checklist-item input[type="checkbox"] {
+      width: 19px;
+      height: 19px;
+      margin-top: 2px;
+      accent-color: var(--primary);
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+
+    .item-info {
+      flex: 1;
+    }
+
+    .item-label {
+      font-size: 0.92rem;
+      font-weight: 500;
+      color: var(--text);
+      line-height: 1.35;
+      transition: color 0.15s ease;
+    }
+
+    .item-sub {
+      display: block;
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .checklist-item input[type="checkbox"]:checked ~ .item-info .item-label {
+      text-decoration: line-through;
+      color: #94a3b8;
+    }
+
+    .checklist-item input[type="checkbox"]:checked ~ .item-info .item-sub {
+      color: #cbd5e1;
+    }
+
+    /* Completed Banner */
+    .congrats-card {
+      display: none;
+      background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+      border: 1px solid #a7f3d0;
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-top: 16px;
+      text-align: center;
+    }
+
+    .congrats-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #065f46;
+    }
+
+    .congrats-desc {
+      font-size: 0.8rem;
+      color: #047857;
+      margin-top: 4px;
+    }
+
+    /* Footer Info */
+    footer {
+      text-align: center;
+      margin-top: 32px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    footer a {
+      color: var(--bni-teal);
+      text-decoration: none;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <div class="header-top">
+      <div>
+        <h1 class="app-title">MGHB Checklist</h1>
+        <p class="app-sub" id="active-subtitle">Persiapan Jakarta &amp; Wisuda UMS · 24–27 Sep 2026</p>
+      </div>
+      <div class="logo-badge">BNI · SSE</div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="tab-nav">
+      <button class="tab-btn active" data-tab="packing" onclick="switchTab('packing')">
+        🎒 Packing Jakarta
+      </button>
+      <button class="tab-btn" data-tab="magang" onclick="switchTab('magang')">
+        🏢 SOP &amp; Magang
+      </button>
+    </div>
+
+    <!-- Progress Indicator -->
+    <div class="progress-wrap">
+      <div class="bar">
+        <div class="bar-fill" id="progress-fill"></div>
+      </div>
+      <div class="meta">
+        <span class="counter-text" id="progress-text">0/0 Siap</span>
+        <button class="reset-btn" id="btn-reset" onclick="resetCurrentTab()">Reset Centang</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- TAB 1: PACKING CHECKLIST -->
+  <main id="pane-packing" class="tab-pane active">
+    <!-- Pakaian Kerja -->
+    <section class="section-card">
+      <h2 class="section-title">👔 Pakaian Kerja &amp; Formal</h2>
+      <label class="checklist-item">
+        <input type="checkbox" id="pk1" data-tab="packing">
+        <div class="item-info">
+          <span class="item-label">Kemeja formal x2</span>
+          <span class="item-sub">Senin–Selasa: business formal BNI</span>
+        </div>
+      </label>
+      <label class="checklist-item">
+        <input type="checkbox" id="pk2" data-tab="packing">
+        <div class="item-info">
+          <span class="item-label">Batik lengan panjang x2</span>
+          <span class="item-sub">Rabu–Kamis: lengan tidak dilipat</span>
+        </div>
+      </label>
+      <label class="checklist-item">
+        <input type="checkbox" id="pk3" data-tab="packing">
+        <div class="item-info">
+          <span class="item-label">Kemeja berkerah + blazer/outer</span>
+          <span class="item-sub">Jumat: business casual BNI, sneakers diperbolehkan</span>
+        </div>
+      </label>
+      <label class="checklist-item">
+        <input type="checkbox" id="pk4" data-tab="packing">
+        <div class="item-info">
+          <span class="item-label">Kemeja formal untuk wisuda</span>
+          <span class="item-sub">Jumat 25 Sep: dipakai di bawah toga</span>
+        </div>
+      </label>
+      <label class="checklist-item">
+        <input type="checkbox" id="pk5" data-tab="packing">
+        <div class="item-info">
+          <span class="item-label">Kaos dalam putih x4</span>
+          <span class="item-sub">Standar kerapian dalaman kemeja</span>
+        </div>
+      </label>
+      <label class="checklist-item">
+        <input type="checkbox" id="pk6" data-tab="packing">
+        <div class="item-info">
+          <span class="item-label">Celana bahan / chino gelap x2</span>
+          <span class="item-sub">Wajib bahan kain / non-jeans</span>
+        </div>
+      </label>
+      <label class="checklist-item">
+        <input type="checkbox" id="pk7" data-tab="packing">
+        <div class="item-info">
+          <span class="item-label">Sepatu pantofel + kaos kaki serasi</span>
+          <span class="item-sub">Sepatu hitam/gelap untuk hari formal</span>
+        </div>
+      </label>
+      <label class="checklist-item">
+        <input type="checkbox" id="pk8" data-tab="packing">
+        <div class="item-info">
+          <span class="item-label">Ikat pinggang kulit formal</span>
+          <span class="item-sub">Warna senada dengan sepatu</span>
+        </div>
+      </label>
+      <label class="checklist-item">
+        <input type="checkbox" id="pk9" data-tab="packing">
+        <div class="item-info">
+          <span class="item-label">Sneakers casual</span>
+          <span class="item-sub">Cadangan Jumat santai &amp; perjalanan</span>
+        </div>
+      </label>
+      <label class="checklist-item">
+        <input type="checkbox" id="pk10" data-tab="packing">
+        <div class="item-info">
+          <span class="item-label">Pakaian santai &amp; dalam secukupnya</span>
+          <span class="item-sub">Untuk istirahat / ganti di penginapan</span>
+        </div>
+      </label>
+    </section>
+
+    <!-- Dokumen -->
+    <section class="section-card">
+      <h2 class="section-title">📄 Dokumen &amp; Tiket</h2>
+      <label class="checklist-item">
+        <input type="checkbox" id="doc1" data-tab="packing">
+        <div class="item-info">
+          <span class="item-label">KTP asli + fotokopi</span>
+          <span class="item-sub">Kartu identitas resmi</span>
+        </div>
+      </label>
+      <label class="checklist-item">
+        <input type="checkbox" id="doc2" data-tab="packing">
+        <div class="item-info">
+          <span class="item-label">Tiket kereta Kamis malam</span>
+          <span class="item-sub">Gambir / Pasar Senen → Solo</span>
+        </div>
+      </label>
+      <label class="checklist-item">
+        <input type="checkbox" id="doc3" data-tab="packing">
+        <div class="item-info">
+          <span class="item-label">Tiket balik Minggu</span>
+          <span class="item-sub">Solo → Jakarta</span>
+        </div>
+      </label>
+      <label class="checklist-item">
+        <input type="checkbox" id="doc4" data-tab="packing">
+        <div class="item-info">
+          <span class="item-label">Undangan wisuda UMS</span>
+          <span class="item-sub">Bukti pengajuan izin ke mentor Pak Guruh</span>
+        </div>
+      </label>
+      <label class="checklist-item">
+        <input type="checkbox" id="doc5" data-tab="packing">
+        <div class="item-info">
+          <span class="item-label">Fotokopi Perjanjian Pemagangan (PKM)</span>
+          <span class="item-sub">Dokumen resmi PKM-0026-PKM-II-2026</span>
+        </div>
+      </label>
+      <label class="checklist-item">
+        <input type="checkbox" id="doc6" data-tab="packing">
+        <div class="item-info">
+          <span class="item-label">Kartu BPJS / Asuransi + Pas Foto</span>
+          <span class="item-sub">Jaminan kesehatan &amp; arsip darurat</span>
+        </div>
+      </label>
+    </section>
+
+    <!-- Elektronik -->
+    <section class="section-card">
+      <h2 class="section-title">💻 Perangkat Elektronik</h2>
+      <label class="checklist-item">
+        <input type="checkbox" id="el1" data-tab="packing">
+        <div class="item-info">
+          <span class="item-label">Laptop kerja + charger</span>
+          <span class="item-sub">Siap pakai untuk tugas divisi SSE</span>
+        </div>
+      </label>
+      <label class="checklist-item">
+        <input type="checkbox" id="el2" data-tab="packing">
+        <div class="item-info">
+          <span class="item-label">Charger HP + kabel data</span>
+          <span class="item-sub">Daya utama smartphone</span>
+        </div>
+      </label>
+      <label class="checklist-item">
+        <input type="checkbox" id="el3" data-tab="packing">
+        <div class="item-info">
+          <span class="item-label">Power bank terisi penuh</span>
+          <span class="item-sub">Wajib untuk perjalanan kereta api</span>
+        </div>
+      </label>
+      <label class="checklist-item">
+        <input type="checkbox" id="el4" data-tab="packing">
+        <div class="item-info">
+          <span class="item-label">Earphone / headset</span>
+          <span class="item-sub">Meeting online &amp; hiburan perjalanan</span>
+        </div>
+      </label>
+    </section>
+
+    <!-- Toiletries -->
+    <section class="section-card">
+      <h2 class="section-title">🧴 Toiletries &amp; Kebersihan</h2>
+      <label class="checklist-item">
+        <input type="checkbox" id="tl1" data-tab="packing">
+        <div class="item-info">
+          <span class="item-label">Sikat + pasta gigi</span>
+        </div>
+      </label>
+      <label class="checklist-item">
+        <input type="checkbox" id="tl2" data-tab="packing">
+        <div class="item-info">
+          <span class="item-label">Sabun &amp; sampo travel size</span>
+        </div>
+      </label>
+      <label class="checklist-item">
+        <input type="checkbox" id="tl3" data-tab="packing">
+        <div class="item-info">
+          <span class="item-label">Deodoran &amp; parfum</span>
+          <span class="item-sub">Standar wangi dan segar di ruang kantor</span>
+        </div>
+      </label>
+      <label class="checklist-item">
+        <input type="checkbox" id="tl4" data-tab="packing">
+        <div class="item-info">
+          <span class="item-label">Alat cukur / razor</span>
+          <span class="item-sub">Menjaga kerapian kumis &amp; jenggot</span>
+        </div>
+      </label>
+      <label class="checklist-item">
+        <input type="checkbox" id="tl5" data-tab="packing">
+        <div class="item-info">
+          <span class="item-label">Handuk kecil travel</span>
+        </div>
+      </label>
+      <label class="checklist-item">
+        <input type="checkbox" id="tl6" data-tab="packing">
+        <div class="item-info">
+          <span class="item-label">Sisir &amp; minyak rambut</span>
+        </div>
+      </label>
+    </section>
+
+    <!-- Obat & Pribadi -->
+    <section class="section-card">
+      <h2 class="section-title">💊 Kesehatan &amp; Obat Pribadi</h2>
+      <label class="checklist-item">
+        <input type="checkbox" id="ob1" data-tab="packing">
+        <div class="item-info">
+          <span class="item-label">Obat resep pribadi</span>
+        </div>
+      </label>
+      <label class="checklist-item">
+        <input type="checkbox" id="ob2" data-tab="packing">
+        <div class="item-info">
+          <span class="item-label">Obat bebas: Tolak Angin, Paracetamol, Plester</span>
+        </div>
+      </label>
+      <label class="checklist-item">
+        <input type="checkbox" id="ob3" data-tab="packing">
+        <div class="item-info">
+          <span class="item-label">Masker medis cadangan</span>
+        </div>
+      </label>
+      <label class="checklist-item">
+        <input type="checkbox" id="ob4" data-tab="packing">
+        <div class="item-info">
+          <span class="item-label">Hand sanitizer pocket</span>
+        </div>
+      </label>
+    </section>
+
+    <!-- Lain-lain -->
+    <section class="section-card">
+      <h2 class="section-title">🎒 Perlengkapan Tambahan</h2>
+      <label class="checklist-item">
+        <input type="checkbox" id="ot1" data-tab="packing">
+        <div class="item-info">
+          <span class="item-label">Sajadah travel</span>
+        </div>
+      </label>
+      <label class="checklist-item">
+        <input type="checkbox" id="ot2" data-tab="packing">
+        <div class="item-info">
+          <span class="item-label">Payung lipat kecil</span>
+          <span class="item-sub">Antisipasi hujan Jakarta</span>
+        </div>
+      </label>
+      <label class="checklist-item">
+        <input type="checkbox" id="ot3" data-tab="packing">
+        <div class="item-info">
+          <span class="item-label">Tumbler / botol minum</span>
+        </div>
+      </label>
+      <label class="checklist-item">
+        <input type="checkbox" id="ot4" data-tab="packing">
+        <div class="item-info">
+          <span class="item-label">Daypack / tas kecil kantor</span>
+        </div>
+      </label>
+      <label class="checklist-item">
+        <input type="checkbox" id="ot5" data-tab="packing">
+        <div class="item-info">
+          <span class="item-label">Kantong plastik baju kotor</span>
+        </div>
+      </label>
+      <label class="checklist-item">
+        <input type="checkbox" id="ot6" data-tab="packing">
+        <div class="item-info">
+          <span class="item-label">Dompet, e-Money/Flazz, &amp; uang tunai</span>
+        </div>
+      </label>
+    </section>
+
+    <!-- Done Message -->
+    <div id="congrats-packing" class="congrats-card">
+      <div class="congrats-title">🎉 Semua Perlengkapan Siap!</div>
+      <div class="congrats-desc">Semua barang bawaan lengkap. Selamat berangkat ke Jakarta dan sukses wisudanya!</div>
+    </div>
+  </main>
+
+  <!-- TAB 2: MAGANGHUB & BNI SOP CHECKLIST -->
+  <main id="pane-magang" class="tab-pane">
+    <!-- Rutinitas Harian -->
+    <section class="section-card">
+      <h2 class="section-title">⏰ Rutinitas Harian Magang</h2>
+      <label class="checklist-item">
+        <input type="checkbox" id="mg1" data-tab="magang">
+        <div class="item-info">
+          <span class="item-label">Presensi Pagi di MagangHub</span>
+          <span class="item-sub">Lakukan check-in kehadiran tepat waktu</span>
+        </div>
+      </label>
+      <label class="checklist-item">
+        <input type="checkbox" id="mg2" data-tab="magang">
+        <div class="item-info">
+          <span class="item-label">Standar Kerapian &amp; Dresscode BNI</span>
+          <span class="item-sub">Senin-Selasa Formal, Rabu-Kamis Batik, Jumat Casual</span>
+        </div>
+      </label>
+      <label class="checklist-item">
+        <input type="checkbox" id="mg3" data-tab="magang">
+        <div class="item-info">
+          <span class="item-label">Briefing / Penugasan Mentor Divisi SSE</span>
+          <span class="item-sub">Koordinasi dengan mentor Pak Guruh Sri Handoyo</span>
+        </div>
+      </label>
+      <label class="checklist-item">
+        <input type="checkbox" id="mg4" data-tab="magang">
+        <div class="item-info">
+          <span class="item-label">Eksekusi Tugas &amp; Pengolahan Data Harian</span>
+          <span class="item-sub">Kerjakan proyek analisis/operasional di folder divisi</span>
+        </div>
+      </label>
+      <label class="checklist-item">
+        <input type="checkbox" id="mg5" data-tab="magang">
+        <div class="item-info">
+          <span class="item-label">Catat Aktivitas Logbook Harian</span>
+          <span class="item-sub">Tuliskan deskripsi kegiatan, capaian, dan tantangan</span>
+        </div>
+      </label>
+      <label class="checklist-item">
+        <input type="checkbox" id="mg6" data-tab="magang">
+        <div class="item-info">
+          <span class="item-label">Presensi Pulang di MagangHub</span>
+          <span class="item-sub">Check-out saat jam operasional kantor berakhir</span>
+        </div>
+      </label>
+    </section>
+
+    <!-- Rutinitas Mingguan & Bulanan -->
+    <section class="section-card">
+      <h2 class="section-title">📊 Evaluasi Mingguan &amp; Bulanan</h2>
+      <label class="checklist-item">
+        <input type="checkbox" id="mg7" data-tab="magang">
+        <div class="item-info">
+          <span class="item-label">Submit Logbook Harian ke Portal Kemnaker</span>
+          <span class="item-sub">Pastikan tidak ada hari kerja yang terlewat</span>
+        </div>
+      </label>
+      <label class="checklist-item">
+        <input type="checkbox" id="mg8" data-tab="magang">
+        <div class="item-info">
+          <span class="item-label">Konfirmasi Approval Logbook ke Mentor</span>
+          <span class="item-sub">Mentor memvalidasi aktivitas mingguan peserta</span>
+        </div>
+      </label>
+      <label class="checklist-item">
+        <input type="checkbox" id="mg9" data-tab="magang">
+        <div class="item-info">
+          <span class="item-label">Rekap Data &amp; Bahan Laporan Bulanan</span>
+          <span class="item-sub">Simpan berkas evaluasi di folder 06_Presentasi &amp; Laporan</span>
+        </div>
+      </label>
+      <label class="checklist-item">
+        <input type="checkbox" id="mg10" data-tab="magang">
+        <div class="item-info">
+          <span class="item-label">Penyusunan Slide Evaluasi Capaian Magang</span>
+          <span class="item-sub">Paparan berkala hasil kontribusi di Divisi SSE BNI</span>
+        </div>
+      </label>
+    </section>
+
+    <!-- Tata Tertib & Komik SOP -->
+    <section class="section-card">
+      <h2 class="section-title">🛡️ Kepatuhan &amp; Integritas BNI</h2>
+      <label class="checklist-item">
+        <input type="checkbox" id="mg11" data-tab="magang">
+        <div class="item-info">
+          <span class="item-label">Kerahasiaan Data Nasabah &amp; Perbankan</span>
+          <span class="item-sub">Dilarang membocorkan data internal BNI / nasabah</span>
+        </div>
+      </label>
+      <label class="checklist-item">
+        <input type="checkbox" id="mg12" data-tab="magang">
+        <div class="item-info">
+          <span class="item-label">Etika Komunikasi Korporat</span>
+          <span class="item-sub">Bersikap sopan, santun, dan proaktif dalam tim</span>
+        </div>
+      </label>
+      <label class="checklist-item">
+        <input type="checkbox" id="mg13" data-tab="magang">
+        <div class="item-info">
+          <span class="item-label">K3 &amp; Keselamatan Kerja Lingkungan Kantor</span>
+          <span class="item-sub">Patuhi prosedur keselamatan kerja di Menara BNI</span>
+        </div>
+      </label>
+    </section>
+
+    <!-- Done Message -->
+    <div id="congrats-magang" class="congrats-card">
+      <div class="congrats-title">🌟 Target Magang Selesai!</div>
+      <div class="congrats-desc">Seluruh checklist SOP harian &amp; kepatuhan telah terpenuhi secara prima!</div>
+    </div>
+  </main>
+
+  <footer>
+    <p>MGHB App · Zaki Tri Pamungkas · Divisi SSE Menara BNI Pejompongan</p>
+  </footer>
+</div>
+
+<script>
+  let currentTab = 'packing';
+  const STORAGE_KEY = 'mghb_checklist_state_v1';
+
+  // State Management
+  function getSavedState() {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    } catch (e) {
+      return {};
+    }
+  }
+
+  function saveItemState(id, isChecked) {
+    const state = getSavedState();
+    if (isChecked) {
+      state[id] = true;
+    } else {
+      delete state[id];
+    }
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    updateProgress();
+  }
+
+  // Tab Switcher
+  function switchTab(tab) {
+    currentTab = tab;
+
+    // Update buttons
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.getAttribute('data-tab') === tab);
+    });
+
+    // Update panes
+    document.querySelectorAll('.tab-pane').forEach(pane => {
+      pane.classList.remove('active');
+    });
+    const activePane = document.getElementById('pane-' + tab);
+    if (activePane) activePane.classList.add('active');
+
+    // Update subtitle
+    const sub = document.getElementById('active-subtitle');
+    if (tab === 'packing') {
+      sub.textContent = 'Persiapan Jakarta & Wisuda UMS · 24–27 Sep 2026';
+    } else {
+      sub.textContent = 'SOP MagangHub & Harian Divisi Sales Strategy & Execution';
+    }
+
+    updateProgress();
+  }
+
+  // Update Progress for Active Tab
+  function updateProgress() {
+    const activePane = document.getElementById('pane-' + currentTab);
+    if (!activePane) return;
+
+    const checkboxes = Array.from(activePane.querySelectorAll('input[type="checkbox"]'));
+    const total = checkboxes.length;
+    const checked = checkboxes.filter(cb => cb.checked).length;
+
+    const pct = total === 0 ? 0 : Math.round((checked / total) * 100);
+
+    const fillEl = document.getElementById('progress-fill');
+    const textEl = document.getElementById('progress-text');
+    const congratsEl = document.getElementById('congrats-' + currentTab);
+
+    if (fillEl) fillEl.style.width = pct + '%';
+    if (textEl) textEl.textContent = `${checked}/${total} Siap (${pct}%)`;
+
+    if (congratsEl) {
+      congratsEl.style.display = (total > 0 && checked === total) ? 'block' : 'none';
+    }
+  }
+
+  // Reset Current Tab
+  function resetCurrentTab() {
+    const activePane = document.getElementById('pane-' + currentTab);
+    if (!activePane) return;
+
+    const tabName = currentTab === 'packing' ? 'Packing Checklist' : 'Checklist SOP Magang';
+    if (confirm(`Reset semua centangan pada tab ${tabName}?`)) {
+      const checkboxes = activePane.querySelectorAll('input[type="checkbox"]');
+      const state = getSavedState();
+
+      checkboxes.forEach(cb => {
+        cb.checked = false;
+        delete state[cb.id];
+      });
+
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      updateProgress();
+    }
+  }
+
+  // Init App
+  function init() {
+    const state = getSavedState();
+
+    // Migrate old packing-checklist key if present
+    try {
+      const oldKeys = JSON.parse(localStorage.getItem('packing-checklist-v1') || '[]');
+      if (Array.isArray(oldKeys) && oldKeys.length > 0) {
+        oldKeys.forEach(oldId => {
+          // old ids were i1..i36
+          const num = parseInt(oldId.replace('i', ''), 10);
+          let newId = null;
+          if (num >= 1 && num <= 10) newId = 'pk' + num;
+          else if (num >= 11 && num <= 16) newId = 'doc' + (num - 10);
+          else if (num >= 17 && num <= 20) newId = 'el' + (num - 16);
+          else if (num >= 21 && num <= 26) newId = 'tl' + (num - 20);
+          else if (num >= 27 && num <= 30) newId = 'ob' + (num - 26);
+          else if (num >= 31 && num <= 36) newId = 'ot' + (num - 30);
+          if (newId) state[newId] = true;
+        });
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      }
+    } catch (e) {}
+
+    // Attach events & restore states
+    document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+      if (state[cb.id]) {
+        cb.checked = true;
+      }
+      cb.addEventListener('change', () => {
+        saveItemState(cb.id, cb.checked);
+      });
+    });
+
+    updateProgress();
+  }
+
+  window.addEventListener('DOMContentLoaded', init);
+</script>
+
+</body>
+</html>
