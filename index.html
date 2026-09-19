@@ -1267,6 +1267,29 @@
       border-color: var(--border-strong);
     }
 
+    .news-thumb-wrap {
+      width: 100%;
+      height: 148px;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      margin-bottom: 11px;
+      background: var(--surface-hover);
+      border: 1px solid var(--border-subtle);
+      position: relative;
+    }
+
+    .news-thumb-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.25s ease;
+    }
+
+    .news-card:hover .news-thumb-img {
+      transform: scale(1.025);
+    }
+
     .news-meta-row {
       display: flex;
       align-items: center;
@@ -4269,7 +4292,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   }
 
   // --- MagangHub Live News Feed Engine ---
-  const NEWS_CACHE_KEY = 'mghb_news_cache_v2';
+  const NEWS_CACHE_KEY = 'mghb_news_cache_v3';
   let newsLoadedOnce = false;
   let activeNewsTopic = 'all';
 
@@ -4281,7 +4304,8 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       pubDate: '16 Sep 2026',
       link: 'https://www.detik.com/edu/detikpedia/d-7541290/cek-pengumuman-magang-kemnaker-2026-batch-2-serta-tahapan-berikutnya',
       snippet: 'Kementerian Ketenagakerjaan resmi mengumumkan hasil seleksi administrasi Program Pemagangan Nasional Batch 2 tahun 2026. Peserta lolos diwajibkan melakukan konfirmasi penerimaan dan penempatan di unit kerja mitra.',
-      topic: 'pengumuman'
+      topic: 'pengumuman',
+      image: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=640&q=80'
     },
     {
       title: 'Siap-siap! Hasil Evaluasi MagangHub Batch 2 Diumumkan di Akun SIAPkerja',
@@ -4290,7 +4314,8 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       pubDate: '17 Sep 2026',
       link: 'https://money.kompas.com/read/2026/09/17/hasil-seleksi-maganghub-kemnaker-batch-2',
       snippet: 'Proses seleksi penempatan pemagangan fresh graduate Kemnaker mulai diumumkan bertahap. Program ini membekali lulusan perguruan tinggi dengan pengalaman kerja industri dan sertifikasi kompetensi.',
-      topic: 'pengumuman'
+      topic: 'pengumuman',
+      image: 'https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=640&q=80'
     },
     {
       title: 'Kemnaker Sinkronkan Program Pemagangan Nasional dengan Standar Sertifikasi BNSP',
@@ -4299,7 +4324,8 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       pubDate: '15 Sep 2026',
       link: 'https://www.antaranews.com/berita/4329011/kemnaker-perkuat-sertifikasi-bnsp-peserta-magang-nasional',
       snippet: 'Seluruh peserta pemagangan nasional berpeluang mendapatkan pengakuan kompetensi resmi dari Badan Nasional Sertifikasi Profesi (BNSP) setelah menyelesaikan masa pemagangan dan evaluasi mentor.',
-      topic: 'sertifikasi'
+      topic: 'sertifikasi',
+      image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=640&q=80'
     },
     {
       title: 'Uang Saku & Hak Perlindungan Peserta Magang: Ketentuan Resmi Kemnaker',
@@ -4308,7 +4334,8 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       pubDate: '18 Sep 2026',
       link: 'https://www.cnbcindonesia.com/news/20260918-aturan-uang-saku-dan-hak-peserta-maganghub',
       snippet: 'Peserta pemagangan MagangHub berhak memperoleh uang saku bulanan, kepesertaan jaminan kecelakaan kerja & kematian BPJS Ketenagakerjaan, serta bimbingan intensif dari mentor industri.',
-      topic: 'regulasi'
+      topic: 'regulasi',
+      image: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=640&q=80'
     },
     {
       title: 'Kemitraan Strategis BNI & Kemnaker: Menyiapkan Talenta Digital dan Perbankan Unggul',
@@ -4317,7 +4344,8 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       pubDate: '12 Sep 2026',
       link: 'https://kemnaker.go.id/news',
       snippet: 'PT Bank Negara Indonesia (Persero) Tbk berkolaborasi dengan Kementerian Ketenagakerjaan memfasilitasi lulusan sarjana dalam pemagangan di divisi strategis korporat termasuk analitik dan sales strategy.',
-      topic: 'kemnaker'
+      topic: 'kemnaker',
+      image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=640&q=80'
     },
     {
       title: 'Tata Tertib Presensi GPS & Pengisian Logbook Harian MagangHub Kemnaker',
@@ -4326,9 +4354,20 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       pubDate: '10 Sep 2026',
       link: 'https://www.detik.com/edu/tata-tertib-presensi-gps-dan-logbook-maganghub-kemnaker',
       snippet: 'Disiplin presensi harian berbasis geolokasi GPS serta pengisian logbook capaian kerja di portal MagangHub menjadi dasar utama penilaian dan validasi rekomendasi uang saku peserta magang.',
-      topic: 'regulasi'
+      topic: 'regulasi',
+      image: 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&w=640&q=80'
     }
   ];
+
+  function getTopicFallbackImage(topic) {
+    const map = {
+      pengumuman: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=640&q=80',
+      regulasi: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=640&q=80',
+      sertifikasi: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=640&q=80',
+      kemnaker: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=640&q=80'
+    };
+    return map[topic] || 'https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=640&q=80';
+  }
 
   function formatNewsDate(dateString) {
     if (!dateString) return '';
@@ -4425,6 +4464,16 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
               cleanSnippet = cleanSnippet.substring(0, 177) + '...';
             }
 
+            const topic = determineNewsTopic(title);
+            let imgUrl = item.thumbnail || (item.enclosure && item.enclosure.link) || '';
+            if (!imgUrl && item.description && item.description.includes('<img')) {
+              const m = item.description.match(/<img[^>]+src=["']([^"']+)["']/i);
+              if (m && m[1]) imgUrl = m[1];
+            }
+            if (!imgUrl) {
+              imgUrl = getTopicFallbackImage(topic);
+            }
+
             return {
               title: title,
               source: source,
@@ -4432,7 +4481,8 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
               pubDate: formatNewsDate(item.pubDate),
               link: item.link || '#',
               snippet: cleanSnippet || 'Informasi terbaru terkait program pemagangan nasional dari ' + source,
-              topic: determineNewsTopic(title)
+              topic: topic,
+              image: imgUrl
             };
           });
 
@@ -4499,6 +4549,10 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
 
       html += `
         <article class="news-card" data-topic="${item.topic || 'all'}">
+          ${item.image ? `
+          <div class="news-thumb-wrap">
+            <img src="${item.image}" alt="${item.title}" class="news-thumb-img" loading="lazy" onerror="this.onerror=null; this.parentElement.style.display='none';">
+          </div>` : ''}
           <div class="news-meta-row">
             <span class="news-source-tag ${item.sourceClass || 'source-antara'}">
               ${item.source || 'Media Nasional'}
