@@ -546,16 +546,24 @@
       margin-top: 1px;
     }
 
-    /* Utility action drawer at bottom */
+    /* Utility action bar at bottom */
     .utility-bar {
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 8px;
       margin-top: 24px;
       padding-top: 14px;
       border-top: 1px solid var(--border);
       font-size: 0.74rem;
       color: var(--text-secondary);
+      flex-wrap: wrap;
+    }
+
+    .utility-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
     .utility-btn {
@@ -569,7 +577,7 @@
       font-size: 0.74rem;
       font-weight: 500;
       cursor: pointer;
-      padding: 4px 6px;
+      padding: 5px 8px;
       border-radius: var(--radius-sm);
       transition: all 0.15s ease;
     }
@@ -582,6 +590,239 @@
     .utility-btn svg {
       width: 13px;
       height: 13px;
+    }
+
+    /* Modal Backdrop & Dialog */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-box {
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      max-width: 440px;
+      width: 100%;
+      box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.15), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+      transform: scale(0.96) translateY(8px);
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow: hidden;
+    }
+
+    .modal-overlay.active .modal-box {
+      transform: scale(1) translateY(0);
+    }
+
+    .modal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 18px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .modal-title-wrap h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.01em;
+    }
+
+    .modal-title-wrap p {
+      font-size: 0.74rem;
+      color: var(--text-secondary);
+      margin-top: 1px;
+    }
+
+    .btn-close {
+      background: transparent;
+      border: none;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      width: 28px;
+      height: 28px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+    }
+
+    .btn-close:hover {
+      background: var(--surface-hover);
+      color: var(--text-primary);
+    }
+
+    .btn-close svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .modal-body {
+      padding: 16px 18px;
+    }
+
+    .modal-nav {
+      display: flex;
+      gap: 4px;
+      background: var(--surface-hover);
+      padding: 3px;
+      border-radius: var(--radius-sm);
+      margin-bottom: 16px;
+    }
+
+    .modal-nav-btn {
+      flex: 1;
+      padding: 6px 10px;
+      font-family: inherit;
+      font-size: 0.75rem;
+      font-weight: 500;
+      background: transparent;
+      border: none;
+      border-radius: 4px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .modal-nav-btn.active {
+      background: var(--surface);
+      color: var(--text-primary);
+      font-weight: 600;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .modal-tab-pane {
+      display: none;
+    }
+
+    .modal-tab-pane.active {
+      display: block;
+    }
+
+    .qr-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 0 16px;
+    }
+
+    .qr-frame {
+      background: #ffffff;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .qr-frame img {
+      display: block;
+      width: 180px;
+      height: 180px;
+      border-radius: 4px;
+    }
+
+    .qr-hint {
+      font-size: 0.74rem;
+      color: var(--text-secondary);
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    .input-with-copy {
+      display: flex;
+      gap: 6px;
+      margin-top: 12px;
+    }
+
+    .input-with-copy input {
+      flex: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 7px 10px;
+      font-family: inherit;
+      font-size: 0.76rem;
+      color: var(--text-primary);
+      outline: none;
+    }
+
+    .btn-action {
+      background: var(--accent);
+      color: var(--accent-contrast);
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 7px 12px;
+      font-family: inherit;
+      font-size: 0.76rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: background-color 0.15s ease;
+    }
+
+    .btn-action:hover {
+      background: var(--accent-hover);
+    }
+
+    .btn-secondary {
+      background: var(--surface-hover);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--border);
+    }
+
+    .backup-actions-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .backup-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .backup-card h4 {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .backup-card p {
+      font-size: 0.72rem;
+      color: var(--text-secondary);
+      line-height: 1.35;
     }
 
     /* Toast Notification */
@@ -604,7 +845,7 @@
       opacity: 0;
       pointer-events: none;
       transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-      z-index: 100;
+      z-index: 300;
     }
 
     .toast.visible {
@@ -657,6 +898,12 @@
       </div>
 
       <div class="actions-cluster">
+        <button class="btn-icon" id="btn-sync" title="Buka di HP / Cadangan" onclick="openSyncModal()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+            <line x1="12" y1="18" x2="12.01" y2="18"></line>
+          </svg>
+        </button>
         <button class="btn-icon" id="btn-theme" title="Ganti Tema" onclick="toggleTheme()">
           <svg id="icon-sun" style="display: none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
           <svg id="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
@@ -1230,20 +1477,31 @@
 
   <!-- Bottom Utility Bar -->
   <div class="utility-bar">
-    <button class="utility-btn" onclick="copyPendingList()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-      </svg>
-      Salin yang Belum Siap
-    </button>
-    <button class="utility-btn" onclick="resetActiveTab()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
-        <path d="M3 3v5h5"></path>
-      </svg>
-      Reset Tab
-    </button>
+    <div class="utility-group">
+      <button class="utility-btn" onclick="copyPendingList()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+        </svg>
+        Salin Sisa Item
+      </button>
+      <button class="utility-btn" onclick="openSyncModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+          <line x1="12" y1="18" x2="12.01" y2="18"></line>
+        </svg>
+        Buka di HP / Cadangan
+      </button>
+    </div>
+    <div class="utility-group">
+      <button class="utility-btn" onclick="resetActiveTab()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+          <path d="M3 3v5h5"></path>
+        </svg>
+        Reset Tab
+      </button>
+    </div>
   </div>
 
   <!-- Footer -->
@@ -1251,6 +1509,92 @@
     <p>MGHB Workspace · Zaki Tri Pamungkas</p>
     <p>Divisi Sales Strategy &amp; Execution · Menara BNI Pejompongan</p>
   </footer>
+</div>
+
+<!-- Modal: Buka di HP & Cadangan Data -->
+<div class="modal-overlay" id="sync-modal" onclick="handleBackdropClick(event)">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="modal-title-wrap">
+        <h3>Sinkronisasi &amp; Cadangan</h3>
+        <p>Buka di smartphone atau simpan berkas lokal</p>
+      </div>
+      <button class="btn-close" onclick="closeSyncModal()" title="Tutup">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <div class="modal-nav">
+        <button class="modal-nav-btn active" id="modal-tab-btn-qr" onclick="switchModalTab('qr')">Buka di Smartphone</button>
+        <button class="modal-nav-btn" id="modal-tab-btn-backup" onclick="switchModalTab('backup')">Cadangan Berkas</button>
+      </div>
+
+      <!-- Pane 1: QR & Link -->
+      <div class="modal-tab-pane active" id="modal-pane-qr">
+        <div class="qr-container">
+          <div class="qr-frame">
+            <img id="qr-image" src="" alt="QR Code Sinkronisasi">
+          </div>
+          <p class="qr-hint">Pindai QR ini menggunakan kamera HP Anda.<br>Seluruh status centangan akan otomatis tersimpan di HP.</p>
+        </div>
+
+        <div class="input-with-copy">
+          <input type="text" id="sync-link-input" readonly>
+          <button class="btn-action" onclick="copySyncLink()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            Salin Link
+          </button>
+        </div>
+      </div>
+
+      <!-- Pane 2: Backup JSON -->
+      <div class="modal-tab-pane" id="modal-pane-backup">
+        <p style="font-size: 0.76rem; color: var(--text-secondary); line-height: 1.4; margin-bottom: 12px;">
+          Simpan cadangan data checklist ke komputer Anda dalam format JSON, atau pulihkan data dari berkas sebelumnya.
+        </p>
+
+        <div class="backup-actions-grid">
+          <div class="backup-card">
+            <div>
+              <h4>Ekspor Data</h4>
+              <p>Unduh berkas .json berisi seluruh status centang Anda saat ini.</p>
+            </div>
+            <button class="btn-action" onclick="exportDataJson()">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              Unduh .JSON
+            </button>
+          </div>
+
+          <div class="backup-card">
+            <div>
+              <h4>Impor Data</h4>
+              <p>Muat kembali data dari berkas cadangan JSON yang pernah diunduh.</p>
+            </div>
+            <button class="btn-action btn-secondary" onclick="triggerImportFile()">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="17 8 12 3 7 8"></polyline>
+                <line x1="12" y1="3" x2="12" y2="15"></line>
+              </svg>
+              Pilih Berkas
+            </button>
+            <input type="file" id="import-file-input" accept=".json" style="display: none;" onchange="handleImportFile(event)">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- Toast notification -->
@@ -1468,6 +1812,106 @@
     showToast('Centangan berhasil direset');
   }
 
+  // --- Sync Modal & Cross-Device QR Generation ---
+  function getSyncUrl() {
+    const state = getStoredState();
+    const checkedIds = Object.keys(state).filter(k => state[k]);
+    const payload = checkedIds.join(',');
+
+    // If served on file:///, fallback to GitHub/Vercel domain
+    let baseUrl = window.location.origin + window.location.pathname;
+    if (window.location.protocol === 'file:') {
+      baseUrl = 'https://mghb.vercel.app';
+    }
+
+    return `${baseUrl}#sync=${encodeURIComponent(payload)}`;
+  }
+
+  function openSyncModal() {
+    const syncUrl = getSyncUrl();
+    const inputEl = document.getElementById('sync-link-input');
+    const qrImg = document.getElementById('qr-image');
+
+    inputEl.value = syncUrl;
+    // Generate QR Code via qrserver
+    qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=8&data=${encodeURIComponent(syncUrl)}`;
+
+    document.getElementById('sync-modal').classList.add('active');
+  }
+
+  function closeSyncModal() {
+    document.getElementById('sync-modal').classList.remove('active');
+  }
+
+  function handleBackdropClick(e) {
+    if (e.target === document.getElementById('sync-modal')) {
+      closeSyncModal();
+    }
+  }
+
+  function switchModalTab(tab) {
+    document.getElementById('modal-tab-btn-qr').classList.toggle('active', tab === 'qr');
+    document.getElementById('modal-tab-btn-backup').classList.toggle('active', tab === 'backup');
+    document.getElementById('modal-pane-qr').classList.toggle('active', tab === 'qr');
+    document.getElementById('modal-pane-backup').classList.toggle('active', tab === 'backup');
+  }
+
+  function copySyncLink() {
+    const inputEl = document.getElementById('sync-link-input');
+    navigator.clipboard.writeText(inputEl.value).then(() => {
+      showToast('Tautan sinkronisasi disalin!');
+    }).catch(() => {
+      showToast('Gagal menyalin link');
+    });
+  }
+
+  // --- Backup & Restore JSON ---
+  function exportDataJson() {
+    const state = getStoredState();
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state, null, 2));
+    const dlAnchor = document.createElement('a');
+    const dateStr = new Date().toISOString().slice(0, 10);
+    dlAnchor.setAttribute("href", dataStr);
+    dlAnchor.setAttribute("download", `mghb-checklist-backup-${dateStr}.json`);
+    document.body.appendChild(dlAnchor);
+    dlAnchor.click();
+    dlAnchor.remove();
+    showToast('Berkas cadangan berhasil diunduh');
+  }
+
+  function triggerImportFile() {
+    document.getElementById('import-file-input').click();
+  }
+
+  function handleImportFile(event) {
+    const file = event.target.files && event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        const imported = JSON.parse(e.target.result);
+        if (typeof imported === 'object' && imported !== null) {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(imported));
+          // Apply to DOM
+          document.querySelectorAll('.task-row input[type="checkbox"]').forEach(cb => {
+            cb.checked = !!imported[cb.id];
+          });
+          applyFiltering();
+          updateMetrics();
+          closeSyncModal();
+          showToast('Data berhasil dipulihkan dari cadangan!');
+        } else {
+          showToast('Format berkas tidak valid');
+        }
+      } catch {
+        showToast('Gagal membaca berkas JSON');
+      }
+    };
+    reader.readAsText(file);
+    event.target.value = '';
+  }
+
   // --- Toast ---
   let toastTimer = null;
   function showToast(msg) {
@@ -1483,23 +1927,48 @@
 
   // --- Keyboard Shortcuts ---
   window.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      closeSyncModal();
+      if (document.activeElement === document.getElementById('search-input')) {
+        document.getElementById('search-input').value = '';
+        handleSearch('');
+        document.getElementById('search-input').blur();
+      }
+    }
     if (e.key === '/' && document.activeElement !== document.getElementById('search-input')) {
       e.preventDefault();
       document.getElementById('search-input').focus();
     }
-    if (e.key === 'Escape' && document.activeElement === document.getElementById('search-input')) {
-      document.getElementById('search-input').value = '';
-      handleSearch('');
-      document.getElementById('search-input').blur();
-    }
   });
 
-  // --- Initialization & Backward Compatibility ---
+  // --- Check Incoming URL Sync ---
+  function checkIncomingSync() {
+    const hash = window.location.hash;
+    if (hash && hash.startsWith('#sync=')) {
+      try {
+        const payload = decodeURIComponent(hash.substring(6));
+        if (payload) {
+          const ids = payload.split(',').map(s => s.trim()).filter(Boolean);
+          const state = getStoredState();
+          ids.forEach(id => { state[id] = true; });
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+          // Clean hash without reload
+          history.replaceState(null, '', window.location.pathname + window.location.search);
+          showToast(`${ids.length} item berhasil disinkronkan ke HP ini!`);
+        }
+      } catch (err) {
+        console.error('Failed to sync from hash:', err);
+      }
+    }
+  }
+
+  // --- Initialization ---
   function initApp() {
     initTheme();
+    checkIncomingSync();
     const state = getStoredState();
 
-    // Migrate from v1 if present
+    // Migrate from older keys if present
     try {
       const v1 = JSON.parse(localStorage.getItem('mghb_checklist_state_v1') || '{}');
       if (Object.keys(v1).length > 0 && Object.keys(state).length === 0) {

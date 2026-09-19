@@ -1,46 +1,49 @@
 # MGHB — Checklist Bawaan & SOP Magang BNI
 
-Aplikasi web interaktif (*Mobile-First Checklist*) untuk pendukung aktivitas pemagangan **Zaki Tri Pamungkas** di **PT Bank Negara Indonesia (Persero) Tbk**, Divisi Sales Strategy & Execution (SSE).
+Aplikasi web interaktif (*Mobile-First Checklist*) untuk pendukung aktivitas dinas dan pemagangan **Zaki Tri Pamungkas** di **PT Bank Negara Indonesia (Persero) Tbk**, Divisi Sales Strategy & Execution (SSE).
 
-🌐 **Demo / Repositori**: [https://github.com/ZAKITRIPAMUNGKAS/mghb](https://github.com/ZAKITRIPAMUNGKAS/mghb)
+🌐 **Repositori**: [https://github.com/ZAKITRIPAMUNGKAS/mghb](https://github.com/ZAKITRIPAMUNGKAS/mghb)
 
 ---
 
 ## 🚀 Fitur Utama
 
-- **Dual-Tab Management**:
-  - 🎒 **Packing Jakarta**: 36 item perlengkapan keberangkatan Jakarta & persiapan wisuda UMS (Pakaian Kerja sesuai standar BNI HCS, Dokumen PKM & tiket, Elektronik, Toiletries, Obat-obatan, dan Perlengkapan pribadi).
-  - 🏢 **SOP & Magang**: Checklist rutinitas harian MagangHub Kemnaker, tata tertib absensi datang/pulang, kepatuhan grooming BNI, pelaporan logbook mingguan/bulanan, dan arahan mentor SSE.
-- **Progress Bar & Real-time Counter**: Indikator visual progres penyelesaian item per tab secara dinamis.
-- **LocalStorage Persistence**: Status centang tersimpan otomatis di peramban perangkat, aman saat refresh atau ditutup.
-- **Mobile-First & Clean UI**: Desain responsif bertema korporat modern BNI (*Teal & Coral Orange*), ringan tanpa framework/dependency eksternal.
-- **One-Click Reset**: Tombol reset untuk membersihkan centangan per kategori dengan dialog konfirmasi.
+- **100% Local-First & Privacy**: Seluruh status tersimpan di peramban perangkat (`localStorage`), tanpa server database, aman dari kebocoran data dan dapat digunakan secara *offline*.
+- **Penyelarasan Antar-Perangkat (Laptop ⇄ Smartphone)**:
+  - 📷 **Scan QR Code**: Cukup buka modal di laptop dan pindai QR dengan kamera smartphone.
+  - 🔗 **Salin Link Sinkronisasi**: Mengirimkan tautan dengan hash payload kompak ke WhatsApp pribadi. Saat dibuka di HP, centangan langsung termuat dan otomatis tersimpan permanen di HP.
+- **Cadangan Berkas (Backup / Restore)**:
+  - **Ekspor JSON**: Mengunduh berkas `.json` cadangan sewaktu-waktu.
+  - **Impor JSON**: Memulihkan data dari berkas cadangan dengan 1 klik.
+- **Dual-Workspace Checklist**:
+  - 🎒 **Bawaan & Wisuda**: 36 item perlengkapan keberangkatan Jakarta & persiapan wisuda UMS (Pakaian Kerja sesuai standar BNI HCS, Dokumen PKM & tiket, Elektronik, Toiletries, Obat-obatan, dan Perlengkapan esensial).
+  - 🏢 **SOP & MagangHub**: Checklist rutinitas harian MagangHub Kemnaker, absensi datang/pulang, kepatuhan grooming BNI, penugasan mentor divisi SSE, dan pelaporan logbook mingguan/bulanan.
+- **Filter & Quick Search**:
+  - Filter cepat status: `Semua`, `Belum`, atau `Selesai`.
+  - Instant Search dengan pintasan keyboard `/` dan tombol `Esc`.
+- **Ekspor Cepat**: Tombol **"Salin Sisa Item"** untuk menempelkan daftar perlengkapan yang belum siap ke catatan/chat.
+- **Mode Tampilan**: Mendukung **Light & Dark Mode** dengan palet warna korporat modern (Teal `#005E6A` & Orange `#e05315`).
 
 ---
 
-## 💻 Penggunaan Lokal
+## 💻 Cara Menjalankan
 
-Cukup buka file `index.html` langsung di browser laptop atau ponsel Anda:
+Cukup buka berkas `index.html` langsung di peramban (Chrome / Safari / Edge).
 
+Atau jalankan server lokal:
 ```bash
-# Atau jalankan server lokal sederhana
 python -m http.server 8080
 ```
-
-Buka peramban di `http://localhost:8080`.
 
 ---
 
 ## ⚡ Deployment ke Vercel
 
-Aplikasi ini dapat langsung dideploy ke Vercel tanpa konfigurasi rumit:
-
-1. Pastikan sudah login di Vercel CLI:
-   ```bash
-   vercel
-   ```
-2. Atau sambungkan repositori GitHub ini ke dashboard [Vercel](https://vercel.com) (New Project → Import `ZAKITRIPAMUNGKAS/mghb`).
+Aplikasi ini siap dideploy langsung:
+1. Masuk ke dashboard [Vercel](https://vercel.com/new).
+2. Import repositori **`ZAKITRIPAMUNGKAS/mghb`**.
+3. Klik **Deploy**.
 
 ---
 
-*Dikembangkan untuk mendukung operasional program pemagangan BNI & MagangHub Kemnaker RI.*
+*Dikembangkan untuk mendukung efisiensi & operasional program pemagangan BNI & MagangHub Kemnaker RI.*
