@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>MGHB — Checklist Bawaan & SOP Magang BNI</title>
-  <meta name="description" content="Workspace checklist minimalis untuk persiapan dinas Jakarta, wisuda, dan rutinitas operasional MagangHub BNI.">
+  <title>MGHB — Checklist Bawaan & Asisten Magang BNI</title>
+  <meta name="description" content="Workspace produktivitas minimalis untuk persiapan dinas Jakarta, wisuda, logbook MagangHub, dan asisten divisi SSE BNI.">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
   <link rel="shortcut icon" href="favicon.ico">
@@ -96,7 +96,7 @@
     }
 
     .app-shell {
-      max-width: 580px;
+      max-width: 600px;
       margin: 0 auto;
       padding: 0 16px;
     }
@@ -193,10 +193,10 @@
       stroke-width: 1.75;
     }
 
-    /* Segmented Tab Control */
+    /* Segmented Tab Control (4 Tabs) */
     .segmented-tabs {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(4, 1fr);
       background: var(--surface-hover);
       border: 1px solid var(--border);
       border-radius: var(--radius-md);
@@ -209,23 +209,25 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
-      padding: 7px 12px;
+      gap: 5px;
+      padding: 7px 4px;
       border: none;
       background: transparent;
       color: var(--text-secondary);
       font-family: inherit;
-      font-size: 0.8rem;
+      font-size: 0.74rem;
       font-weight: 500;
       border-radius: calc(var(--radius-md) - 3px);
       cursor: pointer;
       transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+      white-space: nowrap;
     }
 
     .tab-trigger svg {
-      width: 14px;
-      height: 14px;
+      width: 13px;
+      height: 13px;
       stroke-width: 1.75;
+      flex-shrink: 0;
     }
 
     .tab-trigger.active {
@@ -238,7 +240,7 @@
 
     /* Overview & Metric Row */
     .overview-row {
-      margin-top: 14px;
+      margin-top: 12px;
       display: flex;
       flex-direction: column;
       gap: 8px;
@@ -274,14 +276,14 @@
       color: var(--text-primary);
     }
 
-    /* Filter & Utility Row */
+    /* Filter & Utility Row (for checklists) */
     .toolbar-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 8px;
-      margin-top: 14px;
-      margin-bottom: 6px;
+      margin-top: 12px;
+      margin-bottom: 4px;
     }
 
     .search-box {
@@ -489,7 +491,6 @@
       opacity: 0.7;
     }
 
-    /* Hidden when filtered */
     .task-row.is-hidden {
       display: none !important;
     }
@@ -550,7 +551,242 @@
       margin-top: 1px;
     }
 
-    /* Utility action bar at bottom */
+    /* Form & Card Styles for Assistant & Logbook */
+    .feature-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 16px 18px;
+      margin-top: 16px;
+      box-shadow: var(--shadow-card);
+    }
+
+    .feature-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .feature-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.76rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 5px;
+    }
+
+    .form-control {
+      width: 100%;
+      background: var(--surface-hover);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 8px 10px;
+      font-family: inherit;
+      font-size: 0.8rem;
+      color: var(--text-primary);
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+
+    .form-control:focus {
+      border-color: var(--accent);
+      background: var(--surface);
+    }
+
+    textarea.form-control {
+      resize: vertical;
+      min-height: 70px;
+      line-height: 1.4;
+    }
+
+    .btn-block {
+      width: 100%;
+      padding: 9px 14px;
+      background: var(--accent);
+      color: var(--accent-contrast);
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: background-color 0.15s ease;
+    }
+
+    .btn-block:hover {
+      background: var(--accent-hover);
+    }
+
+    /* Output Formulator Preview */
+    .logbook-result-box {
+      margin-top: 14px;
+      background: var(--surface-hover);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px;
+    }
+
+    .result-section {
+      margin-bottom: 12px;
+    }
+
+    .result-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .result-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+      margin-bottom: 3px;
+    }
+
+    .result-content {
+      font-size: 0.8rem;
+      color: var(--text-primary);
+      line-height: 1.45;
+      background: var(--surface);
+      padding: 8px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      user-select: all;
+    }
+
+    .result-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    /* Template Cards (Chat & Glossary) */
+    .subnav-pills {
+      display: flex;
+      gap: 6px;
+      margin-top: 14px;
+      margin-bottom: 6px;
+    }
+
+    .subnav-btn {
+      flex: 1;
+      padding: 6px 10px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 0.76rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .subnav-btn.active {
+      background: var(--accent-subtle);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .chat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      margin-top: 10px;
+      box-shadow: var(--shadow-card);
+    }
+
+    .chat-card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .chat-card-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .chat-preview {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      line-height: 1.45;
+      background: var(--surface-hover);
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-subtle);
+      white-space: pre-wrap;
+    }
+
+    .chat-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    /* Glossary Term Items */
+    .glossary-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      margin-top: 10px;
+      box-shadow: var(--shadow-card);
+    }
+
+    .glossary-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+
+    .glossary-term {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .glossary-desc {
+      font-size: 0.76rem;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+
+    .glossary-it-tip {
+      margin-top: 6px;
+      padding: 6px 9px;
+      background: var(--highlight-subtle);
+      border-left: 2.5px solid var(--highlight);
+      border-radius: 4px;
+      font-size: 0.72rem;
+      color: var(--text-primary);
+      line-height: 1.35;
+    }
+
+    /* Bottom Utility Bar */
     .utility-bar {
       display: flex;
       align-items: center;
@@ -915,29 +1151,40 @@
       </div>
     </div>
 
-    <!-- Segmented Tab Navigation -->
+    <!-- Segmented Tab Navigation (4 Tabs) -->
     <div class="segmented-tabs">
       <button class="tab-trigger active" data-tab="packing" onclick="selectTab('packing')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
           <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
           <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
         </svg>
-        Bawaan &amp; Wisuda
+        Bawaan
       </button>
       <button class="tab-trigger" data-tab="magang" onclick="selectTab('magang')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
           <rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect>
           <path d="M9 22v-4h6v4"></path>
           <path d="M8 6h.01"></path><path d="M16 6h.01"></path><path d="M12 6h.01"></path>
-          <path d="M8 10h.01"></path><path d="M16 10h.01"></path><path d="M12 10h.01"></path>
-          <path d="M8 14h.01"></path><path d="M16 14h.01"></path><path d="M12 14h.01"></path>
         </svg>
-        SOP &amp; MagangHub
+        SOP Kerja
+      </button>
+      <button class="tab-trigger" data-tab="logbook" onclick="selectTab('logbook')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+        </svg>
+        Logbook
+      </button>
+      <button class="tab-trigger" data-tab="asisten" onclick="selectTab('asisten')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+        Asisten SSE
       </button>
     </div>
 
-    <!-- Progress Track -->
-    <div class="overview-row">
+    <!-- Progress Track (active on packing & magang) -->
+    <div class="overview-row" id="header-overview-row">
       <div class="progress-track">
         <div class="progress-fill" id="progress-bar"></div>
       </div>
@@ -947,8 +1194,8 @@
       </div>
     </div>
 
-    <!-- Filter & Search Toolbar -->
-    <div class="toolbar-row">
+    <!-- Filter & Search Toolbar (for checklist views) -->
+    <div class="toolbar-row" id="header-toolbar-row">
       <div class="search-box">
         <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="11" cy="11" r="8"></circle>
@@ -1023,7 +1270,7 @@
           </div>
         </label>
         <label class="task-row">
-          <input type="checkbox" id="pk7" data-cat="pakaian" data-cat="pakaian" data-tab="packing">
+          <input type="checkbox" id="pk7" data-cat="pakaian" data-tab="packing">
           <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
           <div class="task-body">
             <div class="task-label">Celana bahan pantalon / chino gelap (x2)</div>
@@ -1523,8 +1770,275 @@
     </div>
   </main>
 
+  <!-- TAB 3: DAILY LOGBOOK FORMULATOR -->
+  <main id="view-logbook" class="tab-content">
+    <div class="feature-card">
+      <div class="feature-head">
+        <div class="feature-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10 9 9 9 8 9"></polyline>
+          </svg>
+          Formulator Logbook MagangHub
+        </div>
+        <span class="badge badge-accent">Standar Kemnaker</span>
+      </div>
+      <p style="font-size: 0.76rem; color: var(--text-secondary); margin-bottom: 14px;">
+        Ketikkan poin kasar aktivitas Anda hari ini. Sistem akan memformulasikannya menjadi kalimat formal berstandar perbankan yang siap disalin ke portal MagangHub.
+      </p>
+
+      <div class="form-group">
+        <label class="form-label">Tanggal Laporan</label>
+        <input type="date" class="form-control" id="lb-date">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Kategori Penugasan Divisi SSE</label>
+        <select class="form-control" id="lb-category">
+          <option value="data">Pengolahan Data &amp; Spreadsheet Sales</option>
+          <option value="briefing">Briefing &amp; Koordinasi Mentor / Divisi</option>
+          <option value="dashboard">Pembuatan / Update Dashboard Visual</option>
+          <option value="evaluasi">Analisis Performa &amp; Riset Penjualan</option>
+          <option value="administrasi">Administrasi &amp; Dokumentasi Pemagangan</option>
+          <option value="onboarding">Orientasi &amp; Penyesuaian Budaya BNI</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Catatan Aktivitas / Poin Kasar</label>
+        <textarea class="form-control" id="lb-rough-notes" placeholder="Contoh: tadi bantu rekap data pencapaian target penjualan cabang, perbaiki data eror di excel, dan ikut briefing pagi bareng Pak Guruh..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Kendala (Opsional)</label>
+        <input type="text" class="form-control" id="lb-obstacle" placeholder="Contoh: format file dari beberapa cabang berbeda / tidak ada kendala">
+      </div>
+
+      <button class="btn-block" onclick="generateLogbook()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+        </svg>
+        Formulasikan Laporan Formal
+      </button>
+
+      <!-- Logbook Generated Output -->
+      <div id="lb-output-card" style="display: none;">
+        <div class="logbook-result-box">
+          <div class="result-section">
+            <div class="result-title">1. Uraian Pekerjaan / Aktivitas</div>
+            <div class="result-content" id="res-activity"></div>
+          </div>
+          <div class="result-section">
+            <div class="result-title">2. Hasil / Capaian Output</div>
+            <div class="result-content" id="res-achievement"></div>
+          </div>
+          <div class="result-section">
+            <div class="result-title">3. Kendala &amp; Solusi</div>
+            <div class="result-content" id="res-obstacle"></div>
+          </div>
+
+          <div class="result-actions">
+            <button class="btn-action" style="flex: 1;" onclick="copyLogbookFull()">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              Salin Semua ke Clipboard
+            </button>
+            <button class="btn-action btn-secondary" onclick="saveLogbookHistory()">
+              Simpan Riwayat
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Riwayat Logbook Lokal -->
+    <div class="feature-card" style="margin-top: 14px;">
+      <div class="feature-head">
+        <div class="feature-title">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          Riwayat Logbook Tersimpan
+        </div>
+        <button class="utility-btn" onclick="clearLogbookHistory()">Hapus Semua</button>
+      </div>
+      <div id="lb-history-list" style="font-size: 0.76rem; color: var(--text-secondary);">
+        Belum ada riwayat logbook tersimpan di peramban ini.
+      </div>
+    </div>
+  </main>
+
+  <!-- TAB 4: ASISTEN SSE (CHAT TEMPLATES & GLOSSARY) -->
+  <main id="view-asisten" class="tab-content">
+    <div class="subnav-pills">
+      <button class="subnav-btn active" id="asisten-tab-btn-chat" onclick="switchAsistenSubtab('chat')">Template Chat Mentor</button>
+      <button class="subnav-btn" id="asisten-tab-btn-glossary" onclick="switchAsistenSubtab('glossary')">Kamus Istilah SSE</button>
+    </div>
+
+    <!-- SUB-PANE: CHAT TEMPLATES -->
+    <div id="asisten-pane-chat">
+      <!-- Template 1: Izin Wisuda -->
+      <div class="chat-card">
+        <div class="chat-card-head">
+          <div class="chat-card-title">Permohonan Izin Wisuda UMS (Jumat 25 Sep)</div>
+          <span class="badge badge-accent">Penting</span>
+        </div>
+        <div class="chat-preview" id="tpl-wisuda">Selamat pagi Bapak Guruh Sri Handoyo, mohon izin Bapak. Saya Zaki Tri Pamungkas, mahasiswa pemagangan di Divisi Sales Strategy & Execution (SSE).
+
+Sehubungan dengan pelaksanaan prosesi Wisuda Sarjana saya di Universitas Muhammadiyah Surakarta yang dijadwalkan pada hari Jumat, 25 September 2026, dengan hormat saya memohon izin untuk berhalangan hadir di kantor pada hari tersebut.
+
+Dokumen resmi undangan wisuda dan permohonan dispensasi pada portal MagangHub telah saya lampirkan. Saya siap menyelesaikan dan memantau seluruh penugasan sebelum dan sesudah agenda tersebut berjalan.
+
+Terima kasih banyak atas izin, arahan, dan bimbingan Bapak.</div>
+        <div class="chat-actions">
+          <button class="btn-action" onclick="copyTemplateText('tpl-wisuda')">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            Salin Pesan
+          </button>
+        </div>
+      </div>
+
+      <!-- Template 2: Izin Sakit -->
+      <div class="chat-card">
+        <div class="chat-card-head">
+          <div class="chat-card-title">Pemberitahuan Izin Sakit</div>
+          <span class="badge">SOP Dokter</span>
+        </div>
+        <div class="chat-preview" id="tpl-sakit">Selamat pagi Bapak Guruh, mohon izin mengabarkan bahwa pada hari ini saya dalam kondisi kurang sehat dan berhalangan hadir di kantor untuk berobat dan beristirahat.
+
+Surat keterangan dokter resmi akan segera saya unggah pada portal MagangHub serta saya serahkan fisik dokumennya saat kembali masuk dinas. Terima kasih atas pengertian dan bimbingan Bapak.</div>
+        <div class="chat-actions">
+          <button class="btn-action" onclick="copyTemplateText('tpl-sakit')">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            Salin Pesan
+          </button>
+        </div>
+      </div>
+
+      <!-- Template 3: Laporan Penugasan Selesai -->
+      <div class="chat-card">
+        <div class="chat-card-head">
+          <div class="chat-card-title">Konfirmasi Selesai Penugasan Harian</div>
+          <span class="badge">Harian</span>
+        </div>
+        <div class="chat-preview" id="tpl-tugas">Selamat sore Bapak Guruh, izin melaporkan bahwa penugasan olah data realisasi penjualan untuk hari ini telah selesai saya kerjakan dan telah saya simpan pada folder divisi. 
+
+Logbook harian di MagangHub juga telah saya submit. Mohon masukan dan arahan dari Bapak jika terdapat bagian yang perlu disesuaikan. Terima kasih banyak, Bapak.</div>
+        <div class="chat-actions">
+          <button class="btn-action" onclick="copyTemplateText('tpl-tugas')">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            Salin Pesan
+          </button>
+        </div>
+      </div>
+
+      <!-- Template 4: Reminder Approval Logbook Mingguan -->
+      <div class="chat-card">
+        <div class="chat-card-head">
+          <div class="chat-card-title">Reminder Approval Logbook Mingguan</div>
+          <span class="badge">Mingguan</span>
+        </div>
+        <div class="chat-preview" id="tpl-approval">Selamat sore Bapak Guruh, mohon izin mengingatkan terkait laporan logbook mingguan pada portal MagangHub yang telah saya submit untuk periode minggu ini.
+
+Apabila Bapak berkenan, mohon kesediaan Bapak untuk melakukan review dan approval laporan tersebut. Terima kasih banyak atas waktu, arahan, dan bimbingan Bapak.</div>
+        <div class="chat-actions">
+          <button class="btn-action" onclick="copyTemplateText('tpl-approval')">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            Salin Pesan
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUB-PANE: GLOSSARY -->
+    <div id="asisten-pane-glossary" style="display: none;">
+      <div class="search-box" style="margin-top: 10px;">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" class="search-input" id="glossary-search" placeholder="Cari istilah perbankan / SSE..." oninput="filterGlossary(this.value)">
+      </div>
+
+      <div id="glossary-container">
+        <!-- Item 1: CASA -->
+        <div class="glossary-item" data-term="casa dana murah giro tabungan">
+          <div class="glossary-header">
+            <div class="glossary-term">CASA (Current Account Saving Account)</div>
+            <span class="badge badge-accent">Dana Murah</span>
+          </div>
+          <div class="glossary-desc">Komposisi dana simpanan berbiaya rendah (Giro &amp; Tabungan). Semakin tinggi rasio CASA sebuah cabang/bank, semakin efisien beban bunga (*Cost of Funds*) bank.</div>
+          <div class="glossary-it-tip">💡 <strong>Peran Zaki (IT/Data):</strong> Analisis cabang mana yang porsi CASA-nya masih rendah dan visualisasikan tren pertumbuhan saldo tabungan nasabah.</div>
+        </div>
+
+        <!-- Item 2: DPK -->
+        <div class="glossary-item" data-term="dpk dana pihak ketiga deposito">
+          <div class="glossary-header">
+            <div class="glossary-term">DPK (Dana Pihak Ketiga)</div>
+            <span class="badge">Likuiditas</span>
+          </div>
+          <div class="glossary-desc">Total seluruh dana masyarakat yang dihimpun oleh bank, terdiri atas Giro, Tabungan, dan Deposito. Indikator utama kapasitas pendanaan bank.</div>
+          <div class="glossary-it-tip">💡 <strong>Peran Zaki (IT/Data):</strong> Otomasi rekap DPK harian dari laporan cabang menggunakan formula agregasi atau script Python.</div>
+        </div>
+
+        <!-- Item 3: Pipeline & Leads -->
+        <div class="glossary-item" data-term="pipeline leads prospek penjualan funnel">
+          <div class="glossary-header">
+            <div class="glossary-term">Sales Pipeline &amp; Funnel</div>
+            <span class="badge">Sales Strategy</span>
+          </div>
+          <div class="glossary-desc">Tahapan proses penjualan produk BNI dari calon nasabah potensial (Leads) → Pendekatan → Pengajuan → Closing / Realisasi transaksi.</div>
+          <div class="glossary-it-tip">💡 <strong>Peran Zaki (IT/Data):</strong> Memetakan conversion rate tiap tahap pipeline untuk mendeteksi di mana prospek nasabah paling banyak macet.</div>
+        </div>
+
+        <!-- Item 4: NPL -->
+        <div class="glossary-item" data-term="npl kredit macet kredit bermasalah pinjaman non performing loan">
+          <div class="glossary-header">
+            <div class="glossary-term">NPL (Non-Performing Loan)</div>
+            <span class="badge">Risiko</span>
+          </div>
+          <div class="glossary-desc">Rasio kredit bermasalah atau macet terhadap total portofolio kredit. Standar sehat regulator (BI &amp; OJK) adalah NPL Net di bawah 5%.</div>
+          <div class="glossary-it-tip">💡 <strong>Peran Zaki (IT/Data):</strong> Buat conditional formatting / alert dini pada dataset debitur yang mulai telat bayar angsuran.</div>
+        </div>
+
+        <!-- Item 5: Data Cleansing & Reconciliation -->
+        <div class="glossary-item" data-term="data cleansing rekonsiliasi anomali validasi excel">
+          <div class="glossary-header">
+            <div class="glossary-term">Data Cleansing &amp; Rekonsiliasi</div>
+            <span class="badge badge-accent">Keahlian Utama IT</span>
+          </div>
+          <div class="glossary-desc">Proses pembersihan data dari berbagai cabang BNI yang formatnya tidak seragam, duplikat, atau memiliki nilai kosong sebelum dianalisis oleh pimpinan divisi SSE.</div>
+          <div class="glossary-it-tip">💡 <strong>Peran Zaki (IT/Data):</strong> Kekuatan terbesar Anda! Buat makro Excel / script pembersih data otomatis agar tim SSE hemat waktu berjam-jam.</div>
+        </div>
+
+        <!-- Item 6: Cross-Selling -->
+        <div class="glossary-item" data-term="cross selling penjualan silang bni mobile kartu kredit">
+          <div class="glossary-header">
+            <div class="glossary-term">Cross-Selling &amp; Up-Selling</div>
+            <span class="badge">Strategi</span>
+          </div>
+          <div class="glossary-desc">Strategi penawaran produk tambahan ke nasabah eksisting (misal: nasabah tabungan ditawari BNI Mobile Banking, Kartu Kredit, atau Bancassurance).</div>
+          <div class="glossary-it-tip">💡 <strong>Peran Zaki (IT/Data):</strong> Menganalisis profil data transaksi nasabah yang potensial membutuhkan produk perbankan lain.</div>
+        </div>
+
+        <!-- Item 7: Achievement Rate -->
+        <div class="glossary-item" data-term="achievement rate pencapaian target kpi kpi">
+          <div class="glossary-header">
+            <div class="glossary-term">Achievement Rate (% Realisasi Target)</div>
+            <span class="badge">Metrik SSE</span>
+          </div>
+          <div class="glossary-desc">Perbandingan antara angka realisasi penjualan dengan target yang ditetapkan manajemen (Formula: Realisasi / Target × 100%).</div>
+          <div class="glossary-it-tip">💡 <strong>Peran Zaki (IT/Data):</strong> Bangun visualisasi grafik barometer / bullet chart di dashboard Excel untuk presentasi mingguan Pak Guruh.</div>
+        </div>
+      </div>
+    </div>
+  </main>
+
   <div class="empty-search" id="empty-search-state">
-    Tidak ada item checklist yang cocok dengan pencarian.
+    Tidak ada item yang cocok dengan pencarian.
   </div>
 
   <!-- Bottom Utility Bar -->
@@ -1551,7 +2065,7 @@
           <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
           <path d="M3 3v5h5"></path>
         </svg>
-        Reset Tab
+        Reset Centang
       </button>
     </div>
   </div>
@@ -1661,6 +2175,7 @@
   let searchQuery = '';
   const STORAGE_KEY = 'mghb_state_clean_v2';
   const THEME_KEY = 'mghb_theme_mode';
+  const LOGBOOK_STORAGE_KEY = 'mghb_logbook_records_v1';
 
   // --- Storage & State Management ---
   function getStoredState() {
@@ -1703,7 +2218,7 @@
     applyTheme(current === 'dark' ? 'light' : 'dark');
   }
 
-  // --- Tab Selection ---
+  // --- Tab Selection (4 Tabs) ---
   function selectTab(tab) {
     activeTab = tab;
 
@@ -1715,23 +2230,42 @@
     // Pane visibility
     document.getElementById('view-packing').classList.toggle('active', tab === 'packing');
     document.getElementById('view-magang').classList.toggle('active', tab === 'magang');
+    document.getElementById('view-logbook').classList.toggle('active', tab === 'logbook');
+    document.getElementById('view-asisten').classList.toggle('active', tab === 'asisten');
 
-    // Context badges & labels
     const badgeEl = document.getElementById('badge-context');
     const labelEl = document.getElementById('label-subcontext');
+    const overviewRow = document.getElementById('header-overview-row');
+    const toolbarRow = document.getElementById('header-toolbar-row');
+
     if (tab === 'packing') {
       badgeEl.textContent = 'Dinas Jakarta';
       labelEl.textContent = 'Jakarta & Wisuda UMS (24–27 Sep 2026)';
-    } else {
+      overviewRow.style.display = 'flex';
+      toolbarRow.style.display = 'flex';
+      applyFiltering();
+      updateMetrics();
+    } else if (tab === 'magang') {
       badgeEl.textContent = 'Operasional';
       labelEl.textContent = 'Rutinitas Magang & Kepatuhan SSE';
+      overviewRow.style.display = 'flex';
+      toolbarRow.style.display = 'flex';
+      applyFiltering();
+      updateMetrics();
+    } else if (tab === 'logbook') {
+      badgeEl.textContent = 'MagangHub';
+      labelEl.textContent = 'Generator Formulasi Laporan Harian Kemnaker';
+      overviewRow.style.display = 'none';
+      toolbarRow.style.display = 'none';
+    } else if (tab === 'asisten') {
+      badgeEl.textContent = 'Divisi SSE';
+      labelEl.textContent = 'Template Chat Mentor & Kamus Istilah Perbankan';
+      overviewRow.style.display = 'none';
+      toolbarRow.style.display = 'none';
     }
-
-    applyFiltering();
-    updateMetrics();
   }
 
-  // --- Filtering & Searching ---
+  // --- Filtering & Searching for Checklists ---
   function setFilter(filter) {
     currentFilter = filter;
     document.querySelectorAll('.filter-btn').forEach(btn => {
@@ -1746,6 +2280,9 @@
   }
 
   function applyFiltering() {
+    const isChecklistTab = activeTab === 'packing' || activeTab === 'magang';
+    if (!isChecklistTab) return;
+
     const currentView = document.getElementById(activeTab === 'packing' ? 'view-packing' : 'view-magang');
     if (!currentView) return;
 
@@ -1757,12 +2294,10 @@
       const isChecked = checkbox.checked;
       const text = row.innerText.toLowerCase();
 
-      // Check filter condition
       let matchesFilter = true;
       if (currentFilter === 'pending') matchesFilter = !isChecked;
       else if (currentFilter === 'done') matchesFilter = isChecked;
 
-      // Check search condition
       let matchesSearch = true;
       if (searchQuery) matchesSearch = text.includes(searchQuery);
 
@@ -1771,19 +2306,20 @@
       if (isVisible) visibleCount++;
     });
 
-    // Check category group empties
     currentView.querySelectorAll('.category-group').forEach(group => {
       const hasVisibleRows = Array.from(group.querySelectorAll('.task-row')).some(r => !r.classList.contains('is-hidden'));
       group.classList.toggle('is-empty', !hasVisibleRows);
     });
 
-    // Empty state
     const emptyEl = document.getElementById('empty-search-state');
     emptyEl.classList.toggle('visible', visibleCount === 0);
   }
 
   // --- Metrics & Category Counters ---
   function updateMetrics() {
+    const isChecklistTab = activeTab === 'packing' || activeTab === 'magang';
+    if (!isChecklistTab) return;
+
     const currentView = document.getElementById(activeTab === 'packing' ? 'view-packing' : 'view-magang');
     if (!currentView) return;
 
@@ -1792,18 +2328,15 @@
     const checked = allCheckboxes.filter(cb => cb.checked).length;
     const pct = total === 0 ? 0 : Math.round((checked / total) * 100);
 
-    // Progress bar & label
     document.getElementById('progress-bar').style.width = pct + '%';
     document.getElementById('metric-counter').textContent = `${checked}/${total} selesai (${pct}%)`;
 
-    // Completion banner
     const bannerId = activeTab === 'packing' ? 'banner-complete-packing' : 'banner-complete-magang';
     const banner = document.getElementById(bannerId);
     if (banner) {
       banner.classList.toggle('visible', total > 0 && checked === total);
     }
 
-    // Category stats update
     const categoryGroups = currentView.querySelectorAll('.category-group');
     categoryGroups.forEach(group => {
       const cat = group.getAttribute('data-cat');
@@ -1817,6 +2350,12 @@
 
   // --- Copy Pending Items ---
   function copyPendingList() {
+    const isChecklistTab = activeTab === 'packing' || activeTab === 'magang';
+    if (!isChecklistTab) {
+      showToast('Buka tab Bawaan atau SOP Kerja untuk menyalin sisa item');
+      return;
+    }
+
     const currentView = document.getElementById(activeTab === 'packing' ? 'view-packing' : 'view-magang');
     if (!currentView) return;
 
@@ -1847,7 +2386,10 @@
 
   // --- Reset Tab ---
   function resetActiveTab() {
-    const tabName = activeTab === 'packing' ? 'Bawaan & Wisuda' : 'SOP & MagangHub';
+    const isChecklistTab = activeTab === 'packing' || activeTab === 'magang';
+    if (!isChecklistTab) return;
+
+    const tabName = activeTab === 'packing' ? 'Bawaan & Wisuda' : 'SOP Kerja & Kepatuhan';
     if (!confirm(`Reset seluruh centangan pada tab ${tabName}?`)) return;
 
     const currentView = document.getElementById(activeTab === 'packing' ? 'view-packing' : 'view-magang');
@@ -1870,7 +2412,6 @@
     const checkedIds = Object.keys(state).filter(k => state[k]);
     const payload = checkedIds.join(',');
 
-    // If served on file:///, fallback to GitHub/Vercel domain
     let baseUrl = window.location.origin + window.location.pathname;
     if (window.location.protocol === 'file:') {
       baseUrl = 'https://mghb.vercel.app';
@@ -1944,7 +2485,6 @@
         const imported = JSON.parse(e.target.result);
         if (typeof imported === 'object' && imported !== null) {
           localStorage.setItem(STORAGE_KEY, JSON.stringify(imported));
-          // Apply to DOM
           document.querySelectorAll('.task-row input[type="checkbox"]').forEach(cb => {
             cb.checked = !!imported[cb.id];
           });
@@ -1961,6 +2501,159 @@
     };
     reader.readAsText(file);
     event.target.value = '';
+  }
+
+  // --- Daily Logbook Formulator Logic ---
+  function generateLogbook() {
+    const dateVal = document.getElementById('lb-date').value || new Date().toISOString().slice(0, 10);
+    const category = document.getElementById('lb-category').value;
+    const rough = document.getElementById('lb-rough-notes').value.trim();
+    const obstacle = document.getElementById('lb-obstacle').value.trim();
+
+    if (!rough) {
+      showToast('Mohon masukkan catatan aktivitas pekerjaan terlebih dahulu');
+      document.getElementById('lb-rough-notes').focus();
+      return;
+    }
+
+    let act = '';
+    let ach = '';
+    let obs = '';
+
+    if (category === 'data') {
+      act = `Melaksanakan pengolahan, rekapitulasi, dan validasi data realisasi kinerja penjualan cabang pada Divisi Sales Strategy & Execution (SSE), meliputi verifikasi konsistensi data masukan (${rough}) serta memastikan pembersihan data anomali (data cleansing) berjalan sesuai standar pelaporan divisi.`;
+      ach = `Tersusunnya lembar kerja rekapitulasi data penjualan yang tervalidasi dan siap digunakan sebagai basis monitoring pencapaian target mingguan tim SSE.`;
+    } else if (category === 'briefing') {
+      act = `Mengikuti pengarahan (briefing) koordinasi bersama mentor Bapak Guruh Sri Handoyo di Divisi Sales Strategy & Execution (SSE), membahas prioritas target penjualan dan mendokumentasikan poin-poin arahan kerja (${rough}) untuk ditindaklanjuti secara terstruktur.`;
+      ach = `Tercapainya keselarasan pemahaman terhadap target kerja divisi serta tersusunnya daftar tindak lanjut penugasan operasional harian.`;
+    } else if (category === 'dashboard') {
+      act = `Melakukan pembaruan (updating) dan pemeliharaan antarmuka dashboard analitik kinerja penjualan divisi SSE (${rough}), memastikan rumus kalkulasi persentase pencapaian (achievement rate) terhitung akurat.`;
+      ach = `Tersajikannya visualisasi data monitoring penjualan yang ringkas, interaktif, dan siap dipaparkan pada rapat evaluasi divisi.`;
+    } else if (category === 'evaluasi') {
+      act = `Melakukan analisis komparatif performa penjualan cabang terhadap target yang ditetapkan serta mengeksplorasi data pendukung (${rough}) guna mengidentifikasi area yang memerlukan penguatan penetrasi produk perbankan.`;
+      ach = `Diperolehnya temuan analisis pencapaian penjualan cabang yang dapat dijadikan bahan evaluasi strategi eksekusi tim sales.`;
+    } else if (category === 'onboarding') {
+      act = `Melaksanakan program adaptasi dan pengenalan lingkungan kerja operasional Menara BNI Pejompongan (${rough}), mencakup pemahaman struktur organisasi divisi SSE, tata tertib absensi, dan standar etika korporat BNI HCS.`;
+      ach = `Terinternalisasinya budaya kerja BNI dan alur koordinasi tim secara optimal untuk mendukung efektivitas penugasan pemagangan.`;
+    } else {
+      act = `Melaksanakan koordinasi dan penugasan operasional divisi Sales Strategy & Execution (${rough}) dengan memperhatikan aspek ketelitian, kepatuhan kerahasiaan data perbankan, dan standar mutu kerja perbankan.`;
+      ach = `Tuntasnya seluruh agenda penugasan harian sesuai arahan mentor dan terselesaikannya dokumentasi kerja secara komprehensif.`;
+    }
+
+    obs = obstacle ? `Kendala: ${obstacle}. Solusi: Melakukan penyesuaian teknis dan konfirmasi bersama mentor/tim sehingga proses kerja tetap berjalan lancar.` : 'Proses pengerjaan berjalan lancar tanpa kendala operasional yang berarti; koordinasi dengan mentor dan tim terjalin efektif.';
+
+    document.getElementById('res-activity').textContent = act;
+    document.getElementById('res-achievement').textContent = ach;
+    document.getElementById('res-obstacle').textContent = obs;
+    document.getElementById('lb-output-card').style.display = 'block';
+
+    showToast('Laporan formal berhasil diformulasikan!');
+  }
+
+  function copyLogbookFull() {
+    const act = document.getElementById('res-activity').textContent;
+    const ach = document.getElementById('res-achievement').textContent;
+    const obs = document.getElementById('res-obstacle').textContent;
+    const full = `1. Uraian Pekerjaan / Aktivitas:\n${act}\n\n2. Hasil / Capaian Output:\n${ach}\n\n3. Kendala & Solusi:\n${obs}`;
+
+    navigator.clipboard.writeText(full).then(() => {
+      showToast('Seluruh teks laporan disalin!');
+    }).catch(() => {
+      showToast('Gagal menyalin laporan');
+    });
+  }
+
+  function saveLogbookHistory() {
+    const dateVal = document.getElementById('lb-date').value || new Date().toISOString().slice(0, 10);
+    const act = document.getElementById('res-activity').textContent;
+    const ach = document.getElementById('res-achievement').textContent;
+    const obs = document.getElementById('res-obstacle').textContent;
+
+    if (!act) return;
+
+    const records = JSON.parse(localStorage.getItem(LOGBOOK_STORAGE_KEY) || '[]');
+    records.unshift({
+      date: dateVal,
+      activity: act,
+      achievement: ach,
+      obstacle: obs,
+      timestamp: Date.now()
+    });
+
+    localStorage.setItem(LOGBOOK_STORAGE_KEY, JSON.stringify(records.slice(0, 30)));
+    renderLogbookHistory();
+    showToast('Disimpan ke arsip riwayat lokal');
+  }
+
+  function renderLogbookHistory() {
+    const container = document.getElementById('lb-history-list');
+    const records = JSON.parse(localStorage.getItem(LOGBOOK_STORAGE_KEY) || '[]');
+
+    if (records.length === 0) {
+      container.innerHTML = 'Belum ada riwayat logbook tersimpan di peramban ini.';
+      return;
+    }
+
+    let html = '';
+    records.forEach((r, idx) => {
+      html += `
+        <div style="background: var(--surface-hover); border: 1px solid var(--border); border-radius: 6px; padding: 10px; margin-bottom: 8px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+            <span style="font-weight: 700; color: var(--text-primary);">${r.date}</span>
+            <button class="utility-btn" onclick="copyHistoryRecord(${idx})" style="padding: 2px 6px;">Salin</button>
+          </div>
+          <div style="font-size: 0.74rem; color: var(--text-secondary); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+            ${r.activity}
+          </div>
+        </div>
+      `;
+    });
+
+    container.innerHTML = html;
+  }
+
+  function copyHistoryRecord(idx) {
+    const records = JSON.parse(localStorage.getItem(LOGBOOK_STORAGE_KEY) || '[]');
+    const r = records[idx];
+    if (!r) return;
+    const full = `1. Uraian Pekerjaan / Aktivitas:\n${r.activity}\n\n2. Hasil / Capaian Output:\n${r.achievement}\n\n3. Kendala & Solusi:\n${r.obstacle}`;
+    navigator.clipboard.writeText(full).then(() => {
+      showToast(`Logbook tanggal ${r.date} disalin!`);
+    });
+  }
+
+  function clearLogbookHistory() {
+    if (confirm('Hapus seluruh riwayat logbook tersimpan di perangkat ini?')) {
+      localStorage.removeItem(LOGBOOK_STORAGE_KEY);
+      renderLogbookHistory();
+      showToast('Riwayat logbook dibersihkan');
+    }
+  }
+
+  // --- Asisten Subtabs (Chat vs Glossary) ---
+  function switchAsistenSubtab(sub) {
+    document.getElementById('asisten-tab-btn-chat').classList.toggle('active', sub === 'chat');
+    document.getElementById('asisten-tab-btn-glossary').classList.toggle('active', sub === 'glossary');
+    document.getElementById('asisten-pane-chat').style.display = sub === 'chat' ? 'block' : 'none';
+    document.getElementById('asisten-pane-glossary').style.display = sub === 'glossary' ? 'block' : 'none';
+  }
+
+  function copyTemplateText(id) {
+    const text = document.getElementById(id).innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      showToast('Template pesan disalin! Siap dipaste ke WhatsApp');
+    }).catch(() => {
+      showToast('Gagal menyalin pesan');
+    });
+  }
+
+  function filterGlossary(q) {
+    const query = (q || '').trim().toLowerCase();
+    const items = document.querySelectorAll('.glossary-item');
+    items.forEach(item => {
+      const match = item.getAttribute('data-term').toLowerCase().includes(query) || item.innerText.toLowerCase().includes(query);
+      item.style.display = match ? 'block' : 'none';
+    });
   }
 
   // --- Toast ---
@@ -1986,7 +2679,7 @@
         document.getElementById('search-input').blur();
       }
     }
-    if (e.key === '/' && document.activeElement !== document.getElementById('search-input')) {
+    if (e.key === '/' && document.activeElement !== document.getElementById('search-input') && (activeTab === 'packing' || activeTab === 'magang')) {
       e.preventDefault();
       document.getElementById('search-input').focus();
     }
@@ -2018,14 +2711,10 @@
     checkIncomingSync();
     const state = getStoredState();
 
-    // Migrate from older keys if present
-    try {
-      const v1 = JSON.parse(localStorage.getItem('mghb_checklist_state_v1') || '{}');
-      if (Object.keys(v1).length > 0 && Object.keys(state).length === 0) {
-        Object.assign(state, v1);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-      }
-    } catch {}
+    // Default today date for logbook
+    const today = new Date().toISOString().slice(0, 10);
+    const dateInput = document.getElementById('lb-date');
+    if (dateInput) dateInput.value = today;
 
     // Attach row events
     document.querySelectorAll('.task-row').forEach(row => {
@@ -2040,6 +2729,7 @@
       });
     });
 
+    renderLogbookHistory();
     applyFiltering();
     updateMetrics();
   }
