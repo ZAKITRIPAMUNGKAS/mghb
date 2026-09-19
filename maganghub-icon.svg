@@ -1,8 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
-  <rect width="200" height="200" rx="44" fill="#09090b"/>
-  <g transform="translate(35, 0)">
-<g transform="matrix(9.481036,0,0,9.317561,-33.924331,-26.496815)">
+<svg width="100%" height="100%" viewBox="0 0 130 200" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+    <g transform="matrix(9.481036,0,0,9.317561,-33.924331,-26.496815)">
         <clipPath id="_clip1">
             <rect x="3.578" y="13.938" width="10.371" height="10.371"/>
         </clipPath>
@@ -96,5 +93,4 @@
             </g>
         </g>
     </g>
-  </g>
 </svg>
