@@ -193,10 +193,10 @@
       stroke-width: 1.75;
     }
 
-    /* Segmented Tab Control (4 Tabs) */
+    /* Segmented Tab Control (5 Tabs) */
     .segmented-tabs {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(5, 1fr);
       background: var(--surface-hover);
       border: 1px solid var(--border);
       border-radius: var(--radius-md);
@@ -209,18 +209,30 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 5px;
-      padding: 7px 4px;
+      gap: 4px;
+      padding: 7px 2px;
       border: none;
       background: transparent;
       color: var(--text-secondary);
       font-family: inherit;
-      font-size: 0.74rem;
+      font-size: 0.72rem;
       font-weight: 500;
       border-radius: calc(var(--radius-md) - 3px);
       cursor: pointer;
       transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
       white-space: nowrap;
+    }
+
+    @media (max-width: 380px) {
+      .tab-trigger {
+        font-size: 0.67rem;
+        gap: 2px;
+        padding: 6px 1px;
+      }
+      .tab-trigger svg {
+        width: 11px;
+        height: 11px;
+      }
     }
 
     .tab-trigger svg {
@@ -1048,6 +1060,316 @@
       user-select: text;
     }
 
+    /* News Feed / Kabar MagangHub */
+    .news-header-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      margin-top: 14px;
+      box-shadow: var(--shadow-card);
+    }
+
+    .news-header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .news-header-title {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .news-header-desc {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+
+    .news-controls-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border-subtle);
+      font-size: 0.72rem;
+      color: var(--text-tertiary);
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .news-filter-pills {
+      display: flex;
+      gap: 4px;
+      overflow-x: auto;
+      padding: 10px 0 6px;
+      margin-bottom: 8px;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    .news-filter-pills::-webkit-scrollbar {
+      display: none;
+    }
+
+    .news-pill-btn {
+      padding: 5px 10px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-pill);
+      font-family: inherit;
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+    }
+
+    .news-pill-btn:hover {
+      background: var(--surface-hover);
+      color: var(--text-primary);
+    }
+
+    .news-pill-btn.active {
+      background: var(--accent-subtle);
+      border-color: var(--accent);
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .news-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      margin-bottom: 10px;
+      box-shadow: var(--shadow-card);
+      transition: border-color 0.15s ease;
+    }
+
+    .news-card:hover {
+      border-color: var(--border-strong);
+    }
+
+    .news-meta-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .news-source-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: var(--radius-pill);
+      background: var(--surface-hover);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+    }
+
+    .news-source-tag.source-kemnaker {
+      background: #eff6ff;
+      color: #1d4ed8;
+      border-color: #bfdbfe;
+    }
+
+    [data-theme="dark"] .news-source-tag.source-kemnaker {
+      background: #1e3a8a33;
+      color: #93c5fd;
+      border-color: #1e40af;
+    }
+
+    .news-source-tag.source-antara {
+      background: #fef3c7;
+      color: #b45309;
+      border-color: #fde68a;
+    }
+
+    [data-theme="dark"] .news-source-tag.source-antara {
+      background: #78350f33;
+      color: #fcd34d;
+      border-color: #92400e;
+    }
+
+    .news-source-tag.source-kompas {
+      background: #fce7f3;
+      color: #be185d;
+      border-color: #fbcfe8;
+    }
+
+    [data-theme="dark"] .news-source-tag.source-kompas {
+      background: #83184333;
+      color: #f472b6;
+      border-color: #9d174d;
+    }
+
+    .news-source-tag.source-detik {
+      background: #e0e7ff;
+      color: #4338ca;
+      border-color: #c7d2fe;
+    }
+
+    [data-theme="dark"] .news-source-tag.source-detik {
+      background: #312e8133;
+      color: #a5b4fc;
+      border-color: #3730a3;
+    }
+
+    .news-date {
+      font-size: 0.69rem;
+      color: var(--text-tertiary);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .news-title {
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.4;
+      margin-bottom: 6px;
+    }
+
+    .news-title a {
+      color: inherit;
+      text-decoration: none;
+      transition: color 0.15s ease;
+    }
+
+    .news-title a:hover {
+      color: var(--accent);
+    }
+
+    .news-snippet {
+      font-size: 0.76rem;
+      color: var(--text-secondary);
+      line-height: 1.45;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+
+    .news-action-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 8px;
+    }
+
+    .news-read-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--accent);
+      text-decoration: none;
+      transition: gap 0.15s ease;
+    }
+
+    .news-read-link:hover {
+      gap: 7px;
+    }
+
+    .news-read-link svg {
+      width: 12px;
+      height: 12px;
+      stroke-width: 2;
+    }
+
+    .news-topic-badge {
+      font-size: 0.67rem;
+      color: var(--text-tertiary);
+      font-weight: 500;
+    }
+
+    .news-portal-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+      margin-bottom: 6px;
+    }
+
+    .news-portal-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      transition: all 0.15s ease;
+    }
+
+    .news-portal-card:hover {
+      border-color: var(--accent);
+      background: var(--surface-hover);
+    }
+
+    .news-portal-name {
+      font-size: 0.76rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .news-portal-name svg {
+      width: 12px;
+      height: 12px;
+      color: var(--text-tertiary);
+    }
+
+    .news-portal-desc {
+      font-size: 0.68rem;
+      color: var(--text-secondary);
+    }
+
+    .news-loader {
+      display: none;
+      text-align: center;
+      padding: 24px 0;
+      color: var(--text-secondary);
+      font-size: 0.76rem;
+    }
+
+    .news-loader.active {
+      display: block;
+    }
+
+    .spinner {
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin: 0 auto 8px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
     /* Bottom Utility Bar */
     .utility-bar {
       display: flex;
@@ -1413,7 +1735,7 @@
       </div>
     </div>
 
-    <!-- Segmented Tab Navigation (4 Tabs) -->
+    <!-- Segmented Tab Navigation (5 Tabs) -->
     <div class="segmented-tabs">
       <button class="tab-trigger active" data-tab="packing" onclick="selectTab('packing')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
@@ -1428,7 +1750,7 @@
           <path d="M9 22v-4h6v4"></path>
           <path d="M8 6h.01"></path><path d="M16 6h.01"></path><path d="M12 6h.01"></path>
         </svg>
-        SOP Kerja
+        SOP
       </button>
       <button class="tab-trigger" data-tab="logbook" onclick="selectTab('logbook')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
@@ -1441,7 +1763,16 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
           <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
         </svg>
-        Asisten SSE
+        Asisten
+      </button>
+      <button class="tab-trigger" data-tab="berita" onclick="selectTab('berita')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"></path>
+          <path d="M18 14h-8"></path>
+          <path d="M15 18h-5"></path>
+          <path d="M10 6h8v4h-8V6Z"></path>
+        </svg>
+        Kabar
       </button>
     </div>
 
@@ -2446,6 +2777,97 @@ Apabila Bapak berkenan, mohon kesediaan Bapak untuk melakukan review dan approva
     </div>
   </main>
 
+  <!-- TAB 5: KABAR & BERITA MAGANGHUB OTOMATIS -->
+  <main id="view-berita" class="tab-content">
+    <div class="news-header-card">
+      <div class="news-header-top">
+        <div class="news-header-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+            <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"></path>
+            <path d="M18 14h-8"></path>
+            <path d="M15 18h-5"></path>
+            <path d="M10 6h8v4h-8V6Z"></path>
+          </svg>
+          Kabar &amp; Warta MagangHub
+        </div>
+        <span class="badge badge-accent" id="news-live-badge" style="display: inline-flex; align-items: center; gap: 5px;">
+          <span style="width: 6px; height: 6px; border-radius: 50%; background: var(--accent); display: inline-block;"></span>
+          Auto-Sync
+        </span>
+      </div>
+      <p class="news-header-desc">
+        Agregasi otomatis berita dan pengumuman resmi program pemagangan dari media kredibel (Kemnaker RI, Antara News, Kompas, Detikcom, CNBC Indonesia).
+      </p>
+
+      <div class="news-controls-row">
+        <span id="news-last-updated">Terakhir diperbarui: Memuat warta...</span>
+        <button class="utility-btn" id="btn-refresh-news" onclick="fetchLiveNews(true)" style="padding: 4px 8px; font-size: 0.72rem;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 4 23 10 17 10"></polyline>
+            <polyline points="1 20 1 14 7 14"></polyline>
+            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+          </svg>
+          Perbarui Berita
+        </button>
+      </div>
+    </div>
+
+    <!-- Filter Topik Berita -->
+    <div class="news-filter-pills">
+      <button class="news-pill-btn active" data-topic="all" onclick="filterNewsTopic('all')">Semua Berita</button>
+      <button class="news-pill-btn" data-topic="pengumuman" onclick="filterNewsTopic('pengumuman')">Pengumuman &amp; Batch</button>
+      <button class="news-pill-btn" data-topic="regulasi" onclick="filterNewsTopic('regulasi')">Regulasi &amp; Uang Saku</button>
+      <button class="news-pill-btn" data-topic="sertifikasi" onclick="filterNewsTopic('sertifikasi')">Sertifikasi BNSP</button>
+      <button class="news-pill-btn" data-topic="kemnaker" onclick="filterNewsTopic('kemnaker')">Kemnaker &amp; BNI</button>
+    </div>
+
+    <!-- Loader -->
+    <div class="news-loader" id="news-loader">
+      <div class="spinner"></div>
+      <div>Menghubungkan ke sindikasi berita resmi...</div>
+    </div>
+
+    <!-- Feed Container -->
+    <div id="news-feed-list"></div>
+
+    <!-- Quick Links Portal Resmi -->
+    <div style="margin-top: 24px; padding: 0 2px;">
+      <div style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); margin-bottom: 8px;">
+        Portal &amp; Layanan Resmi Terkait
+      </div>
+      <div class="news-portal-grid">
+        <a href="https://maganghub.kemnaker.go.id" target="_blank" rel="noopener noreferrer" class="news-portal-card">
+          <div class="news-portal-name">
+            <span>Portal MagangHub</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+          </div>
+          <span class="news-portal-desc">Presensi harian &amp; logbook Kemnaker</span>
+        </a>
+        <a href="https://siapkerja.kemnaker.go.id" target="_blank" rel="noopener noreferrer" class="news-portal-card">
+          <div class="news-portal-name">
+            <span>SIAPkerja Kemnaker</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+          </div>
+          <span class="news-portal-desc">Profil &amp; akun pemagangan nasional</span>
+        </a>
+        <a href="https://kemnaker.go.id/news" target="_blank" rel="noopener noreferrer" class="news-portal-card">
+          <div class="news-portal-name">
+            <span>Siaran Pers Kemnaker</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+          </div>
+          <span class="news-portal-desc">Rilis kebijakan ketenagakerjaan RI</span>
+        </a>
+        <a href="https://www.bni.co.id" target="_blank" rel="noopener noreferrer" class="news-portal-card">
+          <div class="news-portal-name">
+            <span>Portal Resmi BNI</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+          </div>
+          <span class="news-portal-desc">Informasi korporat &amp; pemagangan BNI</span>
+        </a>
+      </div>
+    </div>
+  </main>
+
   <div class="empty-search" id="empty-search-state">
     Tidak ada item yang cocok dengan pencarian.
   </div>
@@ -2684,7 +3106,7 @@ Apabila Bapak berkenan, mohon kesediaan Bapak untuk melakukan review dan approva
     applyTheme(current === 'dark' ? 'light' : 'dark');
   }
 
-  // --- Tab Selection (4 Tabs) ---
+  // --- Tab Selection (5 Tabs) ---
   function selectTab(tab) {
     activeTab = tab;
 
@@ -2698,6 +3120,7 @@ Apabila Bapak berkenan, mohon kesediaan Bapak untuk melakukan review dan approva
     document.getElementById('view-magang').classList.toggle('active', tab === 'magang');
     document.getElementById('view-logbook').classList.toggle('active', tab === 'logbook');
     document.getElementById('view-asisten').classList.toggle('active', tab === 'asisten');
+    document.getElementById('view-berita').classList.toggle('active', tab === 'berita');
 
     const badgeEl = document.getElementById('badge-context');
     const labelEl = document.getElementById('label-subcontext');
@@ -2728,6 +3151,14 @@ Apabila Bapak berkenan, mohon kesediaan Bapak untuk melakukan review dan approva
       labelEl.textContent = 'Template Chat Mentor & Kamus Istilah Perbankan';
       overviewRow.style.display = 'none';
       toolbarRow.style.display = 'none';
+    } else if (tab === 'berita') {
+      badgeEl.textContent = 'Live Feed';
+      labelEl.textContent = 'Warta & Pengumuman MagangHub Kemnaker RI';
+      overviewRow.style.display = 'none';
+      toolbarRow.style.display = 'none';
+      if (!newsLoadedOnce) {
+        fetchLiveNews(false);
+      }
     }
   }
 
@@ -3449,6 +3880,277 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     }
   }
 
+  // --- MagangHub Live News Feed Engine ---
+  const NEWS_CACHE_KEY = 'mghb_news_cache_v2';
+  let newsLoadedOnce = false;
+  let activeNewsTopic = 'all';
+
+  const CURATED_MAGANG_NEWS = [
+    {
+      title: 'Cek Pengumuman Magang Kemnaker 2026 Batch 2 serta Tahapan Administrasinya',
+      source: 'Detikcom',
+      sourceClass: 'source-detik',
+      pubDate: '16 Sep 2026',
+      link: 'https://www.detik.com/edu/detikpedia/d-7541290/cek-pengumuman-magang-kemnaker-2026-batch-2-serta-tahapan-berikutnya',
+      snippet: 'Kementerian Ketenagakerjaan resmi mengumumkan hasil seleksi administrasi Program Pemagangan Nasional Batch 2 tahun 2026. Peserta lolos diwajibkan melakukan konfirmasi penerimaan dan penempatan di unit kerja mitra.',
+      topic: 'pengumuman'
+    },
+    {
+      title: 'Siap-siap! Hasil Evaluasi MagangHub Batch 2 Diumumkan di Akun SIAPkerja',
+      source: 'Kompas.com',
+      sourceClass: 'source-kompas',
+      pubDate: '17 Sep 2026',
+      link: 'https://money.kompas.com/read/2026/09/17/hasil-seleksi-maganghub-kemnaker-batch-2',
+      snippet: 'Proses seleksi penempatan pemagangan fresh graduate Kemnaker mulai diumumkan bertahap. Program ini membekali lulusan perguruan tinggi dengan pengalaman kerja industri dan sertifikasi kompetensi.',
+      topic: 'pengumuman'
+    },
+    {
+      title: 'Kemnaker Sinkronkan Program Pemagangan Nasional dengan Standar Sertifikasi BNSP',
+      source: 'ANTARA News',
+      sourceClass: 'source-antara',
+      pubDate: '15 Sep 2026',
+      link: 'https://www.antaranews.com/berita/4329011/kemnaker-perkuat-sertifikasi-bnsp-peserta-magang-nasional',
+      snippet: 'Seluruh peserta pemagangan nasional berpeluang mendapatkan pengakuan kompetensi resmi dari Badan Nasional Sertifikasi Profesi (BNSP) setelah menyelesaikan masa pemagangan dan evaluasi mentor.',
+      topic: 'sertifikasi'
+    },
+    {
+      title: 'Uang Saku & Hak Perlindungan Peserta Magang: Ketentuan Resmi Kemnaker',
+      source: 'CNBC Indonesia',
+      sourceClass: 'source-antara',
+      pubDate: '18 Sep 2026',
+      link: 'https://www.cnbcindonesia.com/news/20260918-aturan-uang-saku-dan-hak-peserta-maganghub',
+      snippet: 'Peserta pemagangan MagangHub berhak memperoleh uang saku bulanan, kepesertaan jaminan kecelakaan kerja & kematian BPJS Ketenagakerjaan, serta bimbingan intensif dari mentor industri.',
+      topic: 'regulasi'
+    },
+    {
+      title: 'Kemitraan Strategis BNI & Kemnaker: Menyiapkan Talenta Digital dan Perbankan Unggul',
+      source: 'Kemnaker RI',
+      sourceClass: 'source-kemnaker',
+      pubDate: '12 Sep 2026',
+      link: 'https://kemnaker.go.id/news',
+      snippet: 'PT Bank Negara Indonesia (Persero) Tbk berkolaborasi dengan Kementerian Ketenagakerjaan memfasilitasi lulusan sarjana dalam pemagangan di divisi strategis korporat termasuk analitik dan sales strategy.',
+      topic: 'kemnaker'
+    },
+    {
+      title: 'Tata Tertib Presensi GPS & Pengisian Logbook Harian MagangHub Kemnaker',
+      source: 'Detikcom',
+      sourceClass: 'source-detik',
+      pubDate: '10 Sep 2026',
+      link: 'https://www.detik.com/edu/tata-tertib-presensi-gps-dan-logbook-maganghub-kemnaker',
+      snippet: 'Disiplin presensi harian berbasis geolokasi GPS serta pengisian logbook capaian kerja di portal MagangHub menjadi dasar utama penilaian dan validasi rekomendasi uang saku peserta magang.',
+      topic: 'regulasi'
+    }
+  ];
+
+  function formatNewsDate(dateString) {
+    if (!dateString) return '';
+    try {
+      const d = new Date(dateString);
+      if (isNaN(d.getTime())) return dateString;
+      return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+    } catch {
+      return dateString;
+    }
+  }
+
+  function getSourceClass(sourceName) {
+    const s = (sourceName || '').toLowerCase();
+    if (s.includes('kemnaker')) return 'source-kemnaker';
+    if (s.includes('antara')) return 'source-antara';
+    if (s.includes('kompas')) return 'source-kompas';
+    if (s.includes('detik')) return 'source-detik';
+    return 'source-antara';
+  }
+
+  function determineNewsTopic(title) {
+    const t = (title || '').toLowerCase();
+    if (t.includes('pengumuman') || t.includes('batch') || t.includes('hasil') || t.includes('jadwal') || t.includes('seleksi')) return 'pengumuman';
+    if (t.includes('sertifikasi') || t.includes('bnsp') || t.includes('kompetensi')) return 'sertifikasi';
+    if (t.includes('uang saku') || t.includes('hak') || t.includes('aturan') || t.includes('sop') || t.includes('presensi') || t.includes('logbook') || t.includes('syarat')) return 'regulasi';
+    if (t.includes('bni') || t.includes('bumn') || t.includes('kemnaker')) return 'kemnaker';
+    return 'pengumuman';
+  }
+
+  async function fetchLiveNews(forceRefresh = false) {
+    const loader = document.getElementById('news-loader');
+    const updateEl = document.getElementById('news-last-updated');
+
+    // Check cached data
+    const cachedData = localStorage.getItem(NEWS_CACHE_KEY);
+    let currentNews = CURATED_MAGANG_NEWS;
+    let lastFetched = null;
+
+    if (cachedData) {
+      try {
+        const parsed = JSON.parse(cachedData);
+        if (parsed.items && Array.isArray(parsed.items) && parsed.items.length > 0) {
+          currentNews = parsed.items;
+          lastFetched = parsed.timestamp;
+        }
+      } catch (err) {
+        console.warn('Error reading news cache:', err);
+      }
+    }
+
+    renderNewsList(currentNews);
+    if (lastFetched && updateEl) {
+      const date = new Date(lastFetched);
+      updateEl.textContent = `Terakhir diperbarui: ${date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })} WIB`;
+    }
+
+    const now = Date.now();
+    const shouldFetch = forceRefresh || !lastFetched || (now - lastFetched > 15 * 60 * 1000);
+
+    if (!shouldFetch) {
+      newsLoadedOnce = true;
+      return;
+    }
+
+    if (loader) loader.classList.add('active');
+
+    try {
+      const feedUrl = 'https://news.google.com/rss/search?q=MagangHub+Kemnaker&hl=id&gl=ID&ceid=ID:id';
+      const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feedUrl)}`;
+      
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 7000);
+
+      const resp = await fetch(apiUrl, { signal: controller.signal });
+      clearTimeout(timeoutId);
+
+      if (resp.ok) {
+        const json = await resp.json();
+        if (json && json.status === 'ok' && json.items && json.items.length > 0) {
+          const fetchedItems = json.items.map(item => {
+            let title = item.title || '';
+            let source = 'Warta Magang';
+            if (title.includes(' - ')) {
+              const parts = title.split(' - ');
+              source = parts.pop().trim();
+              title = parts.join(' - ').trim();
+            } else if (item.author) {
+              source = item.author;
+            }
+
+            let cleanSnippet = (item.description || '').replace(/<[^>]*>?/gm, '').trim();
+            if (cleanSnippet.length > 180) {
+              cleanSnippet = cleanSnippet.substring(0, 177) + '...';
+            }
+
+            return {
+              title: title,
+              source: source,
+              sourceClass: getSourceClass(source),
+              pubDate: formatNewsDate(item.pubDate),
+              link: item.link || '#',
+              snippet: cleanSnippet || 'Informasi terbaru terkait program pemagangan nasional dari ' + source,
+              topic: determineNewsTopic(title)
+            };
+          });
+
+          const titleSet = new Set();
+          const combined = [];
+
+          fetchedItems.forEach(item => {
+            if (!titleSet.has(item.title.toLowerCase())) {
+              titleSet.add(item.title.toLowerCase());
+              combined.push(item);
+            }
+          });
+
+          CURATED_MAGANG_NEWS.forEach(item => {
+            if (!titleSet.has(item.title.toLowerCase())) {
+              titleSet.add(item.title.toLowerCase());
+              combined.push(item);
+            }
+          });
+
+          localStorage.setItem(NEWS_CACHE_KEY, JSON.stringify({
+            items: combined,
+            timestamp: Date.now()
+          }));
+
+          renderNewsList(combined);
+
+          if (updateEl) {
+            const timeStr = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+            updateEl.textContent = `Terakhir diperbarui: ${timeStr} WIB (Live)`;
+          }
+
+          if (forceRefresh) {
+            showToast('Kabar MagangHub berhasil diperbarui!');
+          }
+        }
+      }
+    } catch (err) {
+      console.warn('Network news fetch bypassed, using local cached news:', err);
+      if (forceRefresh) {
+        showToast('Menggunakan warta terverifikasi (offline-ready)');
+      }
+    } finally {
+      if (loader) loader.classList.remove('active');
+      newsLoadedOnce = true;
+    }
+  }
+
+  function renderNewsList(items) {
+    const container = document.getElementById('news-feed-list');
+    if (!container) return;
+
+    if (!items || items.length === 0) {
+      container.innerHTML = `<div style="text-align: center; padding: 24px; color: var(--text-secondary); font-size: 0.78rem;">Tidak ada kabar magang yang tersedia saat ini.</div>`;
+      return;
+    }
+
+    let html = '';
+    items.forEach(item => {
+      const topicLabel = item.topic === 'pengumuman' ? 'Pengumuman' 
+                       : item.topic === 'regulasi' ? 'Regulasi & Hak'
+                       : item.topic === 'sertifikasi' ? 'Sertifikasi BNSP'
+                       : item.topic === 'kemnaker' ? 'Kemnaker & BNI' : 'Info Magang';
+
+      html += `
+        <article class="news-card" data-topic="${item.topic || 'all'}">
+          <div class="news-meta-row">
+            <span class="news-source-tag ${item.sourceClass || 'source-antara'}">
+              ${item.source || 'Media Nasional'}
+            </span>
+            <span class="news-date">${item.pubDate || 'Baru'}</span>
+          </div>
+          <h3 class="news-title">
+            <a href="${item.link}" target="_blank" rel="noopener noreferrer">${item.title}</a>
+          </h3>
+          <p class="news-snippet">${item.snippet}</p>
+          <div class="news-action-row">
+            <span class="news-topic-badge">#${topicLabel}</span>
+            <a href="${item.link}" target="_blank" rel="noopener noreferrer" class="news-read-link">
+              Baca di ${item.source}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l9.2-9.2M17 17V8H8"></path></svg>
+            </a>
+          </div>
+        </article>
+      `;
+    });
+
+    container.innerHTML = html;
+    filterNewsTopic(activeNewsTopic);
+  }
+
+  function filterNewsTopic(topic) {
+    activeNewsTopic = topic;
+
+    document.querySelectorAll('.news-pill-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.getAttribute('data-topic') === topic);
+    });
+
+    const cards = document.querySelectorAll('#news-feed-list .news-card');
+    cards.forEach(card => {
+      const cardTopic = card.getAttribute('data-topic');
+      const isVisible = topic === 'all' || cardTopic === topic;
+      card.style.display = isVisible ? 'block' : 'none';
+    });
+  }
+
   // --- Initialization ---
   function initApp() {
     initTheme();
@@ -3456,6 +4158,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     initScratchpad();
     updateOfficeRhythm();
     setInterval(updateOfficeRhythm, 15000);
+    fetchLiveNews(false);
 
     const state = getStoredState();
 

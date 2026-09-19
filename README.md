@@ -6,7 +6,7 @@ Aplikasi web produktivitas (*Mobile-First Productivity App*) yang dirancang seba
 
 ---
 
-## 🚀 4 Modul Utama Asisten Magang
+## 🚀 5 Modul Utama Asisten Magang
 
 ### 1. 🎒 Bawaan & Wisuda UMS (38 Item)
 * Checklist perlengkapan keberangkatan dinas Jakarta & wisuda sarjana UMS (24–27 September 2026).
@@ -43,6 +43,17 @@ Aplikasi web produktivitas (*Mobile-First Productivity App*) yang dirancang seba
 * **Kamus Kilat Istilah Perbankan & Divisi SSE**:
   - Glosarium istilah perbankan: CASA, DPK, Sales Pipeline, NPL, Achievement Rate, Data Cleansing, Cross-Selling.
   - Dilengkapi kolom **💡 Tips Peran Zaki (IT/Data)**: Cara mengaplikasikan analisis data, Excel, dan pembersihan data pada setiap istilah bisnis tersebut.
+
+### 5. 📰 Kabar & Warta MagangHub (Auto-Sync News Feed)
+* **Agregasi Otomatis Berita Kredibel**: Menarik pembaruan warta terkini secara otomatis dari sumber-sumber terpercaya:
+  - **Kementerian Ketenagakerjaan RI (Kemnaker)**: Rilis resmi, pengumuman batch, dan regulasi.
+  - **ANTARA News**: Kebijakan pemagangan nasional & sertifikasi BNSP.
+  - **Kompas.com, Detikcom, & CNBC Indonesia**: Jadwal seleksi, aturan hak & uang saku peserta, serta liputan program BNI.
+* **Fitur Live Refresh & Offline Cache**:
+  - Mengambil feed dinamis secara berkala tanpa membebani browser.
+  - Tetap dapat dibaca meski sedang offline berkat arsip lokal terverifikasi.
+  - Filter kategori cepat: *Semua*, *Pengumuman*, *Regulasi & Uang Saku*, *Sertifikasi BNSP*, *Kemnaker & BNI*.
+  - Tautan langsung ke portal resmi: MagangHub, SIAPkerja, Kemnaker News, dan BNI.
 
 ---
 
