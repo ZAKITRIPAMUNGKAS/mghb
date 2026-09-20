@@ -74,11 +74,28 @@ Aplikasi web produktivitas (*Mobile-First Productivity App*) yang dirancang seba
 
 ---
 
-## 🔒 100% Local-First & Sinkronisasi Lintas Perangkat
+## 🗄️ Database Cloud (PostgreSQL via Supabase) & Arsitektur Offline-First
 
-* **Privat & Bebas Biaya**: Seluruh data centang dan arsip logbook tersimpan secara lokal di browser (`localStorage`), tanpa database eksternal dan aman dari kebocoran data.
+Aplikasi kini dilengkapi dengan integrasi database cloud modern menggunakan **Supabase (PostgreSQL)** dengan arsitektur **Hybrid Offline-First**:
+
+1. **Kenapa Supabase PostgreSQL?**:
+   * **Ideal untuk Peran IT & Data Analytics (SSE)**: Data tersimpan dalam tabel relasional PostgreSQL standar (`mghb_logbooks`, `mghb_expenses`, `mghb_checklists`, `mghb_moms`), siap di-query SQL atau diekspor ke format CSV / Microsoft Excel untuk analisis tren.
+   * **Sinkronisasi Multi-Perangkat**: Zaki dapat mencatat logbook di laptop kantor Menara BNI dan mengecek checklist serta pengeluaran di HP smartphone secara otomatis tanpa bentrok.
+   * **Tanpa Backend Server Rumit**: Terkoneksi langsung melalui browser via Supabase JS SDK CDN.
+   * **100% Tetap Berfungsi Offline**: Jika belum terhubung ke Supabase atau koneksi internet mati di lapangan, seluruh data tetap aman di `localStorage` peramban.
+
+2. **Panduan Setup Cepat 3 Langkah**:
+   * **Langkah 1**: Buat proyek baru gratis di [Supabase.com](https://supabase.com).
+   * **Langkah 2**: Buka menu **SQL Editor** di dashboard Supabase, lalu jalankan script [`supabase-schema.sql`](./supabase-schema.sql) yang sudah disediakan.
+   * **Langkah 3**: Buka aplikasi MGHB, klik tombol Database (**☁️**) di header atas atau menu Sinkronisasi, masukkan *Project URL* dan *Anon Public Key*, lalu klik **Uji & Hubungkan**. Seluruh data lokal akan otomatis tersinkronisasi ke cloud!
+
+---
+
+## 🔒 Privasi, Backup & Sinkronisasi Lintas Perangkat
+
 * **Buka di HP via QR Code**: Pindai kode QR dari layar laptop untuk menyelaraskan status centang ke smartphone secara instan.
-* **Cadangan Berkas (Backup / Restore)**: Unduh atau pulihkan berkas data `.json` kapan saja.
+* **Cadangan Berkas (Backup / Restore JSON)**: Unduh atau pulihkan berkas data `.json` kapan saja secara offline.
+* **Modern Mobile-First Navigation**: Dilengkapi Bottom Navigation Bar di bagian bawah layar smartphone untuk navigasi satu tangan yang cepat dan nyaman.
 * **Filter Cepat & Search**: Filter status `Semua`, `Belum`, `Selesai` serta pintasan keyboard `/` untuk pencarian cepat.
 
 ---

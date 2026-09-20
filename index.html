@@ -12,6 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
       --font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -1525,47 +1526,61 @@
 
     .quick-hub-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
       margin-top: 14px;
     }
 
+    @media (min-width: 540px) {
+      .quick-hub-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
     .quick-hub-btn {
-      background: var(--surface-hover);
+      background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 10px 8px;
+      border-radius: var(--radius-md);
+      padding: 12px 10px;
       display: flex;
       flex-direction: column;
       align-items: center;
       text-align: center;
-      gap: 5px;
+      gap: 6px;
       cursor: pointer;
       font-family: inherit;
-      transition: all 0.15s ease;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
     }
 
     .quick-hub-btn:hover {
-      background: var(--accent-subtle);
+      background: var(--surface-hover);
       border-color: var(--accent);
-      transform: translateY(-1px);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
     }
 
     .quick-hub-icon {
-      width: 28px;
-      height: 28px;
-      border-radius: 6px;
-      background: var(--surface);
-      border: 1px solid var(--border);
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--surface-hover);
+      border: 1px solid var(--border-subtle);
       display: flex;
       align-items: center;
       justify-content: center;
       color: var(--accent);
+      transition: all 0.2s ease;
+    }
+
+    .quick-hub-btn:hover .quick-hub-icon {
+      background: var(--accent-subtle);
+      transform: scale(1.06);
     }
 
     .quick-hub-icon svg {
-      width: 14px;
-      height: 14px;
+      width: 16px;
+      height: 16px;
     }
 
     .quick-hub-label {
@@ -1627,12 +1642,13 @@
 
     .news-filter-pills {
       display: flex;
-      gap: 4px;
+      gap: 6px;
       overflow-x: auto;
-      padding: 10px 0 6px;
-      margin-bottom: 8px;
+      padding: 12px 2px 8px;
+      margin-bottom: 12px;
       -ms-overflow-style: none;
       scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
     }
 
     .news-filter-pills::-webkit-scrollbar {
@@ -1640,17 +1656,18 @@
     }
 
     .news-pill-btn {
-      padding: 5px 10px;
+      padding: 6px 13px;
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius-pill);
       font-family: inherit;
-      font-size: 0.72rem;
+      font-size: 0.74rem;
       font-weight: 500;
       color: var(--text-secondary);
       cursor: pointer;
       white-space: nowrap;
       transition: all 0.15s ease;
+      flex-shrink: 0;
     }
 
     .news-pill-btn:hover {
@@ -1659,10 +1676,11 @@
     }
 
     .news-pill-btn.active {
-      background: var(--accent-subtle);
+      background: var(--accent);
       border-color: var(--accent);
-      color: var(--accent);
+      color: #ffffff;
       font-weight: 600;
+      box-shadow: 0 1px 4px rgba(0, 94, 106, 0.25);
     }
 
     .news-card {
@@ -2847,6 +2865,13 @@
       </div>
 
       <div class="actions-cluster">
+        <button class="btn-icon" id="btn-db" title="Database Cloud &amp; Realtime Sync (Supabase)" onclick="openDbModal()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+            <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+            <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+          </svg>
+        </button>
         <button class="btn-icon" id="btn-sync" title="Buka di HP / Cadangan" onclick="openSyncModal()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
             <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
@@ -4897,6 +4922,7 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
       <div class="modal-nav">
         <button class="modal-nav-btn active" id="modal-tab-btn-qr" onclick="switchModalTab('qr')">Buka di Smartphone</button>
         <button class="modal-nav-btn" id="modal-tab-btn-backup" onclick="switchModalTab('backup')">Cadangan Berkas</button>
+        <button class="modal-nav-btn" id="modal-tab-btn-db" onclick="switchModalTab('db')">Database (Supabase)</button>
       </div>
 
       <!-- Pane 1: QR & Link -->
@@ -4957,6 +4983,56 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
             </button>
             <input type="file" id="import-file-input" accept=".json" style="display: none;" onchange="handleImportFile(event)">
           </div>
+        </div>
+      </div>
+
+      <!-- Pane 3: Supabase Database Cloud -->
+      <div class="modal-tab-pane" id="modal-pane-db">
+        <div style="background: rgba(0, 94, 106, 0.08); border: 1px solid rgba(0, 94, 106, 0.2); border-radius: var(--radius-sm); padding: 10px 12px; margin-bottom: 12px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+            <strong style="font-size: 0.78rem; color: var(--text-primary);">Status Koneksi Database</strong>
+            <span class="badge" id="db-conn-badge" style="background: var(--surface); color: var(--text-secondary); border: 1px solid var(--border);">Lokal (Offline)</span>
+          </div>
+          <p style="font-size: 0.72rem; color: var(--text-secondary); line-height: 1.4; margin: 0;">
+            Gunakan <strong>Supabase (PostgreSQL Cloud)</strong> agar seluruh logbook harian, catatan keuangan, dan checklist tersinkronisasi otomatis antara laptop kantor Menara BNI dan smartphone pribadi secara instan.
+          </p>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 10px;">
+          <label class="form-label" style="font-size: 0.73rem;">Supabase Project URL</label>
+          <input type="text" class="form-control" id="db-supabase-url" placeholder="https://xyzproject.supabase.co" style="font-size: 0.76rem;">
+        </div>
+
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label class="form-label" style="font-size: 0.73rem;">Supabase Anon Public Key</label>
+          <input type="password" class="form-control" id="db-supabase-key" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." style="font-size: 0.76rem;">
+        </div>
+
+        <div style="display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap;">
+          <button type="button" class="btn-action" style="flex: 1;" onclick="testAndSaveDbConnection()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            Tes &amp; Hubungkan Database
+          </button>
+          <button type="button" class="btn-action btn-secondary" onclick="syncAllDataWithCloud()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
+            </svg>
+            Sinkronkan Sekarang
+          </button>
+        </div>
+
+        <div style="border-top: 1px solid var(--border-subtle); padding-top: 10px;">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <span style="font-size: 0.72rem; color: var(--text-tertiary);">Skema SQL Database:</span>
+            <button class="btn-action btn-xs" onclick="downloadSqlSchema()">
+              Unduh supabase-schema.sql
+            </button>
+          </div>
+          <p style="font-size: 0.68rem; color: var(--text-tertiary); margin-top: 6px; line-height: 1.35;">
+            💡 <em>Jalankan script skema SQL sekali di SQL Editor Supabase untuk membuat tabel logbook, expenses, checklists, dan notulensi rapat secara instan.</em>
+          </p>
         </div>
       </div>
     </div>
@@ -5109,6 +5185,16 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
     }
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     updateMetrics();
+
+    // Background sync to Supabase if connected
+    if (supabaseClient) {
+      supabaseClient.from('mghb_checklists').upsert({
+        id: id,
+        tab: id.startsWith('pk') ? 'packing' : 'magang',
+        is_checked: Boolean(isChecked),
+        updated_at: new Date().toISOString()
+      }).catch(err => console.warn('Supabase checklist sync error:', err));
+    }
   }
 
   // --- Theme Management ---
@@ -5368,8 +5454,215 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
   function switchModalTab(tab) {
     document.getElementById('modal-tab-btn-qr').classList.toggle('active', tab === 'qr');
     document.getElementById('modal-tab-btn-backup').classList.toggle('active', tab === 'backup');
+    const dbBtn = document.getElementById('modal-tab-btn-db');
+    if (dbBtn) dbBtn.classList.toggle('active', tab === 'db');
+
     document.getElementById('modal-pane-qr').classList.toggle('active', tab === 'qr');
     document.getElementById('modal-pane-backup').classList.toggle('active', tab === 'backup');
+    const dbPane = document.getElementById('modal-pane-db');
+    if (dbPane) dbPane.classList.toggle('active', tab === 'db');
+  }
+
+  function openDbModal() {
+    openSyncModal();
+    switchModalTab('db');
+  }
+
+  // --- Supabase Cloud Database Integration ---
+  const SUPABASE_URL_KEY = 'mghb_supabase_url';
+  const SUPABASE_KEY_KEY = 'mghb_supabase_anon_key';
+  let supabaseClient = null;
+
+  function initSupabaseClient() {
+    const url = localStorage.getItem(SUPABASE_URL_KEY);
+    const key = localStorage.getItem(SUPABASE_KEY_KEY);
+    const urlInput = document.getElementById('db-supabase-url');
+    const keyInput = document.getElementById('db-supabase-key');
+    const badge = document.getElementById('db-conn-badge');
+    const btnDb = document.getElementById('btn-db');
+
+    if (urlInput && url) urlInput.value = url;
+    if (keyInput && key) keyInput.value = key;
+
+    if (url && key && window.supabase) {
+      try {
+        supabaseClient = window.supabase.createClient(url, key);
+        if (badge) {
+          badge.textContent = 'Cloud (PostgreSQL)';
+          badge.style.background = '#10b981';
+          badge.style.color = '#ffffff';
+          badge.style.borderColor = 'transparent';
+        }
+        if (btnDb) {
+          btnDb.style.color = '#10b981';
+          btnDb.title = 'Database: Terhubung ke Supabase Cloud (PostgreSQL)';
+        }
+      } catch (e) {
+        console.warn('Supabase init error:', e);
+        supabaseClient = null;
+      }
+    } else {
+      supabaseClient = null;
+      if (badge) {
+        badge.textContent = 'Lokal (LocalStorage)';
+        badge.style.background = 'var(--surface)';
+        badge.style.color = 'var(--text-secondary)';
+        badge.style.borderColor = 'var(--border)';
+      }
+      if (btnDb) {
+        btnDb.style.color = 'var(--text-secondary)';
+        btnDb.title = 'Database Cloud & Real-time Sync (Supabase)';
+      }
+    }
+  }
+
+  async function testAndSaveDbConnection() {
+    const url = document.getElementById('db-supabase-url')?.value.trim();
+    const key = document.getElementById('db-supabase-key')?.value.trim();
+    const badge = document.getElementById('db-conn-badge');
+
+    if (!url || !key) {
+      showToast('Harap masukkan Supabase URL dan Anon Key');
+      return;
+    }
+
+    if (!window.supabase) {
+      showToast('SDK Supabase belum termuat. Periksa koneksi internet');
+      return;
+    }
+
+    showToast('Menguji koneksi ke Supabase...');
+
+    try {
+      const client = window.supabase.createClient(url, key);
+      const { data, error } = await client.from('mghb_logbooks').select('id').limit(1);
+
+      if (error && error.code !== 'PGRST116') {
+        if (error.message && error.message.includes('does not exist')) {
+          localStorage.setItem(SUPABASE_URL_KEY, url);
+          localStorage.setItem(SUPABASE_KEY_KEY, key);
+          supabaseClient = client;
+          initSupabaseClient();
+          showToast('Koneksi berhasil! Silakan jalankan supabase-schema.sql di SQL Editor');
+          return;
+        }
+        throw error;
+      }
+
+      localStorage.setItem(SUPABASE_URL_KEY, url);
+      localStorage.setItem(SUPABASE_KEY_KEY, key);
+      supabaseClient = client;
+      initSupabaseClient();
+      showToast('✅ Berhasil terhubung ke Supabase PostgreSQL!');
+      syncAllDataWithCloud();
+    } catch (err) {
+      console.error('Database connection test failed:', err);
+      showToast('Gagal terhubung: ' + (err.message || 'Periksa kembali URL & Key'));
+      if (badge) {
+        badge.textContent = 'Gagal Terhubung';
+        badge.style.background = '#ef4444';
+        badge.style.color = '#ffffff';
+      }
+    }
+  }
+
+  async function syncAllDataWithCloud() {
+    if (!supabaseClient) {
+      showToast('Belum terhubung ke Supabase. Masukkan URL & Key terlebih dahulu');
+      return;
+    }
+
+    showToast('Menyinkronkan data ke Cloud PostgreSQL...');
+
+    try {
+      // 1. Sync Checklists
+      const localChecklists = getStoredState();
+      for (const [id, isChecked] of Object.entries(localChecklists)) {
+        await supabaseClient.from('mghb_checklists').upsert({
+          id: id,
+          tab: id.startsWith('pk') ? 'packing' : 'magang',
+          is_checked: Boolean(isChecked),
+          updated_at: new Date().toISOString()
+        });
+      }
+
+      // 2. Sync Expenses
+      const localExpenses = getFinanceExpenses();
+      for (const item of localExpenses) {
+        await supabaseClient.from('mghb_expenses').upsert({
+          id: item.id,
+          tx_date: item.date,
+          category: item.cat,
+          description: item.desc,
+          amount: item.amount,
+          created_at: new Date().toISOString()
+        });
+      }
+
+      // 3. Sync Logbooks
+      let localLogs = [];
+      try {
+        const raw = localStorage.getItem(LOGBOOK_STORAGE_KEY);
+        if (raw) localLogs = JSON.parse(raw);
+      } catch {}
+      for (const log of localLogs) {
+        await supabaseClient.from('mghb_logbooks').upsert({
+          id: log.id,
+          report_date: log.date,
+          category: log.category,
+          category_label: log.categoryLabel,
+          rough_notes: log.roughNotes || '',
+          activity: log.activity,
+          output: log.output,
+          obstacle: log.obstacle || '',
+          updated_at: new Date().toISOString()
+        });
+      }
+
+      // 4. Fetch cloud data to merge back
+      const { data: cloudLogs } = await supabaseClient.from('mghb_logbooks').select('*').order('report_date', { ascending: false });
+      if (cloudLogs && Array.isArray(cloudLogs) && cloudLogs.length > 0) {
+        const mergedLogs = cloudLogs.map(cl => ({
+          id: cl.id,
+          date: cl.report_date,
+          category: cl.category,
+          categoryLabel: cl.category_label,
+          roughNotes: cl.rough_notes,
+          activity: cl.activity,
+          output: cl.output,
+          obstacle: cl.obstacle
+        }));
+        localStorage.setItem(LOGBOOK_STORAGE_KEY, JSON.stringify(mergedLogs));
+        renderLogbookHistory();
+      }
+
+      const { data: cloudExpenses } = await supabaseClient.from('mghb_expenses').select('*').order('tx_date', { ascending: false });
+      if (cloudExpenses && Array.isArray(cloudExpenses) && cloudExpenses.length > 0) {
+        const mergedExpenses = cloudExpenses.map(ce => ({
+          id: ce.id,
+          date: ce.tx_date,
+          cat: ce.category,
+          desc: ce.description,
+          amount: ce.amount
+        }));
+        saveFinanceExpenses(mergedExpenses);
+        renderFinanceExpenses();
+        updateFinanceCalculations();
+      }
+
+      showToast('⚡ Sinkronisasi Cloud selesai! Data mutakhir telah tersimpan.');
+    } catch (e) {
+      console.error('Sync error:', e);
+      showToast('Sinkronisasi sebagian terkendala: ' + (e.message || 'Periksa tabel database'));
+    }
+  }
+
+  function downloadSqlSchema() {
+    const link = document.createElement('a');
+    link.href = 'supabase-schema.sql';
+    link.download = 'supabase-schema.sql';
+    link.click();
+    showToast('Berkas supabase-schema.sql diunduh!');
   }
 
   function copySyncLink() {
@@ -5489,24 +5782,52 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
 
   function saveLogbookHistory() {
     const dateVal = document.getElementById('lb-date').value || new Date().toISOString().slice(0, 10);
+    const category = document.getElementById('lb-category')?.value || 'general';
+    const catLabel = document.getElementById('lb-category')?.selectedOptions?.[0]?.text || 'Umum';
+    const rough = document.getElementById('lb-rough-notes')?.value.trim() || '';
     const act = document.getElementById('res-activity').textContent;
     const ach = document.getElementById('res-achievement').textContent;
     const obs = document.getElementById('res-obstacle').textContent;
 
     if (!act) return;
 
-    const records = JSON.parse(localStorage.getItem(LOGBOOK_STORAGE_KEY) || '[]');
-    records.unshift({
+    const recordId = 'lb_' + Date.now();
+    const newRecord = {
+      id: recordId,
       date: dateVal,
+      category: category,
+      categoryLabel: catLabel,
+      roughNotes: rough,
       activity: act,
       achievement: ach,
+      output: ach,
       obstacle: obs,
       timestamp: Date.now()
-    });
+    };
+
+    const records = JSON.parse(localStorage.getItem(LOGBOOK_STORAGE_KEY) || '[]');
+    records.unshift(newRecord);
 
     localStorage.setItem(LOGBOOK_STORAGE_KEY, JSON.stringify(records.slice(0, 30)));
     renderLogbookHistory();
     showToast('Disimpan ke arsip riwayat lokal');
+
+    // Background sync to Supabase if connected
+    if (supabaseClient) {
+      supabaseClient.from('mghb_logbooks').upsert({
+        id: recordId,
+        report_date: dateVal,
+        category: category,
+        category_label: catLabel,
+        rough_notes: rough,
+        activity: act,
+        output: ach,
+        obstacle: obs,
+        updated_at: new Date().toISOString()
+      }).then(() => {
+        console.log('Logbook synced to Supabase');
+      }).catch(err => console.warn('Supabase logbook sync error:', err));
+    }
   }
 
   function renderLogbookHistory() {
@@ -7049,6 +7370,20 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     renderFinanceExpenses();
     updateFinanceCalculations();
     showToast(`Pengeluaran ${formatRupiah(amount)} berhasil dicatat!`);
+
+    // Background sync to Supabase if connected
+    if (supabaseClient) {
+      supabaseClient.from('mghb_expenses').upsert({
+        id: newTx.id,
+        tx_date: newTx.date,
+        category: newTx.cat,
+        description: newTx.desc,
+        amount: newTx.amount,
+        created_at: new Date().toISOString()
+      }).then(() => {
+        console.log('Expense synced to Supabase');
+      }).catch(err => console.warn('Supabase expense sync error:', err));
+    }
   }
 
   function quickFillExpense(cat, amount, desc) {
@@ -7072,6 +7407,11 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     renderFinanceExpenses();
     updateFinanceCalculations();
     showToast('Transaksi pengeluaran dihapus');
+
+    if (supabaseClient) {
+      supabaseClient.from('mghb_expenses').delete().eq('id', id)
+        .catch(err => console.warn('Supabase delete expense error:', err));
+    }
   }
 
   function clearFinanceHistory() {
@@ -7162,6 +7502,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   // --- Initialization ---
   function initApp() {
     initTheme();
+    initSupabaseClient();
     checkIncomingSync();
     initScratchpad();
     initFinanceManager();
