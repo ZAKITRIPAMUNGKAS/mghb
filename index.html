@@ -6883,12 +6883,12 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   }
 
   // --- MagangHub Live News Feed Engine ---
-  const NEWS_CACHE_KEY = 'mghb_news_cache_v20260921_clean';
+  const NEWS_CACHE_KEY = 'mghb_news_cache_v20260921_text';
   let newsLoadedOnce = false;
   let activeNewsTopic = 'all';
 
   // Bersihkan semua cache lama
-  ['mghb_news_cache', 'mghb_news_cache_v2', 'mghb_news_cache_v3', 'mghb_news_cache_v4', 'mghb_news_cache_v5', 'mghb_news_cache_v6', 'mghb_news_cache_v7', 'mghb_news_cache_v8', 'mghb_news_cache_v20260921', 'mghb_news_cache_v20260921_real'].forEach(k => {
+  ['mghb_news_cache', 'mghb_news_cache_v2', 'mghb_news_cache_v3', 'mghb_news_cache_v4', 'mghb_news_cache_v5', 'mghb_news_cache_v6', 'mghb_news_cache_v7', 'mghb_news_cache_v8', 'mghb_news_cache_v20260921', 'mghb_news_cache_v20260921_real', 'mghb_news_cache_v20260921_clean'].forEach(k => {
     try { localStorage.removeItem(k); } catch {}
   });
 
@@ -7394,15 +7394,10 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
                        : item.topic === 'regulasi' ? 'Regulasi & Hak'
                        : item.topic === 'sertifikasi' ? 'Sertifikasi BNSP'
                        : item.topic === 'kemnaker' ? 'Kemnaker & BNI' : 'Info Magang';
-      const thumb = item.image || getTopicFallbackImage(item.topic, item.source);
       const cleanSnippet = cleanSnippetText(item.snippet, item.title, item.source);
 
       html += `
         <article class="news-card" data-topic="${item.topic || 'all'}">
-          ${thumb ? `
-          <div class="news-thumb-wrap">
-            <img src="${thumb}" alt="${item.title}" class="news-thumb-img" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null; this.parentElement.style.display='none';">
-          </div>` : ''}
           <div class="news-meta-row">
             <span class="news-source-tag ${item.sourceClass || 'source-antara'}">
               ${item.source || 'Media Nasional'}
@@ -7426,9 +7421,6 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
 
     container.innerHTML = html;
     filterNewsTopic(activeNewsTopic);
-
-    // Asynchronously resolve real og:image from source article via /api/extract-og
-    enrichNewsWithLiveOgImages(items);
   }
 
   // --- Dynamic Live Web Scraper (Real OpenGraph Extraction) ---
