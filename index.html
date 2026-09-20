@@ -7170,8 +7170,8 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     enrichNewsWithLiveOgImages(items);
   }
 
-  // --- Dynamic OpenGraph / Tag Image Scraper & Enricher ---
-  const OG_CACHE_PREFIX = 'mghb_og_v1_';
+  // --- Dynamic Live Web Scraper (Real OpenGraph Extraction) ---
+  const OG_CACHE_PREFIX = 'mghb_og_v2_';
 
   async function enrichNewsWithLiveOgImages(items) {
     if (!items || !Array.isArray(items)) return;
@@ -7194,25 +7194,43 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
         continue;
       }
 
-      // Fetch from Vercel Serverless Function /api/extract-og
+      // 1. Coba lewat internal serverless function /api/extract-og (jika di Vercel/Node)
+      let liveScrapedImage = null;
       try {
         const apiUrl = `/api/extract-og?url=${encodeURIComponent(item.link)}`;
         const controller = new AbortController();
-        const timer = setTimeout(() => controller.abort(), 4500);
-
+        const timer = setTimeout(() => controller.abort(), 3500);
         const res = await fetch(apiUrl, { signal: controller.signal });
         clearTimeout(timer);
-
         if (res.ok) {
           const data = await res.json();
           if (data && data.image) {
-            item.image = data.image;
-            localStorage.setItem(hashKey, data.image);
-            updateNewsCardImageInDom(item.link, data.image);
+            liveScrapedImage = data.image;
           }
         }
-      } catch {
-        // Fallback silently if offline or serverless unavailable
+      } catch {}
+
+      // 2. Fallback ke Live Web Scraper Engine (Microlink OpenGraph API)
+      if (!liveScrapedImage) {
+        try {
+          const scraperUrl = `https://api.microlink.io?url=${encodeURIComponent(item.link)}`;
+          const controller = new AbortController();
+          const timer = setTimeout(() => controller.abort(), 4500);
+          const res = await fetch(scraperUrl, { signal: controller.signal });
+          clearTimeout(timer);
+          if (res.ok) {
+            const data = await res.json();
+            if (data && data.status === 'success' && data.data && data.data.image && data.data.image.url) {
+              liveScrapedImage = data.data.image.url;
+            }
+          }
+        } catch {}
+      }
+
+      if (liveScrapedImage) {
+        item.image = liveScrapedImage;
+        try { localStorage.setItem(hashKey, liveScrapedImage); } catch {}
+        updateNewsCardImageInDom(item.link, liveScrapedImage);
       }
     }
   }
