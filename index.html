@@ -6883,16 +6883,36 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   }
 
   // --- MagangHub Live News Feed Engine ---
-  const NEWS_CACHE_KEY = 'mghb_news_cache_v6';
+  const NEWS_CACHE_KEY = 'mghb_news_cache_v7';
   let newsLoadedOnce = false;
   let activeNewsTopic = 'all';
 
-  // Bersihkan cache lama yang menyimpan gambar tidak sinkron
-  ['mghb_news_cache', 'mghb_news_cache_v2', 'mghb_news_cache_v3', 'mghb_news_cache_v4', 'mghb_news_cache_v5'].forEach(k => {
+  // Bersihkan cache lama yang menyimpan data statis
+  ['mghb_news_cache', 'mghb_news_cache_v2', 'mghb_news_cache_v3', 'mghb_news_cache_v4', 'mghb_news_cache_v5', 'mghb_news_cache_v6'].forEach(k => {
     try { localStorage.removeItem(k); } catch {}
   });
 
   const CURATED_MAGANG_NEWS = [
+    {
+      title: 'Kemnaker Ingatkan Peserta MagangHub Batch 2 Dimulai Besok, Ini Kebutuhan yang Perlu Disiapkan',
+      source: 'Kliksamarinda.com',
+      sourceClass: 'source-kemnaker',
+      pubDate: 'Hari ini, 12:20 WIB',
+      link: 'https://news.google.com/rss/search?q=MagangHub+Kemnaker+2026&hl=id&gl=ID&ceid=ID:id',
+      snippet: 'Kementerian Ketenagakerjaan mengingatkan seluruh peserta terpilih MagangHub Batch 2 untuk hadir di lokasi kantor mitra tepat waktu pada Senin 21 September 2026 dengan pakaian formal dan esensial kerja.',
+      topic: 'pengumuman',
+      image: 'https://img.antaranews.com/cache/1200x800/2026/09/16/target-vokasi-nasional-2026-2854548.jpg'
+    },
+    {
+      title: 'Kemnaker: Cek Pengumuman MagangHub di Portal Resmi SIAPkerja',
+      source: 'RRI.co.id',
+      sourceClass: 'source-kemnaker',
+      pubDate: 'Hari ini, 04:04 WIB',
+      link: 'https://news.google.com/rss/search?q=MagangHub+Kemnaker+2026&hl=id&gl=ID&ceid=ID:id',
+      snippet: 'Kementerian Ketenagakerjaan mengimbau calon peserta memastikan status penerimaan dan dokumen perjanjian kerja hanya melalui dasbor resmi SIAPkerja Kemnaker RI.',
+      topic: 'pengumuman',
+      image: 'https://img.antaranews.com/cache/1200x800/2026/07/07/3292d4bd-5309-424c-b025-7feaafedb9a1.jpeg'
+    },
     {
       title: 'Pengumuman Magang Kemnaker Besok, Cek Hasil Kelulusan di Maganghub!',
       source: 'Detikcom',
@@ -6942,20 +6962,17 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       snippet: 'Menteri Ketenagakerjaan memantau pelaksanaan program Magang Nasional di kantor BNI, mengapresiasi pembinaan kompetensi perbankan dan kesiapan talenta muda menghadapi dunia kerja.',
       topic: 'kemnaker',
       image: 'https://img.antaranews.com/cache/1200x800/2025/11/28/1000096979.jpg'
-    },
-    {
-      title: 'Kemnaker Perkuat Ekosistem MagangHub yang Transparan dan Efektif',
-      source: 'ANTARA News',
-      sourceClass: 'source-antara',
-      pubDate: '15 Sep 2026',
-      link: 'https://jambi.antaranews.com/berita/660857/kemnaker-perkuat-ekosistem-maganghub-yang-transparan-dan-efektif',
-      snippet: 'Kementerian Ketenagakerjaan memperkuat kualitas dan ekosistem Magang Nasional (MagangHub) 2026 yang transparan dan efektif melalui penguatan monitoring dan pendampingan mentor.',
-      topic: 'regulasi',
-      image: 'https://img.antaranews.com/cache/1200x800/2026/07/07/3292d4bd-5309-424c-b025-7feaafedb9a1.jpeg'
     }
   ];
 
-  function getTopicFallbackImage(topic) {
+  function getTopicFallbackImage(topic, source = '') {
+    const s = (source || '').toLowerCase();
+    if (s.includes('detik')) return 'https://awsimages.detik.net.id/api/wm/2026/09/02/magang-kemnaker-2026-batch-2-1788346807178_169.png?wid=54&w=1200&v=1&t=jpeg';
+    if (s.includes('kompas')) return 'https://asset.kompas.com/crops/xtQK1VlOuT2wgLdJgVqnuXUqcHM=/0x0:2880x1440/1200x675/filters:watermark(data/photo/2026/01/30/697c815e7ef28.png,0,-0,1)/data/photo/2026/06/29/6a422eea317b1.png';
+    if (s.includes('cnbc')) return 'https://awsimages.detik.net.id/visual/2025/10/13/warga-membuka-aplikasi-magang-hub-di-jakarta-senin-13102025-1760345197423_169.jpeg?w=650&q=90';
+    if (s.includes('antara')) return 'https://img.antaranews.com/cache/1200x800/2026/09/16/target-vokasi-nasional-2026-2854548.jpg';
+    if (s.includes('cnn')) return 'https://awsimages.detik.net.id/visual/2025/10/13/warga-membuka-aplikasi-magang-hub-di-jakarta-senin-13102025-1760345197423_169.jpeg?w=650&q=90';
+
     const map = {
       pengumuman: 'https://awsimages.detik.net.id/api/wm/2026/09/02/magang-kemnaker-2026-batch-2-1788346807178_169.png?wid=54&w=1200&v=1&t=jpeg',
       regulasi: 'https://img.antaranews.com/cache/1200x800/2026/07/07/3292d4bd-5309-424c-b025-7feaafedb9a1.jpeg',
@@ -6970,6 +6987,11 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     try {
       const d = new Date(dateString);
       if (isNaN(d.getTime())) return dateString;
+      const now = new Date();
+      const isToday = d.toDateString() === now.toDateString();
+      if (isToday) {
+        return 'Hari ini, ' + d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB';
+      }
       return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
     } catch {
       return dateString;
@@ -6978,11 +7000,12 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
 
   function getSourceClass(sourceName) {
     const s = (sourceName || '').toLowerCase();
-    if (s.includes('kemnaker')) return 'source-kemnaker';
+    if (s.includes('kemnaker') || s.includes('rri')) return 'source-kemnaker';
     if (s.includes('antara')) return 'source-antara';
     if (s.includes('kompas')) return 'source-kompas';
     if (s.includes('detik')) return 'source-detik';
-    return 'source-antara';
+    if (s.includes('cnbc') || s.includes('cnn')) return 'source-antara';
+    return 'source-detik';
   }
 
   function determineNewsTopic(title) {
@@ -6997,46 +7020,57 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   async function fetchLiveNews(forceRefresh = false) {
     const loader = document.getElementById('news-loader');
     const updateEl = document.getElementById('news-last-updated');
+    const refreshBtn = document.getElementById('btn-refresh-news');
+    const refreshSvg = refreshBtn ? refreshBtn.querySelector('svg') : null;
 
-    // Selalu tampilkan berita kurasi terverifikasi yang gambarnya 100% otentik
+    if (refreshSvg) refreshSvg.style.animation = 'spin 0.8s linear infinite';
+
+    // Selalu tampilkan cache lokal yang tersedia
     let currentNews = CURATED_MAGANG_NEWS;
     let lastFetched = null;
 
-    const cachedData = localStorage.getItem(NEWS_CACHE_KEY);
-    if (cachedData) {
-      try {
-        const parsed = JSON.parse(cachedData);
-        if (parsed.items && Array.isArray(parsed.items) && parsed.items.length > 0) {
-          currentNews = parsed.items;
-          lastFetched = parsed.timestamp;
+    if (forceRefresh) {
+      localStorage.removeItem(NEWS_CACHE_KEY);
+    } else {
+      const cachedData = localStorage.getItem(NEWS_CACHE_KEY);
+      if (cachedData) {
+        try {
+          const parsed = JSON.parse(cachedData);
+          if (parsed.items && Array.isArray(parsed.items) && parsed.items.length > 0) {
+            currentNews = parsed.items;
+            lastFetched = parsed.timestamp;
+          }
+        } catch (err) {
+          console.warn('Error reading news cache:', err);
         }
-      } catch (err) {
-        console.warn('Error reading news cache:', err);
       }
     }
 
     renderNewsList(currentNews);
     if (lastFetched && updateEl) {
       const date = new Date(lastFetched);
-      updateEl.textContent = `Terakhir diperbarui: ${date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })} WIB`;
+      updateEl.textContent = `Terakhir diperbarui: ${date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })} WIB (Tersimpan)`;
     }
 
     const now = Date.now();
-    const shouldFetch = forceRefresh;
+    // Auto-fetch if never fetched, or older than 3 minutes, or forced by user
+    const shouldFetch = forceRefresh || !lastFetched || (now - lastFetched > 3 * 60 * 1000);
 
     if (!shouldFetch) {
+      if (refreshSvg) refreshSvg.style.animation = '';
       newsLoadedOnce = true;
       return;
     }
 
     if (loader) loader.classList.add('active');
+    if (forceRefresh) showToast('Menyinkronkan kabar & warta terkini MagangHub...');
 
     try {
-      const feedUrl = 'https://news.google.com/rss/search?q=MagangHub+Kemnaker&hl=id&gl=ID&ceid=ID:id';
+      const feedUrl = 'https://news.google.com/rss/search?q=MagangHub+Kemnaker+2026&hl=id&gl=ID&ceid=ID:id';
       const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feedUrl)}`;
       
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 6000);
+      const timeoutId = setTimeout(() => controller.abort(), 7000);
 
       const resp = await fetch(apiUrl, { signal: controller.signal });
       clearTimeout(timeoutId);
@@ -7044,52 +7078,62 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       if (resp.ok) {
         const json = await resp.json();
         if (json && json.status === 'ok' && json.items && json.items.length > 0) {
-          // Hanya ambil item eksternal jika memiliki thumbnail otentik
-          const validExternalItems = [];
-          json.items.forEach(item => {
+          const liveItems = json.items.map(item => {
+            let title = item.title || '';
+            let source = 'Warta Magang';
+            if (title.includes(' - ')) {
+              const parts = title.split(' - ');
+              source = parts.pop().trim();
+              title = parts.join(' - ').trim();
+            } else if (item.author) {
+              source = item.author;
+            }
+
+            let cleanSnippet = (item.description || '').replace(/<[^>]*>?/gm, '').trim();
+            if (cleanSnippet.length > 180) {
+              cleanSnippet = cleanSnippet.substring(0, 177) + '...';
+            }
+
+            const topic = determineNewsTopic(title);
             let imgUrl = item.thumbnail || (item.enclosure && item.enclosure.link) || '';
             if (!imgUrl && item.description && item.description.includes('<img')) {
               const m = item.description.match(/<img[^>]+src=["']([^"']+)["']/i);
               if (m && m[1]) imgUrl = m[1];
             }
-
-            // Validasi thumbnail: jangan masukkan jika kosong atau placeholder
-            if (imgUrl && imgUrl.startsWith('http') && !imgUrl.includes('placeholder')) {
-              let title = item.title || '';
-              let source = 'Warta Magang';
-              if (title.includes(' - ')) {
-                const parts = title.split(' - ');
-                source = parts.pop().trim();
-                title = parts.join(' - ').trim();
-              }
-              let cleanSnippet = (item.description || '').replace(/<[^>]*>?/gm, '').trim();
-              if (cleanSnippet.length > 180) cleanSnippet = cleanSnippet.substring(0, 177) + '...';
-
-              validExternalItems.push({
-                title: title,
-                source: source,
-                sourceClass: getSourceClass(source),
-                pubDate: formatNewsDate(item.pubDate),
-                link: item.link || '#',
-                snippet: cleanSnippet || 'Informasi terkini program pemagangan dari ' + source,
-                topic: determineNewsTopic(title),
-                image: imgUrl
-              });
+            if (!imgUrl || !imgUrl.startsWith('http')) {
+              imgUrl = getTopicFallbackImage(topic, source);
             }
+
+            return {
+              title: title,
+              source: source,
+              sourceClass: getSourceClass(source),
+              pubDate: formatNewsDate(item.pubDate),
+              link: item.link || '#',
+              snippet: cleanSnippet || 'Informasi terbaru terkait program pemagangan nasional dari ' + source,
+              topic: topic,
+              image: imgUrl
+            };
           });
 
-          // Gabungkan berita kurasi otentik dengan live feed yang terverifikasi
+          // Urutkan dan gabungkan dengan berita kurasi terverifikasi
           const titleSet = new Set();
           const combined = [];
 
-          CURATED_MAGANG_NEWS.forEach(item => {
-            titleSet.add(item.title.toLowerCase());
-            combined.push(item);
+          // Prioritaskan berita live yang baru terbit
+          liveItems.forEach(item => {
+            const key = item.title.toLowerCase().substring(0, 30);
+            if (!titleSet.has(key)) {
+              titleSet.add(key);
+              combined.push(item);
+            }
           });
 
-          validExternalItems.forEach(item => {
-            if (!titleSet.has(item.title.toLowerCase())) {
-              titleSet.add(item.title.toLowerCase());
+          // Tambahkan berita kurasi sebagai pendukung
+          CURATED_MAGANG_NEWS.forEach(item => {
+            const key = item.title.toLowerCase().substring(0, 30);
+            if (!titleSet.has(key)) {
+              titleSet.add(key);
               combined.push(item);
             }
           });
@@ -7103,10 +7147,12 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
 
           if (updateEl) {
             const timeStr = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-            updateEl.textContent = `Terakhir diperbarui: ${timeStr} WIB (Live)`;
+            updateEl.textContent = `Terakhir diperbarui: ${timeStr} WIB (Live Terkini)`;
           }
 
-          showToast('Kabar MagangHub berhasil diperbarui!');
+          if (forceRefresh) {
+            showToast('✅ Berhasil menyinkronkan warta terbaru MagangHub!');
+          }
         }
       }
     } catch (err) {
@@ -7116,6 +7162,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       }
     } finally {
       if (loader) loader.classList.remove('active');
+      if (refreshSvg) refreshSvg.style.animation = '';
       newsLoadedOnce = true;
     }
   }
