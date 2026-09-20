@@ -1820,6 +1820,273 @@
       display: block;
     }
 
+    /* MoM (Minutes of Meeting) Generator Styles */
+    .mom-preset-bar {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin: 12px 0 16px 0;
+    }
+
+    .mom-preset-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 0.74rem;
+      padding: 6px 12px;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .mom-preset-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--accent-subtle);
+    }
+
+    .mom-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    @media (min-width: 860px) {
+      .mom-grid {
+        grid-template-columns: 1.15fr 0.85fr;
+      }
+    }
+
+    .mom-form-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px 18px;
+      box-shadow: var(--shadow-card);
+    }
+
+    .mom-section-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .mom-field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    @media (max-width: 540px) {
+      .mom-field-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .action-items-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .action-item-row {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      background: var(--surface-hover);
+      padding: 8px 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .action-item-row input {
+      font-size: 0.76rem;
+      padding: 5px 8px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text-primary);
+      outline: none;
+    }
+
+    .action-item-row input:focus {
+      border-color: var(--accent);
+    }
+
+    .action-item-task {
+      flex: 3;
+      min-width: 0;
+    }
+
+    .action-item-pic {
+      flex: 1.5;
+      min-width: 0;
+    }
+
+    .action-item-due {
+      flex: 1.3;
+      min-width: 0;
+    }
+
+    .action-item-del {
+      background: transparent;
+      border: none;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.15s ease;
+    }
+
+    .action-item-del:hover {
+      color: #ef4444;
+    }
+
+    .btn-add-action {
+      background: var(--surface);
+      border: 1px dashed var(--border);
+      color: var(--text-secondary);
+      font-size: 0.74rem;
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 500;
+      width: 100%;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+
+    .btn-add-action:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--accent-subtle);
+    }
+
+    /* MoM Output Preview Card */
+    .mom-preview-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .mom-preview-tabs {
+      display: flex;
+      gap: 6px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+    }
+
+    .mom-preview-tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 0.76rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .mom-preview-tab-btn.active {
+      background: var(--accent-subtle);
+      color: var(--accent);
+    }
+
+    .mom-output-box {
+      background: var(--surface-hover);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.74rem;
+      line-height: 1.5;
+      color: var(--text-primary);
+      white-space: pre-wrap;
+      overflow-y: auto;
+      max-height: 440px;
+      min-height: 220px;
+      flex: 1;
+      word-break: break-word;
+    }
+
+    .mom-actions-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .mom-history-card {
+      margin-top: 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      box-shadow: var(--shadow-card);
+    }
+
+    .mom-history-list {
+      margin-top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .mom-history-item {
+      background: var(--surface-hover);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 9px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .mom-history-item:hover {
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .mom-history-title {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .mom-history-meta {
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    .mom-history-btns {
+      display: flex;
+      gap: 6px;
+    }
+
     /* Footnote */
     footer.app-footer {
       margin-top: 36px;
@@ -2895,6 +3162,7 @@
   <main id="view-asisten" class="tab-content">
     <div class="subnav-pills">
       <button class="subnav-btn active" id="asisten-tab-btn-chat" onclick="switchAsistenSubtab('chat')">Template Chat</button>
+      <button class="subnav-btn" id="asisten-tab-btn-mom" onclick="switchAsistenSubtab('mom')">Notulensi Rapat (MoM)</button>
       <button class="subnav-btn" id="asisten-tab-btn-glossary" onclick="switchAsistenSubtab('glossary')">Kamus SSE</button>
       <button class="subnav-btn" id="asisten-tab-btn-guide" onclick="switchAsistenSubtab('guide')">Panduan Menara BNI</button>
     </div>
@@ -2970,6 +3238,139 @@ Apabila Bapak berkenan, mohon kesediaan Bapak untuk melakukan review dan approva
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
             Salin Pesan
           </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUB-PANE: NOTULENSI RAPAT (MOM) -->
+    <div id="asisten-pane-mom" style="display: none;">
+      <!-- Quick Presets -->
+      <div class="mom-preset-bar">
+        <span style="font-size: 0.72rem; color: var(--text-tertiary); display: flex; align-items: center; gap: 4px; margin-right: 4px;">
+          ⚡ Preset Rapat:
+        </span>
+        <button type="button" class="mom-preset-btn" onclick="loadMomPreset('weekly')">
+          🏢 Weekly Alignment SSE
+        </button>
+        <button type="button" class="mom-preset-btn" onclick="loadMomPreset('mentor')">
+          🎯 1-on-1 Briefing Mentor
+        </button>
+        <button type="button" class="mom-preset-btn" onclick="loadMomPreset('data')">
+          💻 Proyek &amp; Analitik Data
+        </button>
+        <button type="button" class="mom-preset-btn" onclick="clearMomForm()" style="color: var(--text-tertiary);">
+          ✕ Bersihkan
+        </button>
+      </div>
+
+      <div class="mom-grid">
+        <!-- FORM COLUMN -->
+        <div class="mom-form-card">
+          <div class="mom-section-title">
+            <span>📝 Detail &amp; Poin Rapat</span>
+            <span class="badge badge-accent">Standar BNI</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Topik / Agenda Rapat</label>
+            <input type="text" class="form-control" id="mom-topic" placeholder="e.g. Weekly Alignment Divisi SSE" oninput="updateMomPreview()">
+          </div>
+
+          <div class="mom-field-row">
+            <div class="form-group">
+              <label class="form-label">Tanggal Rapat</label>
+              <input type="date" class="form-control" id="mom-date" onchange="updateMomPreview()">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Waktu Pelaksanaan</label>
+              <input type="text" class="form-control" id="mom-time" placeholder="e.g. 09.00 - 10.30 WIB" oninput="updateMomPreview()">
+            </div>
+          </div>
+
+          <div class="mom-field-row">
+            <div class="form-group">
+              <label class="form-label">Tempat / Platform</label>
+              <input type="text" class="form-control" id="mom-location" placeholder="e.g. Ruang Rapat Lt. 17 / Teams" oninput="updateMomPreview()">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Notulis</label>
+              <input type="text" class="form-control" id="mom-writer" value="Zaki Tri Pamungkas (MagangHub SSE)" oninput="updateMomPreview()">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Peserta Hadir</label>
+            <input type="text" class="form-control" id="mom-attendees" placeholder="e.g. Pak Guruh Sri Handoyo (VP), Tim Analis SSE, Zaki" oninput="updateMomPreview()">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Poin Pembahasan (1 Poin per baris)</label>
+            <textarea class="form-control" id="mom-discussion" rows="4" placeholder="• Evaluasi capaian CASA dan DPK cabang mingguan&#10;• Kendala rekonsiliasi data pada template manual cabang&#10;• Rencana pembuatan dashboard monitoring data sales" oninput="updateMomPreview()"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Keputusan Utama (Key Decisions)</label>
+            <textarea class="form-control" id="mom-decisions" rows="3" placeholder="1. Format rekonsiliasi data cabang diseragamkan mulai pekan ini&#10;2. Cut-off pelaporan mingguan ditetapkan tiap hari Jumat pukul 16.00 WIB" oninput="updateMomPreview()"></textarea>
+          </div>
+
+          <!-- Dynamic Action Items -->
+          <div class="form-group" style="margin-bottom: 6px;">
+            <div class="mom-section-title" style="margin-bottom: 8px;">
+              <span>⚡ Tindak Lanjut (Action Items)</span>
+              <span style="font-size: 0.7rem; color: var(--text-tertiary);" id="action-items-count">0 Aksi</span>
+            </div>
+            <div id="mom-action-items-container" class="action-items-list">
+              <!-- Rendered dynamically -->
+            </div>
+            <button type="button" class="btn-add-action" onclick="addMomActionItem()">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              Tambah Action Item
+            </button>
+          </div>
+        </div>
+
+        <!-- PREVIEW & EXPORT COLUMN -->
+        <div>
+          <div class="mom-preview-card">
+            <div class="mom-preview-tabs">
+              <button type="button" class="mom-preview-tab-btn active" id="mom-tab-wa" onclick="switchMomPreviewFormat('wa')">
+                💬 Format WhatsApp
+              </button>
+              <button type="button" class="mom-preview-tab-btn" id="mom-tab-email" onclick="switchMomPreviewFormat('email')">
+                ✉️ Format Email Resmi
+              </button>
+            </div>
+
+            <div class="mom-output-box" id="mom-preview-output">
+              <!-- Formatted live MoM rendered here -->
+            </div>
+
+            <div class="mom-actions-row">
+              <button type="button" class="btn-action" style="flex: 1; justify-content: center;" onclick="copyMomFormatted()">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                Salin Teks
+              </button>
+              <button type="button" class="btn-action" onclick="downloadMomText()">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Unduh .txt
+              </button>
+              <button type="button" class="btn-action" onclick="saveMomToHistory()">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+                Simpan
+              </button>
+            </div>
+          </div>
+
+          <!-- SAVED HISTORY CARD -->
+          <div class="mom-history-card">
+            <div class="mom-section-title" style="margin-bottom: 8px;">
+              <span>🕒 Riwayat Notulensi Tersimpan</span>
+              <button type="button" style="background: none; border: none; font-size: 0.72rem; color: var(--text-tertiary); cursor: pointer;" onclick="clearAllMomHistory()">Hapus Semua</button>
+            </div>
+            <div id="mom-history-list" class="mom-history-list">
+              <div style="font-size: 0.74rem; color: var(--text-tertiary); text-align: center; padding: 8px;">Belum ada notulensi yang disimpan di browser ini.</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -4097,15 +4498,449 @@ Apabila Bapak berkenan, mohon kesediaan Bapak untuk melakukan review dan approva
     }
   }
 
-  // --- Asisten Subtabs (Chat vs Glossary vs Guide) ---
+  // --- Asisten Subtabs (Chat vs MoM vs Glossary vs Guide) ---
   function switchAsistenSubtab(sub) {
     document.getElementById('asisten-tab-btn-chat').classList.toggle('active', sub === 'chat');
+    document.getElementById('asisten-tab-btn-mom').classList.toggle('active', sub === 'mom');
     document.getElementById('asisten-tab-btn-glossary').classList.toggle('active', sub === 'glossary');
     document.getElementById('asisten-tab-btn-guide').classList.toggle('active', sub === 'guide');
 
     document.getElementById('asisten-pane-chat').style.display = sub === 'chat' ? 'block' : 'none';
+    document.getElementById('asisten-pane-mom').style.display = sub === 'mom' ? 'block' : 'none';
     document.getElementById('asisten-pane-glossary').style.display = sub === 'glossary' ? 'block' : 'none';
     document.getElementById('asisten-pane-guide').style.display = sub === 'guide' ? 'block' : 'none';
+
+    if (sub === 'mom') {
+      initMomGenerator();
+    }
+  }
+
+  // --- MoM (Minutes of Meeting) Generator Engine ---
+  let momInitialized = false;
+  let momActionItems = [];
+  let momPreviewFormat = 'wa';
+  const MOM_STORAGE_KEY = 'mghb_mom_history';
+
+  const MOM_PRESETS = {
+    weekly: {
+      topic: 'Weekly Alignment & Monitoring SSE - Divisi Sales Strategy & Execution',
+      time: '09.00 - 10.30 WIB',
+      location: 'Ruang Rapat SSE Lt. 17 / Microsoft Teams',
+      attendees: 'Bpk. Guruh Sri Handoyo (VP), Tim Analis SSE, Zaki Tri Pamungkas',
+      discussion: `• Evaluasi pergerakan saldo DPK dan realisasi rasio CASA mingguan dari seluruh cabang wilayah.
+• Identifikasi kendala rekonsiliasi data dari template laporan cabang yang belum terintegrasi otomatis.
+• Monitoring efektivitas utilisasi dashboard monitoring sales pipeline perbankan.
+• Pembagian fokus analisis data dan pembersihan (data cleansing) data sales untuk pekan berjalan.`,
+      decisions: `1. Cut-off pengiriman laporan rekapitulasi data cabang ditetapkan setiap Jumat pukul 16.00 WIB.
+2. Format rekap data sales cabang diseragamkan mulai pekan ini untuk mempercepat proses kompilasi.
+3. Rekap analitik mingguan disajikan dalam format executive summary untuk briefing pimpinan divisi.`,
+      actionItems: [
+        { task: 'Otomasi agregasi dan validasi data DPK cabang dengan script / template Excel', pic: 'Zaki Tri Pamungkas', due: '23 Sep 2026' },
+        { task: 'Follow-up konfirmasi ke cabang dengan anomali delta CASA terbesar', pic: 'Tim Analis SSE', due: '24 Sep 2026' },
+        { task: 'Finalisasi slide ringkasan capaian kinerja mingguan untuk VP SSE', pic: 'Tim SSE', due: '25 Sep 2026' }
+      ]
+    },
+    mentor: {
+      topic: 'Mentoring 1-on-1 & Evaluasi Penugasan Pemagangan BNI SSE',
+      time: '14.00 - 14.45 WIB',
+      location: 'Area Kerja Divisi SSE Lantai 17, Menara BNI',
+      attendees: 'Bpk. Guruh Sri Handoyo (Mentor / VP), Zaki Tri Pamungkas (MagangHub)',
+      discussion: `• Evaluasi adaptasi lingkungan kerja dan ritme kerja operasional di Menara BNI Pejompongan.
+• Review kelengkapan pengisian logbook harian dan mingguan di portal MagangHub Kemnaker SIAPkerja.
+• Pembahasan rencana proyek pemagangan inovatif: pemanfaatan data analytics untuk sales evaluation.
+• Penguatan pemahaman konsep bisnis perbankan BNI (CASA, DPK, Pipeline, Fee-Based Income, dan NPL).`,
+      decisions: `1. Logbook MagangHub disubmit rutin tiap sore dan dimintakan approval mingguan tiap Jumat.
+2. Zaki difokuskan pada eksplorasi efisiensi pengolahan data sales dan pembuatan dashboard otomasi.
+3. Sesi 1-on-1 evaluasi capaian dilakukan secara berkala setiap dua pekan.`,
+      actionItems: [
+        { task: 'Menyelesaikan submit logbook mingguan Batch 2 di portal SIAPkerja', pic: 'Zaki Tri Pamungkas', due: '25 Sep 2026' },
+        { task: 'Mempelajari kamus indikator kinerja divisi SSE dan alur data nasabah', pic: 'Zaki Tri Pamungkas', due: '28 Sep 2026' }
+      ]
+    },
+    data: {
+      topic: 'Technical Catchup: Otomasi Pelaporan & Integrasi Data SSE',
+      time: '10.30 - 11.30 WIB',
+      location: 'Meeting Pod Lt. 17 / Zoom Meeting',
+      attendees: 'Tim IT/Data SSE, Zaki Tri Pamungkas',
+      discussion: `• Identifikasi bottleneck proses pengolahan data mentah dari sistem cabang yang masih manual.
+• Pembahasan skema penamaan kolom, standardisasi format tanggal, dan penanganan nilai kosong/duplikat.
+• Rencana pembuatan skrip otomatisasi pembersihan data (data cleansing) berbasis Python / Excel VBA.
+• Integrasi output olah data ke template visualisasi performa penjualan mingguan.`,
+      decisions: `1. Standar penamaan file dan struktur kolom disepakati seragam lintas analis data.
+2. Dibuat prototype script pembersih data mandiri sebelum diimplementasikan secara tim.`,
+      actionItems: [
+        { task: 'Buat prototipe skrip penggabung file laporan cabang dan deteksi error', pic: 'Zaki Tri Pamungkas', due: '26 Sep 2026' },
+        { task: 'Uji coba validasi pada sampel 5 file laporan cabang historis', pic: 'Zaki Tri Pamungkas', due: '28 Sep 2026' },
+        { task: 'Review hasil output olah data bersama analis senior SSE', pic: 'Tim IT/Data SSE', due: '29 Sep 2026' }
+      ]
+    }
+  };
+
+  function initMomGenerator() {
+    if (momInitialized) {
+      renderMomHistory();
+      return;
+    }
+    momInitialized = true;
+
+    // Set today date as default
+    const dateEl = document.getElementById('mom-date');
+    if (dateEl && !dateEl.value) {
+      dateEl.value = new Date().toISOString().slice(0, 10);
+    }
+
+    // Default time
+    const timeEl = document.getElementById('mom-time');
+    if (timeEl && !timeEl.value) {
+      const now = new Date();
+      const hh = String(now.getHours()).padStart(2, '0');
+      timeEl.value = `${hh}.00 - ${String(Number(hh) + 1).padStart(2, '0')}.30 WIB`;
+    }
+
+    // Default action items if empty
+    if (momActionItems.length === 0) {
+      momActionItems = [
+        { task: 'Otomasi agregasi data pencapaian cabang', pic: 'Zaki Tri Pamungkas', due: '23 Sep 2026' },
+        { task: 'Review validasi data bersama tim SSE', pic: 'Tim SSE', due: '25 Sep 2026' }
+      ];
+    }
+
+    renderMomActionItems();
+    renderMomHistory();
+    updateMomPreview();
+  }
+
+  function addMomActionItem(task = '', pic = '', due = '') {
+    momActionItems.push({ task, pic, due });
+    renderMomActionItems();
+    updateMomPreview();
+  }
+
+  function removeMomActionItem(index) {
+    momActionItems.splice(index, 1);
+    renderMomActionItems();
+    updateMomPreview();
+  }
+
+  function renderMomActionItems() {
+    const container = document.getElementById('mom-action-items-container');
+    const countEl = document.getElementById('action-items-count');
+    if (!container) return;
+
+    if (countEl) {
+      countEl.textContent = `${momActionItems.length} Aksi`;
+    }
+
+    if (momActionItems.length === 0) {
+      container.innerHTML = '<div style="font-size: 0.74rem; color: var(--text-tertiary); text-align: center; padding: 6px;">Belum ada action item. Klik tombol di bawah untuk menambah.</div>';
+      return;
+    }
+
+    let html = '';
+    momActionItems.forEach((item, idx) => {
+      html += `
+        <div class="action-item-row">
+          <input type="text" class="action-item-task" placeholder="Tugas / Aksi" value="${item.task.replace(/"/g, '&quot;')}" oninput="updateMomActionItem(${idx}, 'task', this.value)">
+          <input type="text" class="action-item-pic" placeholder="PIC" value="${item.pic.replace(/"/g, '&quot;')}" oninput="updateMomActionItem(${idx}, 'pic', this.value)">
+          <input type="text" class="action-item-due" placeholder="Due Date" value="${item.due.replace(/"/g, '&quot;')}" oninput="updateMomActionItem(${idx}, 'due', this.value)">
+          <button type="button" class="action-item-del" title="Hapus Aksi" onclick="removeMomActionItem(${idx})">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+      `;
+    });
+    container.innerHTML = html;
+  }
+
+  function updateMomActionItem(index, field, value) {
+    if (momActionItems[index]) {
+      momActionItems[index][field] = value;
+      updateMomPreview();
+    }
+  }
+
+  function loadMomPreset(name) {
+    const p = MOM_PRESETS[name];
+    if (!p) return;
+
+    document.getElementById('mom-topic').value = p.topic;
+    document.getElementById('mom-time').value = p.time;
+    document.getElementById('mom-location').value = p.location;
+    document.getElementById('mom-attendees').value = p.attendees;
+    document.getElementById('mom-discussion').value = p.discussion;
+    document.getElementById('mom-decisions').value = p.decisions;
+
+    momActionItems = JSON.parse(JSON.stringify(p.actionItems));
+    renderMomActionItems();
+    updateMomPreview();
+    showToast('Template preset notulensi dimuat!');
+  }
+
+  function clearMomForm() {
+    document.getElementById('mom-topic').value = '';
+    document.getElementById('mom-attendees').value = '';
+    document.getElementById('mom-discussion').value = '';
+    document.getElementById('mom-decisions').value = '';
+    momActionItems = [];
+    renderMomActionItems();
+    updateMomPreview();
+    showToast('Formulir notulensi dikosongkan');
+  }
+
+  function switchMomPreviewFormat(fmt) {
+    momPreviewFormat = fmt;
+    document.getElementById('mom-tab-wa').classList.toggle('active', fmt === 'wa');
+    document.getElementById('mom-tab-email').classList.toggle('active', fmt === 'email');
+    updateMomPreview();
+  }
+
+  function formatMomDate(dateString) {
+    if (!dateString) return 'Hari Ini';
+    try {
+      const d = new Date(dateString);
+      if (isNaN(d.getTime())) return dateString;
+      return d.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+    } catch {
+      return dateString;
+    }
+  }
+
+  function updateMomPreview() {
+    const outputEl = document.getElementById('mom-preview-output');
+    if (!outputEl) return;
+
+    const topic = document.getElementById('mom-topic')?.value.trim() || 'Pertemuan Internal Divisi SSE';
+    const dateVal = document.getElementById('mom-date')?.value || '';
+    const formattedDate = formatMomDate(dateVal);
+    const timeVal = document.getElementById('mom-time')?.value.trim() || '09.00 - 10.00 WIB';
+    const locationVal = document.getElementById('mom-location')?.value.trim() || 'Menara BNI Lt. 17';
+    const writerVal = document.getElementById('mom-writer')?.value.trim() || 'Zaki Tri Pamungkas (MagangHub SSE)';
+    const attendeesVal = document.getElementById('mom-attendees')?.value.trim() || 'Pak Guruh Sri Handoyo, Tim SSE, Zaki';
+    
+    const discussionVal = document.getElementById('mom-discussion')?.value.trim() || '• Pembahasan perkembangan operasional dan koordinasi tim.';
+    const decisionsVal = document.getElementById('mom-decisions')?.value.trim() || '1. Disepakati alur tindak lanjut sesuai penugasan masing-masing.';
+
+    if (momPreviewFormat === 'wa') {
+      let text = `*MINUTES OF MEETING (MoM)*\n*Divisi Sales Strategy & Execution (SSE) - BNI*\n━━━━━━━━━━━━━━━━━━━━━\n`;
+      text += `📌 *Topik:* ${topic}\n`;
+      text += `📅 *Waktu:* ${formattedDate} | ${timeVal}\n`;
+      text += `📍 *Tempat:* ${locationVal}\n`;
+      text += `👥 *Peserta:* ${attendeesVal}\n`;
+      text += `✍️ *Notulis:* ${writerVal}\n\n`;
+
+      text += `📋 *POIN PEMBAHASAN:*\n${discussionVal}\n\n`;
+      text += `🎯 *KEPUTUSAN UTAMA:*\n${decisionsVal}\n\n`;
+
+      text += `⚡ *ACTION ITEMS:*\n`;
+      if (momActionItems.length > 0) {
+        momActionItems.forEach((item, i) => {
+          text += `${i + 1}. [${item.pic || 'PIC'}] ${item.task || 'Tugas'} — _Due: ${item.due || 'TBA'}_\n`;
+        });
+      } else {
+        text += `- Tidak ada action item khusus.\n`;
+      }
+
+      text += `\n━━━━━━━━━━━━━━━━━━━━━\n_Notulensi resmi MagangHub BNI SSE - Disusun untuk koordinasi & tindak lanjut._`;
+      outputEl.textContent = text;
+    } else {
+      let text = `Subject: [MoM] ${topic} - ${formattedDate}\n\n`;
+      text += `Yth. Bapak/Ibu Rekan Kerja Divisi Sales Strategy & Execution (SSE),\n\n`;
+      text += `Berikut kami sampaikan rangkuman Notulensi Rapat (Minutes of Meeting - MoM) terkait agenda yang telah diselenggarakan:\n\n`;
+      
+      text += `A. INFORMASI RAPAT\n`;
+      text += `• Topik Agenda    : ${topic}\n`;
+      text += `• Hari / Tanggal  : ${formattedDate}\n`;
+      text += `• Waktu           : ${timeVal}\n`;
+      text += `• Tempat / Media  : ${locationVal}\n`;
+      text += `• Peserta Hadir   : ${attendeesVal}\n`;
+      text += `• Notulis         : ${writerVal}\n\n`;
+
+      text += `B. POIN UTAMA PEMBAHASAN\n`;
+      discussionVal.split('\n').forEach(line => {
+        const clean = line.replace(/^[•\-\*]\s*/, '').trim();
+        if (clean) text += `• ${clean}\n`;
+      });
+      text += `\n`;
+
+      text += `C. KEPUTUSAN UTAMA (KEY DECISIONS)\n`;
+      decisionsVal.split('\n').forEach((line, idx) => {
+        const clean = line.replace(/^\d+[\.\)]\s*/, '').replace(/^[•\-\*]\s*/, '').trim();
+        if (clean) text += `${idx + 1}. ${clean}\n`;
+      });
+      text += `\n`;
+
+      text += `D. TINDAK LANJUT & ACTION ITEMS\n`;
+      if (momActionItems.length > 0) {
+        momActionItems.forEach((item, i) => {
+          text += `${i + 1}. Tugas : ${item.task || '-'}\n`;
+          text += `   PIC   : ${item.pic || '-'}\n`;
+          text += `   Batas : ${item.due || '-'}\n\n`;
+        });
+      } else {
+        text += `• Tidak ada tindak lanjut khusus.\n\n`;
+      }
+
+      text += `Demikian notulensi ini kami sampaikan sebagai bahan rujukan dan tindak lanjut bersama. Atas perhatian dan kerja sama Bapak/Ibu, kami ucapkan terima kasih.\n\n`;
+      text += `Hormat kami,\n${writerVal}\nDivisi Sales Strategy & Execution (SSE)\nPT Bank Negara Indonesia (Persero) Tbk - Menara BNI`;
+      
+      outputEl.textContent = text;
+    }
+  }
+
+  function copyMomFormatted() {
+    const text = document.getElementById('mom-preview-output')?.textContent || '';
+    if (!text) return;
+    navigator.clipboard.writeText(text).then(() => {
+      const typeStr = momPreviewFormat === 'wa' ? 'Format WhatsApp' : 'Format Email Resmi';
+      showToast(`Notulensi (${typeStr}) disalin! Siap dikirim.`);
+    }).catch(() => {
+      showToast('Gagal menyalin notulensi');
+    });
+  }
+
+  function downloadMomText() {
+    const text = document.getElementById('mom-preview-output')?.textContent || '';
+    if (!text) return;
+
+    const topic = (document.getElementById('mom-topic')?.value || 'MoM_SSE')
+      .replace(/[^a-zA-Z0-9_-]/g, '_').substring(0, 30);
+    const dateStr = document.getElementById('mom-date')?.value || new Date().toISOString().slice(0, 10);
+    const filename = `MoM_${topic}_${dateStr}.txt`;
+
+    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast(`Berkas ${filename} berhasil diunduh!`);
+  }
+
+  function saveMomToHistory() {
+    const topic = document.getElementById('mom-topic')?.value.trim();
+    if (!topic) {
+      showToast('Harap isi Topik Rapat terlebih dahulu');
+      return;
+    }
+
+    const dateVal = document.getElementById('mom-date')?.value || new Date().toISOString().slice(0, 10);
+    const record = {
+      id: 'mom_' + Date.now(),
+      savedAt: new Date().toISOString(),
+      topic: topic,
+      date: dateVal,
+      time: document.getElementById('mom-time')?.value.trim() || '',
+      location: document.getElementById('mom-location')?.value.trim() || '',
+      writer: document.getElementById('mom-writer')?.value.trim() || '',
+      attendees: document.getElementById('mom-attendees')?.value.trim() || '',
+      discussion: document.getElementById('mom-discussion')?.value || '',
+      decisions: document.getElementById('mom-decisions')?.value || '',
+      actionItems: JSON.parse(JSON.stringify(momActionItems))
+    };
+
+    let history = [];
+    try {
+      const stored = localStorage.getItem(MOM_STORAGE_KEY);
+      if (stored) history = JSON.parse(stored);
+    } catch (e) {
+      console.warn('Error reading mom history', e);
+    }
+
+    history.unshift(record);
+    if (history.length > 20) history = history.slice(0, 20);
+
+    localStorage.setItem(MOM_STORAGE_KEY, JSON.stringify(history));
+    renderMomHistory();
+    showToast('Notulensi berhasil disimpan ke Riwayat!');
+  }
+
+  function renderMomHistory() {
+    const listEl = document.getElementById('mom-history-list');
+    if (!listEl) return;
+
+    let history = [];
+    try {
+      const stored = localStorage.getItem(MOM_STORAGE_KEY);
+      if (stored) history = JSON.parse(stored);
+    } catch {
+      history = [];
+    }
+
+    if (!Array.isArray(history) || history.length === 0) {
+      listEl.innerHTML = '<div style="font-size: 0.74rem; color: var(--text-tertiary); text-align: center; padding: 8px;">Belum ada notulensi yang disimpan di browser ini.</div>';
+      return;
+    }
+
+    let html = '';
+    history.forEach(item => {
+      const actionsCount = (item.actionItems && item.actionItems.length) || 0;
+      html += `
+        <div class="mom-history-item" onclick="loadMomFromHistory('${item.id}')">
+          <div>
+            <div class="mom-history-title">${item.topic}</div>
+            <div class="mom-history-meta">📅 ${item.date} • ${actionsCount} Action Items</div>
+          </div>
+          <div class="mom-history-btns">
+            <button type="button" class="btn-action" style="padding: 3px 8px; font-size: 0.7rem;" onclick="event.stopPropagation(); loadMomFromHistory('${item.id}')">Buka</button>
+            <button type="button" class="action-item-del" style="padding: 4px 6px;" title="Hapus" onclick="event.stopPropagation(); deleteMomHistory('${item.id}')">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+            </button>
+          </div>
+        </div>
+      `;
+    });
+    listEl.innerHTML = html;
+  }
+
+  function loadMomFromHistory(id) {
+    try {
+      const stored = localStorage.getItem(MOM_STORAGE_KEY);
+      if (!stored) return;
+      const history = JSON.parse(stored);
+      const record = history.find(r => r.id === id);
+      if (!record) return;
+
+      document.getElementById('mom-topic').value = record.topic || '';
+      document.getElementById('mom-date').value = record.date || '';
+      document.getElementById('mom-time').value = record.time || '';
+      document.getElementById('mom-location').value = record.location || '';
+      document.getElementById('mom-writer').value = record.writer || '';
+      document.getElementById('mom-attendees').value = record.attendees || '';
+      document.getElementById('mom-discussion').value = record.discussion || '';
+      document.getElementById('mom-decisions').value = record.decisions || '';
+      momActionItems = Array.isArray(record.actionItems) ? JSON.parse(JSON.stringify(record.actionItems)) : [];
+
+      renderMomActionItems();
+      updateMomPreview();
+      showToast(`Notulensi "${record.topic}" dimuat!`);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  function deleteMomHistory(id) {
+    try {
+      const stored = localStorage.getItem(MOM_STORAGE_KEY);
+      if (!stored) return;
+      let history = JSON.parse(stored);
+      history = history.filter(r => r.id !== id);
+      localStorage.setItem(MOM_STORAGE_KEY, JSON.stringify(history));
+      renderMomHistory();
+      showToast('Notulensi dihapus dari riwayat.');
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  function clearAllMomHistory() {
+    if (confirm('Hapus seluruh riwayat notulensi yang tersimpan?')) {
+      localStorage.removeItem(MOM_STORAGE_KEY);
+      renderMomHistory();
+      showToast('Seluruh riwayat notulensi dibersihkan.');
+    }
   }
 
   function copyTemplateText(id) {
