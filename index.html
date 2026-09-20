@@ -146,6 +146,59 @@
       display: block;
     }
 
+    .brand-divider {
+      color: var(--text-tertiary);
+      font-size: 0.72rem;
+      font-weight: 300;
+      opacity: 0.55;
+      user-select: none;
+      line-height: 1;
+    }
+
+    .brand-bni-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 8px 3px 7px;
+      background: #ffffff;
+      border: 1px solid rgba(0, 0, 0, 0.09);
+      border-radius: var(--radius-pill);
+      height: 24px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+      flex-shrink: 0;
+      cursor: default;
+      transition: all var(--transition-fast);
+      text-decoration: none;
+    }
+
+    .brand-bni-badge:hover {
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+      border-color: rgba(0, 104, 133, 0.3);
+    }
+
+    .dark .brand-bni-badge {
+      background: #ffffff;
+      border-color: rgba(255, 255, 255, 0.2);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+    }
+
+    .brand-bni-logo {
+      height: 13px;
+      width: auto;
+      display: block;
+    }
+
+    .brand-bni-badge .bni-divisi {
+      font-size: 0.63rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: #006885;
+      padding-left: 6px;
+      border-left: 1px solid #cbd5e1;
+      line-height: 1;
+      display: inline-block;
+    }
+
     .badge {
       display: inline-flex;
       align-items: center;
@@ -164,6 +217,12 @@
       background: var(--accent-subtle);
       color: var(--accent);
       border-color: transparent;
+    }
+
+    @media (max-width: 480px) {
+      #badge-context {
+        display: none;
+      }
     }
 
     .actions-cluster {
@@ -2426,8 +2485,12 @@
     </g>
 </svg>
         </a>
+        <span class="brand-divider" aria-hidden="true">×</span>
+        <div class="brand-bni-badge" title="PT Bank Negara Indonesia (Persero) Tbk - Divisi Sales Strategy & Execution">
+          <img src="bni-logo.svg" alt="BNI" class="brand-bni-logo">
+          <span class="bni-divisi">SSE</span>
+        </div>
         <span class="badge badge-accent" id="badge-context">Live Feed</span>
-        <span class="badge">BNI SSE</span>
       </div>
 
       <div class="actions-cluster">
