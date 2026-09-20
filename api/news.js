@@ -1,5 +1,6 @@
 // Vercel Serverless Function: /api/news.js
-// Agregasi berita MagangHub & Kemnaker real-time dengan sorting terbaru di atas.
+// Scraper real-time Google News RSS (q=maganghub) + Portal Kemnaker RI
+// Urutan mutlak: Berita paling baru selalu di paling atas.
 
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -24,7 +25,92 @@ module.exports = async (req, res) => {
     return (title || '').toLowerCase().replace(/[^a-z0-9]/g, '').substring(0, 35);
   }
 
-  // 1. Fetch official Kemnaker Portal News API
+  function determineTopic(title) {
+    const t = (title || '').toLowerCase();
+    if (t.includes('pengumuman') || t.includes('batch') || t.includes('hasil') || t.includes('jadwal') || t.includes('seleksi')) return 'pengumuman';
+    if (t.includes('sertifikasi') || t.includes('bnsp') || t.includes('kompetensi')) return 'sertifikasi';
+    if (t.includes('uang saku') || t.includes('hak') || t.includes('aturan') || t.includes('sop') || t.includes('presensi') || t.includes('pajak')) return 'regulasi';
+    if (t.includes('bni') || t.includes('bumn') || t.includes('kemnaker')) return 'kemnaker';
+    return 'pengumuman';
+  }
+
+  function getSourceClass(sourceName) {
+    const s = (sourceName || '').toLowerCase();
+    if (s.includes('kemnaker') || s.includes('rri')) return 'source-kemnaker';
+    if (s.includes('antara')) return 'source-antara';
+    if (s.includes('kompas')) return 'source-kompas';
+    if (s.includes('detik')) return 'source-detik';
+    if (s.includes('cnbc') || s.includes('cnn') || s.includes('pajak')) return 'source-antara';
+    return 'source-detik';
+  }
+
+  // 1. Scrape Google News RSS (query: maganghub)
+  try {
+    const rssUrl = 'https://news.google.com/rss/search?q=maganghub&hl=id&gl=ID&ceid=ID:id';
+    const c = new AbortController();
+    const t = setTimeout(() => c.abort(), 6000);
+    const resp = await fetch(rssUrl, {
+      signal: c.signal,
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+      }
+    });
+    clearTimeout(t);
+
+    if (resp.ok) {
+      const xml = await resp.text();
+      const regex = /<item>([\s\S]*?)<\/item>/gi;
+      let match;
+      while ((match = regex.exec(xml)) !== null) {
+        const block = match[1];
+        const getTag = (tag) => {
+          const m = block.match(new RegExp(`<${tag}[^>]*>([\\s\\S]*?)<\\/${tag}>`, 'i'));
+          if (!m) return '';
+          return m[1].replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, '$1').trim();
+        };
+
+        const titleRaw = getTag('title');
+        const link = getTag('link');
+        const pubDate = getTag('pubDate');
+        const sourceRaw = getTag('source');
+        const descRaw = getTag('description');
+
+        let title = titleRaw;
+        let source = sourceRaw || 'Warta Magang';
+        if (title.includes(' - ')) {
+          const parts = title.split(' - ');
+          source = parts.pop().trim();
+          title = parts.join(' - ').trim();
+        }
+
+        const key = getSlugKey(title);
+        if (!key || titleSet.has(key)) continue;
+        titleSet.add(key);
+
+        const ts = pubDate ? new Date(pubDate).getTime() : 0;
+        let cleanSnippet = cleanHtml(descRaw);
+        if (cleanSnippet.length > 180) {
+          cleanSnippet = cleanSnippet.substring(0, 177) + '...';
+        }
+
+        results.push({
+          title,
+          source,
+          sourceClass: getSourceClass(source),
+          pubDate: pubDate ? new Date(pubDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '',
+          timestamp: ts,
+          link: link || '#',
+          snippet: cleanSnippet || `Informasi pemagangan nasional dari ${source}.`,
+          topic: determineTopic(title),
+          image: ''
+        });
+      }
+    }
+  } catch (err) {
+    console.warn('Google News RSS direct fetch failed:', err.message);
+  }
+
+  // 2. Fetch official Kemnaker Portal News API
   try {
     const kemnakerUrl = 'https://portal.kemnaker.go.id/api/v1/news?search=magang&limit=15';
     const c = new AbortController();
@@ -34,6 +120,7 @@ module.exports = async (req, res) => {
       headers: { 'User-Agent': 'Mozilla/5.0' }
     });
     clearTimeout(t);
+
     if (resp.ok) {
       const json = await resp.json();
       const items = json.data || [];
@@ -49,71 +136,23 @@ module.exports = async (req, res) => {
         const bodyText = cleanHtml(item.body);
 
         results.push({
-          title: title,
+          title,
           source: `Kemnaker RI (${sectionName})`,
           sourceClass: 'source-kemnaker',
-          pubDate: dateStr.slice(0, 10),
-          timestamp: timestamp,
+          pubDate: dateStr ? new Date(dateStr.replace(' ', 'T')).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '',
+          timestamp,
           link: `https://kemnaker.go.id/news/detail/${item.slug}`,
           snippet: bodyText ? (bodyText.slice(0, 175) + '...') : 'Warta resmi program pemagangan dari Kemnaker RI.',
-          topic: 'pengumuman',
+          topic: determineTopic(title),
           image: item.banner || item.thumb || ''
         });
       }
     }
   } catch (err) {
-    console.warn('Failed to fetch Kemnaker news API:', err.message);
+    console.warn('Kemnaker news API failed:', err.message);
   }
 
-  // 2. Fetch Google RSS via rss2json
-  try {
-    const rssUrl = 'https://news.google.com/rss/search?q=MagangHub+Kemnaker+2026&hl=id&gl=ID&ceid=ID:id';
-    const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
-    const c = new AbortController();
-    const t = setTimeout(() => c.abort(), 6000);
-    const resp = await fetch(apiUrl, { signal: c.signal });
-    clearTimeout(t);
-    if (resp.ok) {
-      const json = await resp.json();
-      if (json.status === 'ok' && Array.isArray(json.items)) {
-        for (const item of json.items) {
-          let title = item.title || '';
-          let source = 'Warta Magang';
-          if (title.includes(' - ')) {
-            const parts = title.split(' - ');
-            source = parts.pop().trim();
-            title = parts.join(' - ').trim();
-          }
-
-          const key = getSlugKey(title);
-          if (!key || titleSet.has(key)) continue;
-          titleSet.add(key);
-
-          const ts = item.pubDate ? new Date(item.pubDate).getTime() : 0;
-          let cleanSnippet = cleanHtml(item.description);
-          if (cleanSnippet.length > 180) {
-            cleanSnippet = cleanSnippet.substring(0, 177) + '...';
-          }
-
-          results.push({
-            title: title,
-            source: source,
-            sourceClass: 'source-detik',
-            pubDate: item.pubDate ? item.pubDate.slice(0, 10) : '',
-            timestamp: ts,
-            link: item.link || '#',
-            snippet: cleanSnippet || `Informasi pemagangan dari ${source}`,
-            topic: 'pengumuman',
-            image: item.thumbnail || ''
-          });
-        }
-      }
-    }
-  } catch (err) {
-    console.warn('Failed to fetch RSS news:', err.message);
-  }
-
-  // Sort strictly descending: yang paling baru di atas!
+  // Sort strictly descending: yang paling baru selalu di paling atas
   results.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
 
   res.status(200).json({
