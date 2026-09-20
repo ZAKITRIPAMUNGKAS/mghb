@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MGHB — Checklist Bawaan & Asisten Magang BNI</title>
   <meta name="description" content="Workspace produktivitas minimalis untuk persiapan dinas Jakarta, wisuda, logbook MagangHub, dan asisten divisi SSE BNI.">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
@@ -2606,6 +2606,128 @@
     footer.app-footer p + p {
       margin-top: 2px;
     }
+    /* Responsive workspace: shared navigation becomes a desktop sidebar. */
+    :root {
+      --bg: #f5f6f7;
+      --text-secondary: #555b62;
+      --text-tertiary: #656d76;
+      --radius-lg: 8px;
+      --shadow-card: none;
+    }
+    [data-theme="dark"] {
+      --bg: #141517;
+      --surface: #1b1d20;
+      --surface-elevated: #222529;
+      --surface-hover: #292d31;
+      --text-secondary: #bbc0c6;
+      --text-tertiary: #a1a9b1;
+    }
+    body { padding-bottom: 0; }
+    .app-shell { max-width: 820px; padding: 0 24px 100px; }
+    .app-shell * { letter-spacing: 0 !important; }
+    :is(button, input, select, textarea) { font-family: inherit; }
+    :is(button, a, input, select, textarea, summary):focus-visible {
+      outline: 3px solid var(--accent); outline-offset: 3px;
+    }
+    :is(button, .btn-action, .utility-btn, .news-pill-btn, .filter-btn, .modal-nav-btn) {
+      min-height: 44px;
+    }
+    .btn-icon, .btn-close { width: 44px; height: 44px; flex-shrink: 0; }
+    header.sticky-header { background: var(--bg); padding: 16px 0; z-index: 50; }
+    [data-theme="dark"] header.sticky-header { background: var(--bg); }
+    .brand-meta { flex-wrap: wrap; gap: 10px; min-width: 0; }
+    .actions-cluster { gap: 6px; flex-shrink: 0; }
+    .tab-content { padding-top: 24px; }
+    .landing-hero-card, .news-header-card, .feature-card, .mom-form-card {
+      background: transparent; border: 0; border-radius: 0; box-shadow: none;
+      padding: 24px 0; margin-top: 0;
+    }
+    .landing-hero-head { align-items: flex-start; gap: 16px; }
+    .landing-greeting { font-size: 24px; line-height: 1.35; font-weight: 700; }
+    .landing-sub { font-size: 14px; line-height: 1.65; margin-top: 8px; max-width: 540px; }
+    .quick-hub-grid { gap: 12px; margin-top: 24px; }
+    .quick-hub-btn { border-radius: 8px; padding: 18px 12px; box-shadow: none; }
+    .quick-hub-btn:hover { border-color: var(--accent); background: var(--accent-subtle); transform: none; }
+    .quick-hub-label { font-size: 14px; }
+    .quick-hub-sub { font-size: 12px; }
+    .news-header-card { border-top: 1px solid var(--border); padding-bottom: 12px; }
+    .news-header-title, .feature-title, .guide-section-title, .mom-section-title { font-size: 18px; }
+    .news-header-desc { display: none; }
+    .news-filter-pills { gap: 8px; padding: 8px 0 16px; }
+    .news-pill-btn { font-size: 13px; padding: 8px 14px; }
+    .news-card { padding: 22px; border-radius: 8px; margin-bottom: 12px; }
+    .news-title { font-size: 17px; line-height: 1.55; margin: 12px 0 8px; }
+    .news-snippet { font-size: 14px; line-height: 1.7; overflow-wrap: anywhere; }
+    .news-meta-row, .news-action-row { gap: 12px; flex-wrap: wrap; }
+    .news-date, .news-source-tag, .news-topic-badge, .news-read-link { font-size: 12px; }
+    .news-read-link { min-height: 44px; display: inline-flex; align-items: center; }
+    .news-action-row { margin-top: 12px; }
+    .task-row { min-height: 64px; padding: 16px; gap: 14px; }
+    .task-label { font-size: 15px; line-height: 1.5; }
+    .task-detail { font-size: 13px; line-height: 1.6; margin-top: 4px; }
+    .task-body { min-width: 0; overflow-wrap: anywhere; }
+    .form-control, .action-item-row input { min-height: 46px; font-size: 16px !important; padding: 12px; }
+    textarea.form-control { min-height: 128px; line-height: 1.7; resize: vertical; }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { font-size: 14px; line-height: 1.6; }
+    .feature-head, .guide-card-head { gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
+    .guide-card { padding: 20px; border-radius: 8px; }
+    .guide-list { font-size: 14px; line-height: 1.75; }
+    .guide-card-title { font-size: 16px; }
+    .toolbar-row { flex-wrap: wrap; gap: 12px; padding-top: 14px; }
+    .overview-row { padding-top: 18px; }
+    .utility-bar { flex-wrap: wrap; gap: 12px; border-top: 1px solid var(--border); margin-top: 28px; }
+    .utility-group { flex-wrap: wrap; }
+    .modal-box { width: min(640px, calc(100% - 32px)); max-height: calc(100dvh - 40px); overflow-y: auto; border-radius: 8px; }
+    .modal-nav { display: flex; flex-wrap: wrap; gap: 6px; }
+    .bottom-nav-bar, [data-theme="dark"] .bottom-nav-bar { background: var(--surface); box-shadow: none; }
+    .bottom-nav-inner { max-width: 820px; height: 68px; }
+    .bottom-nav-item.active { color: var(--accent); background: var(--accent-subtle); }
+    .bottom-nav-label { font-size: 12px; }
+    .workspace-identity, .workspace-profile { display: none; }
+    .workspace-connection { font-size: 12px; color: var(--text-secondary); margin-top: 8px; }
+    .workspace-connection[data-state="connected"] { color: var(--success); }
+    .workspace-connection[data-state="offline"] { color: var(--highlight); }
+    @media (min-width: 960px) {
+      .app-shell { max-width: 1320px; margin-left: 240px; margin-right: auto; padding: 0 40px 40px; }
+      .bottom-nav-bar { top: 0; bottom: 0; right: auto; width: 240px; border-top: 0; border-right: 1px solid var(--border); padding: 32px 16px; display: flex; flex-direction: column; }
+      .bottom-nav-inner { width: 100%; height: auto; display: flex; flex-direction: column; gap: 8px; margin: 32px 0 0; padding: 0; }
+      .bottom-nav-item { flex-direction: row; justify-content: flex-start; width: 100%; height: 50px; padding: 10px 14px; gap: 12px; border-radius: 8px; }
+      .bottom-nav-icon { width: 28px; height: 28px; background: transparent; }
+      .bottom-nav-label { font-size: 14px; font-weight: 600; }
+      .workspace-identity { display: block; padding: 0 14px; }
+      .workspace-identity img { width: 128px; height: 32px; object-fit: contain; object-position: left; }
+      .workspace-identity p { font-size: 12px; color: var(--text-secondary); margin-top: 10px; }
+      .workspace-profile { display: block; margin-top: auto; padding: 20px 14px 0; border-top: 1px solid var(--border); }
+      .workspace-profile strong { font-size: 14px; }
+      .workspace-profile p { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
+      .landing-hero-card { padding-top: 12px; }
+      .landing-greeting { font-size: 28px; }
+      .news-card { padding: 24px 28px; }
+      .news-portal-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .mom-grid { gap: 32px; }
+    }
+    @media (max-width: 540px) {
+      .app-shell { padding: 0 16px 100px; }
+      .header-bar { gap: 6px; }
+      .brand-meta { gap: 5px; }
+      #badge-context { display: none; }
+      .brand-maganghub-logo { max-width: 85px; }
+      .actions-cluster { gap: 0; }
+      .landing-greeting { font-size: 22px; }
+      .landing-hero-head { flex-wrap: wrap; }
+      .quick-hub-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .news-card { padding: 16px; }
+      .news-title { font-size: 16px; }
+      .news-header-top { flex-wrap: wrap; }
+      .news-header-title { font-size: 17px; }
+      .bottom-nav-label { font-size: 11px; }
+      .action-item-row { flex-wrap: wrap; }
+      .action-item-row input { min-width: 0; width: 100%; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+    }
   </style>
 </head>
 <body>
@@ -4846,6 +4968,10 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
 
   <!-- Fixed Bottom Navigation Bar (Mobile-First Native App Style) -->
   <nav class="bottom-nav-bar" aria-label="Navigasi Utama">
+    <div class="workspace-identity">
+      <img src="maganghub-logo.svg" alt="MagangHub">
+      <p>Workspace / BNI SSE</p>
+    </div>
     <div class="bottom-nav-inner">
       <button class="bottom-nav-item tab-trigger active" data-tab="berita" onclick="selectTab('berita')">
         <div class="bottom-nav-icon">
@@ -4898,6 +5024,11 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
         </div>
         <span class="bottom-nav-label">Asisten</span>
       </button>
+    </div>
+    <div class="workspace-profile">
+      <strong>Zaki Tri Pamungkas</strong>
+      <p>Sales Strategy &amp; Execution</p>
+      <div class="workspace-connection" id="workspace-db-status" role="status">Memeriksa koneksi...</div>
     </div>
   </nav>
 </div>
@@ -5226,6 +5357,8 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
     // Trigger buttons
     document.querySelectorAll('.tab-trigger').forEach(btn => {
       btn.classList.toggle('active', btn.getAttribute('data-tab') === tab);
+      if (btn.getAttribute('data-tab') === tab) btn.setAttribute('aria-current', 'page');
+      else btn.removeAttribute('aria-current');
     });
 
     // Pane visibility
@@ -5475,7 +5608,25 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
   const SUPABASE_KEY_KEY = 'mghb_supabase_anon_key';
   let supabaseClient = null;
 
-  function initSupabaseClient() {
+  function setDatabaseStatus(state, text) {
+    const status = document.getElementById('workspace-db-status');
+    const badge = document.getElementById('db-conn-badge');
+    const button = document.getElementById('btn-db');
+    if (status) { status.textContent = text; status.dataset.state = state; }
+    if (badge) {
+      badge.textContent = text;
+      badge.style.background = 'var(--surface)';
+      badge.style.color = state === 'connected' ? 'var(--success)' : 'var(--text-secondary)';
+    }
+    if (button) {
+      button.title = text;
+      button.setAttribute('aria-label', text);
+      button.style.color = state === 'connected' ? 'var(--success)' : 'var(--text-secondary)';
+    }
+  }
+
+  async function initSupabaseClient() {
+    setDatabaseStatus('connecting', 'Memeriksa koneksi...');
     let url = localStorage.getItem(SUPABASE_URL_KEY);
     let key = localStorage.getItem(SUPABASE_KEY_KEY);
 
@@ -5497,6 +5648,9 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
     if (url && key && window.supabase) {
       try {
         supabaseClient = window.supabase.createClient(url, key);
+        const { error } = await supabaseClient.from('mghb_settings').select('key').limit(1)
+          .abortSignal(AbortSignal.timeout(10000));
+        if (error) throw error;
         if (badge) {
           badge.textContent = 'Cloud (PostgreSQL Terhubung)';
           badge.style.background = '#10b981';
@@ -5507,9 +5661,11 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
           btnDb.style.color = '#10b981';
           btnDb.title = 'Database: Terhubung ke Supabase Cloud (PostgreSQL)';
         }
+        setDatabaseStatus('connected', 'Cloud terhubung');
       } catch (e) {
         console.warn('Supabase init error:', e);
         supabaseClient = null;
+        setDatabaseStatus('offline', 'Offline / data lokal');
       }
     } else {
       supabaseClient = null;
@@ -5523,6 +5679,7 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
         btnDb.style.color = 'var(--text-secondary)';
         btnDb.title = 'Database Cloud & Real-time Sync (Supabase)';
       }
+      setDatabaseStatus('offline', 'Offline / data lokal');
     }
   }
 
@@ -5562,7 +5719,8 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
       localStorage.setItem(SUPABASE_URL_KEY, url);
       localStorage.setItem(SUPABASE_KEY_KEY, key);
       supabaseClient = client;
-      initSupabaseClient();
+      await initSupabaseClient();
+      if (!supabaseClient) throw new Error('Koneksi database belum terverifikasi');
       showToast('✅ Berhasil terhubung ke Supabase PostgreSQL!');
       syncAllDataWithCloud(false);
     } catch (err) {
@@ -7805,9 +7963,9 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   }
 
   // --- Initialization ---
-  function initApp() {
+  async function initApp() {
     initTheme();
-    initSupabaseClient();
+    const databaseReady = initSupabaseClient();
     checkIncomingSync();
     initScratchpad();
     initFinanceManager();
@@ -7841,12 +7999,18 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     selectTab('berita');
 
     // Trigger initial silent background sync if Supabase is connected
+    await databaseReady;
     if (supabaseClient) {
       syncAllDataWithCloud(true);
     }
   }
 
   window.addEventListener('DOMContentLoaded', initApp);
+  window.addEventListener('offline', () => setDatabaseStatus('offline', 'Offline / data lokal'));
+  window.addEventListener('online', async () => {
+    await initSupabaseClient();
+    if (supabaseClient) syncAllDataWithCloud(true);
+  });
 </script>
 </body>
 </html>
