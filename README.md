@@ -47,6 +47,16 @@ Aplikasi web produktivitas (*Mobile-First Productivity App*) yang dirancang seba
   - *Pemberitahuan Izin Sakit & Surat Dokter*.
   - *Konfirmasi Selesai Penugasan Harian*.
   - *Reminder Approval Logbook Mingguan ke Mentor*.
+* **💰 Manajemen Keuangan & Survival Magang Jakarta**:
+  - **Kalkulator Budgeting Realistis**: Input uang saku / pemasukan bulanan, kalkulasi otomatis sisa anggaran harian aman, dan indikator batas pengeluaran (*Aman*, *Waspada*, *Defisit*).
+  - **Quick Expense Tracker (1-Klik)**: Pencatat pengeluaran harian instan dengan tombol preset:
+    - `+15rb` Kantin Basement Menara BNI
+    - `+20rb` Warteg Penjernihan Benhil
+    - `+3rb` KRL Stasiun Palmerah
+    - `+10rb` Ojek Online Stasiun - Kantor
+    - `+25rb` Laundry Kiloan
+  - **Pola Alokasi Anggaran 50/30/20 Magang Jakarta**: Pembagian terukur pos kebutuhan pokok (kos & listrik), operasional (makan & transport), serta tabungan/dana darurat di rekening BNI / Wondr.
+  - **Ekspor & Salin Rekap Finansial**: Satu klik untuk menyalin rekapitulasi pengeluaran bulanan terstruktur siap kirim via WhatsApp.
 * **Kamus Kilat Istilah Perbankan & Divisi SSE**:
   - Glosarium istilah perbankan: CASA, DPK, Sales Pipeline, NPL, Achievement Rate, Data Cleansing, Cross-Selling.
   - Dilengkapi kolom **💡 Tips Peran Zaki (IT/Data)**: Cara mengaplikasikan analisis data, Excel, dan pembersihan data pada setiap istilah bisnis tersebut.

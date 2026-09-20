@@ -1182,6 +1182,189 @@
       flex-shrink: 0;
     }
 
+    /* Jakarta Financial Management Module */
+    .finance-overview-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 16px 18px;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow-card);
+    }
+
+    .finance-summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .finance-metric {
+      background: var(--surface-hover);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .finance-metric-label {
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .finance-metric-val {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      letter-spacing: -0.01em;
+    }
+
+    .finance-metric-val.success {
+      color: #10b981;
+    }
+
+    .finance-metric-val.warning {
+      color: #f59e0b;
+    }
+
+    .finance-metric-val.danger {
+      color: #ef4444;
+    }
+
+    .finance-metric-sub {
+      font-size: 0.68rem;
+      color: var(--text-secondary);
+    }
+
+    .finance-progress-track {
+      width: 100%;
+      height: 7px;
+      background: var(--surface-hover);
+      border-radius: var(--radius-pill);
+      overflow: hidden;
+      margin-bottom: 6px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .finance-progress-fill {
+      height: 100%;
+      background: #10b981;
+      border-radius: var(--radius-pill);
+      transition: width 0.3s ease, background-color 0.3s ease;
+    }
+
+    .finance-progress-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+    }
+
+    .finance-quick-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .finance-chip {
+      background: var(--surface-hover);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-pill);
+      padding: 3px 9px;
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      user-select: none;
+    }
+
+    .finance-chip:hover {
+      background: var(--accent-subtle);
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .finance-tx-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 10px;
+      max-height: 280px;
+      overflow-y: auto;
+    }
+
+    .finance-tx-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--surface-hover);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 8px 10px;
+      font-size: 0.76rem;
+    }
+
+    .finance-tx-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .finance-tx-badge {
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+
+    .finance-tx-info {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .finance-tx-desc {
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .finance-tx-date {
+      font-size: 0.65rem;
+      color: var(--text-tertiary);
+    }
+
+    .finance-tx-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .finance-tx-amount {
+      font-weight: 700;
+      color: var(--text-primary);
+      font-feature-settings: "tnum";
+    }
+
+    .finance-tx-del {
+      background: transparent;
+      border: none;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      padding: 2px 4px;
+      border-radius: 4px;
+      transition: color 0.15s;
+    }
+
+    .finance-tx-del:hover {
+      color: #ef4444;
+    }
+
     /* Modal Large for Monthly Report */
     .modal-box-lg {
       max-width: 560px;
@@ -3545,6 +3728,7 @@
       <button class="subnav-btn" id="asisten-tab-btn-toolkit" onclick="switchAsistenSubtab('toolkit')">Data &amp; Excel Toolkit</button>
       <button class="subnav-btn" id="asisten-tab-btn-glossary" onclick="switchAsistenSubtab('glossary')">Kamus SSE</button>
       <button class="subnav-btn" id="asisten-tab-btn-guide" onclick="switchAsistenSubtab('guide')">Panduan Menara BNI</button>
+      <button class="subnav-btn" id="asisten-tab-btn-finance" onclick="switchAsistenSubtab('finance')">Keuangan Jakarta 💰</button>
     </div>
 
     <!-- SUB-PANE: CHAT TEMPLATES -->
@@ -4262,6 +4446,172 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
         </ul>
       </div>
     </div>
+
+    <!-- SUB-PANE: MANAJEMEN KEUANGAN JAKARTA -->
+    <div id="asisten-pane-finance" style="display: none;">
+      <!-- Financial Overview Card -->
+      <div class="finance-overview-card">
+        <div class="feature-head">
+          <div class="feature-title">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="1" x2="12" y2="23"></line>
+              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+            </svg>
+            Kalkulator &amp; Budgeting Magang Jakarta
+          </div>
+          <span class="badge badge-accent" id="fin-status-badge">Aman</span>
+        </div>
+
+        <div class="finance-summary-grid">
+          <div class="finance-metric">
+            <span class="finance-metric-label">Uang Saku / Pemasukan</span>
+            <div style="display: flex; align-items: baseline; gap: 4px;">
+              <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-tertiary);">Rp</span>
+              <input type="number" id="fin-income-input" value="3500000" onchange="updateFinanceCalculations()" style="font-size: 1.05rem; font-weight: 800; color: var(--text-primary); background: transparent; border: none; border-bottom: 1px dashed var(--border); width: 100%; outline: none; padding: 0;">
+            </div>
+            <span class="finance-metric-sub">Klik angka untuk sesuaikan</span>
+          </div>
+
+          <div class="finance-metric">
+            <span class="finance-metric-label">Total Pengeluaran</span>
+            <div class="finance-metric-val" id="fin-total-expense">Rp 0</div>
+            <span class="finance-metric-sub" id="fin-expense-percent">0% dari uang saku</span>
+          </div>
+
+          <div class="finance-metric">
+            <span class="finance-metric-label">Sisa Anggaran</span>
+            <div class="finance-metric-val success" id="fin-remaining-budget">Rp 3.500.000</div>
+            <span class="finance-metric-sub" id="fin-daily-safe-limit">Batas aman: Rp 116.000/hari</span>
+          </div>
+        </div>
+
+        <!-- Budget Progress Track -->
+        <div class="finance-progress-track">
+          <div class="finance-progress-fill" id="fin-progress-bar" style="width: 0%;"></div>
+        </div>
+        <div class="finance-progress-meta">
+          <span id="fin-progress-label">Pengeluaran: 0%</span>
+          <span id="fin-days-left">Sisa hari bulan ini: 10 hari</span>
+        </div>
+      </div>
+
+      <!-- Quick Expense Logger Card -->
+      <div class="feature-card" style="margin-top: 12px;">
+        <div class="feature-head">
+          <div class="feature-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="16"></line>
+              <line x1="8" y1="12" x2="16" y2="12"></line>
+            </svg>
+            Catat Pengeluaran Harian
+          </div>
+        </div>
+
+        <form id="finance-form" onsubmit="handleNewExpense(event)">
+          <div style="display: grid; grid-template-columns: 1.1fr 1fr; gap: 8px;">
+            <div class="form-group" style="margin-bottom: 8px;">
+              <label class="form-label">Kategori</label>
+              <select class="form-control" id="fin-tx-cat" required>
+                <option value="makan">🍱 Makan &amp; Minum</option>
+                <option value="transport">🚆 Transportasi (KRL/Ojol)</option>
+                <option value="kos">🏠 Kos &amp; Utilitas</option>
+                <option value="laundry">🧼 Laundry &amp; Pribadi</option>
+                <option value="kopi">☕ Kopi &amp; Hangout</option>
+                <option value="wisuda">🎓 Wisuda UMS &amp; Solo</option>
+                <option value="lainnya">💡 Lain-lain / Darurat</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom: 8px;">
+              <label class="form-label">Nominal (Rp)</label>
+              <input type="number" class="form-control" id="fin-tx-amount" placeholder="Contoh: 15000" min="1" required>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1.4fr 1fr; gap: 8px;">
+            <div class="form-group" style="margin-bottom: 8px;">
+              <label class="form-label">Deskripsi / Catatan</label>
+              <input type="text" class="form-control" id="fin-tx-desc" placeholder="Contoh: Makan siang kantin basement BNI">
+            </div>
+            <div class="form-group" style="margin-bottom: 8px;">
+              <label class="form-label">Tanggal</label>
+              <input type="date" class="form-control" id="fin-tx-date">
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px; flex-wrap: wrap; gap: 8px;">
+            <div class="finance-quick-chips">
+              <span class="finance-chip" onclick="quickFillExpense('makan', 15000, 'Kantin Basement BNI')">🍱 +15rb Kantin</span>
+              <span class="finance-chip" onclick="quickFillExpense('makan', 20000, 'Warteg Penjernihan Benhil')">🍛 +20rb Warteg</span>
+              <span class="finance-chip" onclick="quickFillExpense('transport', 3000, 'KRL St. Palmerah')">🚆 +3rb KRL</span>
+              <span class="finance-chip" onclick="quickFillExpense('transport', 10000, 'Ojol Stasiun - Kantor')">🛵 +10rb Ojol</span>
+              <span class="finance-chip" onclick="quickFillExpense('laundry', 25000, 'Laundry Kiloan')">🧼 +25rb Laundry</span>
+            </div>
+            <button type="submit" class="btn-action" style="flex-shrink: 0;">
+              + Catat Pengeluaran
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Expense History Log -->
+      <div class="feature-card" style="margin-top: 12px;">
+        <div class="feature-head">
+          <div class="feature-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="12 8 12 12 14 14"></polyline>
+              <path d="M3.05 11a9 9 0 1 1 .5 4m-.5 5v-5h5"></path>
+            </svg>
+            Riwayat Transaksi Bulan Ini
+          </div>
+          <div style="display: flex; gap: 6px;">
+            <button class="btn-action btn-xs" onclick="exportFinanceSummaryText()">Salin Rekap</button>
+            <button class="btn-action btn-xs" onclick="clearFinanceHistory()" style="color: #ef4444;">Reset</button>
+          </div>
+        </div>
+
+        <div class="finance-tx-list" id="finance-tx-container">
+          <div style="font-size: 0.76rem; color: var(--text-secondary); text-align: center; padding: 16px;">
+            Belum ada pengeluaran tercatat bulan ini.
+          </div>
+        </div>
+      </div>
+
+      <!-- Jakarta Survival & Saving Strategy Guide -->
+      <div class="guide-section-title" style="margin-top: 16px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"></path>
+          <line x1="12" y1="18" x2="12.01" y2="18"></line>
+        </svg>
+        Strategi Finansial &amp; Survival Magang Jakarta
+      </div>
+
+      <div class="guide-card">
+        <div class="guide-card-head">
+          <div class="guide-card-title">Pola Alokasi Anggaran Realistis Magang Jakarta</div>
+          <span class="badge badge-accent">Metode 50/30/20</span>
+        </div>
+        <ul class="guide-list">
+          <li><span class="guide-bullet">•</span><div><strong>Pos Kebutuhan Pokok (Needs - 50% ~ Rp1.750.000):</strong> Sewa kamar kos (kisaran Rp1.000.000 - Rp1.400.000), token listrik, dan biaya konsumsi pokok harian.</div></li>
+          <li><span class="guide-bullet">•</span><div><strong>Pos Operasional &amp; Mobilitas (Wants &amp; Daily - 30% ~ Rp1.050.000):</strong> Tiket transportasi KRL/JakLingko/Ojol, kuota internet, laundry kiloan, dan kuliner akhir pekan di Benhil.</div></li>
+          <li><span class="guide-bullet">•</span><div><strong>Pos Tabungan &amp; Dana Darurat (Savings - 20% ~ Rp700.000):</strong> Langsung amankan ke rekening BNI saat uang saku cair. Jangan disimpan di dompet tunai atau kartu debit harian agar tidak terpakai impulsif.</div></li>
+        </ul>
+      </div>
+
+      <div class="guide-card">
+        <div class="guide-card-head">
+          <div class="guide-card-title">Trik Hemat Khusus Area Menara BNI &amp; Benhil</div>
+          <span class="badge">Tips Praktis</span>
+        </div>
+        <ul class="guide-list">
+          <li><span class="guide-bullet">•</span><div><strong>Makan Siang Hemat:</strong> Manfaatkan kantin basement Menara BNI (pilihan menu lengkap Rp15.000–20.000, higienis &amp; ber-AC). Hindari pesan makanan via ojol saat jam kerja karena ada ongkir dan biaya layanan.</div></li>
+          <li><span class="guide-bullet">•</span><div><strong>Refill Tumbler Gratis:</strong> Selalu bawa tumbler (sudah sesuai instruksi Day-1!) dan isi ulang air mineral di dispenser pantry lantai SSE Menara BNI. Menghemat ±Rp150.000/bulan dari beli air botol.</div></li>
+          <li><span class="guide-bullet">•</span><div><strong>Transportasi Nol Rupiah:</strong> Gunakan Mikrotrans JakLingko (JAK.08 atau JAK.14) dengan tarif <strong>Rp 0 (gratis)</strong> cukup tap kartu uang elektronik. Dari Stasiun Palmerah ke Menara BNI hanya 1.8 km (bisa jalan kaki pagi jika cuaca cerah).</div></li>
+          <li><span class="guide-bullet">•</span><div><strong>Aplikasi Wondr by BNI:</strong> Manfaatkan fitur transfer gratis, bebas admin, dan pantau pengeluaran bulanan melalui mutasi digital real-time.</div></li>
+        </ul>
+      </div>
+    </div>
   </main>
 
   <!-- TAB 5: KABAR & BERITA MAGANGHUB OTOMATIS (LANDING PAGE) -->
@@ -4309,6 +4659,17 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
           </div>
           <span class="quick-hub-label">Bawaan Dinas</span>
           <span class="quick-hub-sub">Checklist Jakarta</span>
+        </button>
+
+        <button class="quick-hub-btn" onclick="selectTab('asisten'); switchAsistenSubtab('finance');">
+          <div class="quick-hub-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="1" x2="12" y2="23"></line>
+              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+            </svg>
+          </div>
+          <span class="quick-hub-label">Keuangan Jakarta</span>
+          <span class="quick-hub-sub">Budget &amp; Tracker</span>
         </button>
       </div>
     </div>
@@ -5277,22 +5638,28 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
     }
   }
 
-  // --- Asisten Subtabs (Chat vs MoM vs Toolkit vs Glossary vs Guide) ---
+  // --- Asisten Subtabs (Chat vs MoM vs Toolkit vs Glossary vs Guide vs Finance) ---
   function switchAsistenSubtab(sub) {
     document.getElementById('asisten-tab-btn-chat').classList.toggle('active', sub === 'chat');
     document.getElementById('asisten-tab-btn-mom').classList.toggle('active', sub === 'mom');
     document.getElementById('asisten-tab-btn-toolkit').classList.toggle('active', sub === 'toolkit');
     document.getElementById('asisten-tab-btn-glossary').classList.toggle('active', sub === 'glossary');
     document.getElementById('asisten-tab-btn-guide').classList.toggle('active', sub === 'guide');
+    const finBtn = document.getElementById('asisten-tab-btn-finance');
+    if (finBtn) finBtn.classList.toggle('active', sub === 'finance');
 
     document.getElementById('asisten-pane-chat').style.display = sub === 'chat' ? 'block' : 'none';
     document.getElementById('asisten-pane-mom').style.display = sub === 'mom' ? 'block' : 'none';
     document.getElementById('asisten-pane-toolkit').style.display = sub === 'toolkit' ? 'block' : 'none';
     document.getElementById('asisten-pane-glossary').style.display = sub === 'glossary' ? 'block' : 'none';
     document.getElementById('asisten-pane-guide').style.display = sub === 'guide' ? 'block' : 'none';
+    const finPane = document.getElementById('asisten-pane-finance');
+    if (finPane) finPane.style.display = sub === 'finance' ? 'block' : 'none';
 
     if (sub === 'mom') {
       initMomGenerator();
+    } else if (sub === 'finance') {
+      initFinanceManager();
     }
   }
 
@@ -6453,11 +6820,276 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     });
   }
 
+  // --- Jakarta Financial Management Engine ---
+  const FIN_INCOME_KEY = 'mghb_fin_income';
+  const FIN_EXPENSES_KEY = 'mghb_fin_expenses';
+
+  const FIN_CATEGORY_META = {
+    makan: { label: 'Makan & Minum', badge: '🍱' },
+    transport: { label: 'Transportasi', badge: '🚆' },
+    kos: { label: 'Kos & Utilitas', badge: '🏠' },
+    laundry: { label: 'Laundry & Pribadi', badge: '🧼' },
+    kopi: { label: 'Kopi & Hangout', badge: '☕' },
+    wisuda: { label: 'Wisuda UMS & Solo', badge: '🎓' },
+    lainnya: { label: 'Lain-lain / Darurat', badge: '💡' }
+  };
+
+  function getFinanceIncome() {
+    const val = localStorage.getItem(FIN_INCOME_KEY);
+    return val ? parseInt(val, 10) : 3500000;
+  }
+
+  function getFinanceExpenses() {
+    try {
+      const stored = localStorage.getItem(FIN_EXPENSES_KEY);
+      return stored ? JSON.parse(stored) : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function saveFinanceExpenses(expenses) {
+    localStorage.setItem(FIN_EXPENSES_KEY, JSON.stringify(expenses));
+  }
+
+  function formatRupiah(num) {
+    return 'Rp ' + Number(num || 0).toLocaleString('id-ID');
+  }
+
+  function initFinanceManager() {
+    const incomeInput = document.getElementById('fin-income-input');
+    if (incomeInput) {
+      incomeInput.value = getFinanceIncome();
+    }
+    const dateInput = document.getElementById('fin-tx-date');
+    if (dateInput && !dateInput.value) {
+      dateInput.value = new Date().toISOString().slice(0, 10);
+    }
+    renderFinanceExpenses();
+    updateFinanceCalculations();
+  }
+
+  function updateFinanceCalculations() {
+    const incomeInput = document.getElementById('fin-income-input');
+    let income = incomeInput ? parseInt(incomeInput.value, 10) || 0 : 3500000;
+    if (income < 0) income = 0;
+    localStorage.setItem(FIN_INCOME_KEY, income.toString());
+
+    const expenses = getFinanceExpenses();
+    const totalSpent = expenses.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+    const remaining = income - totalSpent;
+    const percentSpent = income > 0 ? Math.min(Math.round((totalSpent / income) * 100), 100) : 100;
+
+    // Days left in current month
+    const now = new Date();
+    const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+    const currentDay = now.getDate();
+    const daysLeft = Math.max(daysInMonth - currentDay + 1, 1);
+
+    const safeDailyLimit = remaining > 0 ? Math.round(remaining / daysLeft) : 0;
+
+    // Update DOM
+    const totalEl = document.getElementById('fin-total-expense');
+    if (totalEl) totalEl.textContent = formatRupiah(totalSpent);
+
+    const percentEl = document.getElementById('fin-expense-percent');
+    if (percentEl) percentEl.textContent = `${percentSpent}% dari uang saku`;
+
+    const remEl = document.getElementById('fin-remaining-budget');
+    if (remEl) {
+      remEl.textContent = formatRupiah(remaining);
+      remEl.className = 'finance-metric-val ' + (remaining < 0 ? 'danger' : (percentSpent > 80 ? 'warning' : 'success'));
+    }
+
+    const dailyLimitEl = document.getElementById('fin-daily-safe-limit');
+    if (dailyLimitEl) {
+      dailyLimitEl.textContent = remaining > 0 
+        ? `Batas aman: ${formatRupiah(safeDailyLimit)}/hari` 
+        : 'Anggaran telah habis!';
+    }
+
+    const progressFill = document.getElementById('fin-progress-bar');
+    if (progressFill) {
+      progressFill.style.width = percentSpent + '%';
+      progressFill.style.backgroundColor = remaining < 0 || percentSpent > 90 ? '#ef4444' : (percentSpent > 70 ? '#f59e0b' : '#10b981');
+    }
+
+    const progressLabel = document.getElementById('fin-progress-label');
+    if (progressLabel) progressLabel.textContent = `Pengeluaran: ${percentSpent}%`;
+
+    const daysLeftEl = document.getElementById('fin-days-left');
+    if (daysLeftEl) daysLeftEl.textContent = `Sisa ${daysLeft} hari bulan ini`;
+
+    const statusBadge = document.getElementById('fin-status-badge');
+    if (statusBadge) {
+      if (remaining < 0) {
+        statusBadge.textContent = 'Defisit';
+        statusBadge.style.color = '#ef4444';
+        statusBadge.style.borderColor = 'rgba(239, 68, 68, 0.4)';
+      } else if (percentSpent > 80) {
+        statusBadge.textContent = 'Waspada';
+        statusBadge.style.color = '#f59e0b';
+        statusBadge.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+      } else {
+        statusBadge.textContent = 'Terkendali';
+        statusBadge.style.color = '#10b981';
+        statusBadge.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+      }
+    }
+  }
+
+  function handleNewExpense(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    const catEl = document.getElementById('fin-tx-cat');
+    const amountEl = document.getElementById('fin-tx-amount');
+    const descEl = document.getElementById('fin-tx-desc');
+    const dateEl = document.getElementById('fin-tx-date');
+
+    const cat = catEl ? catEl.value : 'makan';
+    const amount = amountEl ? parseInt(amountEl.value, 10) : 0;
+    const desc = descEl ? descEl.value.trim() : '';
+    const date = dateEl && dateEl.value ? dateEl.value : new Date().toISOString().slice(0, 10);
+
+    if (!amount || amount <= 0) {
+      showToast('Masukkan nominal pengeluaran yang valid');
+      return;
+    }
+
+    const catMeta = FIN_CATEGORY_META[cat] || { label: 'Lainnya', badge: '💡' };
+    const newTx = {
+      id: 'fin_' + Date.now(),
+      cat: cat,
+      desc: desc || catMeta.label,
+      amount: amount,
+      date: date
+    };
+
+    const expenses = getFinanceExpenses();
+    expenses.unshift(newTx);
+    saveFinanceExpenses(expenses);
+
+    if (amountEl) amountEl.value = '';
+    if (descEl) descEl.value = '';
+
+    renderFinanceExpenses();
+    updateFinanceCalculations();
+    showToast(`Pengeluaran ${formatRupiah(amount)} berhasil dicatat!`);
+  }
+
+  function quickFillExpense(cat, amount, desc) {
+    const catEl = document.getElementById('fin-tx-cat');
+    const amountEl = document.getElementById('fin-tx-amount');
+    const descEl = document.getElementById('fin-tx-desc');
+    const dateEl = document.getElementById('fin-tx-date');
+
+    if (catEl) catEl.value = cat;
+    if (amountEl) amountEl.value = amount;
+    if (descEl) descEl.value = desc;
+    if (dateEl && !dateEl.value) dateEl.value = new Date().toISOString().slice(0, 10);
+
+    handleNewExpense();
+  }
+
+  function deleteExpense(id) {
+    let expenses = getFinanceExpenses();
+    expenses = expenses.filter(item => item.id !== id);
+    saveFinanceExpenses(expenses);
+    renderFinanceExpenses();
+    updateFinanceCalculations();
+    showToast('Transaksi pengeluaran dihapus');
+  }
+
+  function clearFinanceHistory() {
+    if (confirm('Hapus seluruh riwayat pengeluaran yang tersimpan?')) {
+      saveFinanceExpenses([]);
+      renderFinanceExpenses();
+      updateFinanceCalculations();
+      showToast('Seluruh riwayat pengeluaran berhasil di-reset');
+    }
+  }
+
+  function renderFinanceExpenses() {
+    const container = document.getElementById('finance-tx-container');
+    if (!container) return;
+
+    const expenses = getFinanceExpenses();
+    if (expenses.length === 0) {
+      container.innerHTML = `
+        <div style="font-size: 0.76rem; color: var(--text-tertiary); text-align: center; padding: 18px 12px;">
+          Belum ada catatan pengeluaran bulan ini.<br>
+          <span style="font-size: 0.7rem; color: var(--text-secondary); margin-top: 4px; display: inline-block;">Gunakan tombol cepat di atas untuk mencatat dalam 1-klik!</span>
+        </div>
+      `;
+      return;
+    }
+
+    let html = '';
+    expenses.forEach(item => {
+      const meta = FIN_CATEGORY_META[item.cat] || { label: 'Lainnya', badge: '💡' };
+      html += `
+        <div class="finance-tx-item">
+          <div class="finance-tx-left">
+            <span class="finance-tx-badge">${meta.badge}</span>
+            <div class="finance-tx-info">
+              <span class="finance-tx-desc">${item.desc}</span>
+              <span class="finance-tx-date">📅 ${item.date} • ${meta.label}</span>
+            </div>
+          </div>
+          <div class="finance-tx-right">
+            <span class="finance-tx-amount">${formatRupiah(item.amount)}</span>
+            <button type="button" class="finance-tx-del" title="Hapus transaksi" onclick="deleteExpense('${item.id}')">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+          </div>
+        </div>
+      `;
+    });
+    container.innerHTML = html;
+  }
+
+  function exportFinanceSummaryText() {
+    const income = getFinanceIncome();
+    const expenses = getFinanceExpenses();
+    const totalSpent = expenses.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+    const remaining = income - totalSpent;
+
+    const breakdown = {};
+    expenses.forEach(item => {
+      const cat = item.cat || 'lainnya';
+      breakdown[cat] = (breakdown[cat] || 0) + Number(item.amount);
+    });
+
+    let text = `📊 *REKAP KEUANGAN MAGANG BNI - JAKARTA*\n`;
+    text += `Tanggal Rekap: ${new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}\n`;
+    text += `━━━━━━━━━━━━━━━━━━━━━\n`;
+    text += `💰 Pemasukan / Uang Saku : ${formatRupiah(income)}\n`;
+    text += `💸 Total Pengeluaran    : ${formatRupiah(totalSpent)}\n`;
+    text += `🎯 Sisa Anggaran        : ${formatRupiah(remaining)}\n`;
+    text += `━━━━━━━━━━━━━━━━━━━━━\n\n`;
+    text += `📌 *Rincian per Kategori:*\n`;
+
+    Object.keys(FIN_CATEGORY_META).forEach(key => {
+      const amt = breakdown[key] || 0;
+      if (amt > 0) {
+        text += `${FIN_CATEGORY_META[key].badge} ${FIN_CATEGORY_META[key].label}: ${formatRupiah(amt)}\n`;
+      }
+    });
+
+    text += `\n_Catatan Keuangan Mandiri MGHB Workspace - Zaki Tri Pamungkas_`;
+
+    navigator.clipboard.writeText(text).then(() => {
+      showToast('Rekap keuangan berhasil disalin ke clipboard!');
+    }).catch(() => {
+      showToast('Gagal menyalin rekap keuangan');
+    });
+  }
+
   // --- Initialization ---
   function initApp() {
     initTheme();
     checkIncomingSync();
     initScratchpad();
+    initFinanceManager();
     updateOfficeRhythm();
     setInterval(updateOfficeRhythm, 15000);
     fetchLiveNews(false);
