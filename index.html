@@ -2087,6 +2087,84 @@
       gap: 6px;
     }
 
+    /* SSE Data & Analytics Toolkit Styles */
+    .toolkit-filter-bar {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin: 10px 0 14px 0;
+    }
+
+    .toolkit-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      margin-top: 10px;
+      box-shadow: var(--shadow-card);
+      transition: all 0.2s ease;
+    }
+
+    .toolkit-item:hover {
+      border-color: var(--accent);
+    }
+
+    .toolkit-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      gap: 8px;
+    }
+
+    .toolkit-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .toolkit-desc {
+      font-size: 0.74rem;
+      color: var(--text-secondary);
+      line-height: 1.45;
+      margin-bottom: 8px;
+    }
+
+    .toolkit-code-wrap {
+      position: relative;
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      margin: 8px 0;
+      overflow-x: auto;
+    }
+
+    .toolkit-code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.73rem;
+      line-height: 1.45;
+      color: #38bdf8;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .toolkit-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 8px;
+      gap: 8px;
+    }
+
+    .toolkit-usecase {
+      font-size: 0.7rem;
+      color: var(--text-tertiary);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
     /* Footnote */
     footer.app-footer {
       margin-top: 36px;
@@ -3145,6 +3223,10 @@
           Riwayat Logbook Tersimpan
         </div>
         <div style="display: flex; align-items: center; gap: 6px;">
+          <button class="btn-action btn-xs" onclick="openWeeklyReportModal()" style="background: var(--accent-subtle); color: var(--accent); border: 1px solid var(--accent); font-weight: 600;">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            Rekap Mingguan
+          </button>
           <button class="btn-action btn-xs" onclick="openMonthlyReportModal()" style="background: var(--accent-subtle); color: var(--accent); border: 1px solid var(--accent); font-weight: 600;">
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
             Ringkasan Bulanan
@@ -3163,6 +3245,7 @@
     <div class="subnav-pills">
       <button class="subnav-btn active" id="asisten-tab-btn-chat" onclick="switchAsistenSubtab('chat')">Template Chat</button>
       <button class="subnav-btn" id="asisten-tab-btn-mom" onclick="switchAsistenSubtab('mom')">Notulensi Rapat (MoM)</button>
+      <button class="subnav-btn" id="asisten-tab-btn-toolkit" onclick="switchAsistenSubtab('toolkit')">Data &amp; Excel Toolkit</button>
       <button class="subnav-btn" id="asisten-tab-btn-glossary" onclick="switchAsistenSubtab('glossary')">Kamus SSE</button>
       <button class="subnav-btn" id="asisten-tab-btn-guide" onclick="switchAsistenSubtab('guide')">Panduan Menara BNI</button>
     </div>
@@ -3370,6 +3453,312 @@ Apabila Bapak berkenan, mohon kesediaan Bapak untuk melakukan review dan approva
             <div id="mom-history-list" class="mom-history-list">
               <div style="font-size: 0.74rem; color: var(--text-tertiary); text-align: center; padding: 8px;">Belum ada notulensi yang disimpan di browser ini.</div>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUB-PANE: SSE DATA & ANALYTICS TOOLKIT -->
+    <div id="asisten-pane-toolkit" style="display: none;">
+      <!-- Search & Category Filter -->
+      <div class="search-box" style="margin-top: 10px;">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" class="search-input" id="toolkit-search" placeholder="Cari rumus Excel (XLOOKUP, SUMIFS), query SQL, atau Python..." oninput="handleToolkitSearch(this.value)">
+      </div>
+
+      <div class="toolkit-filter-bar">
+        <button type="button" class="mom-preset-btn active" id="toolkit-cat-all" onclick="filterToolkitCategory('all')">
+          ⚡ Semua (11)
+        </button>
+        <button type="button" class="mom-preset-btn" id="toolkit-cat-excel" onclick="filterToolkitCategory('excel')">
+          📊 Excel &amp; Spreadsheet (5)
+        </button>
+        <button type="button" class="mom-preset-btn" id="toolkit-cat-sql" onclick="filterToolkitCategory('sql')">
+          🗄️ SQL Banking (3)
+        </button>
+        <button type="button" class="mom-preset-btn" id="toolkit-cat-python" onclick="filterToolkitCategory('python')">
+          🐍 Python Data Cleansing (3)
+        </button>
+      </div>
+
+      <div id="toolkit-items-container">
+        <!-- Item 1: XLOOKUP -->
+        <div class="toolkit-item" data-cat="excel" data-search="xlookup vlookup cari nasabah rekening cabang tabel">
+          <div class="toolkit-header">
+            <div class="toolkit-title">XLOOKUP: Rekonsiliasi NIK / No. Rekening Cabang</div>
+            <span class="badge badge-accent">Excel Modern</span>
+          </div>
+          <div class="toolkit-desc">
+            Alternatif modern pengganti VLOOKUP yang lebih aman dan fleksibel. Mencari data nasabah atau pimpinan cabang tanpa terpengaruh posisi kolom kiri/kanan serta menangani *not found* secara elegan.
+          </div>
+          <div class="toolkit-code-wrap">
+            <pre class="toolkit-code" id="code-xlookup">=XLOOKUP(A2; 'Master_Cabang'!A:A; 'Master_Cabang'!C:C; "Data Tidak Ditemukan"; 0)</pre>
+          </div>
+          <div class="toolkit-footer">
+            <span class="toolkit-usecase">💡 Kasus: Padankan kode cabang pada sheet laporan harian dengan nama outlet di master data.</span>
+            <button class="btn-action btn-xs" onclick="copySnippetText('code-xlookup', 'Rumus XLOOKUP')">Salin Rumus</button>
+          </div>
+        </div>
+
+        <!-- Item 2: SUMIFS Total DPK -->
+        <div class="toolkit-item" data-cat="excel" data-search="sumifs total dpk agregasi filter wilayah cabang">
+          <div class="toolkit-header">
+            <div class="toolkit-title">SUMIFS: Agregasi Saldo DPK Berdasarkan Kriteria Wilayah</div>
+            <span class="badge">Excel / Calc</span>
+          </div>
+          <div class="toolkit-desc">
+            Menjumlahkan total saldo DPK atau realisasi volume transaksi hanya untuk cabang yang memenuhi beberapa kriteria (misal: Wilayah tertentu dan status cabang Aktif).
+          </div>
+          <div class="toolkit-code-wrap">
+            <pre class="toolkit-code" id="code-sumifs">=SUMIFS(D:D; B:B; "Wilayah 03"; C:C; "Aktif")</pre>
+          </div>
+          <div class="toolkit-footer">
+            <span class="toolkit-usecase">💡 Kolom D = Saldo DPK, Kolom B = Nama Wilayah, Kolom C = Status Cabang.</span>
+            <button class="btn-action btn-xs" onclick="copySnippetText('code-sumifs', 'Rumus SUMIFS')">Salin Rumus</button>
+          </div>
+        </div>
+
+        <!-- Item 3: Rasio CASA -->
+        <div class="toolkit-item" data-cat="excel" data-search="rasio casa persentase dana murah giro tabungan deposito">
+          <div class="toolkit-header">
+            <div class="toolkit-title">Formula Rasio CASA (Current Account Saving Account)</div>
+            <span class="badge badge-accent">Metrik Inti BNI</span>
+          </div>
+          <div class="toolkit-desc">
+            Menghitung porsi dana murah (Giro + Tabungan) terhadap total DPK. Metrik kunci performa perbankan yang dipantau divisi SSE setiap minggu.
+          </div>
+          <div class="toolkit-code-wrap">
+            <pre class="toolkit-code" id="code-casa">=IF(D2>0; (B2 + C2) / D2; 0)</pre>
+          </div>
+          <div class="toolkit-footer">
+            <span class="toolkit-usecase">💡 B2 = Giro, C2 = Tabungan, D2 = Total DPK. Format sel sebagai Percentage (0.00%).</span>
+            <button class="btn-action btn-xs" onclick="copySnippetText('code-casa', 'Formula Rasio CASA')">Salin Rumus</button>
+          </div>
+        </div>
+
+        <!-- Item 4: Growth MoM & YoY -->
+        <div class="toolkit-item" data-cat="excel" data-search="growth mom yoy pertumbuhan persentase bulan tahun">
+          <div class="toolkit-header">
+            <div class="toolkit-title">Formula Pertumbuhan Penjualan MoM &amp; YoY</div>
+            <span class="badge">Analisis Kinerja</span>
+          </div>
+          <div class="toolkit-desc">
+            Menghitung delta laju pertumbuhan volume penjualan atau saldo DPK antar bulan (*Month-over-Month*) dengan penanganan pembagian nol (*Safe Division*).
+          </div>
+          <div class="toolkit-code-wrap">
+            <pre class="toolkit-code" id="code-growth">=IF(B2>0; (C2 - B2) / B2; 0)</pre>
+          </div>
+          <div class="toolkit-footer">
+            <span class="toolkit-usecase">💡 B2 = Realisasi Bulan Lalu, C2 = Realisasi Bulan Ini. Format sel sebagai Percentage.</span>
+            <button class="btn-action btn-xs" onclick="copySnippetText('code-growth', 'Formula Growth MoM')">Salin Rumus</button>
+          </div>
+        </div>
+
+        <!-- Item 5: Multi-Criteria Lookup (INDEX + MATCH) -->
+        <div class="toolkit-item" data-cat="excel" data-search="index match multi criteria lookup dua kondisi kriteria">
+          <div class="toolkit-header">
+            <div class="toolkit-title">INDEX + MATCH: Pencarian Bersyarat Multi-Kriteria</div>
+            <span class="badge">Excel Lanjutan</span>
+          </div>
+          <div class="toolkit-desc">
+            Mencari target atau realisasi berdasarkan 2 parameter sekaligus (misal: Nama Cabang DAN Jenis Produk Tabungan Bisnis).
+          </div>
+          <div class="toolkit-code-wrap">
+            <pre class="toolkit-code" id="code-indexmatch">=INDEX(E2:E100; MATCH(1; (A2:A100=G2) * (B2:B100=H2); 0))</pre>
+          </div>
+          <div class="toolkit-footer">
+            <span class="toolkit-usecase">💡 G2 = Target Cabang, H2 = Produk. Tekan Ctrl+Shift+Enter jika di Excel versi lama.</span>
+            <button class="btn-action btn-xs" onclick="copySnippetText('code-indexmatch', 'Rumus INDEX-MATCH')">Salin Rumus</button>
+          </div>
+        </div>
+
+        <!-- Item 6: SQL Top 10 Cabang CASA -->
+        <div class="toolkit-item" data-cat="sql" data-search="sql top cabang casa query perbankan database">
+          <div class="toolkit-header">
+            <div class="toolkit-title">SQL: Top 10 Cabang Rasio CASA Tertinggi</div>
+            <span class="badge badge-accent">Query DWH</span>
+          </div>
+          <div class="toolkit-desc">
+            Mengagregasi saldo harian dari data warehouse bank untuk memetakan kantor cabang dengan efisiensi dana murah terbaik.
+          </div>
+          <div class="toolkit-code-wrap">
+            <pre class="toolkit-code" id="code-sql-casa">SELECT 
+    kode_cabang, 
+    nama_cabang, 
+    wilayah,
+    SUM(saldo_giro + saldo_tabungan) AS total_casa,
+    SUM(saldo_giro + saldo_tabungan + saldo_deposito) AS total_dpk,
+    ROUND((SUM(saldo_giro + saldo_tabungan) / NULLIF(SUM(saldo_giro + saldo_tabungan + saldo_deposito), 0)) * 100, 2) AS rasio_casa_pct
+FROM dwh_daily_balance
+WHERE tanggal_posisi = CURRENT_DATE - INTERVAL '1 day'
+GROUP BY kode_cabang, nama_cabang, wilayah
+ORDER BY rasio_casa_pct DESC
+LIMIT 10;</pre>
+          </div>
+          <div class="toolkit-footer">
+            <span class="toolkit-usecase">💡 NULLIF mencegah error Division by Zero jika ada cabang baru yang saldonya masih 0.</span>
+            <button class="btn-action btn-xs" onclick="copySnippetText('code-sql-casa', 'Query SQL Top CASA')">Salin SQL</button>
+          </div>
+        </div>
+
+        <!-- Item 7: SQL Growth MoM per Segmentasi -->
+        <div class="toolkit-item" data-cat="sql" data-search="sql growth mom segmentasi sales pipeline penjualan">
+          <div class="toolkit-header">
+            <div class="toolkit-title">SQL: Perbandingan Realisasi Penjualan MoM per Segmen</div>
+            <span class="badge">Analitik Penjualan</span>
+          </div>
+          <div class="toolkit-desc">
+            Membandingkan volume pencapaian sales produk antar bulan berjalan dan bulan sebelumnya per segmentasi nasabah (Consumer, Commercial, SME).
+          </div>
+          <div class="toolkit-code-wrap">
+            <pre class="toolkit-code" id="code-sql-growth">SELECT 
+    segmentasi_nasabah,
+    SUM(CASE WHEN EXTRACT(MONTH FROM tanggal_transaksi) = EXTRACT(MONTH FROM CURRENT_DATE) THEN nominal_realisasi ELSE 0 END) AS bulan_ini,
+    SUM(CASE WHEN EXTRACT(MONTH FROM tanggal_transaksi) = EXTRACT(MONTH FROM CURRENT_DATE - INTERVAL '1 month') THEN nominal_realisasi ELSE 0 END) AS bulan_lalu,
+    ROUND(
+        ((SUM(CASE WHEN EXTRACT(MONTH FROM tanggal_transaksi) = EXTRACT(MONTH FROM CURRENT_DATE) THEN nominal_realisasi ELSE 0 END) -
+          SUM(CASE WHEN EXTRACT(MONTH FROM tanggal_transaksi) = EXTRACT(MONTH FROM CURRENT_DATE - INTERVAL '1 month') THEN nominal_realisasi ELSE 0 END)) /
+          NULLIF(SUM(CASE WHEN EXTRACT(MONTH FROM tanggal_transaksi) = EXTRACT(MONTH FROM CURRENT_DATE - INTERVAL '1 month') THEN nominal_realisasi ELSE 0 END), 0)
+        ) * 100, 2
+    ) AS growth_mom_pct
+FROM sales_pipeline_transaksi
+GROUP BY segmentasi_nasabah;</pre>
+          </div>
+          <div class="toolkit-footer">
+            <span class="toolkit-usecase">💡 Membantu evaluasi apakah performa penjualan ritel/korporat tumbuh positif.</span>
+            <button class="btn-action btn-xs" onclick="copySnippetText('code-sql-growth', 'Query SQL Growth MoM')">Salin SQL</button>
+          </div>
+        </div>
+
+        <!-- Item 8: SQL Leads Stagnan -->
+        <div class="toolkit-item" data-cat="sql" data-search="sql pipeline leads stagnan macet follow up">
+          <div class="toolkit-header">
+            <div class="toolkit-title">SQL: Deteksi Calon Nasabah (Leads) Stagnan di Pipeline</div>
+            <span class="badge">Monitoring Funnel</span>
+          </div>
+          <div class="toolkit-desc">
+            Menemukan daftar prospek nasabah yang mandek lebih dari 14 hari di satu tahapan pipeline penjualan untuk ditindaklanjuti Relationship Manager (RM).
+          </div>
+          <div class="toolkit-code-wrap">
+            <pre class="toolkit-code" id="code-sql-stagnant">SELECT 
+    lead_id,
+    nama_nasabah,
+    produk_ditawarkan,
+    nama_rm_sales,
+    tahap_pipeline,
+    CURRENT_DATE - tanggal_update_terakhir AS hari_stagnan
+FROM leads_pipeline
+WHERE tahap_pipeline NOT IN ('CLOSING_WON', 'CLOSING_LOST')
+  AND (CURRENT_DATE - tanggal_update_terakhir) > 14
+ORDER BY hari_stagnan DESC;</pre>
+          </div>
+          <div class="toolkit-footer">
+            <span class="toolkit-usecase">💡 Disajikan dalam weekly catchup SSE sebagai bahan evaluasi tindak lanjut RM cabang.</span>
+            <button class="btn-action btn-xs" onclick="copySnippetText('code-sql-stagnant', 'Query SQL Leads Stagnan')">Salin SQL</button>
+          </div>
+        </div>
+
+        <!-- Item 9: Python Merge Multiple Excel -->
+        <div class="toolkit-item" data-cat="python" data-search="python pandas gabung file excel merge concat cabang">
+          <div class="toolkit-header">
+            <div class="toolkit-title">Python: Otomasi Menggabungkan Puluhan File Excel Cabang</div>
+            <span class="badge badge-accent">Efisiensi IT</span>
+          </div>
+          <div class="toolkit-desc">
+            Menghemat jam kerja manual dengan membaca dan menyatukan seluruh berkas `.xlsx` laporan dari puluhan cabang dalam satu folder menjadi satu master dataset.
+          </div>
+          <div class="toolkit-code-wrap">
+            <pre class="toolkit-code" id="code-py-merge">import os
+import glob
+import pandas as pd
+
+# Cari semua file laporan cabang di folder data
+file_paths = glob.glob('./data_cabang/*.xlsx')
+df_list = []
+
+for f in file_paths:
+    df = pd.read_excel(f)
+    df['nama_file_asal'] = os.path.basename(f)
+    df_list.append(df)
+
+# Satukan seluruh data ke satu tabel master
+master_df = pd.concat(df_list, ignore_index=True)
+master_df.to_excel('Master_Rekap_SSE_Combined.xlsx', index=False)
+print(f"Berhasil menggabungkan {len(file_paths)} berkas cabang!")</pre>
+          </div>
+          <div class="toolkit-footer">
+            <span class="toolkit-usecase">💡 Solusi instan jika tiap Jumat menerima puluhan spreadsheet cabang terpisah.</span>
+            <button class="btn-action btn-xs" onclick="copySnippetText('code-py-merge', 'Script Python Penggabung Excel')">Salin Python</button>
+          </div>
+        </div>
+
+        <!-- Item 10: Python Clean Whitespace & Dates -->
+        <div class="toolkit-item" data-cat="python" data-search="python pandas data cleansing tanggal spasi null na">
+          <div class="toolkit-header">
+            <div class="toolkit-title">Python: Pembersihan Data (Spasi, Format Tanggal, &amp; Nilai Kosong)</div>
+            <span class="badge">Data Cleansing</span>
+          </div>
+          <div class="toolkit-desc">
+            Membersihkan spasi tersembunyi (*trailing spaces*), menstandarisasi kolom tanggal ke format ISO `YYYY-MM-DD`, mengisi nilai null, dan menghapus data duplikat.
+          </div>
+          <div class="toolkit-code-wrap">
+            <pre class="toolkit-code" id="code-py-clean">import pandas as pd
+
+df = pd.read_excel('raw_sales_data.xlsx')
+
+# 1. Bersihkan spasi depan/belakang pada semua kolom teks
+str_cols = df.select_dtypes(include=['object']).columns
+df[str_cols] = df[str_cols].apply(lambda s: s.str.strip())
+
+# 2. Standarisasi format tanggal
+df['tgl_transaksi'] = pd.to_datetime(df['tgl_transaksi'], errors='coerce').dt.strftime('%Y-%m-%d')
+
+# 3. Ganti nilai kosong (NaN) pada kolom nominal dengan 0
+df['nominal_realisasi'] = df['nominal_realisasi'].fillna(0)
+
+# 4. Buang transaksi duplikat berdasarkan ID unik
+df = df.drop_duplicates(subset=['id_transaksi'])
+
+df.to_csv('clean_sales_data.csv', index=False)
+print("Data cleansing selesai! Data siap dianalisis.")</pre>
+          </div>
+          <div class="toolkit-footer">
+            <span class="toolkit-usecase">💡 Mencegah formula Excel error karena spasi tak terlihat di nama nasabah / ID rekening.</span>
+            <button class="btn-action btn-xs" onclick="copySnippetText('code-py-clean', 'Script Python Cleansing')">Salin Python</button>
+          </div>
+        </div>
+
+        <!-- Item 11: Python Outlier Detection -->
+        <div class="toolkit-item" data-cat="python" data-search="python deteksi outlier anomali saldo iqr pandas">
+          <div class="toolkit-header">
+            <div class="toolkit-title">Python: Deteksi Anomali / Lonjakan Saldo Ekstrem (IQR)</div>
+            <span class="badge">Audit Data</span>
+          </div>
+          <div class="toolkit-desc">
+            Menggunakan metode statistik *Interquartile Range (IQR)* untuk mendeteksi transaksi atau saldo nasabah bernilai anomali tinggi yang perlu dikonfirmasi.
+          </div>
+          <div class="toolkit-code-wrap">
+            <pre class="toolkit-code" id="code-py-outlier">import pandas as pd
+
+df = pd.read_excel('laporan_saldo_harian.xlsx')
+
+q1 = df['saldo_total'].quantile(0.25)
+q3 = df['saldo_total'].quantile(0.75)
+iqr = q3 - q1
+
+# Batas atas anomali saldo
+upper_bound = q3 + (1.5 * iqr)
+outliers = df[df['saldo_total'] > upper_bound]
+
+print(f"Ditemukan {len(outliers)} data saldo anomali:")
+print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
+          </div>
+          <div class="toolkit-footer">
+            <span class="toolkit-usecase">💡 Membantu divisi SSE mengidentifikasi pergerakan dana besar nasabah korporat.</span>
+            <button class="btn-action btn-xs" onclick="copySnippetText('code-py-outlier', 'Script Python Deteksi Anomali')">Salin Python</button>
           </div>
         </div>
       </div>
@@ -3857,6 +4246,63 @@ Apabila Bapak berkenan, mohon kesediaan Bapak untuk melakukan review dan approva
             <line x1="12" y1="15" x2="12" y2="3"></line>
           </svg>
           Unduh .MD
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Rekap Laporan Mingguan (Weekly Rollup) -->
+<div class="modal-overlay" id="weekly-report-modal" onclick="handleWeeklyModalBackdrop(event)">
+  <div class="modal-box modal-box-lg">
+    <div class="modal-head">
+      <div class="modal-title-wrap">
+        <h3>Rekapitulasi Laporan Mingguan (Weekly Rollup)</h3>
+        <p>Agregasi Logbook 5 Hari Kerja untuk Koordinasi Mentor &amp; SIAPkerja</p>
+      </div>
+      <button class="btn-close" onclick="closeWeeklyReportModal()" title="Tutup">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <div class="modal-body modal-body-scroll">
+      <div class="report-stat-grid">
+        <div class="report-stat-card">
+          <div class="report-stat-num" id="weekly-stat-days">0 Hari</div>
+          <div class="report-stat-label">Sesi Logbook Terkumpul</div>
+        </div>
+        <div class="report-stat-card">
+          <div class="report-stat-num">SSE</div>
+          <div class="report-stat-label">Divisi Korporat BNI</div>
+        </div>
+        <div class="report-stat-card">
+          <div class="report-stat-num" style="color: var(--success); font-size: 0.95rem; margin-top: 3px;">Siap Direview</div>
+          <div class="report-stat-label">Status Review Mentor</div>
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary);">Pratinjau Dokumen Rekap Mingguan</span>
+        <span class="badge badge-accent">Standar Kemnaker</span>
+      </div>
+
+      <pre class="report-preview-pre" id="weekly-report-preview"></pre>
+
+      <div style="display: flex; gap: 8px; margin-top: 14px;">
+        <button class="btn-action" style="flex: 1;" onclick="copyWeeklyReportText()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+          Salin ke Clipboard
+        </button>
+        <button class="btn-action btn-secondary" onclick="downloadWeeklyReportText()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          Unduh .TXT
         </button>
       </div>
     </div>
@@ -4498,15 +4944,17 @@ Apabila Bapak berkenan, mohon kesediaan Bapak untuk melakukan review dan approva
     }
   }
 
-  // --- Asisten Subtabs (Chat vs MoM vs Glossary vs Guide) ---
+  // --- Asisten Subtabs (Chat vs MoM vs Toolkit vs Glossary vs Guide) ---
   function switchAsistenSubtab(sub) {
     document.getElementById('asisten-tab-btn-chat').classList.toggle('active', sub === 'chat');
     document.getElementById('asisten-tab-btn-mom').classList.toggle('active', sub === 'mom');
+    document.getElementById('asisten-tab-btn-toolkit').classList.toggle('active', sub === 'toolkit');
     document.getElementById('asisten-tab-btn-glossary').classList.toggle('active', sub === 'glossary');
     document.getElementById('asisten-tab-btn-guide').classList.toggle('active', sub === 'guide');
 
     document.getElementById('asisten-pane-chat').style.display = sub === 'chat' ? 'block' : 'none';
     document.getElementById('asisten-pane-mom').style.display = sub === 'mom' ? 'block' : 'none';
+    document.getElementById('asisten-pane-toolkit').style.display = sub === 'toolkit' ? 'block' : 'none';
     document.getElementById('asisten-pane-glossary').style.display = sub === 'glossary' ? 'block' : 'none';
     document.getElementById('asisten-pane-guide').style.display = sub === 'guide' ? 'block' : 'none';
 
@@ -5074,6 +5522,152 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     dlAnchor.click();
     dlAnchor.remove();
     showToast('Berkas Laporan Bulanan (.md) berhasil diunduh');
+  }
+
+  // --- Weekly Summary Rollup Generator ---
+  function generateWeeklySummaryReport() {
+    const records = JSON.parse(localStorage.getItem(LOGBOOK_STORAGE_KEY) || '[]');
+    if (records.length === 0) {
+      return `Belum ada data logbook harian tersimpan untuk minggu ini.\nSilakan buat dan simpan logbook harian melalui Formulator terlebih dahulu.`;
+    }
+
+    const recentRecords = records.slice(0, 5);
+    const firstDate = recentRecords[recentRecords.length - 1].date;
+    const lastDate = recentRecords[0].date;
+
+    let report = `========================================================================\n`;
+    report += `         RINGKASAN LAPORAN MINGGUAN PEMAGANGAN (WEEKLY ROLLUP)\n`;
+    report += `        PROGRAM PEMAGANGAN NASIONAL KEMNAKER RI BATCH 2 TAHUN 2026\n`;
+    report += `========================================================================\n\n`;
+
+    report += `INFORMASI PESERTA & PENEMPATAN:\n`;
+    report += `• Nama Mahasiswa   : Zaki Tri Pamungkas\n`;
+    report += `• Asal Perguruan   : Universitas Muhammadiyah Surakarta (S1 Informatika)\n`;
+    report += `• Unit Kerja Mitra : PT Bank Negara Indonesia (Persero) Tbk\n`;
+    report += `• Divisi Magang    : Sales Strategy & Execution (SSE) - Menara BNI Lt. 17\n`;
+    report += `• Mentor Industri  : Bpk. Guruh Sri Handoyo\n`;
+    report += `• Periode Minggu   : ${firstDate} s.d. ${lastDate} (${recentRecords.length} Hari Kerja Terekam)\n\n`;
+
+    report += `------------------------------------------------------------------------\n`;
+    report += `A. REKAPITULASI AKTIVITAS HARIAN:\n`;
+    report += `------------------------------------------------------------------------\n\n`;
+
+    recentRecords.slice().reverse().forEach((rec, idx) => {
+      report += `[HARI ${idx + 1} - ${rec.date} | ${rec.categoryName || 'Penugasan SSE'}]\n`;
+      report += `${rec.activity || '-'}\n`;
+      report += `Output: ${rec.achievement || '-'}\n\n`;
+    });
+
+    report += `------------------------------------------------------------------------\n`;
+    report += `B. HIGHLIGHT CAPAIAN UTAMA MINGGU INI:\n`;
+    report += `------------------------------------------------------------------------\n`;
+    recentRecords.forEach((rec, idx) => {
+      report += `${idx + 1}. ${rec.achievement || rec.categoryName}\n`;
+    });
+    report += `\n`;
+
+    report += `------------------------------------------------------------------------\n`;
+    report += `C. KENDALA & RENCANA TINDAK LANJUT PEKAN DEPAN:\n`;
+    report += `------------------------------------------------------------------------\n`;
+    const obstacles = recentRecords.filter(r => r.obstacle && r.obstacle.trim() !== 'Tidak ada kendala');
+    if (obstacles.length > 0) {
+      obstacles.forEach((o, i) => {
+        report += `• Kendala ${i + 1}: ${o.obstacle}\n`;
+      });
+    } else {
+      report += `• Seluruh kegiatan dan penugasan divisi berjalan lancar tanpa kendala teknis.\n`;
+    }
+    report += `• Rencana Lanjutan: Penguatan otomasi agregasi data penjualan cabang dan evaluasi mingguan bersama mentor.\n\n`;
+
+    report += `Laporan mingguan ini disusun secara objektif berdasarkan rekaman logbook harian.\n`;
+    report += `Disiapkan oleh: Zaki Tri Pamungkas (MagangHub SSE BNI)`;
+
+    return report;
+  }
+
+  function openWeeklyReportModal() {
+    const reportText = generateWeeklySummaryReport();
+    const records = JSON.parse(localStorage.getItem(LOGBOOK_STORAGE_KEY) || '[]');
+    const count = Math.min(records.length, 5);
+
+    document.getElementById('weekly-stat-days').textContent = `${count} Hari`;
+    document.getElementById('weekly-report-preview').textContent = reportText;
+    document.getElementById('weekly-report-modal').classList.add('active');
+  }
+
+  function closeWeeklyReportModal() {
+    document.getElementById('weekly-report-modal').classList.remove('active');
+  }
+
+  function handleWeeklyModalBackdrop(e) {
+    if (e.target === document.getElementById('weekly-report-modal')) {
+      closeWeeklyReportModal();
+    }
+  }
+
+  function copyWeeklyReportText() {
+    const text = document.getElementById('weekly-report-preview').textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      showToast('Rekap mingguan disalin! Siap dikirim ke WhatsApp / Word');
+    }).catch(() => {
+      showToast('Gagal menyalin rekap mingguan');
+    });
+  }
+
+  function downloadWeeklyReportText() {
+    const text = document.getElementById('weekly-report-preview').textContent;
+    const dateStr = new Date().toISOString().slice(0, 10);
+    const dataStr = "data:text/plain;charset=utf-8," + encodeURIComponent(text);
+    const dlAnchor = document.createElement('a');
+    dlAnchor.setAttribute("href", dataStr);
+    dlAnchor.setAttribute("download", `Rekap-Mingguan-SSE-BNI-Zaki-${dateStr}.txt`);
+    document.body.appendChild(dlAnchor);
+    dlAnchor.click();
+    dlAnchor.remove();
+    showToast('Berkas Rekap Mingguan (.txt) berhasil diunduh');
+  }
+
+  // --- SSE Data & Analytics Toolkit Handlers ---
+  let currentToolkitCategory = 'all';
+
+  function handleToolkitSearch(q) {
+    const query = (q || '').trim().toLowerCase();
+    const items = document.querySelectorAll('#toolkit-items-container .toolkit-item');
+    items.forEach(item => {
+      const searchData = (item.getAttribute('data-search') || '').toLowerCase();
+      const text = item.innerText.toLowerCase();
+      const itemCat = item.getAttribute('data-cat');
+      const matchesCategory = currentToolkitCategory === 'all' || itemCat === currentToolkitCategory;
+      const matchesSearch = !query || searchData.includes(query) || text.includes(query);
+      item.style.display = matchesCategory && matchesSearch ? 'block' : 'none';
+    });
+  }
+
+  function filterToolkitCategory(cat) {
+    currentToolkitCategory = cat;
+    document.querySelectorAll('.toolkit-filter-bar .mom-preset-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.id === `toolkit-cat-${cat}`);
+    });
+    const query = (document.getElementById('toolkit-search')?.value || '').trim().toLowerCase();
+    const items = document.querySelectorAll('#toolkit-items-container .toolkit-item');
+    items.forEach(item => {
+      const itemCat = item.getAttribute('data-cat');
+      const searchData = (item.getAttribute('data-search') || '').toLowerCase();
+      const text = item.innerText.toLowerCase();
+      const matchesCategory = cat === 'all' || itemCat === cat;
+      const matchesSearch = !query || searchData.includes(query) || text.includes(query);
+      item.style.display = matchesCategory && matchesSearch ? 'block' : 'none';
+    });
+  }
+
+  function copySnippetText(id, title) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    navigator.clipboard.writeText(el.innerText).then(() => {
+      showToast(`${title} disalin ke clipboard!`);
+    }).catch(() => {
+      showToast('Gagal menyalin snippet');
+    });
   }
 
   // --- Toast ---
