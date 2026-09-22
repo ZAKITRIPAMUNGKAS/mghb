@@ -3795,9 +3795,20 @@
         </div>
         <span class="badge badge-accent">Standar Kemnaker</span>
       </div>
-      <p style="font-size: 0.76rem; color: var(--text-secondary); margin-bottom: 14px;">
-        Ketikkan poin kasar aktivitas Anda hari ini. Sistem akan memformulasikannya menjadi kalimat formal berstandar perbankan yang siap disalin ke portal MagangHub.
+      <p style="font-size: 0.76rem; color: var(--text-secondary); margin-bottom: 12px;">
+        Ketikkan poin kasar aktivitas Anda hari ini. Sistem akan memformulasikannya menjadi 3 bagian wajib standar portal resmi Kemnaker (masing-masing otomatis ≥ 100 karakter).
       </p>
+
+      <div style="margin-bottom: 14px;">
+        <span style="font-size: 0.72rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.04em;">Preset Aktivitas Cepat (1-Klik):</span>
+        <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px;">
+          <button type="button" class="utility-btn" onclick="applyLogbookPreset('data')" style="padding: 4px 8px; font-size: 0.72rem;">📊 Olah Data Spreadsheet</button>
+          <button type="button" class="utility-btn" onclick="applyLogbookPreset('briefing')" style="padding: 4px 8px; font-size: 0.72rem;">🗣️ Briefing Pak Guruh</button>
+          <button type="button" class="utility-btn" onclick="applyLogbookPreset('dashboard')" style="padding: 4px 8px; font-size: 0.72rem;">📈 Visual Dashboard Sales</button>
+          <button type="button" class="utility-btn" onclick="applyLogbookPreset('evaluasi')" style="padding: 4px 8px; font-size: 0.72rem;">🔍 Evaluasi CASA &amp; DPK</button>
+          <button type="button" class="utility-btn" onclick="applyLogbookPreset('onboarding')" style="padding: 4px 8px; font-size: 0.72rem;">🏢 Orientasi Budaya BNI</button>
+        </div>
+      </div>
 
       <div class="form-group">
         <label class="form-label">Tanggal Laporan</label>
@@ -3823,7 +3834,7 @@
 
       <div class="form-group">
         <label class="form-label">Kendala (Opsional)</label>
-        <input type="text" class="form-control" id="lb-obstacle" placeholder="Contoh: format file dari beberapa cabang berbeda / tidak ada kendala">
+        <input type="text" class="form-control" id="lb-obstacle" placeholder="Kosongkan jika lancar, sistem otomatis buatkan narasi standar ≥100 karakter">
       </div>
 
       <button class="btn-block" onclick="generateLogbook()">
@@ -3834,28 +3845,51 @@
       </button>
 
       <!-- Logbook Generated Output -->
-      <div id="lb-output-card" style="display: none;">
+      <div id="lb-output-card" style="display: none; margin-top: 16px;">
         <div class="logbook-result-box">
+          <!-- 1. Uraian aktivitas -->
           <div class="result-section">
-            <div class="result-title">1. Uraian Pekerjaan / Aktivitas</div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; flex-wrap: wrap; gap: 4px;">
+              <div class="result-title" style="margin-bottom: 0;">1. Uraian aktivitas</div>
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <span class="badge" id="cnt-activity" style="font-size: 0.68rem; background: var(--surface); color: var(--success); border: 1px solid var(--border);">0 kar · ≥100 ✅</span>
+                <button type="button" class="utility-btn" onclick="copyLogbookSection('activity')" style="padding: 2px 7px; font-size: 0.7rem;">📋 Salin</button>
+              </div>
+            </div>
             <div class="result-content" id="res-activity"></div>
           </div>
+
+          <!-- 2. Pembelajaran yang diperoleh -->
           <div class="result-section">
-            <div class="result-title">2. Hasil / Capaian Output</div>
-            <div class="result-content" id="res-achievement"></div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; flex-wrap: wrap; gap: 4px;">
+              <div class="result-title" style="margin-bottom: 0;">2. Pembelajaran yang diperoleh</div>
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <span class="badge" id="cnt-learning" style="font-size: 0.68rem; background: var(--surface); color: var(--success); border: 1px solid var(--border);">0 kar · ≥100 ✅</span>
+                <button type="button" class="utility-btn" onclick="copyLogbookSection('learning')" style="padding: 2px 7px; font-size: 0.7rem;">📋 Salin</button>
+              </div>
+            </div>
+            <div class="result-content" id="res-learning"></div>
           </div>
+
+          <!-- 3. Kendala yang dialami -->
           <div class="result-section">
-            <div class="result-title">3. Kendala &amp; Solusi</div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; flex-wrap: wrap; gap: 4px;">
+              <div class="result-title" style="margin-bottom: 0;">3. Kendala yang dialami</div>
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <span class="badge" id="cnt-obstacle" style="font-size: 0.68rem; background: var(--surface); color: var(--success); border: 1px solid var(--border);">0 kar · ≥100 ✅</span>
+                <button type="button" class="utility-btn" onclick="copyLogbookSection('obstacle')" style="padding: 2px 7px; font-size: 0.7rem;">📋 Salin</button>
+              </div>
+            </div>
             <div class="result-content" id="res-obstacle"></div>
           </div>
 
-          <div class="result-actions">
+          <div class="result-actions" style="margin-top: 14px;">
             <button class="btn-action" style="flex: 1;" onclick="copyLogbookFull()">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-              Salin Semua ke Clipboard
+              Salin Semua Sekaligus
             </button>
             <button class="btn-action btn-secondary" onclick="saveLogbookHistory()">
-              Simpan Riwayat
+              💾 Simpan Riwayat
             </button>
           </div>
         </div>
@@ -6002,61 +6036,145 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
     event.target.value = '';
   }
 
-  // --- Daily Logbook Formulator Logic ---
+  // --- Preset Aktivitas Harian SSE (1-Klik Auto-Fill) ---
+  function applyLogbookPreset(key) {
+    const presets = {
+      data: {
+        cat: 'data',
+        notes: 'Membantu rekapitulasi data penjualan cabang, verifikasi konsistensi nominal CASA & DPK di spreadsheet, serta melakukan perbaikan format data anomali'
+      },
+      briefing: {
+        cat: 'briefing',
+        notes: 'Mengikuti pengarahan (briefing) pagi bersama mentor Bapak Guruh Sri Handoyo membahas prioritas target penjualan area dan pembagian tugas divisi SSE'
+      },
+      dashboard: {
+        cat: 'dashboard',
+        notes: 'Melakukan pembaruan visualisasi dashboard analitik performa penjualan cabang dan pengecekan formula rasio pencapaian target (achievement rate) di Excel'
+      },
+      evaluasi: {
+        cat: 'evaluasi',
+        notes: 'Melakukan analisis komparatif performa realisasi penjualan produk perbankan antar cabang untuk memetakan peluang penetrasi pasar ritel'
+      },
+      onboarding: {
+        cat: 'onboarding',
+        notes: 'Menjalani adaptasi alur kerja operasional Menara BNI Pejompongan, kepatuhan tata tertib divisi SSE, dan implementasi nilai budaya kerja AKHLAK BNI'
+      }
+    };
+
+    const p = presets[key] || presets.data;
+    const catEl = document.getElementById('lb-category');
+    const roughEl = document.getElementById('lb-rough-notes');
+    if (catEl) catEl.value = p.cat;
+    if (roughEl) roughEl.value = p.notes;
+
+    showToast('✨ Preset diterapkan! Memformulasikan laporan...');
+    generateLogbook();
+  }
+
+  // --- Daily Logbook Formulator Logic (Standar Resmi MagangHub Kemnaker) ---
   function generateLogbook() {
     const dateVal = document.getElementById('lb-date').value || new Date().toISOString().slice(0, 10);
     const category = document.getElementById('lb-category').value;
-    const rough = document.getElementById('lb-rough-notes').value.trim();
+    let rough = document.getElementById('lb-rough-notes').value.trim();
     const obstacle = document.getElementById('lb-obstacle').value.trim();
 
+    // Auto-fallback default jika kolom catatan masih kosong
     if (!rough) {
-      showToast('Mohon masukkan catatan aktivitas pekerjaan terlebih dahulu');
-      document.getElementById('lb-rough-notes').focus();
-      return;
+      rough = 'Melakukan koordinasi operasional divisi Sales Strategy & Execution (SSE) serta pengolahan lembar kerja rekapitulasi data penjualan';
+      document.getElementById('lb-rough-notes').value = rough;
     }
 
     let act = '';
-    let ach = '';
+    let lrn = '';
     let obs = '';
 
     if (category === 'data') {
-      act = `Melaksanakan pengolahan, rekapitulasi, dan validasi data realisasi kinerja penjualan cabang pada Divisi Sales Strategy & Execution (SSE), meliputi verifikasi konsistensi data masukan (${rough}) serta memastikan pembersihan data anomali (data cleansing) berjalan sesuai standar pelaporan divisi.`;
-      ach = `Tersusunnya lembar kerja rekapitulasi data penjualan yang tervalidasi dan siap digunakan sebagai basis monitoring pencapaian target mingguan tim SSE.`;
+      act = `Melaksanakan pengolahan, rekapitulasi, dan validasi data realisasi kinerja penjualan cabang pada Divisi Sales Strategy & Execution (SSE), meliputi verifikasi konsistensi data masukan (${rough}) serta memastikan proses pembersihan data anomali (data cleansing) berjalan sesuai standar pelaporan divisi.`;
+      lrn = `Memahami metodologi validasi dan audit data tabular di lingkungan perbankan, meningkatkan kecakapan fungsi analitik spreadsheet lanjutan, serta memahami pentingnya integritas data dalam proses evaluasi pencapaian target penjualan tim SSE.`;
     } else if (category === 'briefing') {
       act = `Mengikuti pengarahan (briefing) koordinasi bersama mentor Bapak Guruh Sri Handoyo di Divisi Sales Strategy & Execution (SSE), membahas prioritas target penjualan dan mendokumentasikan poin-poin arahan kerja (${rough}) untuk ditindaklanjuti secara terstruktur.`;
-      ach = `Tercapainya keselarasan pemahaman terhadap target kerja divisi serta tersusunnya daftar tindak lanjut penugasan operasional harian.`;
+      lrn = `Memahami tata kelola komunikasi profesional korporat dalam mengartikulasikan target bisnis, menyelaraskan rencana aksi penugasan bersama mentor, serta menumbuhkan etos kerja berorientasi hasil sesuai nilai AKHLAK BNI.`;
     } else if (category === 'dashboard') {
-      act = `Melakukan pembaruan (updating) dan pemeliharaan antarmuka dashboard analitik kinerja penjualan divisi SSE (${rough}), memastikan rumus kalkulasi persentase pencapaian (achievement rate) terhitung akurat.`;
-      ach = `Tersajikannya visualisasi data monitoring penjualan yang ringkas, interaktif, dan siap dipaparkan pada rapat evaluasi divisi.`;
+      act = `Melakukan pembaruan (updating) dan pemeliharaan antarmuka dashboard analitik kinerja penjualan divisi SSE (${rough}), memastikan rumus kalkulasi persentase pencapaian (achievement rate) dan visualisasi tren penjualan terhitung akurat.`;
+      lrn = `Mengasah kompetensi penyajian data visual yang ringkas dan komunikatif, memahami logika metrik kinerja perbankan, serta merancang visualisasi yang mempermudah evaluasi strategis bagi pimpinan divisi.`;
     } else if (category === 'evaluasi') {
       act = `Melakukan analisis komparatif performa penjualan cabang terhadap target yang ditetapkan serta mengeksplorasi data pendukung (${rough}) guna mengidentifikasi area yang memerlukan penguatan penetrasi produk perbankan.`;
-      ach = `Diperolehnya temuan analisis pencapaian penjualan cabang yang dapat dijadikan bahan evaluasi strategi eksekusi tim sales.`;
+      lrn = `Memahami faktor pendorong pertumbuhan portofolio CASA dan DPK, mengasah daya pikir analitis terhadap data bisnis ritel, serta belajar merumuskan kesimpulan evaluatif dari data historis penjualan.`;
     } else if (category === 'onboarding') {
       act = `Melaksanakan program adaptasi dan pengenalan lingkungan kerja operasional Menara BNI Pejompongan (${rough}), mencakup pemahaman struktur organisasi divisi SSE, tata tertib absensi, dan standar etika korporat BNI HCS.`;
-      ach = `Terinternalisasinya budaya kerja BNI dan alur koordinasi tim secara optimal untuk mendukung efektivitas penugasan pemagangan.`;
+      lrn = `Menginternalisasi budaya profesionalisme perbankan nasional, memahami alur birokrasi dan koordinasi unit kerja, serta membangun komitmen kepatuhan terhadap kerahasiaan data dan kode etik Bank BNI.`;
     } else {
       act = `Melaksanakan koordinasi dan penugasan operasional divisi Sales Strategy & Execution (${rough}) dengan memperhatikan aspek ketelitian, kepatuhan kerahasiaan data perbankan, dan standar mutu kerja perbankan.`;
-      ach = `Tuntasnya seluruh agenda penugasan harian sesuai arahan mentor dan terselesaikannya dokumentasi kerja secara komprehensif.`;
+      lrn = `Memperoleh pengalaman praktis mengenai alur kerja divisi bisnis kantor pusat perbankan, meningkatkan kedisiplinan kerja tim, serta memahami kepatuhan SOP pelaporan program pemagangan.`;
     }
 
-    obs = obstacle ? `Kendala: ${obstacle}. Solusi: Melakukan penyesuaian teknis dan konfirmasi bersama mentor/tim sehingga proses kerja tetap berjalan lancar.` : 'Proses pengerjaan berjalan lancar tanpa kendala operasional yang berarti; koordinasi dengan mentor dan tim terjalin efektif.';
+    obs = obstacle 
+      ? `Kendala teknis yang dihadapi di lapangan: ${obstacle}. Solusi tindak lanjut: Melakukan penyesuaian prosedur kerja secara cermat serta berkoordinasi intensif bersama mentor dan rekan kerja sehingga penugasan dapat terselesaikan dengan baik sesuai standar divisi.` 
+      : 'Seluruh rangkaian pengerjaan penugasan hari ini terlaksana dengan tertib dan lancar tanpa kendala operasional yang berarti; koordinasi kerja bersama mentor dan tim divisi SSE berjalan efektif sesuai SOP BNI.';
 
+    // Masukkan ke elemen tampilan
     document.getElementById('res-activity').textContent = act;
-    document.getElementById('res-achievement').textContent = ach;
+    document.getElementById('res-learning').textContent = lrn;
     document.getElementById('res-obstacle').textContent = obs;
-    document.getElementById('lb-output-card').style.display = 'block';
 
-    showToast('Laporan formal berhasil diformulasikan!');
+    // Perbarui badge jumlah karakter resmi (masing-masing wajib ≥ 100)
+    const cntAct = document.getElementById('cnt-activity');
+    const cntLrn = document.getElementById('cnt-learning');
+    const cntObs = document.getElementById('cnt-obstacle');
+    if (cntAct) cntAct.textContent = `${act.length} kar · ≥100 ✅`;
+    if (cntLrn) cntLrn.textContent = `${lrn.length} kar · ≥100 ✅`;
+    if (cntObs) cntObs.textContent = `${obs.length} kar · ≥100 ✅`;
+
+    const outputCard = document.getElementById('lb-output-card');
+    if (outputCard) {
+      outputCard.style.display = 'block';
+      outputCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    showToast('✅ Laporan resmi MagangHub (3 kolom ≥100 kar) diformulasikan!');
+  }
+
+  // --- Salin Per-Kolom Resmi MagangHub ---
+  function copyLogbookSection(type) {
+    let text = '';
+    let label = '';
+    if (type === 'activity') {
+      text = document.getElementById('res-activity')?.textContent || '';
+      label = 'Uraian aktivitas';
+    } else if (type === 'learning') {
+      text = document.getElementById('res-learning')?.textContent || '';
+      label = 'Pembelajaran yang diperoleh';
+    } else if (type === 'obstacle') {
+      text = document.getElementById('res-obstacle')?.textContent || '';
+      label = 'Kendala yang dialami';
+    }
+
+    if (!text) {
+      showToast('Formulasikan laporan terlebih dahulu');
+      return;
+    }
+
+    navigator.clipboard.writeText(text).then(() => {
+      showToast(`📋 ${label} disalin (${text.length} kar)!`);
+    }).catch(() => {
+      showToast('Gagal menyalin teks');
+    });
   }
 
   function copyLogbookFull() {
-    const act = document.getElementById('res-activity').textContent;
-    const ach = document.getElementById('res-achievement').textContent;
-    const obs = document.getElementById('res-obstacle').textContent;
-    const full = `1. Uraian Pekerjaan / Aktivitas:\n${act}\n\n2. Hasil / Capaian Output:\n${ach}\n\n3. Kendala & Solusi:\n${obs}`;
+    const act = document.getElementById('res-activity')?.textContent || '';
+    const lrn = document.getElementById('res-learning')?.textContent || '';
+    const obs = document.getElementById('res-obstacle')?.textContent || '';
+    
+    if (!act) {
+      showToast('Formulasikan laporan terlebih dahulu');
+      return;
+    }
+
+    const full = `1. Uraian aktivitas:\n${act}\n\n2. Pembelajaran yang diperoleh:\n${lrn}\n\n3. Kendala yang dialami:\n${obs}`;
 
     navigator.clipboard.writeText(full).then(() => {
-      showToast('Seluruh teks laporan disalin!');
+      showToast('📋 Seluruh isian MagangHub (3 bagian) disalin!');
     }).catch(() => {
       showToast('Gagal menyalin laporan');
     });
@@ -6067,11 +6185,14 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
     const category = document.getElementById('lb-category')?.value || 'general';
     const catLabel = document.getElementById('lb-category')?.selectedOptions?.[0]?.text || 'Umum';
     const rough = document.getElementById('lb-rough-notes')?.value.trim() || '';
-    const act = document.getElementById('res-activity').textContent;
-    const ach = document.getElementById('res-achievement').textContent;
-    const obs = document.getElementById('res-obstacle').textContent;
+    const act = document.getElementById('res-activity')?.textContent || '';
+    const lrn = document.getElementById('res-learning')?.textContent || '';
+    const obs = document.getElementById('res-obstacle')?.textContent || '';
 
-    if (!act) return;
+    if (!act) {
+      showToast('Formulasikan laporan terlebih dahulu sebelum menyimpan');
+      return;
+    }
 
     const recordId = 'lb_' + Date.now();
     const newRecord = {
@@ -6081,8 +6202,8 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
       categoryLabel: catLabel,
       roughNotes: rough,
       activity: act,
-      achievement: ach,
-      output: ach,
+      learning: lrn,
+      output: lrn,
       obstacle: obs,
       timestamp: Date.now()
     };
@@ -6092,7 +6213,7 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
 
     localStorage.setItem(LOGBOOK_STORAGE_KEY, JSON.stringify(records.slice(0, 30)));
     renderLogbookHistory();
-    showToast('Disimpan ke arsip riwayat lokal');
+    showToast('💾 Disimpan ke arsip riwayat lokal');
 
     // Background sync to Supabase if connected
     if (supabaseClient) {
@@ -6103,7 +6224,7 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
         category_label: catLabel,
         rough_notes: rough,
         activity: act,
-        output: ach,
+        output: lrn,
         obstacle: obs,
         updated_at: new Date().toISOString()
       }).then(() => {
@@ -6127,7 +6248,7 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
         <div style="background: var(--surface-hover); border: 1px solid var(--border); border-radius: 6px; padding: 10px; margin-bottom: 8px;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
             <span style="font-weight: 700; color: var(--text-primary);">${r.date}</span>
-            <button class="utility-btn" onclick="copyHistoryRecord(${idx})" style="padding: 2px 6px;">Salin</button>
+            <button class="utility-btn" onclick="copyHistoryRecord(${idx})" style="padding: 2px 6px;">Salin Semua</button>
           </div>
           <div style="font-size: 0.74rem; color: var(--text-secondary); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
             ${r.activity}
@@ -6143,7 +6264,8 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
     const records = JSON.parse(localStorage.getItem(LOGBOOK_STORAGE_KEY) || '[]');
     const r = records[idx];
     if (!r) return;
-    const full = `1. Uraian Pekerjaan / Aktivitas:\n${r.activity}\n\n2. Hasil / Capaian Output:\n${r.achievement}\n\n3. Kendala & Solusi:\n${r.obstacle}`;
+    const lrn = r.learning || r.output || r.achievement || '';
+    const full = `1. Uraian aktivitas:\n${r.activity}\n\n2. Pembelajaran yang diperoleh:\n${lrn}\n\n3. Kendala yang dialami:\n${r.obstacle}`;
     navigator.clipboard.writeText(full).then(() => {
       showToast(`Logbook tanggal ${r.date} disalin!`);
     });
