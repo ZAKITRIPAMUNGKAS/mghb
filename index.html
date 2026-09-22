@@ -676,118 +676,6 @@
       margin-top: 1px;
     }
 
-    /* Briefing Day-1 Card */
-    .briefing-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-left: 3px solid #f15a22;
-      border-radius: var(--radius-md);
-      padding: 14px 16px;
-      margin-bottom: 16px;
-      box-shadow: var(--shadow-card);
-    }
-
-    .briefing-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-    }
-
-    .briefing-title-area {
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-    }
-
-    .briefing-title {
-      font-size: 0.88rem;
-      font-weight: 700;
-      color: var(--text-primary);
-      margin: 0;
-    }
-
-    .briefing-body {
-      margin-top: 12px;
-      display: block;
-    }
-
-    .briefing-body.collapsed {
-      display: none;
-    }
-
-    .briefing-highlight {
-      background: rgba(241, 90, 34, 0.08);
-      border: 1px solid rgba(241, 90, 34, 0.25);
-      border-radius: var(--radius-sm);
-      padding: 9px 12px;
-      font-size: 0.78rem;
-      color: var(--text-primary);
-      line-height: 1.45;
-      margin-bottom: 12px;
-    }
-
-    .dark .briefing-highlight {
-      background: rgba(241, 90, 34, 0.15);
-      border-color: rgba(241, 90, 34, 0.35);
-    }
-
-    .briefing-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 8px 10px;
-      margin-bottom: 12px;
-    }
-
-    .briefing-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 8px;
-      font-size: 0.76rem;
-      line-height: 1.4;
-      padding: 7px 9px;
-      background: var(--surface-hover);
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--border-subtle);
-    }
-
-    .briefing-item-num {
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      background: #f15a22;
-      color: #ffffff;
-      font-size: 0.65rem;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      margin-top: 1px;
-    }
-
-    .briefing-item-text {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .briefing-item-text strong {
-      color: var(--text-primary);
-    }
-
-    .briefing-item-text span {
-      color: var(--text-secondary);
-    }
-
-    .briefing-quick-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      padding-top: 10px;
-      border-top: 1px solid var(--border-subtle);
-    }
-
     /* Form & Card Styles for Assistant & Logbook */
     .feature-card {
       background: var(--surface);
@@ -3080,7 +2968,7 @@
           <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
           <div class="task-body">
             <div class="task-label">Kemeja formal putih lengan panjang</div>
-            <span class="task-detail">Wajib Hari Pertama (Senin 21 Sep) &amp; standar formal perbankan</span>
+            <span class="task-detail">Senin–Selasa: kemeja putih / business formal standar perbankan</span>
           </div>
         </label>
         <label class="task-row">
@@ -3446,128 +3334,6 @@
 
   <!-- TAB 2: MAGANGHUB & SOP BNI -->
   <main id="view-magang" class="tab-content">
-    <!-- BRIEFING DAY-1 ONBOARDING CARD -->
-    <div class="briefing-card" id="briefing-day1-card">
-      <div class="briefing-header">
-        <div class="briefing-title-area">
-          <div style="display: flex; align-items: center; gap: 6px;">
-            <span class="badge" style="background: rgba(241, 90, 34, 0.12); color: #f15a22; border-color: rgba(241, 90, 34, 0.3);">Wajib Baca Hari Ini</span>
-            <span class="badge">MagangHub Batch 2</span>
-          </div>
-          <h3 class="briefing-title">Briefing &amp; Arahan Hari Pertama (Day-1 BNI)</h3>
-        </div>
-        <button class="btn-icon" onclick="toggleBriefingCard()" title="Buka/Tutup Panduan" style="width: 28px; height: 28px;">
-          <svg id="briefing-toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;"><polyline points="18 15 12 9 6 15"></polyline></svg>
-        </button>
-      </div>
-      <div class="briefing-body" id="briefing-body-content">
-        <div class="briefing-highlight">
-          🎯 <strong>Kunci Utama:</strong> <em>"HADIR DULU SAJA YA"</em> — Yang paling krusial besok adalah tiba tepat waktu di lokasi kantor!
-        </div>
-        
-        <div class="briefing-grid">
-          <div class="briefing-item">
-            <div class="briefing-item-num">1</div>
-            <div class="briefing-item-text">
-              <strong>Hadir ke Alamat Penugasan</strong>
-              <span>Datang ke Menara BNI Pejompongan (khusus no. 319 &amp; 326 ada perubahan alamat sesuai WA).</span>
-            </div>
-          </div>
-          
-          <div class="briefing-item">
-            <div class="briefing-item-num">2</div>
-            <div class="briefing-item-text">
-              <strong>Lapor ke Satpam/Resepsionis</strong>
-              <span>Sebutkan bahwa Anda adalah <em>Magang Kemnaker Angkatan 2 Batch 2 untuk BNI</em>.</span>
-            </div>
-          </div>
-
-          <div class="briefing-item">
-            <div class="briefing-item-num">3</div>
-            <div class="briefing-item-text">
-              <strong>Minta Bertemu Mentor</strong>
-              <span>Tanyakan satpam untuk bertemu mentor: sebut <strong>Pak Guruh Sri Handoyo</strong> &amp; Divisi <strong>SSE</strong>.</span>
-            </div>
-          </div>
-
-          <div class="briefing-item">
-            <div class="briefing-item-num">4</div>
-            <div class="briefing-item-text">
-              <strong>Kontak Darurat PIC BNI</strong>
-              <span>Jika ada kendala, hubungi: <strong>Mbak Inung</strong>, <strong>Mas Randy</strong>, atau <strong>Mas Fikry</strong> (WA/Telepon).</span>
-            </div>
-          </div>
-
-          <div class="briefing-item">
-            <div class="briefing-item-num">5</div>
-            <div class="briefing-item-text">
-              <strong>Pakaian (Dress Code)</strong>
-              <span>Kemeja putih &amp; celana/rok hitam (jika belum ada, bebas rapi/sopan). Pria tanpa jas, wanita boleh blazer jika ada.</span>
-            </div>
-          </div>
-
-          <div class="briefing-item">
-            <div class="briefing-item-num">6</div>
-            <div class="briefing-item-text">
-              <strong>Sepatu &amp; Kerudung</strong>
-              <span>Sepatu kerja sopan bebas warna (wanita non-heels/flat dipersilakan). Kerudung warna bebas tidak mencolok.</span>
-            </div>
-          </div>
-
-          <div class="briefing-item">
-            <div class="briefing-item-num">7</div>
-            <div class="briefing-item-text">
-              <strong>Kendaraan Pribadi &amp; Parkir</strong>
-              <span>Boleh bawa motor/mobil. Tanyakan satpam terkait parkir umum gedung (biaya parkir pribadi).</span>
-            </div>
-          </div>
-
-          <div class="briefing-item">
-            <div class="briefing-item-num">8</div>
-            <div class="briefing-item-text">
-              <strong>Bawaan Wajib (Day-1)</strong>
-              <span>Laptop &amp; charger, tumbler air minum, dan earphone/headset.</span>
-            </div>
-          </div>
-
-          <div class="briefing-item">
-            <div class="briefing-item-num">9</div>
-            <div class="briefing-item-text">
-              <strong>Rekening BNI &amp; TTD Kontrak</strong>
-              <span>Yang belum ada rekening BNI bisa buka besok di lokasi. TTD kontrak dilakukan setelah rekening selesai (diurus PIC).</span>
-            </div>
-          </div>
-
-          <div class="briefing-item">
-            <div class="briefing-item-num">10</div>
-            <div class="briefing-item-text">
-              <strong>SKCK &amp; Surat Keterangan Sehat</strong>
-              <span>Bisa menyusul jika belum lengkap. Jangan menunda kehadiran!</span>
-            </div>
-          </div>
-
-          <div class="briefing-item">
-            <div class="briefing-item-num">11</div>
-            <div class="briefing-item-text">
-              <strong>Mentor Belum Membalas WA?</strong>
-              <span>Tidak apa-apa, tetap <em>hadir saja dulu</em> dan melapor ke satpam lobi.</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="briefing-quick-actions">
-          <button class="btn-action btn-sm" onclick="copySatpamGreeting()">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-            Salin Kalimat Lapor Satpam
-          </button>
-          <button class="btn-action btn-sm" onclick="copyPicHelpMessage()">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-            Salin Template Chat PIC
-          </button>
-        </div>
-      </div>
-    </div>
-
     <!-- Category: Rutinitas Harian -->
     <div class="category-group" data-cat="harian">
       <div class="category-header">
@@ -3937,42 +3703,6 @@
 
     <!-- SUB-PANE: CHAT TEMPLATES -->
     <div id="asisten-pane-chat">
-      <!-- Template Day-1: Lapor Satpam / Resepsionis -->
-      <div class="chat-card" style="border-left: 3px solid #f15a22;">
-        <div class="chat-card-head">
-          <div class="chat-card-title">Lapor Kedatangan Day-1 (Satpam / Resepsionis)</div>
-          <span class="badge badge-accent">Hari Pertama</span>
-        </div>
-        <div class="chat-preview" id="tpl-satpam">Selamat pagi/siang Bapak/Ibu, mohon izin saya Zaki Tri Pamungkas, peserta Magang Kemnaker Angkatan 2 Batch 2 untuk BNI di Divisi Sales Strategy &amp; Execution (SSE).
-
-Saya hadir untuk melapor dan ingin bertemu dengan mentor saya, Bapak Guruh Sri Handoyo di Divisi SSE. Terima kasih, Bapak/Ibu.</div>
-        <div class="chat-actions">
-          <button class="btn-action" onclick="copyTemplateText('tpl-satpam')">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-            Salin Kalimat Lapor Satpam
-          </button>
-        </div>
-      </div>
-
-      <!-- Template Day-1: Kontak PIC BNI -->
-      <div class="chat-card" style="border-left: 3px solid #006885;">
-        <div class="chat-card-head">
-          <div class="chat-card-title">Kontak Kendala Onboarding ke PIC BNI (Mbak Inung / Mas Randy / Mas Fikry)</div>
-          <span class="badge">Darurat / PIC</span>
-        </div>
-        <div class="chat-preview" id="tpl-pic">Selamat pagi/siang Mbak Inung / Mas Randy / Mas Fikry, mohon izin saya Zaki Tri Pamungkas, peserta Magang Kemnaker Angkatan 2 Batch 2 penugasan di BNI Divisi Sales Strategy &amp; Execution (SSE) Menara BNI Pejompongan.
-
-Mohon izin mengabarkan bahwa saya telah tiba di lokasi, namun mengalami kendala terkait [sebutkan: perizinan akses lobi / penjemputan mentor / pembukaan rekening BNI].
-
-Mohon arahan dan bantuan dari Bapak/Ibu. Terima kasih banyak sebelumnya.</div>
-        <div class="chat-actions">
-          <button class="btn-action" onclick="copyTemplateText('tpl-pic')">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-            Salin Pesan PIC
-          </button>
-        </div>
-      </div>
-
       <!-- Template 1: Izin Wisuda -->
       <div class="chat-card">
         <div class="chat-card-head">
@@ -4810,7 +4540,7 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
         </div>
         <ul class="guide-list">
           <li><span class="guide-bullet">•</span><div><strong>Makan Siang Hemat:</strong> Manfaatkan kantin basement Menara BNI (pilihan menu lengkap Rp15.000–20.000, higienis &amp; ber-AC). Hindari pesan makanan via ojol saat jam kerja karena ada ongkir dan biaya layanan.</div></li>
-          <li><span class="guide-bullet">•</span><div><strong>Refill Tumbler Gratis:</strong> Selalu bawa tumbler (sudah sesuai instruksi Day-1!) dan isi ulang air mineral di dispenser pantry lantai SSE Menara BNI. Menghemat ±Rp150.000/bulan dari beli air botol.</div></li>
+          <li><span class="guide-bullet">•</span><div><strong>Refill Tumbler Gratis:</strong> Selalu bawa tumbler dan isi ulang air mineral di dispenser pantry lantai SSE Menara BNI. Menghemat ±Rp150.000/bulan dari beli air botol.</div></li>
           <li><span class="guide-bullet">•</span><div><strong>Transportasi Nol Rupiah:</strong> Gunakan Mikrotrans JakLingko (JAK.08 atau JAK.14) dengan tarif <strong>Rp 0 (gratis)</strong> cukup tap kartu uang elektronik. Dari Stasiun Palmerah ke Menara BNI hanya 1.8 km (bisa jalan kaki pagi jika cuaca cerah).</div></li>
           <li><span class="guide-bullet">•</span><div><strong>Aplikasi Wondr by BNI:</strong> Manfaatkan fitur transfer gratis, bebas admin, dan pantau pengeluaran bulanan melalui mutasi digital real-time.</div></li>
         </ul>
@@ -6895,36 +6625,6 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
     const text = document.getElementById(id).innerText;
     navigator.clipboard.writeText(text).then(() => {
       showToast('Template pesan disalin! Siap dipaste ke WhatsApp');
-    }).catch(() => {
-      showToast('Gagal menyalin pesan');
-    });
-  }
-
-  function toggleBriefingCard() {
-    const body = document.getElementById('briefing-body-content');
-    const icon = document.getElementById('briefing-toggle-icon');
-    if (!body) return;
-    const isCollapsed = body.classList.toggle('collapsed');
-    if (icon) {
-      icon.innerHTML = isCollapsed 
-        ? '<polyline points="6 9 12 15 18 9"></polyline>'
-        : '<polyline points="18 15 12 9 6 15"></polyline>';
-    }
-  }
-
-  function copySatpamGreeting() {
-    const text = "Selamat pagi/siang Bapak/Ibu, mohon izin saya Zaki Tri Pamungkas, peserta Magang Kemnaker Angkatan 2 Batch 2 untuk BNI di Divisi Sales Strategy & Execution (SSE). Saya hadir untuk melapor dan ingin bertemu dengan mentor saya, Bapak Guruh Sri Handoyo.";
-    navigator.clipboard.writeText(text).then(() => {
-      showToast('Kalimat lapor Satpam disalin! Siap digunakan');
-    }).catch(() => {
-      showToast('Gagal menyalin kalimat');
-    });
-  }
-
-  function copyPicHelpMessage() {
-    const text = "Selamat pagi/siang Mbak Inung / Mas Randy / Mas Fikry, mohon izin saya Zaki Tri Pamungkas, peserta Magang Kemnaker Angkatan 2 Batch 2 penugasan di BNI Divisi Sales Strategy & Execution (SSE) Menara BNI Pejompongan.\n\nMohon izin mengabarkan bahwa saya telah tiba di lokasi, namun mengalami kendala terkait akses lobi / perizinan / pembukaan rekening. Mohon arahan Bapak/Ibu. Terima kasih banyak.";
-    navigator.clipboard.writeText(text).then(() => {
-      showToast('Template chat PIC BNI disalin!');
     }).catch(() => {
       showToast('Gagal menyalin pesan');
     });

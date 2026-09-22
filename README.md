@@ -13,14 +13,7 @@ Aplikasi web produktivitas (*Mobile-First Productivity App*) yang dirancang seba
 * Standar pakaian formal BNI HCS: Kemeja putih hari pertama, Senin–Selasa Business Formal, Rabu–Kamis Batik lengan panjang (tidak boleh dilipat), Jumat Business Casual lapis blazer berkerah, celana bahan gelap (jeans dilarang keras).
 * Dokumen PKM-0026-PKM-II-2026, tiket KA, pakta integritas, elektronik, toiletries grooming, obat, dan esensial.
 
-### 2. 📋 SOP Kerja & Kepatuhan BNI (17 Item) + Briefing Day-1
-* **Briefing & Panduan Hari Pertama (Onboarding Day-1)**: Disimpan permanen di [`BRIEFING-HARI-PERTAMA.md`](./BRIEFING-HARI-PERTAMA.md) dan modul interaktif di Tab 2:
-  - Prinsip utama: *"HADIR DULU SAJA YA"* — Yang terpenting tiba tepat waktu di lokasi kantor.
-  - Prosedur lapor satpam/resepsionis lobi (*Magang Kemnaker Angkatan 2 Batch 2 BNI - Divisi SSE - Menara BNI Pejompongan*).
-  - Kontak darurat PIC panitia BNI: Mbak Inung, Mas Randy, Mas Fikry.
-  - Aturan dresscode (putih-hitam / sopan bebas jika belum ada, tanpa jas, sepatu sopan).
-  - Perlengkapan esensial: Laptop, charger, tumbler, earphone.
-  - Administrasi: Buka rekening & TTD perjanjian diurus hari pertama oleh PIC; SKCK & Surat Sehat dapat menyusul.
+### 2. 📋 SOP Kerja & Kepatuhan BNI (17 Item)
 * Alur operasional harian: Presensi GPS MagangHub Kemnaker, absensi internal DigiHC BNI, penggunaan TPP (Lanyard/ID Card), dan briefing penugasan mentor Pak Guruh Sri Handoyo.
 * Evaluasi berkala: Prosedur izin wisuda ("Tidak Hadir Dengan Keterangan"), surat dokter jika sakit >1 hari, approval logbook mingguan, dan rekap bulanan.
 * Tata tertib perbankan: Kerahasiaan data nasabah (*Banking Secrecy* / NDA), larangan konten medsos pribadi di area kerja, penolakan gratifikasi, dan disiplin K3 Menara BNI.
