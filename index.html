@@ -13,6 +13,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    if (typeof window !== 'undefined' && !window.supabase) {
+      document.write('<script src="https://unpkg.com/@supabase/supabase-js@2"><\/script>');
+    }
+  </script>
   <style>
     :root {
       --font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -2987,12 +2992,13 @@
       </div>
 
       <div class="actions-cluster">
-        <button class="btn-icon" id="btn-db" title="Database Cloud &amp; Realtime Sync (Supabase)" onclick="openDbModal()">
+        <button class="btn-icon" id="btn-db" title="Database Cloud &amp; Realtime Sync (Supabase)" onclick="openDbModal()" style="position: relative;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
             <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
             <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
           </svg>
+          <span id="btn-db-indicator" style="position: absolute; top: 7px; right: 7px; width: 8px; height: 8px; border-radius: 50%; background: #10b981; border: 2px solid var(--surface); transition: background-color 0.2s ease;" title="Status Database"></span>
         </button>
         <button class="btn-icon" id="btn-sync" title="Buka di HP / Cadangan" onclick="openSyncModal()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
@@ -5119,51 +5125,64 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
 
       <!-- Pane 3: Supabase Database Cloud -->
       <div class="modal-tab-pane" id="modal-pane-db">
-        <div style="background: rgba(0, 94, 106, 0.08); border: 1px solid rgba(0, 94, 106, 0.2); border-radius: var(--radius-sm); padding: 10px 12px; margin-bottom: 12px;">
-          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
-            <strong style="font-size: 0.78rem; color: var(--text-primary);">Status Koneksi Database</strong>
-            <span class="badge" id="db-conn-badge" style="background: var(--surface); color: var(--text-secondary); border: 1px solid var(--border);">Lokal (Offline)</span>
+        <div style="background: rgba(0, 94, 106, 0.08); border: 1px solid rgba(0, 94, 106, 0.2); border-radius: var(--radius-sm); padding: 12px 14px; margin-bottom: 12px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; flex-wrap: wrap; gap: 6px;">
+            <strong style="font-size: 0.82rem; color: var(--text-primary);">Database PostgreSQL Cloud</strong>
+            <span class="badge" id="db-conn-badge" style="background: var(--surface); color: var(--text-secondary); border: 1px solid var(--border);">Memeriksa koneksi...</span>
           </div>
-          <p style="font-size: 0.72rem; color: var(--text-secondary); line-height: 1.4; margin: 0;">
-            Gunakan <strong>Supabase (PostgreSQL Cloud)</strong> agar seluruh logbook harian, catatan keuangan, dan checklist tersinkronisasi otomatis antara laptop kantor Menara BNI dan smartphone pribadi secara instan.
+          <p id="db-conn-desc" style="font-size: 0.74rem; color: var(--text-secondary); line-height: 1.45; margin: 0;">
+            Aplikasi otomatis terhubung ke cluster Supabase resmi BNI SSE untuk sinkronisasi checklist, logbook, dan pengeluaran.
           </p>
         </div>
 
-        <div class="form-group" style="margin-bottom: 10px;">
-          <label class="form-label" style="font-size: 0.73rem;">Supabase Project URL</label>
-          <input type="text" class="form-control" id="db-supabase-url" placeholder="https://xyzproject.supabase.co" style="font-size: 0.76rem;">
-        </div>
-
-        <div class="form-group" style="margin-bottom: 12px;">
-          <label class="form-label" style="font-size: 0.73rem;">Supabase Anon Public Key</label>
-          <input type="password" class="form-control" id="db-supabase-key" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." style="font-size: 0.76rem;">
-        </div>
-
-        <div style="display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap;">
-          <button type="button" class="btn-action" style="flex: 1;" onclick="testAndSaveDbConnection()">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="20 6 9 17 4 12"></polyline>
-            </svg>
-            Tes &amp; Hubungkan Database
-          </button>
-          <button type="button" class="btn-action btn-secondary" onclick="syncAllDataWithCloud()">
+        <div style="display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap;">
+          <button type="button" class="btn-action" style="flex: 1;" onclick="syncAllDataWithCloud(false)">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
             </svg>
             Sinkronkan Sekarang
           </button>
+          <button type="button" class="btn-action btn-secondary" onclick="initSupabaseClient(true)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="23 4 23 10 17 10"></polyline>
+              <polyline points="1 20 1 14 7 14"></polyline>
+              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+            </svg>
+            Uji Ulang
+          </button>
         </div>
 
-        <div style="border-top: 1px solid var(--border-subtle); padding-top: 10px;">
+        <details style="margin-top: 10px; border-top: 1px solid var(--border-subtle); padding-top: 10px;">
+          <summary style="font-size: 0.74rem; font-weight: 600; color: var(--text-secondary); cursor: pointer; user-select: none; margin-bottom: 10px;">
+            ⚙️ Kustomisasi URL &amp; API Key Sendiri (Opsional)
+          </summary>
+          <div class="form-group" style="margin-bottom: 10px;">
+            <label class="form-label" style="font-size: 0.73rem;">Supabase Project URL</label>
+            <input type="text" class="form-control" id="db-supabase-url" placeholder="https://xyzproject.supabase.co" style="font-size: 0.76rem;">
+          </div>
+
+          <div class="form-group" style="margin-bottom: 12px;">
+            <label class="form-label" style="font-size: 0.73rem;">Supabase Anon Public Key</label>
+            <input type="password" class="form-control" id="db-supabase-key" placeholder="sb_publishable_... atau eyJhbGci..." style="font-size: 0.76rem;">
+          </div>
+
+          <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+            <button type="button" class="btn-action" style="flex: 1;" onclick="testAndSaveDbConnection()">
+              Simpan &amp; Hubungkan Kunci Kustom
+            </button>
+            <button type="button" class="btn-action btn-secondary" onclick="resetToDefaultDbConnection()">
+              Reset ke Default BNI SSE
+            </button>
+          </div>
+        </details>
+
+        <div style="border-top: 1px solid var(--border-subtle); padding-top: 10px; margin-top: 10px;">
           <div style="display: flex; align-items: center; justify-content: space-between;">
             <span style="font-size: 0.72rem; color: var(--text-tertiary);">Skema SQL Database:</span>
             <button class="btn-action btn-xs" onclick="downloadSqlSchema()">
               Unduh supabase-schema.sql
             </button>
           </div>
-          <p style="font-size: 0.68rem; color: var(--text-tertiary); margin-top: 6px; line-height: 1.35;">
-            💡 <em>Jalankan script skema SQL sekali di SQL Editor Supabase untuk membuat tabel logbook, expenses, checklists, dan notulensi rapat secara instan.</em>
-          </p>
         </div>
       </div>
     </div>
@@ -5607,30 +5626,84 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
   const SUPABASE_URL_KEY = 'mghb_supabase_url';
   const SUPABASE_KEY_KEY = 'mghb_supabase_anon_key';
   let supabaseClient = null;
+  let supabaseRealtimeChannel = null;
 
   function setDatabaseStatus(state, text) {
     const status = document.getElementById('workspace-db-status');
     const badge = document.getElementById('db-conn-badge');
     const button = document.getElementById('btn-db');
-    if (status) { status.textContent = text; status.dataset.state = state; }
+    const dot = document.getElementById('btn-db-indicator');
+    const desc = document.getElementById('db-conn-desc');
+
+    if (status) {
+      status.textContent = text;
+      status.dataset.state = state;
+    }
     if (badge) {
       badge.textContent = text;
-      badge.style.background = 'var(--surface)';
-      badge.style.color = state === 'connected' ? 'var(--success)' : 'var(--text-secondary)';
+      badge.style.background = state === 'connected' ? '#10b981' : (state === 'connecting' ? '#eab308' : 'var(--surface)');
+      badge.style.color = state === 'connected' ? '#ffffff' : (state === 'connecting' ? '#000000' : 'var(--text-secondary)');
+      badge.style.borderColor = state === 'connected' ? 'transparent' : 'var(--border)';
+    }
+    if (dot) {
+      dot.style.background = state === 'connected' ? '#10b981' : (state === 'connecting' ? '#eab308' : '#f97316');
     }
     if (button) {
-      button.title = text;
-      button.setAttribute('aria-label', text);
+      button.title = 'Database: ' + text;
+      button.setAttribute('aria-label', 'Database: ' + text);
       button.style.color = state === 'connected' ? 'var(--success)' : 'var(--text-secondary)';
+    }
+    if (desc) {
+      if (state === 'connected') {
+        desc.textContent = '✅ Berhasil terhubung ke Supabase Cloud BNI SSE. Sinkronisasi multi-perangkat aktif.';
+      } else if (state === 'connecting') {
+        desc.textContent = '⏳ Sedang menguji koneksi ke server database Supabase...';
+      } else {
+        desc.textContent = '⚠️ Bekerja dalam mode offline lokal. Data tetap tersimpan aman di browser perangkat ini.';
+      }
     }
   }
 
-  async function initSupabaseClient() {
+  async function waitForSupabaseSdk(maxMs = 5000) {
+    const start = Date.now();
+    while (!window.supabase && (Date.now() - start) < maxMs) {
+      await new Promise(r => setTimeout(r, 120));
+    }
+    return !!window.supabase;
+  }
+
+  function setupRealtimeSubscriptions() {
+    if (!supabaseClient || supabaseRealtimeChannel) return;
+    try {
+      supabaseRealtimeChannel = supabaseClient.channel('mghb_realtime_sync')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'mghb_checklists' }, payload => {
+          if (payload.new && payload.new.id) {
+            const localState = getStoredState();
+            if (payload.new.is_checked) {
+              localState[payload.new.id] = true;
+            } else {
+              delete localState[payload.new.id];
+            }
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(localState));
+            const cb = document.getElementById(payload.new.id);
+            if (cb) cb.checked = Boolean(payload.new.is_checked);
+            applyFiltering();
+            updateMetrics();
+          }
+        })
+        .subscribe();
+    } catch (e) {
+      console.warn('Realtime subscription skipped:', e);
+    }
+  }
+
+  async function initSupabaseClient(forceTest = false) {
     setDatabaseStatus('connecting', 'Memeriksa koneksi...');
     let url = localStorage.getItem(SUPABASE_URL_KEY);
     let key = localStorage.getItem(SUPABASE_KEY_KEY);
 
-    if (!url || !key) {
+    // Auto-heal jika ada dummy URL atau placeholder lama
+    if (!url || !key || url.includes('xyzproject') || key.includes('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9')) {
       url = DEFAULT_SUPABASE_URL;
       key = DEFAULT_SUPABASE_KEY;
       localStorage.setItem(SUPABASE_URL_KEY, url);
@@ -5639,54 +5712,58 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
 
     const urlInput = document.getElementById('db-supabase-url');
     const keyInput = document.getElementById('db-supabase-key');
-    const badge = document.getElementById('db-conn-badge');
-    const btnDb = document.getElementById('btn-db');
-
     if (urlInput && url) urlInput.value = url;
     if (keyInput && key) keyInput.value = key;
+
+    // Pastikan SDK Supabase telah dimuat
+    if (!window.supabase) {
+      await waitForSupabaseSdk(4000);
+    }
 
     if (url && key && window.supabase) {
       try {
         supabaseClient = window.supabase.createClient(url, key);
-        const { error } = await supabaseClient.from('mghb_settings').select('key').limit(1)
-          .abortSignal(AbortSignal.timeout(10000));
+        
+        // Verifikasi query universal tanpa AbortSignal.timeout (100% kompatibel di mobile)
+        const queryPromise = supabaseClient.from('mghb_settings').select('key').limit(1);
+        const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout koneksi 10 detik')), 10000));
+        const { error } = await Promise.race([queryPromise, timeoutPromise]);
+        
         if (error) throw error;
-        if (badge) {
-          badge.textContent = 'Cloud (PostgreSQL Terhubung)';
-          badge.style.background = '#10b981';
-          badge.style.color = '#ffffff';
-          badge.style.borderColor = 'transparent';
-        }
-        if (btnDb) {
-          btnDb.style.color = '#10b981';
-          btnDb.title = 'Database: Terhubung ke Supabase Cloud (PostgreSQL)';
-        }
+
         setDatabaseStatus('connected', 'Cloud terhubung');
+        setupRealtimeSubscriptions();
+        if (forceTest) showToast('✅ Koneksi Supabase PostgreSQL berhasil terhubung!');
+        return true;
       } catch (e) {
         console.warn('Supabase init error:', e);
         supabaseClient = null;
         setDatabaseStatus('offline', 'Offline / data lokal');
+        if (forceTest) showToast('Koneksi terkendala: ' + (e.message || 'Periksa jaringan internet'));
+        return false;
       }
     } else {
       supabaseClient = null;
-      if (badge) {
-        badge.textContent = 'Lokal (LocalStorage)';
-        badge.style.background = 'var(--surface)';
-        badge.style.color = 'var(--text-secondary)';
-        badge.style.borderColor = 'var(--border)';
-      }
-      if (btnDb) {
-        btnDb.style.color = 'var(--text-secondary)';
-        btnDb.title = 'Database Cloud & Real-time Sync (Supabase)';
-      }
       setDatabaseStatus('offline', 'Offline / data lokal');
+      if (forceTest) showToast('SDK Supabase belum terunduh, periksa koneksi internet');
+      return false;
     }
+  }
+
+  function resetToDefaultDbConnection() {
+    localStorage.setItem(SUPABASE_URL_KEY, DEFAULT_SUPABASE_URL);
+    localStorage.setItem(SUPABASE_KEY_KEY, DEFAULT_SUPABASE_KEY);
+    const urlInput = document.getElementById('db-supabase-url');
+    const keyInput = document.getElementById('db-supabase-key');
+    if (urlInput) urlInput.value = DEFAULT_SUPABASE_URL;
+    if (keyInput) keyInput.value = DEFAULT_SUPABASE_KEY;
+    showToast('Kredensial database direset ke default BNI SSE');
+    initSupabaseClient(true);
   }
 
   async function testAndSaveDbConnection() {
     const url = document.getElementById('db-supabase-url')?.value.trim();
     const key = document.getElementById('db-supabase-key')?.value.trim();
-    const badge = document.getElementById('db-conn-badge');
 
     if (!url || !key) {
       showToast('Harap masukkan Supabase URL dan Anon Key');
@@ -5694,15 +5771,20 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
     }
 
     if (!window.supabase) {
-      showToast('SDK Supabase belum termuat. Periksa koneksi internet');
-      return;
+      await waitForSupabaseSdk(3000);
+      if (!window.supabase) {
+        showToast('SDK Supabase belum termuat. Periksa koneksi internet');
+        return;
+      }
     }
 
     showToast('Menguji koneksi ke Supabase...');
 
     try {
       const client = window.supabase.createClient(url, key);
-      const { data, error } = await client.from('mghb_logbooks').select('id').limit(1);
+      const queryPromise = client.from('mghb_logbooks').select('id').limit(1);
+      const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout koneksi 10 detik')), 10000));
+      const { error } = await Promise.race([queryPromise, timeoutPromise]);
 
       if (error && error.code !== 'PGRST116') {
         if (error.message && error.message.includes('does not exist')) {
@@ -5726,55 +5808,57 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
     } catch (err) {
       console.error('Database connection test failed:', err);
       showToast('Gagal terhubung: ' + (err.message || 'Periksa kembali URL & Key'));
-      if (badge) {
-        badge.textContent = 'Gagal Terhubung';
-        badge.style.background = '#ef4444';
-        badge.style.color = '#ffffff';
-      }
+      setDatabaseStatus('offline', 'Gagal terhubung');
     }
   }
 
   async function syncAllDataWithCloud(silent = false) {
     if (!supabaseClient) {
-      if (!silent) showToast('Belum terhubung ke Supabase. Masukkan URL & Key terlebih dahulu');
-      return;
+      if (!silent) showToast('Belum terhubung ke Supabase. Menyambung ulang...');
+      const ok = await initSupabaseClient();
+      if (!ok || !supabaseClient) {
+        if (!silent) showToast('Database dalam mode offline. Data tersimpan di perangkat ini.');
+        return;
+      }
     }
 
     if (!silent) showToast('Menyinkronkan data ke Cloud PostgreSQL...');
 
     try {
-      // 1. Sync Checklists
+      // 1. Sync Checklists (Batch Upsert Cepat)
       const localChecklists = getStoredState();
-      for (const [id, isChecked] of Object.entries(localChecklists)) {
-        await supabaseClient.from('mghb_checklists').upsert({
-          id: id,
-          tab: id.startsWith('pk') ? 'packing' : 'magang',
-          is_checked: Boolean(isChecked),
-          updated_at: new Date().toISOString()
-        });
+      const checklistRows = Object.entries(localChecklists).map(([id, isChecked]) => ({
+        id: id,
+        tab: id.startsWith('pk') ? 'packing' : 'magang',
+        is_checked: Boolean(isChecked),
+        updated_at: new Date().toISOString()
+      }));
+      if (checklistRows.length > 0) {
+        await supabaseClient.from('mghb_checklists').upsert(checklistRows);
       }
 
-      // 2. Sync Expenses
+      // 2. Sync Expenses (Batch Upsert Cepat)
       const localExpenses = getFinanceExpenses();
-      for (const item of localExpenses) {
-        await supabaseClient.from('mghb_expenses').upsert({
+      if (localExpenses.length > 0) {
+        const expenseRows = localExpenses.map(item => ({
           id: item.id,
           tx_date: item.date,
           category: item.cat,
           description: item.desc,
           amount: item.amount,
           created_at: new Date().toISOString()
-        });
+        }));
+        await supabaseClient.from('mghb_expenses').upsert(expenseRows);
       }
 
-      // 3. Sync Logbooks
+      // 3. Sync Logbooks (Batch Upsert Cepat)
       let localLogs = [];
       try {
         const raw = localStorage.getItem(LOGBOOK_STORAGE_KEY);
         if (raw) localLogs = JSON.parse(raw);
       } catch {}
-      for (const log of localLogs) {
-        await supabaseClient.from('mghb_logbooks').upsert({
+      if (localLogs.length > 0) {
+        const logRows = localLogs.map(log => ({
           id: log.id,
           report_date: log.date,
           category: log.category,
@@ -5784,7 +5868,8 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
           output: log.output,
           obstacle: log.obstacle || '',
           updated_at: new Date().toISOString()
-        });
+        }));
+        await supabaseClient.from('mghb_logbooks').upsert(logRows);
       }
 
       // 4. Fetch cloud checklists to merge back
@@ -5795,6 +5880,9 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
         cloudChecklists.forEach(cc => {
           if (cc.is_checked && !localState[cc.id]) {
             localState[cc.id] = true;
+            changed = true;
+          } else if (!cc.is_checked && localState[cc.id]) {
+            delete localState[cc.id];
             changed = true;
           }
         });

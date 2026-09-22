@@ -9,15 +9,31 @@ const code = html.slice(start, end);
 async function check(error) {
   const elements = new Map();
   const context = vm.createContext({
-    console: { warn() {} }, AbortSignal,
+    console: { warn() {} },
+    setTimeout, clearTimeout, Date, Promise,
     localStorage: { getItem: () => null, setItem() {} },
     document: { getElementById(id) {
       if (!elements.has(id)) elements.set(id, { style: {}, dataset: {}, setAttribute() {} });
       return elements.get(id);
     } },
-    window: { supabase: { createClient: () => ({ from: () => ({ select: () => ({ limit: () => ({ abortSignal: async () => ({ error }) }) }) }) }) } },
+    window: {
+      supabase: {
+        createClient: () => ({
+          from: () => ({
+            select: () => ({
+              limit: () => Promise.resolve({ error })
+            })
+          }),
+          channel: () => ({
+            on: () => ({
+              subscribe: () => ({})
+            })
+          })
+        })
+      }
+    },
   });
-  vm.runInContext(`const DEFAULT_SUPABASE_URL='https://example.supabase.co', DEFAULT_SUPABASE_KEY='test', SUPABASE_URL_KEY='url', SUPABASE_KEY_KEY='key'; let supabaseClient=null; ${code}`, context);
+  vm.runInContext(`const DEFAULT_SUPABASE_URL='https://example.supabase.co', DEFAULT_SUPABASE_KEY='test', SUPABASE_URL_KEY='url', SUPABASE_KEY_KEY='key'; let supabaseClient=null, supabaseRealtimeChannel=null; ${code}`, context);
   await vm.runInContext('initSupabaseClient()', context);
   assert.equal(elements.get('workspace-db-status').dataset.state, error ? 'offline' : 'connected');
   assert.equal(vm.runInContext('supabaseClient !== null', context), !error);
