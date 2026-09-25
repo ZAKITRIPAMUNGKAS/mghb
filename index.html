@@ -3544,10 +3544,23 @@
 
   <!-- TAB 1: PACKING CHECKLIST -->
   <main id="view-packing" class="tab-content">
+      <div class="feature-card" style="margin-bottom: 10px;">
+        <div class="feature-head">
+        <div class="feature-title">🧳 Inventaris Rantau</div>
+        <span class="badge badge-accent" id="inv-location-badge">Kos · Menara BNI</span>
+      </div>
+      <p style="font-size: 0.74rem; color: var(--text-secondary); margin-bottom: 10px;">
+        Daftar barang merantau di Jakarta (kost, kantor, perjalanan). Centang yang sudah ada — progress tersimpan otomatis.
+      </p>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+        <button type="button" class="utility-btn" onclick="exportInventarisText()">📋 Salin Inventaris</button>
+        <button type="button" class="utility-btn" onclick="resetActiveTab()">↺ Reset Centangan</button>
+      </div>
+    </div>
     <!-- Category: Pakaian Kerja -->
     <div class="category-group" data-cat="pakaian">
       <div class="category-header">
-        <span class="category-title">Pakaian Kerja &amp; Formal BNI HCS</span>
+        <span class="category-title">👔 Pakaian Kerja &amp; Formal</span>
         <span class="category-stats" id="stat-pakaian">0/11</span>
       </div>
       <div class="checklist-card">
@@ -3645,7 +3658,7 @@
     <!-- Category: Dokumen -->
     <div class="category-group" data-cat="dokumen">
       <div class="category-header">
-        <span class="category-title">Dokumen &amp; Tiket Perjalanan</span>
+        <span class="category-title">📄 Dokumen &amp; Administrasi Rantau</span>
         <span class="category-stats" id="stat-dokumen">0/7</span>
       </div>
       <div class="checklist-card">
@@ -3711,7 +3724,7 @@
     <!-- Category: Elektronik -->
     <div class="category-group" data-cat="elektronik">
       <div class="category-header">
-        <span class="category-title">Perangkat Elektronik</span>
+        <span class="category-title">💻 Perangkat &amp; Elektronik</span>
         <span class="category-stats" id="stat-elektronik">0/4</span>
       </div>
       <div class="checklist-card">
@@ -3753,7 +3766,7 @@
     <!-- Category: Toiletries -->
     <div class="category-group" data-cat="toiletries">
       <div class="category-header">
-        <span class="category-title">Perawatan &amp; Toiletries</span>
+        <span class="category-title">🧴 Perawatan &amp; Toiletries</span>
         <span class="category-stats" id="stat-toiletries">0/6</span>
       </div>
       <div class="checklist-card">
@@ -3811,7 +3824,7 @@
     <!-- Category: Kesehatan -->
     <div class="category-group" data-cat="kesehatan">
       <div class="category-header">
-        <span class="category-title">Kesehatan &amp; Obat Pribadi</span>
+        <span class="category-title">💊 Kesehatan &amp; Obat</span>
         <span class="category-stats" id="stat-kesehatan">0/4</span>
       </div>
       <div class="checklist-card">
@@ -3853,7 +3866,7 @@
     <!-- Category: Esensial Lainnya -->
     <div class="category-group" data-cat="lainnya">
       <div class="category-header">
-        <span class="category-title">Perlengkapan Tambahan &amp; Esensial</span>
+        <span class="category-title">🎒 Perlengkapan Rantau</span>
         <span class="category-stats" id="stat-lainnya">0/6</span>
       </div>
       <div class="checklist-card">
@@ -3914,8 +3927,8 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
       </div>
       <div class="completion-text">
-        <h4>Seluruh Item Bawaan Lengkap</h4>
-        <p>Semua perlengkapan dinas BNI &amp; wisuda telah siap di dalam koper.</p>
+        <h4>Inventaris Rantau Lengkap</h4>
+        <p>Seluruh barang kost, kantor &amp; perjalanan sudah siap di Jakarta.</p>
       </div>
     </div>
   </main>
@@ -4191,11 +4204,29 @@
         <input type="text" class="form-control" id="lb-obstacle" placeholder="Kosongkan jika lancar, sistem otomatis buatkan narasi standar ≥100 karakter">
       </div>
 
-      <button class="btn-block" onclick="generateLogbook()">
+      <div class="form-group" id="lb-weekend-hint" style="display: none; margin-top: -4px;">
+        <div style="background: var(--highlight-subtle); border: 1px solid var(--highlight); border-radius: 6px; padding: 8px 10px; font-size: 0.74rem; color: var(--text-primary);">
+          📅 Tanggal ini jatuh pada <strong>Sabtu/Minggu (libur)</strong>. Logbook MagangHub tidak perlu diisi — generate AI otomatis di-skip.
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+        <button type="button" class="utility-btn" onclick="insertTimeStamp()" title="Sisipkan jam sekarang ke catatan">🕐 +Jam</button>
+        <span style="font-size: 0.7rem; color: var(--text-tertiary); align-self: center;">Format: <code>08:00 kegiatan...</code> per baris</span>
+      </div>
+
+      <button class="btn-block" id="btn-generate-ai" onclick="generateLogbookAI()">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
         </svg>
-        Formulasikan Laporan Formal
+        <span id="btn-generate-ai-label">✨ Generate dengan AI (Claude)</span>
+      </button>
+      <button class="btn-block btn-secondary" style="margin-top: 8px;" onclick="generateLogbook()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 20h9"></path>
+          <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+        </svg>
+        Formulasikan Offline (Template)
       </button>
 
       <!-- Logbook Generated Output -->
@@ -4281,12 +4312,12 @@
   <!-- TAB 4: ASISTEN SSE (CHAT TEMPLATES & GLOSSARY) -->
   <main id="view-asisten" class="tab-content">
     <div class="subnav-pills">
-      <button class="subnav-btn active" id="asisten-tab-btn-chat" onclick="switchAsistenSubtab('chat')">Template Chat</button>
-      <button class="subnav-btn" id="asisten-tab-btn-mom" onclick="switchAsistenSubtab('mom')">Notulensi Rapat (MoM)</button>
-      <button class="subnav-btn" id="asisten-tab-btn-toolkit" onclick="switchAsistenSubtab('toolkit')">Data &amp; Excel Toolkit</button>
-      <button class="subnav-btn" id="asisten-tab-btn-glossary" onclick="switchAsistenSubtab('glossary')">Kamus SSE</button>
-      <button class="subnav-btn" id="asisten-tab-btn-guide" onclick="switchAsistenSubtab('guide')">Panduan Menara BNI</button>
-      <button class="subnav-btn" id="asisten-tab-btn-finance" onclick="switchAsistenSubtab('finance')">Keuangan Jakarta 💰</button>
+      <button class="subnav-btn" id="asisten-tab-btn-finance" onclick="switchAsistenSubtab('finance')">💰 Keuangan Rantau</button>
+      <button class="subnav-btn" id="asisten-tab-btn-toolkit" onclick="switchAsistenSubtab('toolkit')">📊 Excel &amp; Rumus</button>
+      <button class="subnav-btn" id="asisten-tab-btn-glossary" onclick="switchAsistenSubtab('glossary')">📖 Kamus Perbankan</button>
+      <button class="subnav-btn" id="asisten-tab-btn-guide" onclick="switchAsistenSubtab('guide')">🏢 Panduan Kost &amp; Kantor</button>
+      <button class="subnav-btn" id="asisten-tab-btn-mom" onclick="switchAsistenSubtab('mom')">📝 Template Notulen</button>
+      <button class="subnav-btn" id="asisten-tab-btn-chat" onclick="switchAsistenSubtab('chat')">💬 Template Chat</button>
     </div>
 
     <!-- SUB-PANE: CHAT TEMPLATES -->
@@ -4380,12 +4411,16 @@ Apabila Bapak berkenan, mohon kesediaan Bapak untuk melakukan review dan approva
         <button type="button" class="mom-preset-btn" onclick="loadMomPreset('data')">
           💻 Proyek &amp; Analitik Data
         </button>
-        <button type="button" class="mom-preset-btn" onclick="clearMomForm()" style="color: var(--text-tertiary);">
+      <button type="button" class="mom-preset-btn" onclick="clearMomForm()" style="color: var(--text-tertiary);">
           ✕ Bersihkan
         </button>
       </div>
 
       <div class="mom-grid">
+        <div style="background: var(--accent-subtle); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; margin-bottom: 12px; grid-column: 1 / -1;">
+          <div class="feature-title" style="font-size: 0.82rem; margin-bottom: 4px;">📋 Notulensi Rapat (MoM)</div>
+          <p style="font-size: 0.74rem; color: var(--text-secondary);">Tab ini dipakai untuk mencatat pembahasan, keputusan &amp; tindak lanjut rapat agar dapat dibagi ke tim via WhatsApp/Email.</p>
+        </div>
         <!-- FORM COLUMN -->
         <div class="mom-form-card">
           <div class="mom-section-title">
@@ -4979,7 +5014,7 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
               <line x1="12" y1="1" x2="12" y2="23"></line>
               <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
             </svg>
-            Budgeting &amp; Finansial Magang Jakarta
+            Keuangan Rantau Jakarta · Budget + Bayar Bulanan
           </div>
           <span class="badge badge-accent" id="fin-status-badge" style="font-size: 0.72rem; padding: 3px 10px;">Terkendali</span>
         </div>
@@ -4987,26 +5022,42 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
         <div class="finance-summary-grid">
           <!-- Metric 1: Income -->
           <div class="finance-metric">
-            <span class="finance-metric-label">Uang Saku / Pemasukan</span>
+            <span class="finance-metric-label">Pemasukan / Uang Saku</span>
             <div style="display: flex; align-items: baseline; gap: 4px; margin: 4px 0 2px;">
               <span style="font-size: 0.9rem; font-weight: 700; color: var(--text-tertiary);">Rp</span>
               <input type="number" id="fin-income-input" value="3500000" onchange="updateFinanceCalculations()" style="font-size: 1.15rem; font-weight: 800; color: var(--text-primary); background: transparent; border: none; border-bottom: 1.5px dashed var(--border-strong); width: 100%; outline: none; padding: 0 0 2px;">
             </div>
-            <span class="finance-metric-sub">Uang saku BNI / Kemnaker (klik untuk ubah)</span>
+            <span class="finance-metric-sub">BNI / Kemnaker / tambahan (ubah sesuai slip)</span>
           </div>
 
           <!-- Metric 2: Total Spent -->
           <div class="finance-metric">
-            <span class="finance-metric-label">Total Pengeluaran</span>
+            <span class="finance-metric-label">Terpakai Bulan Ini</span>
             <div class="finance-metric-val" id="fin-total-expense" style="margin: 4px 0 2px;">Rp 0</div>
-            <span class="finance-metric-sub" id="fin-expense-percent">0% dari uang saku</span>
+            <span class="finance-metric-sub" id="fin-expense-percent">0% dari pemasukan</span>
           </div>
 
           <!-- Metric 3: Remaining Safe Budget -->
           <div class="finance-metric">
-            <span class="finance-metric-label">Sisa Saldo Aman</span>
+            <span class="finance-metric-label">Sisa &amp; Batas Aman Harian</span>
             <div class="finance-metric-val success" id="fin-remaining-budget" style="margin: 4px 0 2px;">Rp 3.500.000</div>
-            <span class="finance-metric-sub" id="fin-daily-safe-limit">Batas aman: Rp 116.000 / hari</span>
+            <span class="finance-metric-sub" id="fin-daily-safe-limit">Batas aman: Rp — / hari</span>
+          </div>
+        </div>
+
+        <!-- Bayar bulanan tetap & anggaran variabel -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px;">
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label">Bayar bulanan tetap (kos, listrik, paket data)</label>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-tertiary);">Rp</span>
+              <input type="number" class="form-control" id="fin-fixed-input" placeholder="mis. 1500000" min="0" oninput="updateFinanceCalculations()" style="flex: 1;">
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label">Sisa untuk variabel harian</label>
+            <div class="finance-metric-val" id="fin-variable-budget" style="font-size: 0.95rem; margin: 2px 0;">Rp —</div>
+            <span class="finance-metric-sub" id="fin-fixed-hint">Isi tagihan tetap agar batas aman akurat</span>
           </div>
         </div>
 
@@ -5016,7 +5067,19 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
         </div>
         <div class="finance-progress-meta">
           <span id="fin-progress-label" style="font-weight: 600;">Pengeluaran: 0%</span>
-          <span id="fin-days-left">Sisa hari bulan ini: 10 hari</span>
+          <span id="fin-days-left">Sisa hari bulan ini: —</span>
+        </div>
+        <div id="fin-balance-banner" style="margin-top: 10px; display: none; border-radius: 8px; padding: 10px 12px; font-size: 0.76rem; line-height: 1.4;"></div>
+
+        <!-- AI Advisor -->
+        <div id="fin-ai-card" style="margin-top: 12px; border: 1px solid var(--border); border-radius: 10px; padding: 12px; background: var(--surface);">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px;">
+            <span class="feature-title" style="font-size: 0.82rem;">✨ Nasehat AI — Cek Balance</span>
+            <button type="button" class="btn-action btn-xs" id="btn-fin-ai" onclick="requestFinanceAdvice()">Tanya AI</button>
+          </div>
+          <div id="fin-ai-output" style="font-size: 0.76rem; color: var(--text-secondary); line-height: 1.45; min-height: 20px;">
+            Tekan <em>Tanya AI</em> untuk penilaian: pemasukan vs pengeluaran, sisa hari, batas aman, dan 1–2 langkah hemat relevan Menara BNI.
+          </div>
         </div>
       </div>
 
@@ -5094,13 +5157,13 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
 
       <!-- Expense History Log -->
       <div class="feature-card" style="margin-top: 14px;">
-        <div class="feature-head">
-          <div class="feature-title">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
-              <polyline points="12 8 12 12 14 14"></polyline>
-              <path d="M3.05 11a9 9 0 1 1 .5 4m-.5 5v-5h5"></path>
-            </svg>
-            Riwayat Transaksi Bulan Ini
+      <div class="feature-head">
+        <div class="feature-title">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+            <polyline points="12 8 12 12 14 14"></polyline>
+            <path d="M3.05 11a9 9 0 1 1 .5 4m-.5 5v-5h5"></path>
+          </svg>
+            Riwayat Transaksi
           </div>
           <div style="display: flex; gap: 6px;">
             <button class="btn-action btn-xs" onclick="exportFinanceSummaryText()">
@@ -5179,15 +5242,15 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
       </div>
 
       <div class="quick-hub-grid">
-        <button class="quick-hub-btn" onclick="selectTab('logbook')">
+        <button class="quick-hub-btn" onclick="window.open('https://monev.maganghub.kemnaker.go.id/dashboard', '_blank', 'noopener')">
           <div class="quick-hub-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
               <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
             </svg>
           </div>
-          <span class="quick-hub-label">Logbook Harian</span>
-          <span class="quick-hub-sub">Formulasi laporan</span>
+          <span class="quick-hub-label">Monev Logbook</span>
+          <span class="quick-hub-sub">Submit resmi Kemnaker ↗</span>
         </button>
 
         <button class="quick-hub-btn" onclick="selectTab('magang')">
@@ -5198,8 +5261,8 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
               <path d="M8 6h.01"></path><path d="M16 6h.01"></path><path d="M12 6h.01"></path>
             </svg>
           </div>
-          <span class="quick-hub-label">SOP &amp; Presensi</span>
-          <span class="quick-hub-sub">Rutinitas SSE</span>
+          <span class="quick-hub-label">Notulensi Rapat</span>
+          <span class="quick-hub-sub">MoM &amp; tindak lanjut</span>
         </button>
 
         <button class="quick-hub-btn" onclick="selectTab('packing')">
@@ -5209,8 +5272,8 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
               <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
             </svg>
           </div>
-          <span class="quick-hub-label">Bawaan Dinas</span>
-          <span class="quick-hub-sub">Checklist Jakarta</span>
+          <span class="quick-hub-label">Inventaris Rantau</span>
+          <span class="quick-hub-sub">Barang kost &amp; kantor</span>
         </button>
 
         <button class="quick-hub-btn" onclick="selectTab('asisten'); switchAsistenSubtab('finance');">
@@ -5220,8 +5283,8 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
               <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
             </svg>
           </div>
-          <span class="quick-hub-label">Keuangan Jakarta</span>
-          <span class="quick-hub-sub">Budget &amp; Tracker</span>
+          <span class="quick-hub-label">Keuangan Rantau</span>
+          <span class="quick-hub-sub">Budget + AI advisor</span>
         </button>
       </div>
     </div>
@@ -5374,7 +5437,7 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
             <path d="M10 6h8v4h-8V6Z"></path>
           </svg>
         </div>
-        <span class="bottom-nav-label">Kabar</span>
+        <span class="bottom-nav-label">Beranda</span>
       </button>
 
       <button class="bottom-nav-item tab-trigger" data-tab="packing" onclick="selectTab('packing')">
@@ -5384,7 +5447,7 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
             <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
           </svg>
         </div>
-        <span class="bottom-nav-label">Bawaan</span>
+        <span class="bottom-nav-label">Inventaris</span>
       </button>
 
       <button class="bottom-nav-item tab-trigger" data-tab="magang" onclick="selectTab('magang')">
@@ -5395,7 +5458,7 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
             <path d="M8 6h.01"></path><path d="M16 6h.01"></path><path d="M12 6h.01"></path>
           </svg>
         </div>
-        <span class="bottom-nav-label">Magang</span>
+        <span class="bottom-nav-label">Notulensi</span>
       </button>
 
       <button class="bottom-nav-item tab-trigger" data-tab="logbook" onclick="selectTab('logbook')">
@@ -5414,7 +5477,7 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
           </svg>
         </div>
-        <span class="bottom-nav-label">Asisten</span>
+        <span class="bottom-nav-label">Toolkit</span>
       </button>
     </div>
     <div class="workspace-profile">
@@ -5790,14 +5853,14 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
 
     if (tab === 'packing') {
       badgeEl.textContent = 'Dinas Jakarta';
-      labelEl.textContent = 'Jakarta & Wisuda UMS (24–27 Sep 2026)';
+      labelEl.textContent = 'Barang kost, kantor & perjalanan rantau';
       overviewRow.style.display = 'flex';
       toolbarRow.style.display = 'flex';
       applyFiltering();
       updateMetrics();
     } else if (tab === 'magang') {
-      badgeEl.textContent = 'Operasional';
-      labelEl.textContent = 'Rutinitas Magang & Kepatuhan SSE';
+      badgeEl.textContent = 'Rapat';
+      labelEl.textContent = 'Notulensi & Tindak Lanjut';
       overviewRow.style.display = 'flex';
       toolbarRow.style.display = 'flex';
       applyFiltering();
@@ -5808,8 +5871,8 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
       overviewRow.style.display = 'none';
       toolbarRow.style.display = 'none';
     } else if (tab === 'asisten') {
-      badgeEl.textContent = 'Divisi SSE';
-      labelEl.textContent = 'Template Chat Mentor & Kamus Istilah Perbankan';
+      badgeEl.textContent = 'Toolkit & Chat';
+      labelEl.textContent = 'Rumus, istilah & template siap pakai';
       overviewRow.style.display = 'none';
       toolbarRow.style.display = 'none';
     } else if (tab === 'berita') {
@@ -5910,7 +5973,7 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
   function copyPendingList() {
     const isChecklistTab = activeTab === 'packing' || activeTab === 'magang';
     if (!isChecklistTab) {
-      showToast('Buka tab Bawaan atau SOP Kerja untuk menyalin sisa item');
+      showToast('Buka tab Inventaris atau Notulensi untuk menyalin sisa item');
       return;
     }
 
@@ -5932,7 +5995,7 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
       return;
     }
 
-    const title = activeTab === 'packing' ? '[Checklist Bawaan Belum Siap]' : '[SOP Magang Belum Selesai]';
+    const title = activeTab === 'packing' ? '[Inventaris Rantau — Belum Siap]' : '[Notulensi — Belum Ditindaklanjuti]';
     const textToCopy = `${title}\n` + pending.join('\n');
 
     navigator.clipboard.writeText(textToCopy).then(() => {
@@ -5947,7 +6010,7 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
     const isChecklistTab = activeTab === 'packing' || activeTab === 'magang';
     if (!isChecklistTab) return;
 
-    const tabName = activeTab === 'packing' ? 'Bawaan & Wisuda' : 'SOP Kerja & Kepatuhan';
+    const tabName = activeTab === 'packing' ? 'Inventaris Rantau' : 'Notulensi Rapat';
     if (!confirm(`Reset seluruh centangan pada tab ${tabName}?`)) return;
 
     const currentView = document.getElementById(activeTab === 'packing' ? 'view-packing' : 'view-magang');
@@ -6433,6 +6496,120 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
     generateLogbook();
   }
 
+  // --- Helper: tanggal Sabtu/Minggu = libur (skip) ---
+  function isWeekendDate(isoDate) {
+    if (!isoDate || !/^\d{4}-\d{2}-\d{2}$/.test(isoDate)) return false;
+    const wd = new Date(isoDate + 'T12:00:00Z').getUTCDay();
+    return wd === 0 || wd === 6;
+  }
+
+  function updateWeekendHint() {
+    const dateEl = document.getElementById('lb-date');
+    const hint = document.getElementById('lb-weekend-hint');
+    if (!dateEl || !hint) return;
+    const val = dateEl.value || '';
+    hint.style.display = (val && isWeekendDate(val)) ? 'block' : 'none';
+  }
+
+  // --- Helper: sisipkan jam sekarang ke catatan (format "HH:MM ") ---
+  function insertTimeStamp() {
+    const roughEl = document.getElementById('lb-rough-notes');
+    if (!roughEl) return;
+    const now = new Date();
+    const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+    const wib = new Date(utc + 3600000 * 7);
+    const hh = String(wib.getHours()).padStart(2, '0');
+    const mm = String(wib.getMinutes()).padStart(2, '0');
+    const stamp = hh + ':' + mm + ' ';
+    const start = roughEl.selectionStart ?? roughEl.value.length;
+    const end = roughEl.selectionEnd ?? roughEl.value.length;
+    const v = roughEl.value;
+    const prefix = v.slice(0, start);
+    const needsNewline = prefix.length > 0 && !prefix.endsWith('\n');
+    const insert = (needsNewline ? '\n' : '') + stamp;
+    roughEl.value = prefix + insert + v.slice(end);
+    roughEl.focus();
+    roughEl.selectionStart = roughEl.selectionEnd = (prefix + insert).length;
+  }
+
+  // --- Tampilkan 3 bagian logbook ke UI + badge karakter ---
+  function renderLogbookOutput(act, lrn, obs) {
+    document.getElementById('res-activity').textContent = act;
+    document.getElementById('res-learning').textContent = lrn;
+    document.getElementById('res-obstacle').textContent = obs;
+    const cntAct = document.getElementById('cnt-activity');
+    const cntLrn = document.getElementById('cnt-learning');
+    const cntObs = document.getElementById('cnt-obstacle');
+    const mark = (txt) => `${txt.length} kar · ${txt.length >= 100 ? '≥100 ✅' : '<100 ⚠️'}`;
+    if (cntAct) cntAct.textContent = mark(act);
+    if (cntLrn) cntLrn.textContent = mark(lrn);
+    if (cntObs) cntObs.textContent = mark(obs);
+    const outputCard = document.getElementById('lb-output-card');
+    if (outputCard) {
+      outputCard.style.display = 'block';
+      outputCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  }
+
+  // --- Generate via AI serverless (Claude via Geraikita), fallback offline bila gagal ---
+  async function generateLogbookAI() {
+    const dateEl = document.getElementById('lb-date');
+    const dateVal = (dateEl && dateEl.value) || new Date().toISOString().slice(0, 10);
+    const category = document.getElementById('lb-category')?.value || '';
+    const rough = (document.getElementById('lb-rough-notes')?.value || '').trim();
+    const obstacle = (document.getElementById('lb-obstacle')?.value || '').trim();
+    const btn = document.getElementById('btn-generate-ai');
+    const label = document.getElementById('btn-generate-ai-label');
+
+    if (isWeekendDate(dateVal)) {
+      showToast('📅 Sabtu/Minggu libur — logbook tidak perlu dibuat.');
+      return;
+    }
+    if (!rough || rough.length < 3) {
+      showToast('Isi dulu catatan aktivitas (format: 08:00 kegiatan...) atau pakai preset 1-klik.');
+      return;
+    }
+
+    if (btn) btn.disabled = true;
+    if (label) label.textContent = '⏳ Menghubungi AI...';
+    try {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 60000);
+      const resp = await fetch('/api/logbook-generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ date: dateVal, catatan: rough, obstacle, category }),
+        signal: ctrl.signal
+      });
+      clearTimeout(timer);
+      if (!resp.ok) {
+        showToast('AI gagal (' + resp.status + ') — pakai template offline.');
+        generateLogbook();
+        return;
+      }
+      const data = await resp.json();
+      if (data.mode === 'skip') {
+        showToast('📅 ' + (data.message || 'Sabtu/Minggu libur.'));
+        return;
+      }
+      if (data.mode === 'fallback') {
+        showToast('⚠️ ' + (data.warning || 'AI tidak tersedia — hasil template offline.'));
+      } else {
+        showToast(data.mode === 'ai_raw'
+          ? '⚠️ AI menjawab di luar format — cek bagian 1.'
+          : '✅ Logbook AI (Claude) berhasil dibuat!');
+      }
+      renderLogbookOutput(data.activity || '', data.learning || '', data.obstacle || '');
+    } catch (e) {
+      const msg = (e && e.name === 'AbortError') ? 'Timeout — pakai template offline.' : 'AI tidak terjangkau — pakai template offline.';
+      showToast('⚠️ ' + msg);
+      generateLogbook();
+    } finally {
+      if (btn) btn.disabled = false;
+      if (label) label.textContent = '✨ Generate dengan AI (Claude)';
+    }
+  }
+
   // --- Daily Logbook Formulator Logic (Standar Resmi MagangHub Kemnaker) ---
   function generateLogbook() {
     const dateVal = document.getElementById('lb-date').value || new Date().toISOString().slice(0, 10);
@@ -6474,26 +6651,8 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
       ? `Kendala teknis yang dihadapi di lapangan: ${obstacle}. Solusi tindak lanjut: Melakukan penyesuaian prosedur kerja secara cermat serta berkoordinasi intensif bersama mentor dan rekan kerja sehingga penugasan dapat terselesaikan dengan baik sesuai standar divisi.` 
       : 'Seluruh rangkaian pengerjaan penugasan hari ini terlaksana dengan tertib dan lancar tanpa kendala operasional yang berarti; koordinasi kerja bersama mentor dan tim divisi SSE berjalan efektif sesuai SOP BNI.';
 
-    // Masukkan ke elemen tampilan
-    document.getElementById('res-activity').textContent = act;
-    document.getElementById('res-learning').textContent = lrn;
-    document.getElementById('res-obstacle').textContent = obs;
-
-    // Perbarui badge jumlah karakter resmi (masing-masing wajib ≥ 100)
-    const cntAct = document.getElementById('cnt-activity');
-    const cntLrn = document.getElementById('cnt-learning');
-    const cntObs = document.getElementById('cnt-obstacle');
-    if (cntAct) cntAct.textContent = `${act.length} kar · ≥100 ✅`;
-    if (cntLrn) cntLrn.textContent = `${lrn.length} kar · ≥100 ✅`;
-    if (cntObs) cntObs.textContent = `${obs.length} kar · ≥100 ✅`;
-
-    const outputCard = document.getElementById('lb-output-card');
-    if (outputCard) {
-      outputCard.style.display = 'block';
-      outputCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }
-
-    showToast('✅ Laporan resmi MagangHub (3 kolom ≥100 kar) diformulasikan!');
+    renderLogbookOutput(act, lrn, obs);
+    showToast('✅ Laporan resmi MagangHub (3 kolom, offline template) diformulasikan!');
   }
 
   // --- Salin Per-Kolom Resmi MagangHub ---
@@ -6740,15 +6899,15 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
       if (isCheckedOut) {
         bannerEl.classList.remove('is-checkout-time');
         titleEl.textContent = 'Dinas Selesai · Menara BNI';
-        descEl.textContent = 'Presensi pulang MagangHub & DigiHC telah tercatat. Selamat beristirahat!';
-        actionBtn.textContent = 'Lihat Logbook';
-        actionBtn.onclick = () => selectTab('logbook');
+        descEl.textContent = 'Hari ini sudah selesai. Cek status logbook di dashboard Monev resmi Kemnaker.';
+        actionBtn.textContent = 'Buka Monev';
+        actionBtn.onclick = () => window.open('https://monev.maganghub.kemnaker.go.id/dashboard', '_blank', 'noopener');
       } else {
         bannerEl.classList.add('is-checkout-time');
-        titleEl.textContent = 'Pengingat Presensi Pulang';
-        descEl.textContent = 'Waktunya check-out MagangHub & DigiHC serta submit logbook harian!';
-        actionBtn.textContent = 'Tandai Checkout';
-        actionBtn.onclick = handleBannerCheckout;
+        titleEl.textContent = 'Waktunya Isi Logbook';
+        descEl.textContent = 'Rumuskan dulu draf di bawah, lalu submit resmi via dashboard Monev Kemnaker.';
+        actionBtn.textContent = 'Isi Monev';
+        actionBtn.onclick = () => window.open('https://monev.maganghub.kemnaker.go.id/dashboard', '_blank', 'noopener');
       }
     } else if (isWorkingHours) {
       bannerEl.classList.remove('is-checkout-time');
@@ -6760,8 +6919,8 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
       bannerEl.classList.remove('is-checkout-time');
       titleEl.textContent = 'Menara BNI Pejompongan';
       descEl.textContent = 'Di luar jam kantor operasional BNI. Istirahat & persiapan dinas esok hari.';
-      actionBtn.textContent = 'Buka Logbook';
-      actionBtn.onclick = () => selectTab('logbook');
+      actionBtn.textContent = 'Buka Monev';
+      actionBtn.onclick = () => window.open('https://monev.maganghub.kemnaker.go.id/dashboard', '_blank', 'noopener');
     }
   }
 
@@ -8224,6 +8383,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   // --- Jakarta Financial Management Engine ---
   const FIN_INCOME_KEY = 'mghb_fin_income';
   const FIN_EXPENSES_KEY = 'mghb_fin_expenses';
+  const FIN_FIXED_KEY = 'mghb_fin_fixed_monthly';
 
   const FIN_CATEGORY_META = {
     makan: { label: 'Makan & Minum', badge: '🍱' },
@@ -8238,6 +8398,12 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   function getFinanceIncome() {
     const val = localStorage.getItem(FIN_INCOME_KEY);
     return val ? parseInt(val, 10) : 3500000;
+  }
+
+  function getFinanceFixed() {
+    const val = localStorage.getItem(FIN_FIXED_KEY);
+    const n = val ? parseInt(val, 10) : 0;
+    return Number.isFinite(n) && n > 0 ? n : 0;
   }
 
   function getFinanceExpenses() {
@@ -8262,6 +8428,11 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     if (incomeInput) {
       incomeInput.value = getFinanceIncome();
     }
+    const fixedInput = document.getElementById('fin-fixed-input');
+    if (fixedInput) {
+      const f = getFinanceFixed();
+      if (f > 0) fixedInput.value = f;
+    }
     const dateInput = document.getElementById('fin-tx-date');
     if (dateInput && !dateInput.value) {
       dateInput.value = new Date().toISOString().slice(0, 10);
@@ -8276,6 +8447,11 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     if (income < 0) income = 0;
     localStorage.setItem(FIN_INCOME_KEY, income.toString());
 
+    const fixedInput = document.getElementById('fin-fixed-input');
+    let fixed = fixedInput ? parseInt(fixedInput.value, 10) || 0 : getFinanceFixed();
+    if (fixed < 0) fixed = 0;
+    localStorage.setItem(FIN_FIXED_KEY, String(fixed));
+
     const expenses = getFinanceExpenses();
     const totalSpent = expenses.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
     const remaining = income - totalSpent;
@@ -8289,12 +8465,15 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
 
     const safeDailyLimit = remaining > 0 ? Math.round(remaining / daysLeft) : 0;
 
+    // Anggaran variabel = sisa setelah tagihan tetap dikurangi pengeluaran aktual
+    const variableBudget = Math.max(remaining - fixed, 0);
+
     // Update DOM
     const totalEl = document.getElementById('fin-total-expense');
     if (totalEl) totalEl.textContent = formatRupiah(totalSpent);
 
     const percentEl = document.getElementById('fin-expense-percent');
-    if (percentEl) percentEl.textContent = `${percentSpent}% dari uang saku`;
+    if (percentEl) percentEl.textContent = `${percentSpent}% dari pemasukan`;
 
     const remEl = document.getElementById('fin-remaining-budget');
     if (remEl) {
@@ -8309,6 +8488,40 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
         : 'Anggaran telah habis!';
     }
 
+    const varEl = document.getElementById('fin-variable-budget');
+    if (varEl) varEl.textContent = formatRupiah(variableBudget);
+
+    const fixedHint = document.getElementById('fin-fixed-hint');
+    if (fixedHint) {
+      fixedHint.textContent = fixed > 0
+        ? `Tagihan tetap ${formatRupiah(fixed)} — variabel tersisa ${formatRupiah(variableBudget)}`
+        : 'Isi tagihan tetap agar batas aman akurat';
+    }
+
+    const banner = document.getElementById('fin-balance-banner');
+    if (banner) {
+      const fixedShort = income > 0 && fixed > 0 ? Math.round(fixed / income * 100) : 0;
+      let html = '', bg = '', bd = '', fg = '';
+      if (remaining < 0) {
+        bg = 'rgba(239,68,68,.08)'; bd = 'rgba(239,68,68,.35)'; fg = '#dc2626';
+        html = `<strong>⛔ Defisit — pengeluaran melebihi pemasukan.</strong><br>Total ${formatRupiah(totalSpent)} dari ${formatRupiah(income)} (${percentSpent}%). Tunda non-esensial &amp; pangkas kategori terbesar.`;
+      } else if (percentSpent > 80 || (fixed > 0 && (totalSpent + fixed) > income * 0.95)) {
+        bg = 'rgba(245,158,11,.10)'; bd = 'rgba(245,158,11,.4)'; fg = '#b45309';
+        html = `<strong>⚠️ Waspada — hampir habis.</strong><br>Sisa ${formatRupiah(remaining)}, batas aman ${formatRupiah(safeDailyLimit)}/hari × ${daysLeft} hari.`;
+      } else {
+        bg = 'rgba(16,185,129,.08)'; bd = 'rgba(16,185,129,.35)'; fg = '#15803d';
+        html = `<strong>✅ Balance — aman.</strong><br>Sisa ${formatRupiah(remaining)} (${100 - percentSpent}% pemasukan). Batas harian ${formatRupiah(safeDailyLimit)} × ${daysLeft} hari ke depan.`;
+      }
+      if (fixedShort > 0) {
+        html += `<br><span style="opacity:.85">Tagihan tetap ${formatRupiah(fixed)} = ${fixedShort}% pemasukan.</span>`;
+      }
+      banner.style.display = 'block';
+      banner.style.background = bg;
+      banner.style.border = '1px solid ' + bd;
+      banner.style.color = fg;
+      banner.innerHTML = html;
+    }
+
     const progressFill = document.getElementById('fin-progress-bar');
     if (progressFill) {
       progressFill.style.width = percentSpent + '%';
@@ -8321,22 +8534,31 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     const daysLeftEl = document.getElementById('fin-days-left');
     if (daysLeftEl) daysLeftEl.textContent = `Sisa ${daysLeft} hari bulan ini`;
 
-    const statusBadge = document.getElementById('fin-status-badge');
-    if (statusBadge) {
-      if (remaining < 0) {
-        statusBadge.textContent = 'Defisit';
-        statusBadge.style.color = '#ef4444';
-        statusBadge.style.borderColor = 'rgba(239, 68, 68, 0.4)';
-      } else if (percentSpent > 80) {
-        statusBadge.textContent = 'Waspada';
-        statusBadge.style.color = '#f59e0b';
-        statusBadge.style.borderColor = 'rgba(245, 158, 11, 0.4)';
-      } else {
-        statusBadge.textContent = 'Terkendali';
-        statusBadge.style.color = '#10b981';
-        statusBadge.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+      const statusBadge = document.getElementById('fin-status-badge');
+      if (statusBadge) {
+        if (remaining < 0) {
+          statusBadge.textContent = 'Defisit';
+          statusBadge.style.color = '#ef4444';
+          statusBadge.style.borderColor = 'rgba(239, 68, 68, 0.4)';
+        } else if (percentSpent > 80) {
+          statusBadge.textContent = 'Waspada';
+          statusBadge.style.color = '#f59e0b';
+          statusBadge.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+        } else {
+          statusBadge.textContent = 'Terkendali';
+          statusBadge.style.color = '#10b981';
+          statusBadge.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+        }
       }
-    }
+
+    // Snapshot untuk AI advisor (dibaca requestFinanceAdvice)
+    window.__finSnapshot = {
+      income, totalSpent, remaining, percentSpent, safeDailyLimit, daysLeft,
+      fixedMonthly: fixed, variableBudget,
+      breakdown: (() => {
+        const m = {}; getFinanceExpenses().forEach(e => { m[e.cat] = (m[e.cat]||0) + Number(e.amount||0); }); return m;
+      })()
+    };
   }
 
   function handleNewExpense(e) {
@@ -8502,6 +8724,56 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     }).catch(() => {
       showToast('Gagal menyalin rekap keuangan');
     });
+  }
+
+  // --- AI Finance Advisor (via /api/finance-advice, heuristik bila offline) ---
+  async function requestFinanceAdvice() {
+    const out = document.getElementById('fin-ai-output');
+    const btn = document.getElementById('btn-fin-ai');
+    const snap = window.__finSnapshot || null;
+    if (btn) btn.disabled = true;
+    if (out) out.textContent = '⏳ Menganalisis keuangan...';
+    updateFinanceCalculations();
+    const s = window.__finSnapshot || snap;
+    if (!s || !s.income) {
+      if (out) out.textContent = 'Isi dulu pemasukan bulanan agar AI bisa menilai.';
+      if (btn) btn.disabled = false;
+      return;
+    }
+    try {
+      const ctrl = new AbortController();
+      const t = setTimeout(() => ctrl.abort(), 40000);
+      const resp = await fetch('/api/finance-advice', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(s),
+        signal: ctrl.signal
+      });
+      clearTimeout(t);
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      const data = await resp.json();
+      const advice = (data.advice || '').trim();
+      if (!advice) throw new Error('Respons kosong');
+      if (out) {
+        out.innerHTML = '';
+        const badge = document.createElement('div');
+        badge.style.cssText = 'display:inline-block;font-size:0.66rem;font-weight:700;padding:2px 8px;border-radius:9999px;margin-bottom:6px;'
+          + (data.mode === 'ai'
+            ? 'background: var(--accent-subtle); color: var(--accent);'
+            : 'background: var(--surface-hover); color: var(--text-secondary); border: 1px solid var(--border);');
+        badge.textContent = data.mode === 'ai' ? '✨ Nasehat AI' : '📊 Estimasi Offline';
+        const p = document.createElement('div');
+        p.textContent = advice;
+        out.appendChild(badge);
+        out.appendChild(p);
+      }
+      showToast(data.mode === 'ai' ? '✨ Nasehat AI keuangan siap!' : '📊 AI tidak tersedia — estimasi offline dipakai.');
+    } catch (e) {
+      if (out) out.textContent = '⚠️ Tidak dapat menghubungi AI (' + (e.message || 'jaringan') + '). Coba lagi nanti — banner balance di atas tetap akurat.';
+      showToast('⚠️ AI keuangan gagal dijangkau');
+    } finally {
+      if (btn) btn.disabled = false;
+    }
   }
 
   // --- Initialization ---
