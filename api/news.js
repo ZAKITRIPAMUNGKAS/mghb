@@ -131,6 +131,9 @@ module.exports = async (req, res) => {
         const pubDate = getTag('pubDate');
         const sourceRaw = getTag('source');
         const descRaw = getTag('description');
+        // <source url="https://money.kompas.com"> → situs penerbit (untuk thumbnail asli)
+        const sourceSiteMatch = block.match(/<source[^>]*url="([^"]+)"/i);
+        const sourceSite = sourceSiteMatch ? sourceSiteMatch[1] : '';
 
         let title = titleRaw;
         let source = sourceRaw || 'Warta Magang';
@@ -147,7 +150,9 @@ module.exports = async (req, res) => {
         const ts = pubDate ? new Date(pubDate).getTime() : 0;
         const topic = determineTopic(title);
         const snippet = cleanSnippetText(descRaw, title, source);
-        const image = getFallbackImage(topic, source);
+        // Thumbnail: pakai banner asli penerbit bila ada, else gambar topic
+        const bannerMatch = block.match(/<media:content[^>]*url="([^"]+)"/i) || block.match(/<media:thumbnail[^>]*url="([^"]+)"/i);
+        const image = bannerMatch ? bannerMatch[1] : getFallbackImage(topic, source);
 
         results.push({
           title,
@@ -156,6 +161,7 @@ module.exports = async (req, res) => {
           pubDate: pubDate ? new Date(pubDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '',
           timestamp: ts,
           link: link || '#',
+          sourceSite,
           snippet,
           topic,
           image
