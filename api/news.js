@@ -306,14 +306,20 @@ module.exports = async (req, res) => {
     console.warn('Google News RSS fetch failed:', gnewsResult.reason?.message || gnewsResult.value?.status);
   }
 
-  // Sort strictly descending: yang paling baru selalu di paling atas
-  results.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+  // Berita resmi Kemnaker RI dengan foto dokumentasi asli diprioritaskan di baris teratas (Warta Resmi)
+  const officialRealNews = results.filter(r => r.hasRealImage);
+  const mediaAggregatorNews = results.filter(r => !r.hasRealImage);
+
+  officialRealNews.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+  mediaAggregatorNews.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+  const finalResults = [...officialRealNews, ...mediaAggregatorNews];
 
   res.status(200).json({
     status: 'ok',
-    total: results.length,
+    total: finalResults.length,
     timestamp: Date.now(),
-    items: results
+    items: finalResults
   });
 };
 
