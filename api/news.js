@@ -18,18 +18,24 @@ module.exports = async (req, res) => {
 
   function decodeHtml(raw) {
     if (!raw) return '';
-    return raw
+    return String(raw)
+      .replace(/&amp;/g, '&')
       .replace(/&lt;/g, '<')
       .replace(/&gt;/g, '>')
       .replace(/&quot;/g, '"')
       .replace(/&#39;/g, "'")
-      .replace(/&amp;/g, '&')
-      .replace(/&nbsp;/g, ' ');
+      .replace(/&apos;/g, "'")
+      .replace(/&nbsp;/g, ' ')
+      .replace(/&#160;/g, ' ')
+      .replace(/&#8211;/g, '–')
+      .replace(/&#8212;/g, '—')
+      .replace(/&hellip;/g, '...')
+      .replace(/\+/g, ' ');
   }
 
   function cleanSnippetText(desc, title, source) {
     if (!desc) {
-      return `Warta resmi dan arahan pelaksanaan kegiatan pemagangan nasional MagangHub dari ${source || 'Media Nasional'}.`;
+      return `Warta resmi pelaksanaan program pemagangan nasional MagangHub dari ${source || 'Media Nasional'}.`;
     }
     let clean = decodeHtml(desc)
       .replace(/<[^>]*>/g, ' ')
@@ -37,11 +43,18 @@ module.exports = async (req, res) => {
       .replace(/\s+/g, ' ')
       .trim();
 
+    if (source) {
+      const srcClean = source.replace(/[^a-zA-Z0-9]/g, '');
+      if (srcClean.length > 2) {
+        clean = clean.replace(new RegExp(`\\s*[-|–|•]?\\s*${srcClean}.*$`, 'i'), '').trim();
+      }
+    }
+
     const titleClean = (title || '').replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
     const snippetClean = clean.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
-    const isJustTitle = snippetClean.includes(titleClean) && (snippetClean.length - titleClean.length < 40);
+    const isJustTitle = snippetClean.includes(titleClean) && (snippetClean.length - titleClean.length < 35);
 
-    if (isJustTitle || clean.length < 20 || clean.toLowerCase().includes('news.google.com')) {
+    if (isJustTitle || clean.length < 15 || clean.toLowerCase().includes('news.google.com')) {
       const t = (title || '').toLowerCase();
       if (t.includes('dimulai besok') || t.includes('21 september')) {
         return `Peserta Program MagangHub Batch 2 Angkatan II diingatkan untuk mempersiapkan berkas administrasi dan hadir di kantor penempatan mitra sesuai jadwal.`;
@@ -56,7 +69,7 @@ module.exports = async (req, res) => {
     }
 
     if (clean.length > 175) {
-      clean = clean.substring(0, 172) + '...';
+      clean = clean.substring(0, 172).trim() + '...';
     }
     return clean;
   }
@@ -86,43 +99,66 @@ module.exports = async (req, res) => {
     return 'source-detik';
   }
 
-  function getFallbackImage(topic, source = '') {
-    const s = (source || '').toLowerCase();
-    if (s.includes('detik') || s.includes('radar')) return 'https://awsimages.detik.net.id/api/wm/2026/09/02/magang-kemnaker-2026-batch-2-1788346807178_169.png?wid=54&w=1200&v=1&t=jpeg';
-    if (s.includes('kompas')) return 'https://asset.kompas.com/crops/xtQK1VlOuT2wgLdJgVqnuXUqcHM=/0x0:2880x1440/1200x675/filters:watermark(data/photo/2026/01/30/697c815e7ef28.png,0,-0,1)/data/photo/2026/06/29/6a422eea317b1.png';
-    if (s.includes('cnbc') || s.includes('cnn')) return 'https://awsimages.detik.net.id/visual/2025/10/13/warga-membuka-aplikasi-magang-hub-di-jakarta-senin-13102025-1760345197423_169.jpeg?w=650&q=90';
-    if (s.includes('antara') || s.includes('koran jakarta') || s.includes('kabarpublik') || s.includes('jurnal')) return 'https://img.antaranews.com/cache/1200x800/2026/09/16/target-vokasi-nasional-2026-2854548.jpg';
-    if (s.includes('pajak')) return 'https://img.antaranews.com/cache/1200x800/2026/07/07/3292d4bd-5309-424c-b025-7feaafedb9a1.jpeg';
-
-    const map = {
-      pengumuman: 'https://awsimages.detik.net.id/api/wm/2026/09/02/magang-kemnaker-2026-batch-2-1788346807178_169.png?wid=54&w=1200&v=1&t=jpeg',
-      regulasi: 'https://img.antaranews.com/cache/1200x800/2026/07/07/3292d4bd-5309-424c-b025-7feaafedb9a1.jpeg',
-      sertifikasi: 'https://img.antaranews.com/cache/1200x800/2026/09/16/target-vokasi-nasional-2026-2854548.jpg',
-      kemnaker: 'https://img.antaranews.com/cache/1200x800/2025/11/28/1000096979.jpg'
-    };
-    return map[topic] || 'https://awsimages.detik.net.id/api/wm/2026/09/02/magang-kemnaker-2026-batch-2-1788346807178_169.png?wid=54&w=1200&v=1&t=jpeg';
-  }
-
   // 1 & 2. Fetch parallel — Google News RSS + Kemnaker Portal
   const sharedCtrl = new AbortController();
   const sharedTimer = setTimeout(() => sharedCtrl.abort(), 8000);
 
-  const [gnewsResult, kemnakerResult] = await Promise.allSettled([
-    // --- Google News RSS ---
-    fetch('https://news.google.com/rss/search?q=maganghub&hl=id&gl=ID&ceid=ID:id', {
-      signal: sharedCtrl.signal,
-      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; mghb-news/1.0)' }
-    }),
-    // --- Kemnaker Portal ---
+  const [kemnakerResult, gnewsResult] = await Promise.allSettled([
+    // --- Kemnaker Portal (Resmi, bawa banner asli) ---
     fetch('https://portal.kemnaker.go.id/api/v1/news?search=magang&limit=15', {
       signal: sharedCtrl.signal,
       headers: { 'User-Agent': 'Mozilla/5.0' }
+    }),
+    // --- Google News RSS (Aggregator Media) ---
+    fetch('https://news.google.com/rss/search?q=maganghub&hl=id&gl=ID&ceid=ID:id', {
+      signal: sharedCtrl.signal,
+      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; mghb-news/1.0)' }
     })
   ]);
 
   clearTimeout(sharedTimer);
 
-  // --- Parse Google News RSS ---
+  // --- 1. Parse Kemnaker Portal DULU (Prioritas: foto asli & link resmi Kemnaker) ---
+  if (kemnakerResult.status === 'fulfilled' && kemnakerResult.value.ok) {
+    try {
+      const json = await kemnakerResult.value.json();
+      const items = json.data || [];
+      for (const item of items) {
+        const title = decodeHtml(item.title).replace(/<[^>]*>/g, '').trim();
+        const key = getSlugKey(title);
+        if (!key || titleSet.has(key)) continue;
+        titleSet.add(key);
+
+        const dateStr = item.created_at || item.published_at || '';
+        // Safari/iOS compliant parsing WIB
+        const timestamp = dateStr ? new Date(dateStr.replace(' ', 'T') + '+07:00').getTime() : 0;
+        const sectionName = item.section?.name || 'Binalavotas';
+        const topic = determineTopic(title);
+        const snippet = cleanSnippetText(item.body, title, `Kemnaker RI (${sectionName})`);
+        const realBanner = item.banner || item.thumb || null;
+
+        results.push({
+          title,
+          source: `Kemnaker RI (${sectionName})`,
+          sourceClass: 'source-kemnaker',
+          pubDate: timestamp ? new Date(timestamp).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Asia/Jakarta' }) : '',
+          timestamp,
+          link: item.url || `https://kemnaker.go.id/news/detail/${item.slug}`,
+          sourceSite: 'https://kemnaker.go.id',
+          snippet,
+          topic,
+          image: realBanner,
+          hasRealImage: Boolean(realBanner)
+        });
+      }
+    } catch (err) {
+      console.warn('Kemnaker news API parse failed:', err.message);
+    }
+  } else {
+    console.warn('Kemnaker news fetch failed:', kemnakerResult.reason?.message || kemnakerResult.value?.status);
+  }
+
+  // --- 2. Parse Google News RSS (Tanpa atribuasi gambar palsu) ---
   if (gnewsResult.status === 'fulfilled' && gnewsResult.value.ok) {
     try {
       const xml = await gnewsResult.value.text();
@@ -144,7 +180,7 @@ module.exports = async (req, res) => {
         const sourceSiteMatch = block.match(/<source[^>]*url="([^"]+)"/i);
         const sourceSite = sourceSiteMatch ? sourceSiteMatch[1] : '';
 
-        let title = titleRaw;
+        let title = decodeHtml(titleRaw);
         let source = sourceRaw || 'Warta Magang';
         if (title.includes(' - ')) {
           const parts = title.split(' - ');
@@ -159,20 +195,24 @@ module.exports = async (req, res) => {
         const ts = pubDate ? new Date(pubDate).getTime() : 0;
         const topic = determineTopic(title);
         const snippet = cleanSnippetText(descRaw, title, source);
-        const bannerMatch = block.match(/<media:content[^>]*url="([^"]+)"/i) || block.match(/<media:thumbnail[^>]*url="([^"]+)"/i);
-        const image = bannerMatch ? bannerMatch[1] : getFallbackImage(topic, source);
+
+        // Ekstrak gambar asli bila tersedia di XML enclosure / description
+        const mediaMatch = block.match(/<(?:media:content|media:thumbnail|enclosure)[^>]*url="([^"]+)"/i);
+        const descImgMatch = descRaw.match(/<img[^>]+src=["']([^"']+)["']/i);
+        const realImg = mediaMatch ? mediaMatch[1] : (descImgMatch ? descImgMatch[1] : null);
 
         results.push({
           title,
           source,
           sourceClass: getSourceClass(source),
-          pubDate: pubDate ? (() => { const d = new Date(pubDate); return isNaN(d.getTime()) ? '' : d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Asia/Jakarta' }); })() : '',
+          pubDate: ts ? (() => { const d = new Date(ts); return isNaN(d.getTime()) ? '' : d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Asia/Jakarta' }); })() : '',
           timestamp: ts,
           link: link || '#',
           sourceSite,
           snippet,
           topic,
-          image
+          image: realImg || null,
+          hasRealImage: Boolean(realImg)
         });
       }
     } catch (err) {
@@ -180,43 +220,6 @@ module.exports = async (req, res) => {
     }
   } else {
     console.warn('Google News RSS fetch failed:', gnewsResult.reason?.message || gnewsResult.value?.status);
-  }
-
-  // --- Parse Kemnaker Portal ---
-  if (kemnakerResult.status === 'fulfilled' && kemnakerResult.value.ok) {
-    try {
-      const json = await kemnakerResult.value.json();
-      const items = json.data || [];
-      for (const item of items) {
-        const title = decodeHtml(item.title).replace(/<[^>]*>/g, '').trim();
-        const key = getSlugKey(title);
-        if (!key || titleSet.has(key)) continue;
-        titleSet.add(key);
-
-        const dateStr = item.created_at || item.published_at || '';
-        const timestamp = dateStr ? new Date(dateStr.replace(' ', 'T')).getTime() : 0;
-        const sectionName = item.section?.name || 'Binalavotas';
-        const topic = determineTopic(title);
-        const snippet = cleanSnippetText(item.body, title, `Kemnaker RI (${sectionName})`);
-        const image = item.banner || item.thumb || getFallbackImage(topic, 'Kemnaker');
-
-        results.push({
-          title,
-          source: `Kemnaker RI (${sectionName})`,
-          sourceClass: 'source-kemnaker',
-          pubDate: dateStr ? (() => { const d = new Date(dateStr.replace(' ', 'T')); return isNaN(d.getTime()) ? '' : d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Asia/Jakarta' }); })() : '',
-          timestamp,
-          link: `https://kemnaker.go.id/news/detail/${item.slug}`,
-          snippet,
-          topic,
-          image
-        });
-      }
-    } catch (err) {
-      console.warn('Kemnaker news API parse failed:', err.message);
-    }
-  } else {
-    console.warn('Kemnaker news fetch failed:', kemnakerResult.reason?.message || kemnakerResult.value?.status);
   }
 
   // Sort strictly descending: yang paling baru selalu di paling atas
@@ -229,3 +232,4 @@ module.exports = async (req, res) => {
     items: results
   });
 };
+

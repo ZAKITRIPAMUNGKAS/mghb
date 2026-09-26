@@ -123,8 +123,8 @@ module.exports = async (req, res) => {
       try {
         const absImg = new URL(ogImage, targetUrl).href;
         const imgHost = new URL(absImg).hostname.toLowerCase();
-        // Blokir jika og:image mengarah ke host internal
-        if (!BLOCKED_HOST_RE.test(imgHost) && !BLOCKED_IP_RE.test(imgHost)) {
+        // Blokir jika og:image mengarah ke host internal atau icon generic google
+        if (!BLOCKED_HOST_RE.test(imgHost) && !BLOCKED_IP_RE.test(imgHost) && !imgHost.includes('googleusercontent.com') && !imgHost.includes('gstatic.com')) {
           finalImageUrl = absImg;
         }
       } catch {
