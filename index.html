@@ -7467,7 +7467,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   }
 
   // --- MagangHub Live News Feed Engine ---
-  const NEWS_CACHE_KEY = 'mghb_news_cache_v20260926_stable';
+  const NEWS_CACHE_KEY = 'mghb_news_cache_v20260926_fast';
   let newsLoadedOnce = false;
   let activeNewsTopic = 'all';
 
@@ -7837,174 +7837,192 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
 
     if (!shouldFetch) {
       if (refreshSvg) refreshSvg.style.animation = '';
+      if (loader) loader.classList.remove('active');
       newsLoadedOnce = true;
       return;
     }
 
-    if (loader) loader.classList.add('active');
+    // Tampilkan loader hanya jika belum ada kartu berita sama sekali yang tampil
+    const hasVisibleCards = currentNews && currentNews.length > 0;
+    if (!hasVisibleCards && loader) {
+      loader.classList.add('active');
+    }
     if (forceRefresh) showToast('Menyinkronkan kabar & warta terkini (Kemnaker & Media)...');
 
-    const scrapedList = [];
-    const titleSet = new Set();
-    const cacheBuster = `_t=${Date.now()}`;
+    // Safety timeout: jangan biarkan loader menggantung lebih dari 6 detik apapun yang terjadi
+    const safetyDismissTimer = setTimeout(() => {
+      if (loader) loader.classList.remove('active');
+      if (refreshSvg) refreshSvg.style.animation = '';
+    }, 6000);
 
-    // 1. STRATEGI UTAMA: Ambil dari endpoint aggregator live internal /api/news (jika jalan di Vercel/Node)
     try {
-      const apiNewsUrl = `/api/news?${cacheBuster}`;
-      const c0 = new AbortController();
-      const t0 = setTimeout(() => c0.abort(), 15000); // 15s timeout: tangani cold-start serverless Vercel
-      const resp0 = await fetch(apiNewsUrl, { signal: c0.signal });
-      clearTimeout(t0);
-      if (resp0.ok) {
-        const json0 = await resp0.json();
-        if (json0 && Array.isArray(json0.items) && json0.items.length > 0) {
-          json0.items.forEach(item => {
-            const cleanTitle = cleanNewsText(item.title);
-            const key = getNewsKey(cleanTitle);
-            if (key && !titleSet.has(key)) {
-              titleSet.add(key);
-              scrapedList.push(item);
-            }
-          });
-        }
-      }
-    } catch (e) {
-      // Abaikan jika tidak di environment serverless
-    }
+      const scrapedList = [];
+      const titleSet = new Set();
+      const cacheBuster = `_t=${Date.now()}`;
 
-    // 2. SCRAPE RESMI LANGSUNG: Portal Berita Kemnaker RI (CORS terbuka bebas)
-    try {
-      const kemnakerUrl = `https://portal.kemnaker.go.id/api/v1/news?search=magang&limit=15&${cacheBuster}`;
-      const c1 = new AbortController();
-      const t1 = setTimeout(() => c1.abort(), 5000);
-      const resp1 = await fetch(kemnakerUrl, { signal: c1.signal, headers: { 'User-Agent': 'Mozilla/5.0' } });
-      clearTimeout(t1);
-      if (resp1.ok) {
-        const json1 = await resp1.json();
-        const dataArr = json1.data || [];
-        dataArr.forEach(item => {
-          const cleanTitle = cleanNewsText(item.title);
-          const key = getNewsKey(cleanTitle);
-          if (key && !titleSet.has(key)) {
-            titleSet.add(key);
-            const ts = getNewsTimestamp(item);
-            const sec = item.section?.name || 'Binalavotas';
-            const bodyClean = cleanNewsText(item.body);
-            scrapedList.push({
-              title: cleanTitle,
-              source: `Kemnaker RI (${sec})`,
-              sourceClass: 'source-kemnaker',
-              pubDate: formatNewsDate(ts),
-              timestamp: ts,
-              link: `https://kemnaker.go.id/news/detail/${item.slug}`,
-              snippet: bodyClean ? (bodyClean.substring(0, 175) + '...') : 'Warta resmi program pemagangan dari Kementerian Ketenagakerjaan RI.',
-              topic: determineNewsTopic(cleanTitle),
-              image: item.banner || item.thumb || getTopicFallbackImage('kemnaker', 'Kemnaker')
-            });
-          }
-        });
-      }
-    } catch (e) {
-      console.warn('Kemnaker live news API fetch skipped:', e.message);
-    }
-
-    // 3. SCRAPE MEDIA NASIONAL: Google News RSS via query "maganghub" (Radar Bangsa, Koran Jakarta, Pajakku, dsb)
-    if (scrapedList.length < 15) {
+      // 1. STRATEGI UTAMA: Ambil dari endpoint aggregator live internal /api/news (jika jalan di Vercel/Node)
       try {
-        const feedUrl = 'https://news.google.com/rss/search?q=maganghub&hl=id&gl=ID&ceid=ID:id';
-        const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feedUrl)}&${cacheBuster}`;
-        const c2 = new AbortController();
-        const t2 = setTimeout(() => c2.abort(), 6000);
-        const resp2 = await fetch(apiUrl, { signal: c2.signal });
-        clearTimeout(t2);
-        if (resp2.ok) {
-          const json2 = await resp2.json();
-          if (json2 && json2.status === 'ok' && Array.isArray(json2.items)) {
-            json2.items.forEach(item => {
-              let title = item.title || '';
-              let source = 'Warta Magang';
-              if (title.includes(' - ')) {
-                const parts = title.split(' - ');
-                source = parts.pop().trim();
-                title = parts.join(' - ').trim();
-              } else if (item.author) {
-                source = item.author;
-              }
-
-              const cleanTitle = cleanNewsText(title);
+        const apiNewsUrl = `/api/news?${cacheBuster}`;
+        const c0 = new AbortController();
+        const t0 = setTimeout(() => c0.abort(), 8000);
+        const resp0 = await fetch(apiNewsUrl, { signal: c0.signal });
+        clearTimeout(t0);
+        if (resp0.ok) {
+          const json0 = await resp0.json();
+          if (json0 && Array.isArray(json0.items) && json0.items.length > 0) {
+            json0.items.forEach(item => {
+              const cleanTitle = cleanNewsText(item.title);
               const key = getNewsKey(cleanTitle);
-              if (!key || titleSet.has(key)) return;
-              titleSet.add(key);
-
-              const ts = getNewsTimestamp(item);
-              const topic = determineNewsTopic(cleanTitle);
-              let cleanSnippet = cleanSnippetText(item.description, cleanTitle, source);
-
-              let imgUrl = item.thumbnail || (item.enclosure && item.enclosure.link) || '';
-              if (!imgUrl && item.description && item.description.includes('<img')) {
-                const m = item.description.match(/<img[^>]+src=["']([^"']+)["']/i);
-                if (m && m[1]) imgUrl = m[1];
+              if (key && !titleSet.has(key)) {
+                titleSet.add(key);
+                scrapedList.push(item);
               }
-              if (!imgUrl || !imgUrl.startsWith('http')) {
-                imgUrl = getTopicFallbackImage(topic, source);
-              }
-
-              scrapedList.push({
-                title: cleanTitle,
-                source: source,
-                sourceClass: getSourceClass(source),
-                pubDate: formatNewsDate(ts),
-                timestamp: ts,
-                link: item.link || '#',
-                snippet: cleanSnippet,
-                topic: topic,
-                image: imgUrl
-              });
             });
           }
         }
       } catch (e) {
-        console.warn('Google RSS fetch skipped:', e.message);
+        // Abaikan jika tidak di environment serverless
       }
+
+      // 2. FALLBACK 1: Portal Berita Kemnaker RI (hanya jika /api/news belum menghasilkan berita)
+      if (scrapedList.length < 5) {
+        try {
+          const kemnakerUrl = `https://portal.kemnaker.go.id/api/v1/news?search=magang&limit=15&${cacheBuster}`;
+          const c1 = new AbortController();
+          const t1 = setTimeout(() => c1.abort(), 5000);
+          const resp1 = await fetch(kemnakerUrl, { signal: c1.signal, headers: { 'User-Agent': 'Mozilla/5.0' } });
+          clearTimeout(t1);
+          if (resp1.ok) {
+            const json1 = await resp1.json();
+            const dataArr = json1.data || [];
+            dataArr.forEach(item => {
+              const cleanTitle = cleanNewsText(item.title);
+              const key = getNewsKey(cleanTitle);
+              if (key && !titleSet.has(key)) {
+                titleSet.add(key);
+                const ts = getNewsTimestamp(item);
+                const sec = item.section?.name || 'Binalavotas';
+                const bodyClean = cleanNewsText(item.body);
+                scrapedList.push({
+                  title: cleanTitle,
+                  source: `Kemnaker RI (${sec})`,
+                  sourceClass: 'source-kemnaker',
+                  pubDate: formatNewsDate(ts),
+                  timestamp: ts,
+                  link: `https://kemnaker.go.id/news/detail/${item.slug}`,
+                  snippet: bodyClean ? (bodyClean.substring(0, 175) + '...') : 'Warta resmi program pemagangan dari Kementerian Ketenagakerjaan RI.',
+                  topic: determineNewsTopic(cleanTitle),
+                  image: item.banner || item.thumb || getTopicFallbackImage('kemnaker', 'Kemnaker')
+                });
+              }
+            });
+          }
+        } catch (e) {
+          console.warn('Kemnaker live news API fetch skipped:', e.message);
+        }
+      }
+
+      // 3. FALLBACK 2: Google News RSS via rss2json (hanya jika masih < 5 berita)
+      if (scrapedList.length < 5) {
+        try {
+          const feedUrl = 'https://news.google.com/rss/search?q=maganghub&hl=id&gl=ID&ceid=ID:id';
+          const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feedUrl)}&${cacheBuster}`;
+          const c2 = new AbortController();
+          const t2 = setTimeout(() => c2.abort(), 5000);
+          const resp2 = await fetch(apiUrl, { signal: c2.signal });
+          clearTimeout(t2);
+          if (resp2.ok) {
+            const json2 = await resp2.json();
+            if (json2 && json2.status === 'ok' && Array.isArray(json2.items)) {
+              json2.items.forEach(item => {
+                let title = item.title || '';
+                let source = 'Warta Magang';
+                if (title.includes(' - ')) {
+                  const parts = title.split(' - ');
+                  source = parts.pop().trim();
+                  title = parts.join(' - ').trim();
+                } else if (item.author) {
+                  source = item.author;
+                }
+
+                const cleanTitle = cleanNewsText(title);
+                const key = getNewsKey(cleanTitle);
+                if (!key || titleSet.has(key)) return;
+                titleSet.add(key);
+
+                const ts = getNewsTimestamp(item);
+                const topic = determineNewsTopic(cleanTitle);
+                let cleanSnippet = cleanSnippetText(item.description, cleanTitle, source);
+
+                let imgUrl = item.thumbnail || (item.enclosure && item.enclosure.link) || '';
+                if (!imgUrl && item.description && item.description.includes('<img')) {
+                  const m = item.description.match(/<img[^>]+src=["']([^"']+)["']/i);
+                  if (m && m[1]) imgUrl = m[1];
+                }
+                if (!imgUrl || !imgUrl.startsWith('http')) {
+                  imgUrl = getTopicFallbackImage(topic, source);
+                }
+
+                scrapedList.push({
+                  title: cleanTitle,
+                  source: source,
+                  sourceClass: getSourceClass(source),
+                  pubDate: formatNewsDate(ts),
+                  timestamp: ts,
+                  link: item.link || '#',
+                  snippet: cleanSnippet,
+                  topic: topic,
+                  image: imgUrl
+                });
+              });
+            }
+          }
+        } catch (e) {
+          console.warn('Google RSS fetch skipped:', e.message);
+        }
+      }
+
+      // 4. Gabungkan warta kurasi terverifikasi
+      CURATED_MAGANG_NEWS.forEach(item => {
+        const key = getNewsKey(item.title);
+        if (!titleSet.has(key)) {
+          titleSet.add(key);
+          scrapedList.push({
+            ...item,
+            pubDate: formatNewsDate(getNewsTimestamp(item))
+          });
+        }
+      });
+
+      // 5. SORTING RESMI: Prioritaskan warta resmi Kemnaker RI dengan foto asli, diikuti warta media terkini
+      const finalSortedList = sortNewsItems(scrapedList);
+
+      if (finalSortedList.length > 0) {
+        localStorage.setItem(NEWS_CACHE_KEY, JSON.stringify({
+          items: finalSortedList,
+          timestamp: Date.now()
+        }));
+
+        renderNewsList(finalSortedList);
+        enrichNewsWithLiveOgImages(finalSortedList);
+
+        if (updateEl) {
+          const timeStr = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Jakarta' });
+          updateEl.textContent = `Terakhir diperbarui: ${timeStr} WIB (Live Terkini)`;
+        }
+
+        if (forceRefresh) {
+          showToast('Berhasil menyinkronkan warta terbaru MagangHub (terbaru di atas)!');
+        }
+      }
+    } catch (fetchErr) {
+      console.error('Error during news synchronization:', fetchErr);
+    } finally {
+      clearTimeout(safetyDismissTimer);
+      if (loader) loader.classList.remove('active');
+      if (refreshSvg) refreshSvg.style.animation = '';
+      newsLoadedOnce = true;
     }
-
-    // 4. Gabungkan warta kurasi terverifikasi
-    CURATED_MAGANG_NEWS.forEach(item => {
-      const key = getNewsKey(item.title);
-      if (!titleSet.has(key)) {
-        titleSet.add(key);
-        scrapedList.push({
-          ...item,
-          pubDate: formatNewsDate(getNewsTimestamp(item))
-        });
-      }
-    });
-
-    // 5. SORTING RESMI: Prioritaskan warta resmi Kemnaker RI dengan foto asli, diikuti warta media terkini
-    scrapedList = sortNewsItems(scrapedList);
-
-    if (scrapedList.length > 0) {
-      localStorage.setItem(NEWS_CACHE_KEY, JSON.stringify({
-        items: scrapedList,
-        timestamp: Date.now()
-      }));
-
-      renderNewsList(scrapedList);
-      enrichNewsWithLiveOgImages(scrapedList);
-
-      if (updateEl) {
-        const timeStr = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-        updateEl.textContent = `Terakhir diperbarui: ${timeStr} WIB (Live Terkini)`;
-      }
-
-      if (forceRefresh) {
-        showToast('Berhasil menyinkronkan warta terbaru MagangHub (terbaru di atas)!');
-      }
-    }
-
-    if (loader) loader.classList.remove('active');
-    if (refreshSvg) refreshSvg.style.animation = '';
-    newsLoadedOnce = true;
   }
 
   // Pasang interval otomatis pembaruan berita setiap 3 menit
