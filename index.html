@@ -4091,7 +4091,7 @@
       <div class="office-status-text">
         <div class="office-status-title">
           <span id="office-status-title">Menara BNI Pejompongan</span>
-          <span class="badge" id="office-time-badge">--:-- WIB</span>
+          <span class="badge" id="office-time-badge">--:--:-- WIB</span>
         </div>
         <div class="office-status-desc" id="office-status-desc">
           Jam operasional aktif (07.30 - 17.00 WIB) · Standby briefing &amp; olah data SSE
@@ -7085,7 +7085,8 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
     const wibDate = new Date(utc + (3600000 * 7));
     const hours = wibDate.getHours();
     const minutes = wibDate.getMinutes();
-    const timeStr = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')} WIB`;
+    const seconds = wibDate.getSeconds();
+    const timeStr = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')} WIB`;
     const todayStr = wibDate.toISOString().slice(0, 10);
 
     const timeBadge = document.getElementById('office-time-badge');
