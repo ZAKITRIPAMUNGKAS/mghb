@@ -4622,9 +4622,9 @@
             <span class="finance-metric-label">Pemasukan / Uang Saku</span>
             <div style="display: flex; align-items: baseline; gap: 4px; margin: 4px 0 2px;">
               <span style="font-size: 0.9rem; font-weight: 700; color: var(--text-tertiary);">Rp</span>
-              <input type="text" inputmode="numeric" id="fin-income-input" value="3.500.000" oninput="formatMoneyInput(this)" onblur="updateFinanceCalculations()" style="font-size: 1.15rem; font-weight: 800; color: var(--text-primary); background: transparent; border: none; border-bottom: 1.5px dashed var(--border-strong); width: 100%; outline: none; padding: 0 0 2px;">
+              <input type="text" inputmode="numeric" id="fin-income-input" value="3.500.000" oninput="handleIncomeInput(this)" onchange="handleIncomeChange(this)" onblur="handleIncomeBlur(this)" onkeydown="if(event.key==='Enter'){this.blur();}" style="font-size: 1.15rem; font-weight: 800; color: var(--text-primary); background: transparent; border: none; border-bottom: 1.5px dashed var(--border-strong); width: 100%; outline: none; padding: 0 0 2px;">
             </div>
-            <span class="finance-metric-sub">BNI / Kemnaker / tambahan (klik utk ubah)</span>
+            <span class="finance-metric-sub">BNI / Kemnaker / tambahan (tersimpan otomatis)</span>
           </div>
 
           <!-- Metric 2: Total Spent -->
@@ -6648,36 +6648,65 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
         renderLogbookHistory();
       }
 
-      // 7. Fetch cloud expenses to merge back
+      // 7. Fetch cloud expenses to merge back (UNION: Data lokal tidak akan terhapus)
       const { data: cloudExpenses } = await supabaseClient.from('mghb_expenses').select('*').order('tx_date', { ascending: false });
-      if (cloudExpenses && Array.isArray(cloudExpenses) && cloudExpenses.length > 0) {
-        const mergedExpenses = cloudExpenses.map(ce => ({
-          id: ce.id,
-          date: ce.tx_date,
-          cat: ce.category,
-          desc: ce.description,
-          amount: ce.amount
-        }));
+      if (cloudExpenses && Array.isArray(cloudExpenses)) {
+        const localExpenses = getFinanceExpenses();
+        const expenseMap = new Map();
+        localExpenses.forEach(e => { if (e && e.id) expenseMap.set(e.id, e); });
+        cloudExpenses.forEach(ce => {
+          if (!ce || !ce.id) return;
+          if (!expenseMap.has(ce.id)) {
+            expenseMap.set(ce.id, {
+              id: ce.id,
+              date: ce.tx_date,
+              cat: ce.category,
+              desc: ce.description,
+              amount: Number(ce.amount) || 0
+            });
+          }
+        });
+        const mergedExpenses = Array.from(expenseMap.values()).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
         saveFinanceExpenses(mergedExpenses);
         renderFinanceExpenses();
-        updateFinanceCalculations();
+        updateFinanceCalculations(false);
       }
 
-      // 8. Fetch cloud bills to merge back
+      // 8. Fetch cloud bills to merge back (UNION: Tagihan kustom & status lokal dipertahankan)
       const { data: cloudBills } = await supabaseClient.from('mghb_bills').select('*').order('sort_order', { ascending: true });
-      if (cloudBills && Array.isArray(cloudBills) && cloudBills.length > 0) {
-        const mergedBills = cloudBills.map(cb => ({
-          id: cb.id,
-          name: cb.name,
-          amount: Number(cb.amount) || 0,
-          dueDay: Number(cb.due_day) || 1,
-          paid: Boolean(cb.paid),
-          icon: cb.icon || '',
-          custom: Boolean(cb.is_custom)
-        }));
+      if (cloudBills && Array.isArray(cloudBills)) {
+        const localBills = getFinanceBills();
+        const billMap = new Map();
+        localBills.forEach(b => { if (b && b.id) billMap.set(b.id, b); });
+        cloudBills.forEach(cb => {
+          if (!cb || !cb.id) return;
+          const existing = billMap.get(cb.id);
+          if (existing) {
+            billMap.set(cb.id, {
+              ...existing,
+              name: existing.name || cb.name,
+              amount: existing.amount != null ? existing.amount : Number(cb.amount) || 0,
+              dueDay: existing.dueDay != null ? existing.dueDay : Number(cb.due_day) || 1,
+              paid: existing.paid !== undefined ? existing.paid : Boolean(cb.paid),
+              icon: existing.icon || cb.icon || '',
+              custom: existing.custom !== undefined ? existing.custom : Boolean(cb.is_custom)
+            });
+          } else {
+            billMap.set(cb.id, {
+              id: cb.id,
+              name: cb.name,
+              amount: Number(cb.amount) || 0,
+              dueDay: Number(cb.due_day) || 1,
+              paid: Boolean(cb.paid),
+              icon: cb.icon || '',
+              custom: Boolean(cb.is_custom)
+            });
+          }
+        });
+        const mergedBills = Array.from(billMap.values());
         saveFinanceBills(mergedBills);
         renderFinanceBills();
-        updateFinanceCalculations();
+        updateFinanceCalculations(false);
       }
 
       if (!silent) {
@@ -8473,15 +8502,68 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     return 'Rp ' + Number(num || 0).toLocaleString('id-ID');
   }
 
+  function getWibDateString(d = new Date()) {
+    try {
+      const dt = typeof d === 'string' || typeof d === 'number' ? new Date(d) : d;
+      return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Jakarta' }).format(dt);
+    } catch {
+      const now = new Date();
+      const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+      const wib = new Date(utc + 3600000 * 7);
+      return wib.toISOString().slice(0, 10);
+    }
+  }
+
   // Format ribuan otomatis saat mengetik (2.000.000)
   function formatMoneyInput(el) {
     if (!el) return;
-    const digits = el.value.replace(/[^\d]/g, '');
+    const digits = String(el.value || '').replace(/[^\d]/g, '');
     el.value = digits ? Number(digits).toLocaleString('id-ID') : '';
   }
 
+  // Parser rupiah ultra-tangguh: dukung 15000, 15.000, 15,000, Rp 15.000, 15k, 20rb, 3.5jt
   function parseMoney(val) {
-    return parseInt(String(val || '').replace(/[^\d]/g, ''), 10) || 0;
+    if (typeof val === 'number') return isFinite(val) ? Math.max(0, Math.round(val)) : 0;
+    if (!val) return 0;
+    const str = String(val).trim();
+    const kMatch = str.match(/^([\d.,]+)\s*(?:k|rb|ribu)$/i);
+    if (kMatch) {
+      const base = parseFloat(kMatch[1].replace(/,/g, '.')) || 0;
+      return Math.round(base * 1000);
+    }
+    const jtMatch = str.match(/^([\d.,]+)\s*(?:jt|juta)$/i);
+    if (jtMatch) {
+      const base = parseFloat(jtMatch[1].replace(/,/g, '.')) || 0;
+      return Math.round(base * 1000000);
+    }
+    const digits = str.replace(/[^\d]/g, '');
+    return digits ? parseInt(digits, 10) : 0;
+  }
+
+  function handleIncomeInput(el) {
+    formatMoneyInput(el);
+    const income = parseMoney(el.value);
+    if (income > 0) {
+      localStorage.setItem(FIN_INCOME_KEY, String(income));
+      updateFinanceCalculations(false);
+    }
+  }
+
+  function handleIncomeChange(el) {
+    const income = parseMoney(el.value);
+    if (income > 0) {
+      localStorage.setItem(FIN_INCOME_KEY, String(income));
+      if (supabaseClient) {
+        supabaseClient.from('mghb_settings').upsert({ key: 'finance_income', value: income, updated_at: new Date().toISOString() })
+          .catch(err => console.warn('Supabase income sync error:', err));
+      }
+      updateFinanceCalculations(true);
+      showToast('Pemasukan disimpan: ' + formatRupiah(income));
+    }
+  }
+
+  function handleIncomeBlur(el) {
+    handleIncomeChange(el);
   }
 
   function setFinanceFilter(filter) {
@@ -8495,37 +8577,41 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
 
   function initFinanceManager() {
     const incomeInput = document.getElementById('fin-income-input');
+    const localIncome = getFinanceIncome();
     if (incomeInput) {
-      incomeInput.value = getFinanceIncome().toLocaleString('id-ID');
+      incomeInput.value = localIncome.toLocaleString('id-ID');
     }
-    // Pull income dari cloud settings bila lebih baru
+    // Pull income dari cloud settings HANYA jika lokal belum pernah diubah user
     if (supabaseClient) {
       supabaseClient.from('mghb_settings').select('value').eq('key', 'finance_income').maybeSingle().then(({ data }) => {
         if (data && data.value != null) {
           const cloud = Number(data.value) || parseInt(String(data.value), 10) || 0;
-          if (cloud > 0 && cloud !== getFinanceIncome()) {
+          const hasLocalCustom = localStorage.getItem(FIN_INCOME_KEY);
+          if (!hasLocalCustom && cloud > 0) {
             localStorage.setItem(FIN_INCOME_KEY, String(cloud));
-            incomeInput.value = cloud.toLocaleString('id-ID');
-            updateFinanceCalculations();
+            if (incomeInput) incomeInput.value = cloud.toLocaleString('id-ID');
+            updateFinanceCalculations(true);
           }
         }
       });
     }
     const dateInput = document.getElementById('fin-tx-date');
     if (dateInput && !dateInput.value) {
-      dateInput.value = new Date().toISOString().slice(0, 10);
+      dateInput.value = getWibDateString();
     }
     renderFinanceBills();
     renderFinanceExpenses();
-    updateFinanceCalculations();
+    updateFinanceCalculations(true);
   }
 
-  function updateFinanceCalculations() {
+  function updateFinanceCalculations(syncInputField = true) {
     const incomeInput = document.getElementById('fin-income-input');
     let income = incomeInput ? parseMoney(incomeInput.value) : getFinanceIncome();
-    if (income < 0) income = 0;
+    if (income <= 0) income = getFinanceIncome();
     localStorage.setItem(FIN_INCOME_KEY, income.toString());
-    if (incomeInput) incomeInput.value = income.toLocaleString('id-ID');
+    if (syncInputField && incomeInput && document.activeElement !== incomeInput) {
+      incomeInput.value = income.toLocaleString('id-ID');
+    }
     if (supabaseClient) {
       supabaseClient.from('mghb_settings').upsert({ key: 'finance_income', value: income, updated_at: new Date().toISOString() })
         .catch(err => console.warn('Supabase income sync error:', err));
@@ -8790,15 +8876,6 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     };
   }
 
-  // FIX #5: Parser rupiah yang aman untuk format Indonesia (15.000 → 15000, bukan 15)
-  function parseMoney(str) {
-    if (typeof str === 'number') return Math.max(0, Math.round(str));
-    // Hapus titik ribuan, ganti koma desimal → titik
-    const cleaned = String(str).replace(/\./g, '').replace(',', '.');
-    const val = parseFloat(cleaned);
-    return isFinite(val) ? Math.max(0, Math.round(val)) : 0;
-  }
-
   function handleNewExpense(e) {
     if (e && e.preventDefault) e.preventDefault();
     const catEl = document.getElementById('fin-tx-cat');
@@ -8807,10 +8884,9 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     const dateEl = document.getElementById('fin-tx-date');
 
     const cat = catEl ? catEl.value : 'makan';
-    // FIX #5: Pakai parseMoney bukan parseInt agar 15.000 → 15000 (bukan 15)
     const amount = amountEl ? parseMoney(amountEl.value) : 0;
     const desc = descEl ? descEl.value.trim() : '';
-    const date = dateEl && dateEl.value ? dateEl.value : new Date().toISOString().slice(0, 10);
+    const date = dateEl && dateEl.value ? dateEl.value : getWibDateString();
 
     if (!amount || amount <= 0) {
       showToast('Masukkan nominal pengeluaran yang valid');
@@ -8834,8 +8910,8 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     if (descEl) descEl.value = '';
 
     renderFinanceExpenses();
-    updateFinanceCalculations();
-    showToast(`Pengeluaran ${formatRupiah(amount)} berhasil dicatat!`);
+    updateFinanceCalculations(false);
+    showToast(`Pengeluaran ${formatRupiah(amount)} berhasil dicatat & disimpan!`);
 
     // Background sync to Supabase if connected
     if (supabaseClient) {
@@ -8861,7 +8937,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     if (catEl) catEl.value = cat;
     if (amountEl) amountEl.value = amount;
     if (descEl) descEl.value = desc;
-    if (dateEl && !dateEl.value) dateEl.value = new Date().toISOString().slice(0, 10);
+    if (dateEl && !dateEl.value) dateEl.value = getWibDateString();
 
     handleNewExpense();
   }
@@ -8871,7 +8947,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     expenses = expenses.filter(item => item.id !== id);
     saveFinanceExpenses(expenses);
     renderFinanceExpenses();
-    updateFinanceCalculations();
+    updateFinanceCalculations(false);
     showToast('Transaksi pengeluaran dihapus');
 
     if (supabaseClient) {
@@ -8884,7 +8960,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     if (confirm('Hapus seluruh riwayat pengeluaran yang tersimpan?')) {
       saveFinanceExpenses([]);
       renderFinanceExpenses();
-      updateFinanceCalculations();
+      updateFinanceCalculations(false);
       showToast('Seluruh riwayat pengeluaran berhasil di-reset');
     }
   }
@@ -8894,14 +8970,13 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     if (!container) return;
 
     const allExpenses = getFinanceExpenses();
-    const todayStr = new Date().toISOString().slice(0, 10);
-    const now = new Date();
-    const currentYearMonth = now.toISOString().slice(0, 7);
+    const todayStr = getWibDateString();
+    const currentYearMonth = todayStr.slice(0, 7);
 
-    // Calculate 7 days ago
-    const sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-    const sevenDaysAgoStr = sevenDaysAgo.toISOString().slice(0, 10);
+    // Hitung tanggal 7 hari lalu dalam zona WIB
+    const nowWib = new Date();
+    nowWib.setDate(nowWib.getDate() - 7);
+    const sevenDaysAgoStr = getWibDateString(nowWib);
 
     const filteredExpenses = allExpenses.filter(item => {
       if (currentFinanceFilter === 'today') return item.date === todayStr;
