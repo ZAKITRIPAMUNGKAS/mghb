@@ -8935,7 +8935,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     checkIncomingSync();
     initFinanceManager();
     updateOfficeRhythm();
-    setInterval(updateOfficeRhythm, 15000);
+    setInterval(updateOfficeRhythm, 1000); // Update tiap detik agar jam WIB real-time
     fetchLiveNews(false);
 
     const state = getStoredState();
@@ -8975,6 +8975,27 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   }
 
   window.addEventListener('DOMContentLoaded', initApp);
+
+  // Jam WIB diinisialisasi independen \u2014 tidak terpengaruh error di initApp
+  // Dipanggil langsung agar badge tidak stuck di "--:-- WIB"
+  (function startClock() {
+    function tickClock() {
+      const badge = document.getElementById('office-time-badge');
+      if (!badge) return;
+      const now = new Date();
+      const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+      const wib = new Date(utc + 3600000 * 7);
+      const hh = String(wib.getHours()).padStart(2, '0');
+      const mm = String(wib.getMinutes()).padStart(2, '0');
+      const ss = String(wib.getSeconds()).padStart(2, '0');
+      badge.textContent = `${hh}:${mm}:${ss} WIB`;
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+      tickClock();
+      setInterval(tickClock, 1000);
+    });
+  })();
+
   window.addEventListener('offline', () => setDatabaseStatus('offline', 'Offline / data lokal'));
   window.addEventListener('online', async () => {
     await initSupabaseClient();
