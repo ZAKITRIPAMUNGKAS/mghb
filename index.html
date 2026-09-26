@@ -7467,12 +7467,12 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   }
 
   // --- MagangHub Live News Feed Engine ---
-  const NEWS_CACHE_KEY = 'mghb_news_cache_v20260921_text';
+  const NEWS_CACHE_KEY = 'mghb_news_cache_v20260926_live';
   let newsLoadedOnce = false;
   let activeNewsTopic = 'all';
 
   // Bersihkan semua cache lama
-  ['mghb_news_cache', 'mghb_news_cache_v2', 'mghb_news_cache_v3', 'mghb_news_cache_v4', 'mghb_news_cache_v5', 'mghb_news_cache_v6', 'mghb_news_cache_v7', 'mghb_news_cache_v8', 'mghb_news_cache_v20260921', 'mghb_news_cache_v20260921_real', 'mghb_news_cache_v20260921_clean'].forEach(k => {
+  ['mghb_news_cache', 'mghb_news_cache_v2', 'mghb_news_cache_v3', 'mghb_news_cache_v4', 'mghb_news_cache_v5', 'mghb_news_cache_v6', 'mghb_news_cache_v7', 'mghb_news_cache_v8', 'mghb_news_cache_v20260921', 'mghb_news_cache_v20260921_real', 'mghb_news_cache_v20260921_clean', 'mghb_news_cache_v20260921_text'].forEach(k => {
     try { localStorage.removeItem(k); } catch {}
   });
 
@@ -7786,12 +7786,12 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     enrichNewsWithLiveOgImages(currentNews);
     if (lastFetched && updateEl) {
       const date = new Date(lastFetched);
-      updateEl.textContent = `Terakhir diperbarui: ${date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })} WIB (Tersimpan)`;
+      updateEl.textContent = `Terakhir diperbarui: ${date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Jakarta' })} WIB (Tersimpan)`;
     }
 
     const now = Date.now();
-    // Auto-fetch jika belum pernah, atau cache > 10 menit, atau dipaksa user
-    const shouldFetch = forceRefresh || !lastFetched || (now - lastFetched > 10 * 60 * 1000);
+    // Auto-fetch jika belum pernah, atau cache > 5 menit, atau baru berisi curated news saja, atau dipaksa user
+    const shouldFetch = forceRefresh || !lastFetched || (now - lastFetched > 5 * 60 * 1000) || currentNews.length <= CURATED_MAGANG_NEWS.length;
 
     if (!shouldFetch) {
       if (refreshSvg) refreshSvg.style.animation = '';
@@ -7810,7 +7810,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     try {
       const apiNewsUrl = `/api/news?${cacheBuster}`;
       const c0 = new AbortController();
-      const t0 = setTimeout(() => c0.abort(), 6000);
+      const t0 = setTimeout(() => c0.abort(), 15000); // 15s timeout: tangani cold-start serverless Vercel
       const resp0 = await fetch(apiNewsUrl, { signal: c0.signal });
       clearTimeout(t0);
       if (resp0.ok) {
@@ -8955,13 +8955,20 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
 
   // --- Initialization ---
   async function initApp() {
-    initTheme();
-    const databaseReady = initSupabaseClient();
-    checkIncomingSync();
-    initFinanceManager();
-    updateOfficeRhythm();
+    try { initTheme(); } catch (e) { console.error('initTheme error:', e); }
+    try { fetchLiveNews(false); } catch (e) { console.error('fetchLiveNews error:', e); }
+    try { updateOfficeRhythm(); } catch (e) { console.error('updateOfficeRhythm error:', e); }
     setInterval(updateOfficeRhythm, 1000); // Update tiap detik agar jam WIB real-time
-    fetchLiveNews(false);
+
+    let databaseReady = Promise.resolve();
+    try {
+      databaseReady = initSupabaseClient().catch(e => console.warn('Supabase init caught:', e));
+    } catch (e) {
+      console.warn('initSupabaseClient error:', e);
+    }
+
+    try { checkIncomingSync(); } catch (e) { console.error('checkIncomingSync error:', e); }
+    try { initFinanceManager(); } catch (e) { console.error('initFinanceManager error:', e); }
 
     const state = getStoredState();
 
@@ -8971,37 +8978,48 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     if (dateInput) {
       dateInput.value = today;
       dateInput.addEventListener('change', updateWeekendHint);
-      updateWeekendHint();
+      try { updateWeekendHint(); } catch {}
     }
 
-    // Attach row events
-    document.querySelectorAll('.task-row').forEach(row => {
+    // Attach row events (dukung .inv-row dan legacy .task-row)
+    document.querySelectorAll('.inv-row, .task-row').forEach(row => {
       const cb = row.querySelector('input[type="checkbox"]');
-      if (state[cb.id]) {
-        cb.checked = true;
-      }
+      if (cb) {
+        if (state[cb.id]) {
+          cb.checked = true;
+        }
 
-      cb.addEventListener('change', () => {
-        setItemState(cb.id, cb.checked);
-        applyFiltering();
-      });
+        cb.addEventListener('change', () => {
+          setItemState(cb.id, cb.checked);
+          applyFiltering();
+        });
+      }
     });
 
-    renderLogbookHistory();
-    applyFiltering();
-    updateMetrics();
-    selectTab('berita');
+    try { renderLogbookHistory(); } catch (e) { console.error('renderLogbookHistory error:', e); }
+    try { applyFiltering(); } catch (e) { console.error('applyFiltering error:', e); }
+    try { updateMetrics(); } catch (e) { console.error('updateMetrics error:', e); }
+    try { selectTab('berita'); } catch (e) { console.error('selectTab error:', e); }
 
     // Trigger initial silent background sync if Supabase is connected
-    await databaseReady;
-    if (supabaseClient) {
-      syncAllDataWithCloud(true);
+    try {
+      await databaseReady;
+      if (supabaseClient) {
+        syncAllDataWithCloud(true);
+      }
+    } catch (e) {
+      console.warn('Background sync error:', e);
     }
   }
 
   window.addEventListener('DOMContentLoaded', initApp);
 
-  // Jam WIB diinisialisasi independen \u2014 tidak terpengaruh error di initApp
+  // Inisialisasi Berita Independen — langsung render seketika tanpa menunggu proses lain
+  document.addEventListener('DOMContentLoaded', () => {
+    try { fetchLiveNews(false); } catch (e) { console.error('Independent news load error:', e); }
+  });
+
+  // Jam WIB diinisialisasi independen — tidak terpengaruh error di initApp
   // Dipanggil langsung agar badge tidak stuck di "--:-- WIB"
   (function startClock() {
     function tickClock() {
