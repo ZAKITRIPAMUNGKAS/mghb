@@ -624,24 +624,29 @@
       display: none !important;
     }
 
-    /* Inventaris Rantau: list, bukan checklist */
+    /* Inventaris Rantau: Editable List */
     .inv-row {
       display: flex;
       gap: 10px;
-      align-items: flex-start;
-      padding: 10px 0;
+      align-items: center;
+      padding: 7px 10px;
       border-bottom: 1px solid var(--border-subtle);
+      border-radius: 5px;
+      transition: background-color .15s ease;
     }
     .inv-row:last-child {
       border-bottom: none;
+    }
+    .inv-row:hover {
+      background-color: var(--surface-hover, rgba(0, 94, 106, 0.04));
     }
     .inv-row.is-hidden {
       display: none !important;
     }
     .inv-dot {
-      width: 20px;
-      height: 20px;
-      min-width: 20px;
+      width: 18px;
+      height: 18px;
+      min-width: 18px;
       border-radius: 50%;
       background: var(--accent-subtle);
       color: var(--accent);
@@ -652,7 +657,13 @@
       font-weight: 800;
       line-height: 1;
       flex-shrink: 0;
-      margin-top: 1px;
+    }
+    .inv-row .task-body {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      flex: 1;
+      min-width: 0;
     }
     .inv-row .task-label {
       font-weight: 600;
@@ -661,6 +672,113 @@
     }
     .inv-row .task-detail {
       color: var(--text-secondary);
+    }
+    .inv-edit-name {
+      width: 100%;
+      font-family: inherit;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      background: transparent;
+      border: 1px dashed transparent;
+      border-radius: 4px;
+      padding: 2px 5px;
+      margin-left: -5px;
+      transition: border-color .16s ease, background-color .16s ease;
+      box-sizing: border-box;
+    }
+    .inv-edit-detail {
+      width: 100%;
+      font-family: inherit;
+      font-size: 0.73rem;
+      font-weight: 400;
+      color: var(--text-secondary);
+      background: transparent;
+      border: 1px dashed transparent;
+      border-radius: 4px;
+      padding: 2px 5px;
+      margin-left: -5px;
+      transition: border-color .16s ease, background-color .16s ease;
+      box-sizing: border-box;
+    }
+    .inv-edit-name:hover,
+    .inv-edit-detail:hover {
+      border-color: var(--border-strong);
+      background: var(--surface);
+    }
+    .inv-edit-name:focus,
+    .inv-edit-detail:focus {
+      outline: none;
+      border-color: var(--accent);
+      border-style: solid;
+      background: var(--surface);
+    }
+    .inv-del-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      padding: 5px;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.45;
+      transition: opacity .16s, color .16s, background .16s;
+      flex-shrink: 0;
+    }
+    .inv-row:hover .inv-del-btn,
+    .inv-del-btn:focus {
+      opacity: 1;
+    }
+    .inv-del-btn:hover {
+      opacity: 1;
+      color: #ef4444;
+      background: rgba(239, 68, 68, 0.1);
+    }
+    .inv-cat-add-btn {
+      font-size: 0.72rem;
+      padding: 3px 8px;
+      border-radius: 5px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--accent);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-weight: 600;
+      transition: all .16s ease;
+    }
+    .inv-cat-add-btn:hover {
+      border-color: var(--accent);
+      background: var(--accent-subtle);
+    }
+    .category-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .inv-empty-state {
+      padding: 16px;
+      text-align: center;
+      font-size: 0.76rem;
+      color: var(--text-tertiary);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .inv-empty-add-btn {
+      background: var(--accent-subtle);
+      color: var(--accent);
+      border: 1px dashed var(--accent);
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 0.74rem;
+      font-weight: 600;
+      cursor: pointer;
     }
 
     /* ===== Icon System (inline SVG sprite) ===== */
@@ -4108,343 +4226,25 @@
     </div>
   </aside>
 
-  <!-- TAB 1: PACKING CHECKLIST -->
+  <!-- TAB 1: PACKING CHECKLIST / INVENTARIS RANTAU -->
   <main id="view-packing" class="tab-content">
-      <div class="feature-card" style="margin-bottom: 10px;">
-        <div class="feature-head">
+    <div class="feature-card" style="margin-bottom: 12px;">
+      <div class="feature-head">
         <div class="feature-title"><svg class="ic ic-16" aria-hidden="true"><use href="#i-luggage"/></svg> Inventaris Rantau</div>
         <span class="badge badge-accent" id="inv-location-badge">Kos · Menara BNI</span>
       </div>
-      <p style="font-size: 0.74rem; color: var(--text-secondary); margin-bottom: 10px;">
-        Daftar barang yang aku punya di rantau Jakarta — kost, kantor &amp; perjalanan. Bukan checklist, hanya daftar agar mudah diingat.
+      <p style="font-size: 0.74rem; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.45;">
+        Daftar barang yang aku punya di rantau Jakarta — kost, kantor &amp; perjalanan. Klik langsung pada nama atau keterangan barang untuk mengedit. Tersimpan otomatis di perangkat ini.
       </p>
-      <button type="button" class="utility-btn" onclick="copyInventarisList()"><svg class="ic ic-16" aria-hidden="true"><use href="#i-clipboard"/></svg> Salin Daftar</button>
-    </div>
-    <!-- Category: Pakaian Kerja -->
-    <div class="category-group" data-cat="pakaian">
-      <div class="category-header">
-        <span class="category-title">👔 Pakaian Kerja &amp; Formal</span>
-        <span class="category-stats">11 item</span>
-      </div>
-      <div class="checklist-card">
-        <div class="inv-row" data-item="pk1">
-          <span class="inv-dot" aria-hidden="true">•</span>
-          <div class="task-body">
-            <div class="task-label">Kemeja formal putih lengan panjang</div>
-            <span class="task-detail">Senin–Selasa: kemeja putih / business formal standar perbankan</span>
-          </div>
-        </div>
-        <div class="inv-row" data-item="pk2">
-          <span class="inv-dot" aria-hidden="true">•</span>
-          <div class="task-body">
-            <div class="task-label">Kemeja formal katun lengan panjang (cadangan)</div>
-            <span class="task-detail">Senin–Selasa: business formal (motif garis halus atau polos)</span>
-          </div>
-        </div>
-        <div class="inv-row" data-item="pk3">
-          <span class="inv-dot" aria-hidden="true">•</span>
-          <div class="task-body">
-            <div class="task-label">Batik / Tenun khas daerah lengan panjang (x2)</div>
-            <span class="task-detail">Rabu–Kamis: corak dominan, lengan panjang wajib &amp; dilarang dilipat</span>
-          </div>
-        </div>
-        <div class="inv-row" data-item="pk4">
-          <span class="inv-dot" aria-hidden="true">•</span>
-          <div class="task-body">
-            <div class="task-label">Kemeja berkerah + Blazer / Outer</div>
-            <span class="task-detail">Jumat: business casual BNI, kemeja wajib dilapisi blazer/outer berkerah</span>
-          </div>
-        </div>
-        <div class="inv-row" data-item="pk5">
-          <span class="inv-dot" aria-hidden="true">•</span>
-          <div class="task-body">
-            <div class="task-label">Kemeja formal wisuda UMS</div>
-            <span class="task-detail">Jumat 25 Sep: kemeja putih/terang untuk dalaman toga di kampus Solo</span>
-          </div>
-        </div>
-        <div class="inv-row" data-item="pk6">
-          <span class="inv-dot" aria-hidden="true">•</span>
-          <div class="task-body">
-            <div class="task-label">Kaos dalam putih lengan pendek (x4)</div>
-            <span class="task-detail">Wajib warna putih, menjaga kerapian dalaman kemeja kerja</span>
-          </div>
-        </div>
-        <div class="inv-row" data-item="pk7">
-          <span class="inv-dot" aria-hidden="true">•</span>
-          <div class="task-body">
-            <div class="task-label">Celana bahan pantalon / chino gelap (x2)</div>
-            <span class="task-detail">Wajib kain bahan formal gelap (dilarang keras bahan jeans/denim)</span>
-          </div>
-        </div>
-        <div class="inv-row" data-item="pk8">
-          <span class="inv-dot" aria-hidden="true">•</span>
-          <div class="task-body">
-            <div class="task-label">Sepatu pantofel kulit &amp; kaos kaki gelap serasi</div>
-            <span class="task-detail">Warna pantofel &amp; kaos kaki wajib senada dengan warna celana</span>
-          </div>
-        </div>
-        <div class="inv-row" data-item="pk9">
-          <span class="inv-dot" aria-hidden="true">•</span>
-          <div class="task-body">
-            <div class="task-label">Ikat pinggang kulit formal</div>
-            <span class="task-detail">Warna kulit formal senada dengan sepatu pantofel</span>
-          </div>
-        </div>
-        <div class="inv-row" data-item="pk10">
-          <span class="inv-dot" aria-hidden="true">•</span>
-          <div class="task-body">
-            <div class="task-label">Sneakers bersih / Loafers rapi</div>
-            <span class="task-detail">Cadangan hari Jumat santai &amp; mobilitas perjalanan luar kantor</span>
-          </div>
-        </div>
-        <div class="inv-row" data-item="pk11">
-          <span class="inv-dot" aria-hidden="true">•</span>
-          <div class="task-body">
-            <div class="task-label">Pakaian ganti santai, tidur &amp; pakaian dalam</div>
-            <span class="task-detail">Secukupnya untuk istirahat di penginapan</span>
-          </div>
-        </div>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <button type="button" class="utility-btn" onclick="copyInventarisList()"><svg class="ic ic-16" aria-hidden="true"><use href="#i-clipboard"/></svg> Salin Daftar</button>
+        <button type="button" class="utility-btn" onclick="addInventarisPrompt()"><svg class="ic ic-16" aria-hidden="true"><use href="#i-plus"/></svg> Tambah Barang</button>
+        <button type="button" class="utility-btn" onclick="resetInventarisToDefault()" style="color: var(--text-tertiary);" title="Kembalikan ke 38 barang standar BNI"><svg class="ic ic-16" aria-hidden="true"><use href="#i-refresh"/></svg> Reset Standar</button>
       </div>
     </div>
 
-    <!-- Category: Dokumen -->
-    <div class="category-group" data-cat="dokumen">
-      <div class="category-header">
-        <span class="category-title"><svg class="ic ic-16" aria-hidden="true"><use href="#i-file"/></svg> Dokumen &amp; Administrasi Rantau</span>
-        <span class="category-stats">7 item</span>
-      </div>
-      <div class="checklist-card">
-        <div class="inv-row" data-item="doc1">
-          <span class="inv-dot" aria-hidden="true">•</span>
-          <div class="task-body">
-            <div class="task-label">KTP elektronik asli &amp; salinan fotokopi</div>
-            <span class="task-detail">Identitas wajib verifikasi gedung Menara BNI &amp; stasiun</span>
-          </div>
-        </div>
-        <div class="inv-row" data-item="doc2">
-          <span class="inv-dot" aria-hidden="true">•</span>
-          <div class="task-body">
-            <div class="task-label">E-Ticket kereta api keberangkatan (Kamis 24 Sep malam)</div>
-            <span class="task-detail">Stasiun Gambir / Pasar Senen → Solo Balapan / Purwosari</span>
-          </div>
-        </div>
-        <div class="inv-row" data-item="doc3">
-          <span class="inv-dot" aria-hidden="true">•</span>
-          <div class="task-body">
-            <div class="task-label">Undangan wisuda UMS &amp; berkas permohonan izin</div>
-            <span class="task-detail">Bukti resmi pengajuan dispensasi/izin ke mentor Pak Guruh</span>
-          </div>
-        </div>
-        <div class="inv-row" data-item="doc4">
-          <span class="inv-dot" aria-hidden="true">•</span>
-          <div class="task-body">
-            <div class="task-label">E-Ticket kereta api kembali ke Jakarta (Minggu 27 Sep)</div>
-            <span class="task-detail">Solo → Jakarta untuk persiapan masuk dinas Senin pagi</span>
-          </div>
-        </div>
-        <div class="inv-row" data-item="doc5">
-          <span class="inv-dot" aria-hidden="true">•</span>
-          <div class="task-body">
-            <div class="task-label">Salinan Perjanjian Pemagangan (PKM-0026-PKM-II-2026)</div>
-            <span class="task-detail">Dokumen perjanjian pemagangan resmi BNI &amp; Kemnaker</span>
-          </div>
-        </div>
-        <div class="inv-row" data-item="doc6">
-          <span class="inv-dot" aria-hidden="true">•</span>
-          <div class="task-body">
-            <div class="task-label">Pakta Integritas Magang BNI</div>
-            <span class="task-detail">Arsip komitmen kepatuhan ditandatangani saat hari pertama masuk</span>
-          </div>
-        </div>
-        <div class="inv-row" data-item="doc7">
-          <span class="inv-dot" aria-hidden="true">•</span>
-          <div class="task-body">
-            <div class="task-label">Kartu BPJS Ketenagakerjaan / Kesehatan &amp; Pas Foto 3x4 / 4x6</div>
-            <span class="task-detail">Jaminan darurat JKK/JKM pemerintah &amp; arsip foto formal</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Category: Elektronik -->
-    <div class="category-group" data-cat="elektronik">
-      <div class="category-header">
-        <span class="category-title"><svg class="ic ic-16" aria-hidden="true"><use href="#i-laptop"/></svg> Perangkat &amp; Elektronik</span>
-        <span class="category-stats">4 item</span>
-      </div>
-      <div class="checklist-card">
-        <div class="inv-row" data-item="el1">
-          <span class="inv-dot" aria-hidden="true">•</span>
-          <div class="task-body">
-            <div class="task-label">Laptop kerja &amp; kabel adaptor charger</div>
-            <span class="task-detail">Perangkat utama tugas divisi Sales Strategy &amp; Execution</span>
-          </div>
-        </div>
-        <div class="inv-row" data-item="el2">
-          <span class="inv-dot" aria-hidden="true">•</span>
-          <div class="task-body">
-            <div class="task-label">Smartphone &amp; kabel charger USB</div>
-            <span class="task-detail">Presensi GPS MagangHub Kemnaker &amp; koordinasi tim</span>
-          </div>
-        </div>
-        <div class="inv-row" data-item="el3">
-          <span class="inv-dot" aria-hidden="true">•</span>
-          <div class="task-body">
-            <div class="task-label">Power bank (terisi daya penuh)</div>
-            <span class="task-detail">Cadangan daya esensial selama perjalanan kereta api malam</span>
-          </div>
-        </div>
-        <div class="inv-row" data-item="el4">
-          <span class="inv-dot" aria-hidden="true">•</span>
-          <div class="task-body">
-            <div class="task-label">Earphone / headset dengan mikrofon</div>
-            <span class="task-detail">Komunikasi meeting online &amp; fokus kerja di kantor</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Category: Toiletries -->
-    <div class="category-group" data-cat="toiletries">
-      <div class="category-header">
-        <span class="category-title"><svg class="ic ic-16" aria-hidden="true"><use href="#i-droplet"/></svg> Perawatan &amp; Toiletries</span>
-        <span class="category-stats">6 item</span>
-      </div>
-      <div class="checklist-card">
-        <div class="inv-row" data-item="tl1">
-          <span class="inv-dot" aria-hidden="true">•</span>
-          <div class="task-body">
-            <div class="task-label">Sikat gigi &amp; pasta gigi travel</div>
-            <span class="task-detail">Perlengkapan mandi praktis</span>
-          </div>
-        </div>
-        <div class="inv-row" data-item="tl2">
-          <span class="inv-dot" aria-hidden="true">•</span>
-          <div class="task-body">
-            <div class="task-label">Sabun &amp; sampo cair botol kecil</div>
-            <span class="task-detail">Ukuran ramah tas ransel</span>
-          </div>
-        </div>
-        <div class="inv-row" data-item="tl3">
-          <span class="inv-dot" aria-hidden="true">•</span>
-          <div class="task-body">
-            <div class="task-label">Deodoran &amp; parfum segar</div>
-            <span class="task-detail">Standar grooming dan kenyamanan ruang kerja kantor BNI</span>
-          </div>
-        </div>
-        <div class="inv-row" data-item="tl4">
-          <span class="inv-dot" aria-hidden="true">•</span>
-          <div class="task-body">
-            <div class="task-label">Alat cukur kumis / jenggot (razor)</div>
-            <span class="task-detail">SOP Grooming: kumis &amp; jenggot wajib terawat rapi/bersih</span>
-          </div>
-        </div>
-        <div class="inv-row" data-item="tl5">
-          <span class="inv-dot" aria-hidden="true">•</span>
-          <div class="task-body">
-            <div class="task-label">Handuk micro-fiber travel</div>
-            <span class="task-detail">Cepat kering dan ringkas</span>
-          </div>
-        </div>
-        <div class="inv-row" data-item="tl6">
-          <span class="inv-dot" aria-hidden="true">•</span>
-          <div class="task-body">
-            <div class="task-label">Sisir saku &amp; minyak penata rambut / pomade</div>
-            <span class="task-detail">SOP Grooming: potongan rambut rapi office look sepanjang hari</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Category: Kesehatan -->
-    <div class="category-group" data-cat="kesehatan">
-      <div class="category-header">
-        <span class="category-title"><svg class="ic ic-16" aria-hidden="true"><use href="#i-heart-pill"/></svg> Kesehatan &amp; Obat</span>
-        <span class="category-stats">4 item</span>
-      </div>
-      <div class="checklist-card">
-        <div class="inv-row" data-item="ob1">
-          <span class="inv-dot" aria-hidden="true">•</span>
-          <div class="task-body">
-            <div class="task-label">Obat-obatan rutin pribadi</div>
-            <span class="task-detail">Persediaan obat resep jika ada</span>
-          </div>
-        </div>
-        <div class="inv-row" data-item="ob2">
-          <span class="inv-dot" aria-hidden="true">•</span>
-          <div class="task-body">
-            <div class="task-label">Tolak Angin, Paracetamol &amp; Plester luka</div>
-            <span class="task-detail">P3K dasar antisipasi daya tahan tubuh saat perjalanan</span>
-          </div>
-        </div>
-        <div class="inv-row" data-item="ob3">
-          <span class="inv-dot" aria-hidden="true">•</span>
-          <div class="task-body">
-            <div class="task-label">Masker medis higienis cadangan</div>
-            <span class="task-detail">Untuk mobilitas di stasiun &amp; transportasi publik</span>
-          </div>
-        </div>
-        <div class="inv-row" data-item="ob4">
-          <span class="inv-dot" aria-hidden="true">•</span>
-          <div class="task-body">
-            <div class="task-label">Hand sanitizer botol saku</div>
-            <span class="task-detail">Higienitas tangan setiap saat</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Category: Esensial Lainnya -->
-    <div class="category-group" data-cat="lainnya">
-      <div class="category-header">
-        <span class="category-title"><svg class="ic ic-16" aria-hidden="true"><use href="#i-backpack"/></svg> Perlengkapan Rantau</span>
-        <span class="category-stats">6 item</span>
-      </div>
-      <div class="checklist-card">
-        <div class="inv-row" data-item="ot1">
-          <span class="inv-dot" aria-hidden="true">•</span>
-          <div class="task-body">
-            <div class="task-label">Sajadah travel tipis / sarung</div>
-            <span class="task-detail">Kemudahan beribadah di perjalanan &amp; mushola kantor</span>
-          </div>
-        </div>
-        <div class="inv-row" data-item="ot2">
-          <span class="inv-dot" aria-hidden="true">•</span>
-          <div class="task-body">
-            <div class="task-label">Payung lipat ringkas</div>
-            <span class="task-detail">Antisipasi cuaca hujan di area Pejompongan / Jakarta</span>
-          </div>
-        </div>
-        <div class="inv-row" data-item="ot3">
-          <span class="inv-dot" aria-hidden="true">•</span>
-          <div class="task-body">
-            <div class="task-label">Tumbler / botol minum portabel</div>
-            <span class="task-detail">Menjaga hidrasi harian</span>
-          </div>
-        </div>
-        <div class="inv-row" data-item="ot4">
-          <span class="inv-dot" aria-hidden="true">•</span>
-          <div class="task-body">
-            <div class="task-label">Ransel kerja / daypack kantor</div>
-            <span class="task-detail">Membawa laptop &amp; dokumen ke Menara BNI Pejompongan</span>
-          </div>
-        </div>
-        <div class="inv-row" data-item="ot5">
-          <span class="inv-dot" aria-hidden="true">•</span>
-          <div class="task-body">
-            <div class="task-label">Kantong laundry / plastik pakaian kotor</div>
-            <span class="task-detail">Pemisah pakaian bekas pakai di koper</span>
-          </div>
-        </div>
-        <div class="inv-row" data-item="ot6">
-          <span class="inv-dot" aria-hidden="true">•</span>
-          <div class="task-body">
-            <div class="task-label">Dompet, kartu uang elektronik (Flazz/e-Money/JakLingko), &amp; uang tunai</div>
-            <span class="task-detail">Akses KRL, MRT, TransJakarta, dan konsumsi darurat</span>
-          </div>
-        </div>
-      </div>
-    </div>
+    <!-- Dynamic categories container -->
+    <div id="inventaris-container"></div>
 
     <!-- Total -->
     <div style="margin-top: 14px; font-size: 0.76rem; color: var(--text-secondary); text-align: center;">
@@ -6136,6 +5936,7 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
       labelEl.textContent = 'Daftar barang yang dimiliki di rantau';
       overviewRow.style.display = 'none';
       toolbarRow.style.display = 'flex';
+      renderInventaris();
       applyFiltering();
     } else if (tab === 'keuangan') {
       badgeEl.textContent = 'Keuangan';
@@ -6184,28 +5985,23 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
     const currentView = document.getElementById('view-packing');
     if (!currentView) return;
 
-    // FIX #15: Ganti '.task-row' → '.inv-row' sesuai class DOM aktual
     const rows = currentView.querySelectorAll('.inv-row');
     let visibleCount = 0;
 
     rows.forEach(row => {
-      const checkbox = row.querySelector('input[type="checkbox"]');
-      const isChecked = checkbox ? checkbox.checked : false;
-      const text = row.innerText.toLowerCase();
-
-      let matchesFilter = true;
-      if (currentFilter === 'pending') matchesFilter = !isChecked;
-      else if (currentFilter === 'done') matchesFilter = isChecked;
+      const nameVal = row.querySelector('.inv-edit-name')?.value || row.querySelector('.task-label')?.innerText || '';
+      const detailVal = row.querySelector('.inv-edit-detail')?.value || row.querySelector('.task-detail')?.innerText || '';
+      const text = (nameVal + ' ' + detailVal + ' ' + (row.innerText || '')).toLowerCase();
 
       let matchesSearch = true;
       if (searchQuery) matchesSearch = text.includes(searchQuery);
 
-      const isVisible = matchesFilter && matchesSearch;
+      const isVisible = matchesSearch;
       row.classList.toggle('is-hidden', !isVisible);
       if (isVisible) visibleCount++;
     });
 
-    // FIX #15: Juga update category-group visibility berdasarkan .inv-row
+    // Update category-group visibility berdasarkan .inv-row yang terlihat
     currentView.querySelectorAll('.category-group').forEach(group => {
       const hasVisibleRows = Array.from(group.querySelectorAll('.inv-row')).some(r => !r.classList.contains('is-hidden'));
       group.classList.toggle('is-empty', !hasVisibleRows);
@@ -6228,24 +6024,300 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
     const checked = allCheckboxes.filter(cb => cb.checked).length;
     const pct = total === 0 ? 0 : Math.round((checked / total) * 100);
 
-    document.getElementById('progress-bar').style.width = pct + '%';
-    document.getElementById('metric-counter').textContent = `${checked}/${total} selesai (${pct}%)`;
+    const progressBar = document.getElementById('progress-bar');
+    if (progressBar) progressBar.style.width = pct + '%';
+    const counterEl = document.getElementById('metric-counter');
+    if (counterEl) counterEl.textContent = `${checked}/${total} selesai (${pct}%)`;
 
     const bannerId = activeTab === 'packing' ? 'banner-complete-packing' : 'banner-complete-magang';
     const banner = document.getElementById(bannerId);
     if (banner) {
       banner.classList.toggle('visible', total > 0 && checked === total);
     }
+  }
 
-    const categoryGroups = currentView.querySelectorAll('.category-group');
-    categoryGroups.forEach(group => {
-      const cat = group.getAttribute('data-cat');
-      const catBoxes = Array.from(group.querySelectorAll('input[type="checkbox"]'));
-      const catTotal = catBoxes.length;
-      const catDone = catBoxes.filter(c => c.checked).length;
-      const statEl = document.getElementById('stat-' + cat);
-      if (statEl) statEl.textContent = `${catDone}/${catTotal}`;
+  // ==========================================
+  // INVENTARIS RANTAU ENGINE (Dynamic & Editable)
+  // ==========================================
+  const INVENTARIS_STORAGE_KEY = 'mghb_inventaris_v1';
+
+  const INVENTARIS_CATEGORIES = [
+    { id: 'pakaian', name: 'Pakaian Kerja & Formal', icon: '👔' },
+    { id: 'dokumen', name: 'Dokumen & Administrasi Rantau', iconSvg: '#i-file' },
+    { id: 'elektronik', name: 'Perangkat & Elektronik', iconSvg: '#i-laptop' },
+    { id: 'toiletries', name: 'Perawatan & Toiletries', iconSvg: '#i-droplet' },
+    { id: 'kesehatan', name: 'Kesehatan & Obat', iconSvg: '#i-heart-pill' },
+    { id: 'lainnya', name: 'Perlengkapan Rantau', iconSvg: '#i-backpack' }
+  ];
+
+  const DEFAULT_INVENTARIS = [
+    // Pakaian Kerja & Formal
+    { id: 'pk1', cat: 'pakaian', name: 'Kemeja formal putih lengan panjang', detail: 'Senin–Selasa: kemeja putih / business formal standar perbankan' },
+    { id: 'pk2', cat: 'pakaian', name: 'Kemeja formal katun lengan panjang (cadangan)', detail: 'Senin–Selasa: business formal (motif garis halus atau polos)' },
+    { id: 'pk3', cat: 'pakaian', name: 'Batik / Tenun khas daerah lengan panjang (x2)', detail: 'Rabu–Kamis: corak dominan, lengan panjang wajib & dilarang dilipat' },
+    { id: 'pk4', cat: 'pakaian', name: 'Kemeja berkerah + Blazer / Outer', detail: 'Jumat: business casual BNI, kemeja wajib dilapisi blazer/outer berkerah' },
+    { id: 'pk5', cat: 'pakaian', name: 'Kemeja formal wisuda UMS', detail: 'Jumat 25 Sep: kemeja putih/terang untuk dalaman toga di kampus Solo' },
+    { id: 'pk6', cat: 'pakaian', name: 'Kaos dalam putih lengan pendek (x4)', detail: 'Wajib warna putih, menjaga kerapian dalaman kemeja kerja' },
+    { id: 'pk7', cat: 'pakaian', name: 'Celana bahan pantalon / chino gelap (x2)', detail: 'Wajib kain bahan formal gelap (dilarang keras bahan jeans/denim)' },
+    { id: 'pk8', cat: 'pakaian', name: 'Sepatu pantofel kulit & kaos kaki gelap serasi', detail: 'Warna pantofel & kaos kaki wajib senada dengan warna celana' },
+    { id: 'pk9', cat: 'pakaian', name: 'Ikat pinggang kulit formal', detail: 'Warna kulit formal senada dengan sepatu pantofel' },
+    { id: 'pk10', cat: 'pakaian', name: 'Sneakers bersih / Loafers rapi', detail: 'Cadangan hari Jumat santai & mobilitas perjalanan luar kantor' },
+    { id: 'pk11', cat: 'pakaian', name: 'Pakaian ganti santai, tidur & pakaian dalam', detail: 'Secukupnya untuk istirahat di penginapan' },
+
+    // Dokumen & Administrasi Rantau
+    { id: 'doc1', cat: 'dokumen', name: 'KTP elektronik asli & salinan fotokopi', detail: 'Identitas wajib verifikasi gedung Menara BNI & stasiun' },
+    { id: 'doc2', cat: 'dokumen', name: 'E-Ticket kereta api keberangkatan (Kamis 24 Sep malam)', detail: 'Stasiun Gambir / Pasar Senen → Solo Balapan / Purwosari' },
+    { id: 'doc3', cat: 'dokumen', name: 'Undangan wisuda UMS & berkas permohonan izin', detail: 'Bukti resmi pengajuan dispensasi/izin ke mentor Pak Guruh' },
+    { id: 'doc4', cat: 'dokumen', name: 'E-Ticket kereta api kembali ke Jakarta (Minggu 27 Sep)', detail: 'Solo → Jakarta untuk persiapan masuk dinas Senin pagi' },
+    { id: 'doc5', cat: 'dokumen', name: 'Salinan Perjanjian Pemagangan (PKM-0026-PKM-II-2026)', detail: 'Dokumen perjanjian pemagangan resmi BNI & Kemnaker' },
+    { id: 'doc6', cat: 'dokumen', name: 'Pakta Integritas Magang BNI', detail: 'Arsip komitmen kepatuhan ditandatangani saat hari pertama masuk' },
+    { id: 'doc7', cat: 'dokumen', name: 'Kartu BPJS Ketenagakerjaan / Kesehatan & Pas Foto 3x4 / 4x6', detail: 'Jaminan darurat JKK/JKM pemerintah & arsip foto formal' },
+
+    // Perangkat & Elektronik
+    { id: 'el1', cat: 'elektronik', name: 'Laptop kerja & kabel adaptor charger', detail: 'Perangkat utama tugas divisi Sales Strategy & Execution' },
+    { id: 'el2', cat: 'elektronik', name: 'Smartphone & kabel charger USB', detail: 'Presensi GPS MagangHub Kemnaker & koordinasi tim' },
+    { id: 'el3', cat: 'elektronik', name: 'Power bank (terisi daya penuh)', detail: 'Cadangan daya esensial selama perjalanan kereta api malam' },
+    { id: 'el4', cat: 'elektronik', name: 'Earphone / headset dengan mikrofon', detail: 'Komunikasi meeting online & fokus kerja di kantor' },
+
+    // Perawatan & Toiletries
+    { id: 'tl1', cat: 'toiletries', name: 'Sikat gigi & pasta gigi travel', detail: 'Perlengkapan mandi praktis' },
+    { id: 'tl2', cat: 'toiletries', name: 'Sabun & sampo cair botol kecil', detail: 'Ukuran ramah tas ransel' },
+    { id: 'tl3', cat: 'toiletries', name: 'Deodoran & parfum segar', detail: 'Standar grooming dan kenyamanan ruang kerja kantor BNI' },
+    { id: 'tl4', cat: 'toiletries', name: 'Alat cukur kumis / jenggot (razor)', detail: 'SOP Grooming: kumis & jenggot wajib terawat rapi/bersih' },
+    { id: 'tl5', cat: 'toiletries', name: 'Handuk micro-fiber travel', detail: 'Cepat kering dan ringkas' },
+    { id: 'tl6', cat: 'toiletries', name: 'Sisir saku & minyak penata rambut / pomade', detail: 'SOP Grooming: potongan rambut rapi office look sepanjang hari' },
+
+    // Kesehatan & Obat
+    { id: 'ob1', cat: 'kesehatan', name: 'Obat-obatan rutin pribadi', detail: 'Persediaan obat resep jika ada' },
+    { id: 'ob2', cat: 'kesehatan', name: 'Tolak Angin, Paracetamol & Plester luka', detail: 'P3K dasar antisipasi daya tahan tubuh saat perjalanan' },
+    { id: 'ob3', cat: 'kesehatan', name: 'Masker medis higienis cadangan', detail: 'Untuk mobilitas di stasiun & transportasi publik' },
+    { id: 'ob4', cat: 'kesehatan', name: 'Hand sanitizer botol saku', detail: 'Higienitas tangan setiap saat' },
+
+    // Perlengkapan Rantau
+    { id: 'ot1', cat: 'lainnya', name: 'Sajadah travel tipis / sarung', detail: 'Kemudahan beribadah di perjalanan & mushola kantor' },
+    { id: 'ot2', cat: 'lainnya', name: 'Payung lipat ringkas', detail: 'Antisipasi cuaca hujan di area Pejompongan / Jakarta' },
+    { id: 'ot3', cat: 'lainnya', name: 'Tumbler / botol minum portabel', detail: 'Menjaga hidrasi harian' },
+    { id: 'ot4', cat: 'lainnya', name: 'Ransel kerja / daypack kantor', detail: 'Membawa laptop & dokumen ke Menara BNI Pejompongan' },
+    { id: 'ot5', cat: 'lainnya', name: 'Kantong laundry / plastik pakaian kotor', detail: 'Pemisah pakaian bekas pakai di koper' },
+    { id: 'ot6', cat: 'lainnya', name: 'Dompet, kartu uang elektronik (Flazz/e-Money/JakLingko), & uang tunai', detail: 'Akses KRL, MRT, TransJakarta, dan konsumsi darurat' }
+  ];
+
+  function escapeHtmlAttr(str) {
+    if (str == null) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+  }
+
+  function getInventarisItems() {
+    try {
+      const raw = localStorage.getItem(INVENTARIS_STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (e) {
+      console.warn('Gagal membaca inventaris dari localStorage:', e);
+    }
+    const initial = JSON.parse(JSON.stringify(DEFAULT_INVENTARIS));
+    saveInventarisItems(initial);
+    return initial;
+  }
+
+  function saveInventarisItems(items) {
+    try {
+      localStorage.setItem(INVENTARIS_STORAGE_KEY, JSON.stringify(items));
+    } catch (e) {
+      console.warn('Gagal menyimpan inventaris ke localStorage:', e);
+    }
+  }
+
+  function updateInventarisField(id, field, value) {
+    const items = getInventarisItems();
+    const item = items.find(it => it.id === id);
+    if (!item) return;
+    item[field] = value;
+    saveInventarisItems(items);
+    updateInventarisStats();
+  }
+
+  function handleInvNameKey(e, itemId) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const row = document.querySelector(`.inv-row[data-item="${itemId}"]`);
+      if (row) {
+        const detailInput = row.querySelector('.inv-edit-detail');
+        if (detailInput) detailInput.focus();
+      }
+    }
+  }
+
+  function addInventarisItem(catId) {
+    const items = getInventarisItems();
+    const targetCat = catId || 'pakaian';
+    const newItem = {
+      id: 'inv_' + Date.now().toString(36) + '_' + Math.random().toString(36).substring(2, 6),
+      cat: targetCat,
+      name: '',
+      detail: ''
+    };
+
+    let lastIndex = -1;
+    for (let i = items.length - 1; i >= 0; i--) {
+      if (items[i].cat === targetCat) {
+        lastIndex = i;
+        break;
+      }
+    }
+    if (lastIndex !== -1) {
+      items.splice(lastIndex + 1, 0, newItem);
+    } else {
+      items.push(newItem);
+    }
+
+    saveInventarisItems(items);
+    renderInventaris();
+
+    setTimeout(() => {
+      const row = document.querySelector(`.inv-row[data-item="${newItem.id}"]`);
+      if (row) {
+        row.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        const nameInput = row.querySelector('.inv-edit-name');
+        if (nameInput) nameInput.focus();
+      }
+    }, 60);
+    showToast('Barang baru ditambahkan');
+  }
+
+  function addInventarisPrompt() {
+    const catChoice = prompt(
+      'Pilih kategori barang (ketik angka 1-6):\n' +
+      '1. 👔 Pakaian Kerja & Formal\n' +
+      '2. 📄 Dokumen & Administrasi\n' +
+      '3. 💻 Perangkat & Elektronik\n' +
+      '4. 🧴 Perawatan & Toiletries\n' +
+      '5. 💊 Kesehatan & Obat\n' +
+      '6. 🎒 Perlengkapan Rantau'
+    );
+    if (!catChoice) return;
+    const catMap = {
+      '1': 'pakaian',
+      '2': 'dokumen',
+      '3': 'elektronik',
+      '4': 'toiletries',
+      '5': 'kesehatan',
+      '6': 'lainnya'
+    };
+    const catId = catMap[catChoice.trim()] || 'lainnya';
+    addInventarisItem(catId);
+  }
+
+  function deleteInventarisItem(id) {
+    let items = getInventarisItems();
+    const item = items.find(it => it.id === id);
+    const itemName = item?.name?.trim() || 'barang ini';
+    if (!confirm(`Hapus "${itemName}" dari daftar inventaris?`)) return;
+
+    items = items.filter(it => it.id !== id);
+    saveInventarisItems(items);
+    renderInventaris();
+    showToast('Barang dihapus dari inventaris');
+  }
+
+  function resetInventarisToDefault() {
+    if (!confirm('Pulihkan daftar inventaris ke default 38 barang standar BNI? Perubahan custom Anda akan diganti.')) return;
+    const initial = JSON.parse(JSON.stringify(DEFAULT_INVENTARIS));
+    saveInventarisItems(initial);
+    renderInventaris();
+    showToast('Inventaris dipulihkan ke 38 barang standar');
+  }
+
+  function updateInventarisStats() {
+    const items = getInventarisItems();
+    const totalEl = document.getElementById('inv-total-count');
+    if (totalEl) totalEl.textContent = items.length;
+
+    INVENTARIS_CATEGORIES.forEach(cat => {
+      const statEl = document.getElementById(`inv-cat-stats-${cat.id}`);
+      if (statEl) {
+        const count = items.filter(it => it.cat === cat.id).length;
+        statEl.textContent = `${count} item`;
+      }
     });
+  }
+
+  function renderInventaris() {
+    const container = document.getElementById('inventaris-container');
+    if (!container) return;
+
+    const items = getInventarisItems();
+    const totalEl = document.getElementById('inv-total-count');
+    if (totalEl) totalEl.textContent = items.length;
+
+    let html = '';
+    INVENTARIS_CATEGORIES.forEach(cat => {
+      const catItems = items.filter(it => it.cat === cat.id);
+      const iconHtml = cat.iconSvg
+        ? `<svg class="ic ic-16" aria-hidden="true"><use href="${cat.iconSvg}"/></svg>`
+        : (cat.icon || '📦');
+
+      html += `
+        <div class="category-group" data-cat="${cat.id}">
+          <div class="category-header">
+            <div class="category-title-wrap">
+              <span class="category-title">${iconHtml} ${cat.name}</span>
+              <span class="category-stats" id="inv-cat-stats-${cat.id}">${catItems.length} item</span>
+            </div>
+            <button type="button" class="inv-cat-add-btn" onclick="addInventarisItem('${cat.id}')" title="Tambah barang ke ${cat.name}">
+              <svg class="ic ic-14" aria-hidden="true"><use href="#i-plus"/></svg> Tambah
+            </button>
+          </div>
+          <div class="checklist-card">
+      `;
+
+      if (catItems.length === 0) {
+        html += `
+          <div class="inv-empty-state">
+            <span>Belum ada barang di kategori ini.</span>
+            <button type="button" class="inv-empty-add-btn" onclick="addInventarisItem('${cat.id}')">+ Tambah Barang</button>
+          </div>
+        `;
+      } else {
+        catItems.forEach(item => {
+          const escapedName = escapeHtmlAttr(item.name || '');
+          const escapedDetail = escapeHtmlAttr(item.detail || '');
+          html += `
+            <div class="inv-row" data-item="${item.id}">
+              <span class="inv-dot" aria-hidden="true">•</span>
+              <div class="task-body">
+                <input type="text" class="inv-edit-name" value="${escapedName}" placeholder="Nama barang..."
+                  oninput="updateInventarisField('${item.id}', 'name', this.value)"
+                  onchange="updateInventarisField('${item.id}', 'name', this.value)"
+                  onkeydown="handleInvNameKey(event, '${item.id}')"
+                  title="Klik untuk mengedit nama barang">
+                <input type="text" class="inv-edit-detail" value="${escapedDetail}" placeholder="Keterangan / spesifikasi (opsional)..."
+                  oninput="updateInventarisField('${item.id}', 'detail', this.value)"
+                  onchange="updateInventarisField('${item.id}', 'detail', this.value)"
+                  title="Klik untuk mengedit keterangan">
+              </div>
+              <button type="button" class="inv-del-btn" onclick="deleteInventarisItem('${item.id}')" title="Hapus barang">
+                <svg class="ic ic-14" aria-hidden="true"><use href="#i-trash"/></svg>
+              </button>
+            </div>
+          `;
+        });
+      }
+
+      html += `
+          </div>
+        </div>
+      `;
+    });
+
+    container.innerHTML = html;
   }
 
   // --- Copy Pending Items ---
@@ -6258,17 +6330,17 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
       if (!title) return;
       lines.push(title.innerText.trim());
       group.querySelectorAll('.inv-row').forEach(row => {
-        const label = row.querySelector('.task-label');
-        const detail = row.querySelector('.task-detail');
-        if (!label) return;
-        lines.push('- ' + label.innerText.trim() + (detail ? ' (' + detail.innerText.trim() + ')' : ''));
+        const nameVal = row.querySelector('.inv-edit-name')?.value.trim() || row.querySelector('.task-label')?.innerText.trim() || '';
+        const detailVal = row.querySelector('.inv-edit-detail')?.value.trim() || row.querySelector('.task-detail')?.innerText.trim() || '';
+        if (!nameVal) return;
+        lines.push('- ' + nameVal + (detailVal ? ' (' + detailVal + ')' : ''));
       });
       lines.push('');
     });
     const total = view.querySelectorAll('.inv-row').length;
-    const text = 'INVENTARIS RAUTAU ZAKI (' + total + ' barang)\n\n' + lines.join('\n').trim();
+    const text = 'INVENTARIS RANTAU ZAKI (' + total + ' barang)\n\n' + lines.join('\n').trim();
     navigator.clipboard.writeText(text).then(() => {
-      showToast(total + ' barang disalin');
+      showToast(total + ' barang disalin ke papan klip');
     }).catch(() => showToast('Gagal menyalin inventaris'));
   }
 
@@ -9184,6 +9256,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       }
     });
 
+    try { renderInventaris(); } catch (e) { console.error('renderInventaris error:', e); }
     try { renderLogbookHistory(); } catch (e) { console.error('renderLogbookHistory error:', e); }
     try { applyFiltering(); } catch (e) { console.error('applyFiltering error:', e); }
     try { updateMetrics(); } catch (e) { console.error('updateMetrics error:', e); }
@@ -9279,6 +9352,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     <g id="i-settings"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.2 2.2M16.9 16.9l2.2 2.2M19.1 4.9l-2.2 2.2M7.1 16.9l-2.2 2.2"/></g>
     <g id="i-clipboard"><rect x="8" y="3" width="8" height="4" rx="1"/><path d="M16 5h2a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2"/><path d="M9 12h6M9 16h4"/></g>
     <g id="i-coins"><ellipse cx="8" cy="7" rx="5" ry="2.5"/><path d="M3 7v4c0 1.4 2.2 2.5 5 2.5s5-1.1 5-2.5V7"/><path d="M6 14.5c-1.7.4-3 1.3-3 2.2 0 1.4 2.2 2.5 5 2.5s5-1.1 5-2.5c0-.9-1.3-1.8-3-2.2"/><path d="M16 9.5c2.2.2 4 1.1 4 2.2 0 1.4-2.2 2.5-5 2.5-.8 0-1.6-.1-2.2-.3"/></g>
+    <g id="i-plus"><path d="M12 5v14M5 12h14"/></g>
   </defs>
 </svg>
 
