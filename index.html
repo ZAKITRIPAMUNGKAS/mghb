@@ -5893,6 +5893,9 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
         </div>
       </div>
     </div>
+  </div>
+</div>
+
 <!-- Modal Edit Barang Inventaris -->
 <div class="modal-overlay" id="inv-edit-modal" onclick="handleInvModalBackdrop(event)">
   <div class="modal-box" onclick="event.stopPropagation()">
@@ -6649,18 +6652,18 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
 
           if (currentInvSubTab === 'view') {
             html += `
-              <div class="inv-row" data-item="${item.id}">
+              <div class="inv-row" data-item="${item.id}" onclick="openEditItemModal('${item.id}')" style="cursor: pointer;" title="Klik untuk mengedit barang ini">
                 <span class="inv-dot" aria-hidden="true">•</span>
                 <div class="task-body">
                   <div class="task-label">${escapedName || '<em style="color:var(--text-tertiary)">(Tanpa nama)</em>'}</div>
                   ${escapedDetail ? `<span class="task-detail">${escapedDetail}</span>` : ''}
                 </div>
-                <div style="display: flex; gap: 4px; align-items: center; flex-shrink: 0;">
+                <div style="display: flex; gap: 6px; align-items: center; flex-shrink: 0;" onclick="event.stopPropagation()">
                   <button type="button" class="inv-mini-btn" onclick="openEditItemModal('${item.id}')" title="Edit barang ini">
                     <svg class="ic ic-14" aria-hidden="true"><use href="#i-pencil"/></svg> Edit
                   </button>
                   <button type="button" class="inv-mini-btn inv-mini-del" onclick="deleteInventarisItem('${item.id}')" title="Hapus dari inventaris">
-                    <svg class="ic ic-14" aria-hidden="true"><use href="#i-trash"/></svg>
+                    <svg class="ic ic-14" aria-hidden="true"><use href="#i-trash"/></svg> Hapus
                   </button>
                 </div>
               </div>
@@ -6680,20 +6683,20 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
                     onchange="updateInventarisField('${item.id}', 'detail', this.value)"
                     title="Klik untuk mengedit keterangan">
                 </div>
-                <div style="display: flex; gap: 4px; align-items: center; flex-shrink: 0;">
+                <div style="display: flex; gap: 6px; align-items: center; flex-shrink: 0;">
                   <button type="button" class="inv-mini-btn" onclick="openEditItemModal('${item.id}')" title="Edit via popup formulir">
-                    <svg class="ic ic-14" aria-hidden="true"><use href="#i-pencil"/></svg>
+                    <svg class="ic ic-14" aria-hidden="true"><use href="#i-pencil"/></svg> Edit
                   </button>
                   <button type="button" class="inv-mini-btn inv-mini-del" onclick="deleteInventarisItem('${item.id}')" title="Hapus barang">
-                    <svg class="ic ic-14" aria-hidden="true"><use href="#i-trash"/></svg>
+                    <svg class="ic ic-14" aria-hidden="true"><use href="#i-trash"/></svg> Hapus
                   </button>
                 </div>
               </div>
             `;
           } else if (currentInvSubTab === 'delete') {
             html += `
-              <div class="inv-row" data-item="${item.id}" style="background: rgba(239, 68, 68, 0.02);">
-                <span class="inv-dot" style="background: rgba(239, 68, 68, 0.1); color: #ef4444;" aria-hidden="true">•</span>
+              <div class="inv-row" data-item="${item.id}" style="background: rgba(239, 68, 68, 0.03);">
+                <span class="inv-dot" style="background: rgba(239, 68, 68, 0.12); color: #ef4444;" aria-hidden="true">•</span>
                 <div class="task-body">
                   <div class="task-label" style="color: var(--text-primary); font-weight: 600;">${escapedName || '(Tanpa nama)'}</div>
                   ${escapedDetail ? `<span class="task-detail">${escapedDetail}</span>` : ''}
