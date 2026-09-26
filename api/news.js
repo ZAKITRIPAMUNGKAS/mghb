@@ -332,20 +332,23 @@ module.exports = async (req, res) => {
     console.warn('Google News RSS fetch failed:', gnewsResult.reason?.message || gnewsResult.value?.status);
   }
 
-  // Berita resmi Kemnaker RI dengan foto dokumentasi asli diprioritaskan di baris teratas (Warta Resmi)
-  const officialRealNews = results.filter(r => r.hasRealImage);
-  const mediaAggregatorNews = results.filter(r => !r.hasRealImage);
-
-  officialRealNews.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-  mediaAggregatorNews.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-
-  const finalResults = [...officialRealNews, ...mediaAggregatorNews];
+  // Urutkan secara KRONOLOGIS TERBARU (Berita hari ini/terbaru selalu di paling atas)
+  results.sort((a, b) => {
+    const diff = (b.timestamp || 0) - (a.timestamp || 0);
+    // Jika selisih waktu lebih dari 12 jam, berita yang lebih baru WAJIB berada di atas
+    if (Math.abs(diff) > 12 * 3600 * 1000) return diff;
+    // Jika pada kurun waktu yang sama (hari yang sama), beri prioritas warta resmi Kemnaker
+    const aIsKemnaker = (a.source && a.source.includes('Kemnaker')) ? 1 : 0;
+    const bIsKemnaker = (b.source && b.source.includes('Kemnaker')) ? 1 : 0;
+    if (bIsKemnaker !== aIsKemnaker) return bIsKemnaker - aIsKemnaker;
+    return diff;
+  });
 
   res.status(200).json({
     status: 'ok',
-    total: finalResults.length,
+    total: results.length,
     timestamp: Date.now(),
-    items: finalResults
+    items: results
   });
 };
 

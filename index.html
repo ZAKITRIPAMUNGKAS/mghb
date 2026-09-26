@@ -7467,12 +7467,12 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   }
 
   // --- MagangHub Live News Feed Engine ---
-  const NEWS_CACHE_KEY = 'mghb_news_cache_v20260926_fast';
+  const NEWS_CACHE_KEY = 'mghb_news_cache_v20260926_recency';
   let newsLoadedOnce = false;
   let activeNewsTopic = 'all';
 
   // Bersihkan semua cache lama
-  ['mghb_news_cache', 'mghb_news_cache_v2', 'mghb_news_cache_v3', 'mghb_news_cache_v4', 'mghb_news_cache_v5', 'mghb_news_cache_v6', 'mghb_news_cache_v7', 'mghb_news_cache_v8', 'mghb_news_cache_v20260921', 'mghb_news_cache_v20260921_real', 'mghb_news_cache_v20260921_clean', 'mghb_news_cache_v20260921_text', 'mghb_news_cache_v20260926_live', 'mghb_news_cache_v20260926_thumbs', 'mghb_news_cache_v20260926_official'].forEach(k => {
+  ['mghb_news_cache', 'mghb_news_cache_v2', 'mghb_news_cache_v3', 'mghb_news_cache_v4', 'mghb_news_cache_v5', 'mghb_news_cache_v6', 'mghb_news_cache_v7', 'mghb_news_cache_v8', 'mghb_news_cache_v20260921', 'mghb_news_cache_v20260921_real', 'mghb_news_cache_v20260921_clean', 'mghb_news_cache_v20260921_text', 'mghb_news_cache_v20260926_live', 'mghb_news_cache_v20260926_thumbs', 'mghb_news_cache_v20260926_official', 'mghb_news_cache_v20260926_stable', 'mghb_news_cache_v20260926_fast'].forEach(k => {
     try { localStorage.removeItem(k); } catch {}
   });
 
@@ -7484,6 +7484,42 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   };
 
   const CURATED_MAGANG_NEWS = [
+    {
+      title: 'MagangHub Batch 3 Dibuka Oktober 2026, Cek Jadwal dan Kuotanya',
+      source: 'detikcom',
+      sourceClass: 'source-detik',
+      pubDate: '26 Sep 2026',
+      timestamp: new Date('2026-09-26T17:00:31+07:00').getTime(),
+      link: 'https://news.google.com/rss/articles/CBMiZkFVX3lxTE42N1JLVHNYT2p1b2d1cFRmZ25WcER2WGNjR1Vub1ZLV013V2lFSUh4c1B5b1Y0Y3FpY3ZZdkU5RThwMnhzSWNkdDdtb3Mtb0kxaEVoUW56cUVrckJidkJtV0tVTW9mSFE?oc=5',
+      snippet: 'Kementerian Ketenagakerjaan kembali membuka Program MagangHub Batch 3 pada Oktober 2026 dengan puluhan ribu kuota bagi lulusan perguruan tinggi.',
+      topic: 'pengumuman',
+      image: 'https://awsimages.detik.net.id/api/wm/2026/09/02/magang-kemnaker-2026-batch-2-1788346807178_169.png?wid=54&w=1200&v=1&t=jpeg',
+      hasRealImage: true
+    },
+    {
+      title: 'Kemnaker Mulai MagangHub Batch 2, Sebanyak 40.962 Peserta Siap Ikuti Pemagangan',
+      source: 'Kemnaker RI (Binalavotas)',
+      sourceClass: 'source-kemnaker',
+      pubDate: '23 Sep 2026',
+      timestamp: new Date('2026-09-23T10:00:00+07:00').getTime(),
+      link: 'https://kemnaker.go.id/news/detail/kemnaker-mulai-maganghub-batch-2-sebanyak-40962-peserta-siap-ikuti-pemagangan',
+      snippet: 'Kemnaker resmi memulai pelaksanaan Pemagangan Dalam Negeri MagangHub Batch 2 dengan total 40.962 peserta yang ditempatkan di ribuan mitra industri dan perbankan BUMN.',
+      topic: 'pengumuman',
+      image: 'https://portal.kemnaker.go.id/storage/attachments/2fb/634/1c9/7918341e3d64fe28204689b71d604e3b1c67eacb.jpeg',
+      hasRealImage: true
+    },
+    {
+      title: 'Wamenaker: Peserta MagangHub Harus Siap Hadapi Dunia Kerja',
+      source: 'Kemnaker RI (Binalavotas)',
+      sourceClass: 'source-kemnaker',
+      pubDate: '22 Sep 2026',
+      timestamp: new Date('2026-09-22T09:00:00+07:00').getTime(),
+      link: 'https://kemnaker.go.id/news/detail/wamenaker-peserta-maganghub-harus-siap-hadapi-dunia-kerja',
+      snippet: 'Wakil Menteri Ketenagakerjaan mengingatkan para peserta MagangHub untuk memanfaatkan kesempatan belajar secara maksimal, menjaga etika profesional, dan membangun jejaring kerja.',
+      topic: 'pengumuman',
+      image: 'https://portal.kemnaker.go.id/storage/attachments/63d/93f/4c4/d463ef18512140cbff327e572099307775f14fc2.jpeg',
+      hasRealImage: true
+    },
     {
       title: 'Kemnaker: Cek Pengumuman MagangHub di Portal Resmi',
       source: 'Kemnaker RI (Binalavotas)',
@@ -7788,10 +7824,16 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   function sortNewsItems(list) {
     if (!list || !Array.isArray(list)) return [];
     return [...list].sort((a, b) => {
-      const aReal = (a.hasRealImage || (a.image && a.image.includes('portal.kemnaker.go.id')) || (a.source && a.source.includes('Kemnaker'))) ? 1 : 0;
-      const bReal = (b.hasRealImage || (b.image && b.image.includes('portal.kemnaker.go.id')) || (b.source && b.source.includes('Kemnaker'))) ? 1 : 0;
-      if (bReal !== aReal) return bReal - aReal;
-      return getNewsTimestamp(b) - getNewsTimestamp(a);
+      const tsA = getNewsTimestamp(a);
+      const tsB = getNewsTimestamp(b);
+      const diff = tsB - tsA;
+      // Jika selisih waktu lebih dari 12 jam, berita yang lebih baru WAJIB berada di atas
+      if (Math.abs(diff) > 12 * 3600 * 1000) return diff;
+      // Jika pada kurun waktu yang sama (hari yang sama), prioritaskan rilis resmi Kemnaker
+      const aOfficial = (a.source && a.source.includes('Kemnaker')) ? 1 : 0;
+      const bOfficial = (b.source && b.source.includes('Kemnaker')) ? 1 : 0;
+      if (bOfficial !== aOfficial) return bOfficial - aOfficial;
+      return diff;
     });
   }
 
