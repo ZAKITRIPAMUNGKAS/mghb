@@ -5902,7 +5902,7 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
     <div class="modal-head">
       <div class="modal-title-wrap">
         <h3>Edit Barang Inventaris</h3>
-        <p>Ubah nama, keterangan atau kategori barang</p>
+        <p>Ubah nama atau kategori barang</p>
       </div>
       <button class="btn-close" onclick="closeInvEditModal()" title="Tutup">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -5924,13 +5924,9 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
           <option value="lainnya">🎒 Perlengkapan Rantau</option>
         </select>
       </div>
-      <div style="margin-bottom: 12px;">
+      <div style="margin-bottom: 16px;">
         <label style="display: block; font-size: 0.74rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 4px;">Nama Barang *</label>
         <input type="text" id="inv-modal-name" class="inv-input" style="width: 100%; box-sizing: border-box;" placeholder="Nama barang...">
-      </div>
-      <div style="margin-bottom: 16px;">
-        <label style="display: block; font-size: 0.74rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 4px;">Keterangan / Spesifikasi</label>
-        <input type="text" id="inv-modal-detail" class="inv-input" style="width: 100%; box-sizing: border-box;" placeholder="Keterangan / catatan spesifikasi...">
       </div>
       <div style="display: flex; gap: 8px; justify-content: flex-end;">
         <button type="button" class="utility-btn" onclick="closeInvEditModal()">Batal</button>
@@ -6206,8 +6202,7 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
 
     rows.forEach(row => {
       const nameVal = row.querySelector('.inv-edit-name')?.value || row.querySelector('.task-label')?.innerText || '';
-      const detailVal = row.querySelector('.inv-edit-detail')?.value || row.querySelector('.task-detail')?.innerText || '';
-      const text = (nameVal + ' ' + detailVal + ' ' + (row.innerText || '')).toLowerCase();
+      const text = (nameVal + ' ' + (row.innerText || '')).toLowerCase();
 
       let matchesSearch = true;
       if (searchQuery) matchesSearch = text.includes(searchQuery);
@@ -6401,11 +6396,7 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
             </div>
             <div class="inv-field">
               <label>Nama Barang *</label>
-              <input type="text" id="inv-form-name" class="inv-input" placeholder="Misal: Kemeja formal putih cadangan...">
-            </div>
-            <div class="inv-field" style="grid-column: 1 / -1;">
-              <label>Keterangan / Spesifikasi (opsional)</label>
-              <input type="text" id="inv-form-detail" class="inv-input" placeholder="Misal: Lengan panjang corak halus...">
+              <input type="text" id="inv-form-name" class="inv-input" placeholder="Misal: Kemeja formal putih cadangan..." onkeydown="if(event.key==='Enter')submitNewInventarisItem()">
             </div>
           </div>
           <div style="display: flex; justify-content: flex-end; margin-top: 10px; gap: 8px;">
@@ -6433,11 +6424,9 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
   function submitNewInventarisItem() {
     const catEl = document.getElementById('inv-form-cat');
     const nameEl = document.getElementById('inv-form-name');
-    const detailEl = document.getElementById('inv-form-detail');
 
     const cat = catEl ? catEl.value : 'pakaian';
     const name = nameEl ? nameEl.value.trim() : '';
-    const detail = detailEl ? detailEl.value.trim() : '';
 
     if (!name) {
       showToast('Ketik nama barang terlebih dahulu');
@@ -6450,7 +6439,7 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
       id: 'inv_' + Date.now().toString(36) + '_' + Math.random().toString(36).substring(2, 6),
       cat,
       name,
-      detail
+      detail: ''
     };
 
     items.push(newItem);
@@ -6458,7 +6447,6 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
     renderInventaris();
 
     if (nameEl) nameEl.value = '';
-    if (detailEl) detailEl.value = '';
 
     showToast(`"${name}" berhasil ditambahkan!`);
   }
@@ -6471,15 +6459,14 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
     const idEl = document.getElementById('inv-modal-id');
     const catEl = document.getElementById('inv-modal-cat');
     const nameEl = document.getElementById('inv-modal-name');
-    const detailEl = document.getElementById('inv-modal-detail');
 
     if (idEl) idEl.value = item.id;
     if (catEl) catEl.value = item.cat || 'pakaian';
     if (nameEl) nameEl.value = item.name || '';
-    if (detailEl) detailEl.value = item.detail || '';
 
     const modal = document.getElementById('inv-edit-modal');
     if (modal) modal.classList.add('active');
+    if (nameEl) setTimeout(() => nameEl.focus(), 100);
   }
 
   function closeInvEditModal() {
@@ -6497,7 +6484,6 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
     const id = document.getElementById('inv-modal-id')?.value;
     const cat = document.getElementById('inv-modal-cat')?.value || 'pakaian';
     const name = document.getElementById('inv-modal-name')?.value.trim() || '';
-    const detail = document.getElementById('inv-modal-detail')?.value.trim() || '';
 
     if (!name) {
       showToast('Nama barang tidak boleh kosong');
@@ -6509,7 +6495,6 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
     if (item) {
       item.cat = cat;
       item.name = name;
-      item.detail = detail;
       saveInventarisItems(items);
       renderInventaris();
       closeInvEditModal();
@@ -6529,11 +6514,7 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
   function handleInvNameKey(e, itemId) {
     if (e.key === 'Enter') {
       e.preventDefault();
-      const row = document.querySelector(`.inv-row[data-item="${itemId}"]`);
-      if (row) {
-        const detailInput = row.querySelector('.inv-edit-detail');
-        if (detailInput) detailInput.focus();
-      }
+      e.target.blur();
     }
   }
 
@@ -6648,7 +6629,6 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
       } else {
         catItems.forEach(item => {
           const escapedName = escapeHtmlAttr(item.name || '');
-          const escapedDetail = escapeHtmlAttr(item.detail || '');
 
           if (currentInvSubTab === 'view') {
             html += `
@@ -6656,7 +6636,6 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
                 <span class="inv-dot" aria-hidden="true">•</span>
                 <div class="task-body">
                   <div class="task-label">${escapedName || '<em style="color:var(--text-tertiary)">(Tanpa nama)</em>'}</div>
-                  ${escapedDetail ? `<span class="task-detail">${escapedDetail}</span>` : ''}
                 </div>
                 <div style="display: flex; gap: 6px; align-items: center; flex-shrink: 0;" onclick="event.stopPropagation()">
                   <button type="button" class="inv-mini-btn" onclick="openEditItemModal('${item.id}')" title="Edit barang ini">
@@ -6678,10 +6657,6 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
                     onchange="updateInventarisField('${item.id}', 'name', this.value)"
                     onkeydown="handleInvNameKey(event, '${item.id}')"
                     title="Klik untuk mengedit nama barang">
-                  <input type="text" class="inv-edit-detail" value="${escapedDetail}" placeholder="Keterangan / spesifikasi (opsional)..."
-                    oninput="updateInventarisField('${item.id}', 'detail', this.value)"
-                    onchange="updateInventarisField('${item.id}', 'detail', this.value)"
-                    title="Klik untuk mengedit keterangan">
                 </div>
                 <div style="display: flex; gap: 6px; align-items: center; flex-shrink: 0;">
                   <button type="button" class="inv-mini-btn" onclick="openEditItemModal('${item.id}')" title="Edit via popup formulir">
@@ -6699,7 +6674,6 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
                 <span class="inv-dot" style="background: rgba(239, 68, 68, 0.12); color: #ef4444;" aria-hidden="true">•</span>
                 <div class="task-body">
                   <div class="task-label" style="color: var(--text-primary); font-weight: 600;">${escapedName || '(Tanpa nama)'}</div>
-                  ${escapedDetail ? `<span class="task-detail">${escapedDetail}</span>` : ''}
                 </div>
                 <button type="button" class="inv-btn-delete-prominent" onclick="deleteInventarisItem('${item.id}')" title="Hapus ${escapedName}">
                   <svg class="ic ic-14" aria-hidden="true"><use href="#i-trash"/></svg> Hapus
@@ -6730,9 +6704,8 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
       lines.push(title.innerText.trim());
       group.querySelectorAll('.inv-row').forEach(row => {
         const nameVal = row.querySelector('.inv-edit-name')?.value.trim() || row.querySelector('.task-label')?.innerText.trim() || '';
-        const detailVal = row.querySelector('.inv-edit-detail')?.value.trim() || row.querySelector('.task-detail')?.innerText.trim() || '';
         if (!nameVal) return;
-        lines.push('- ' + nameVal + (detailVal ? ' (' + detailVal + ')' : ''));
+        lines.push('- ' + nameVal);
       });
       lines.push('');
     });
