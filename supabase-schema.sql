@@ -80,3 +80,34 @@ CREATE POLICY "Akses publik pengeluaran" ON mghb_expenses FOR ALL USING (true) W
 CREATE POLICY "Akses publik checklist" ON mghb_checklists FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Akses publik mom" ON mghb_moms FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Akses publik settings" ON mghb_settings FOR ALL USING (true) WITH CHECK (true);
+
+-- 6. TABEL TAGIHAN BULANAN TETAP (Smart Checklist Keuangan Rantau)
+CREATE TABLE IF NOT EXISTS mghb_bills (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    amount NUMERIC(12, 2) NOT NULL DEFAULT 0,
+    due_day INTEGER NOT NULL DEFAULT 1 CHECK (due_day BETWEEN 1 AND 31),
+    paid BOOLEAN NOT NULL DEFAULT FALSE,
+    icon TEXT,
+    is_custom BOOLEAN NOT NULL DEFAULT FALSE,
+    sort_order INTEGER NOT NULL DEFAULT 0,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Seed tagihan default (aman: ON CONFLICT DO NOTHING)
+INSERT INTO mghb_bills (id, name, amount, due_day, is_custom, sort_order) VALUES
+    ('bill_kos', 'Sewa Kos Benhil', 1200000, 1, FALSE, 1),
+    ('bill_listrik', 'Token Listrik Kos', 150000, 5, FALSE, 2),
+    ('bill_kuota', 'Paket Data / Kuota', 100000, 10, FALSE, 3),
+    ('bill_laundry', 'Langganan Laundry Kiloan', 150000, 15, FALSE, 4)
+ON CONFLICT (id) DO NOTHING;
+
+-- Simpan nominal pemasukan bulanan yang dipakai form (sinkron income <-> settings)
+INSERT INTO mghb_settings (key, value)
+VALUES ('finance_income', '3500000'::jsonb)
+ON CONFLICT (key) DO NOTHING;
+
+CREATE INDEX IF NOT EXISTS idx_bills_due ON mghb_bills(due_day ASC);
+ALTER TABLE mghb_bills ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Akses publik tagihan" ON mghb_bills FOR ALL USING (true) WITH CHECK (true);

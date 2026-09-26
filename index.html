@@ -6394,6 +6394,19 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
             updateMetrics();
           }
         })
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'mghb_bills' }, () => {
+          supabaseClient.from('mghb_bills').select('*').order('sort_order', { ascending: true }).then(({ data }) => {
+            if (data && Array.isArray(data) && data.length > 0) {
+              saveFinanceBills(data.map(cb => ({
+                id: cb.id, name: cb.name, amount: Number(cb.amount) || 0,
+                dueDay: Number(cb.due_day) || 1, paid: Boolean(cb.paid),
+                icon: cb.icon || '', custom: Boolean(cb.is_custom)
+              })));
+              renderFinanceBills();
+              updateFinanceCalculations();
+            }
+          });
+        })
         .subscribe();
     } catch (e) {
       console.warn('Realtime subscription skipped:', e);
@@ -6575,7 +6588,24 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
         await supabaseClient.from('mghb_logbooks').upsert(logRows);
       }
 
-      // 4. Fetch cloud checklists to merge back
+      // 4. Sync Tagihan Bulanan Tetap (Batch Upsert Cepat)
+      const localBills = getFinanceBills();
+      if (localBills.length > 0) {
+        const billRows = localBills.map((b, idx) => ({
+          id: b.id,
+          name: b.name,
+          amount: Number(b.amount) || 0,
+          due_day: Number(b.dueDay) || 1,
+          paid: Boolean(b.paid),
+          icon: b.icon || '',
+          is_custom: Boolean(b.custom),
+          sort_order: idx + 1,
+          updated_at: new Date().toISOString()
+        }));
+        await supabaseClient.from('mghb_bills').upsert(billRows);
+      }
+
+      // 5. Fetch cloud checklists to merge back
       const { data: cloudChecklists } = await supabaseClient.from('mghb_checklists').select('*');
       if (cloudChecklists && Array.isArray(cloudChecklists) && cloudChecklists.length > 0) {
         const localState = getStoredState();
@@ -6599,7 +6629,7 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
         }
       }
 
-      // 5. Fetch cloud logbooks to merge back
+      // 6. Fetch cloud logbooks to merge back
       const { data: cloudLogs } = await supabaseClient.from('mghb_logbooks').select('*').order('report_date', { ascending: false });
       if (cloudLogs && Array.isArray(cloudLogs) && cloudLogs.length > 0) {
         const mergedLogs = cloudLogs.map(cl => ({
@@ -6616,7 +6646,7 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
         renderLogbookHistory();
       }
 
-      // 6. Fetch cloud expenses to merge back
+      // 7. Fetch cloud expenses to merge back
       const { data: cloudExpenses } = await supabaseClient.from('mghb_expenses').select('*').order('tx_date', { ascending: false });
       if (cloudExpenses && Array.isArray(cloudExpenses) && cloudExpenses.length > 0) {
         const mergedExpenses = cloudExpenses.map(ce => ({
@@ -6628,6 +6658,23 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
         }));
         saveFinanceExpenses(mergedExpenses);
         renderFinanceExpenses();
+        updateFinanceCalculations();
+      }
+
+      // 8. Fetch cloud bills to merge back
+      const { data: cloudBills } = await supabaseClient.from('mghb_bills').select('*').order('sort_order', { ascending: true });
+      if (cloudBills && Array.isArray(cloudBills) && cloudBills.length > 0) {
+        const mergedBills = cloudBills.map(cb => ({
+          id: cb.id,
+          name: cb.name,
+          amount: Number(cb.amount) || 0,
+          dueDay: Number(cb.due_day) || 1,
+          paid: Boolean(cb.paid),
+          icon: cb.icon || '',
+          custom: Boolean(cb.is_custom)
+        }));
+        saveFinanceBills(mergedBills);
+        renderFinanceBills();
         updateFinanceCalculations();
       }
 
@@ -6765,7 +6812,7 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
   async function generateLogbookAI() {
     const dateEl = document.getElementById('lb-date');
     const dateVal = (dateEl && dateEl.value) || new Date().toISOString().slice(0, 10);
-    const category = document.getElementById('lb-category')?.value || '';
+    const category = 'general';
     const rough = (document.getElementById('lb-rough-notes')?.value || '').trim();
     const obstacle = (document.getElementById('lb-obstacle')?.value || '').trim();
     const btn = document.getElementById('btn-generate-ai');
@@ -6776,12 +6823,12 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
       return;
     }
     if (!rough || rough.length < 3) {
-      showToast('Isi dulu catatan aktivitas (format: 08:00 kegiatan...) atau pakai preset 1-klik.');
+      showToast('Isi dulu catatan aktivitas (format: 08:00 kegiatan...).');
       return;
     }
 
     if (btn) btn.disabled = true;
-    if (label) label.textContent = '⏳ Menghubungi AI...';
+    if (label) label.textContent = 'Menghubungi AI...';
     try {
       const ctrl = new AbortController();
       const timer = setTimeout(() => ctrl.abort(), 60000);
@@ -6821,7 +6868,7 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
   // --- Daily Logbook Formulator Logic (Standar Resmi MagangHub Kemnaker) ---
   function generateLogbook() {
     const dateVal = document.getElementById('lb-date').value || new Date().toISOString().slice(0, 10);
-    const category = document.getElementById('lb-category').value;
+    const category = 'general';
     let rough = document.getElementById('lb-rough-notes').value.trim();
     const obstacle = document.getElementById('lb-obstacle').value.trim();
 
@@ -6835,25 +6882,9 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
     let lrn = '';
     let obs = '';
 
-    if (category === 'data') {
-      act = `Melaksanakan pengolahan, rekapitulasi, dan validasi data realisasi kinerja penjualan cabang pada Divisi Sales Strategy & Execution (SSE), meliputi verifikasi konsistensi data masukan (${rough}) serta memastikan proses pembersihan data anomali (data cleansing) berjalan sesuai standar pelaporan divisi.`;
-      lrn = `Memahami metodologi validasi dan audit data tabular di lingkungan perbankan, meningkatkan kecakapan fungsi analitik spreadsheet lanjutan, serta memahami pentingnya integritas data dalam proses evaluasi pencapaian target penjualan tim SSE.`;
-    } else if (category === 'briefing') {
-      act = `Mengikuti pengarahan (briefing) koordinasi bersama mentor Bapak Guruh Sri Handoyo di Divisi Sales Strategy & Execution (SSE), membahas prioritas target penjualan dan mendokumentasikan poin-poin arahan kerja (${rough}) untuk ditindaklanjuti secara terstruktur.`;
-      lrn = `Memahami tata kelola komunikasi profesional korporat dalam mengartikulasikan target bisnis, menyelaraskan rencana aksi penugasan bersama mentor, serta menumbuhkan etos kerja berorientasi hasil sesuai nilai AKHLAK BNI.`;
-    } else if (category === 'dashboard') {
-      act = `Melakukan pembaruan (updating) dan pemeliharaan antarmuka dashboard analitik kinerja penjualan divisi SSE (${rough}), memastikan rumus kalkulasi persentase pencapaian (achievement rate) dan visualisasi tren penjualan terhitung akurat.`;
-      lrn = `Mengasah kompetensi penyajian data visual yang ringkas dan komunikatif, memahami logika metrik kinerja perbankan, serta merancang visualisasi yang mempermudah evaluasi strategis bagi pimpinan divisi.`;
-    } else if (category === 'evaluasi') {
-      act = `Melakukan analisis komparatif performa penjualan cabang terhadap target yang ditetapkan serta mengeksplorasi data pendukung (${rough}) guna mengidentifikasi area yang memerlukan penguatan penetrasi produk perbankan.`;
-      lrn = `Memahami faktor pendorong pertumbuhan portofolio CASA dan DPK, mengasah daya pikir analitis terhadap data bisnis ritel, serta belajar merumuskan kesimpulan evaluatif dari data historis penjualan.`;
-    } else if (category === 'onboarding') {
-      act = `Melaksanakan program adaptasi dan pengenalan lingkungan kerja operasional Menara BNI Pejompongan (${rough}), mencakup pemahaman struktur organisasi divisi SSE, tata tertib absensi, dan standar etika korporat BNI HCS.`;
-      lrn = `Menginternalisasi budaya profesionalisme perbankan nasional, memahami alur birokrasi dan koordinasi unit kerja, serta membangun komitmen kepatuhan terhadap kerahasiaan data dan kode etik Bank BNI.`;
-    } else {
-      act = `Melaksanakan koordinasi dan penugasan operasional divisi Sales Strategy & Execution (${rough}) dengan memperhatikan aspek ketelitian, kepatuhan kerahasiaan data perbankan, dan standar mutu kerja perbankan.`;
-      lrn = `Memperoleh pengalaman praktis mengenai alur kerja divisi bisnis kantor pusat perbankan, meningkatkan kedisiplinan kerja tim, serta memahami kepatuhan SOP pelaporan program pemagangan.`;
-    }
+    // Satu template generik — semua pengerjaan lewat AI / fallback dibaca dari catatan bebas
+    act = `Melaksanakan koordinasi dan penugasan operasional divisi Sales Strategy & Execution (${rough}) dengan memperhatikan aspek ketelitian, kepatuhan kerahasiaan data perbankan, dan standar mutu kerja perbankan.`;
+    lrn = `Memperoleh pengalaman praktis mengenai alur kerja divisi bisnis kantor pusat perbankan, meningkatkan kedisiplinan kerja tim, serta memahami kepatuhan SOP pelaporan program pemagangan.`;
 
     obs = obstacle 
       ? `Kendala teknis yang dihadapi di lapangan: ${obstacle}. Solusi tindak lanjut: Melakukan penyesuaian prosedur kerja secara cermat serta berkoordinasi intensif bersama mentor dan rekan kerja sehingga penugasan dapat terselesaikan dengan baik sesuai standar divisi.` 
@@ -6911,8 +6942,8 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
 
   function saveLogbookHistory() {
     const dateVal = document.getElementById('lb-date').value || new Date().toISOString().slice(0, 10);
-    const category = document.getElementById('lb-category')?.value || 'general';
-    const catLabel = document.getElementById('lb-category')?.selectedOptions?.[0]?.text || 'Umum';
+    const category = 'general';
+    const catLabel = 'Logbook Harian MagangHub';
     const rough = document.getElementById('lb-rough-notes')?.value.trim() || '';
     const act = document.getElementById('res-activity')?.textContent || '';
     const lrn = document.getElementById('res-learning')?.textContent || '';
@@ -8097,12 +8128,29 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     localStorage.setItem(FIN_BILLS_KEY, JSON.stringify(bills));
   }
 
+  function syncBillsToSupabase() {
+    if (!supabaseClient) return;
+    const rows = getFinanceBills().map((b, idx) => ({
+      id: b.id,
+      name: b.name,
+      amount: Number(b.amount) || 0,
+      due_day: Number(b.dueDay) || 1,
+      paid: Boolean(b.paid),
+      icon: b.icon || '',
+      is_custom: Boolean(b.custom),
+      sort_order: idx + 1,
+      updated_at: new Date().toISOString()
+    }));
+    supabaseClient.from('mghb_bills').upsert(rows).catch(err => console.warn('Supabase bills sync error:', err));
+  }
+
   function toggleBillPaid(id) {
     const bills = getFinanceBills();
     const item = bills.find(b => b.id === id);
     if (item) {
       item.paid = !item.paid;
       saveFinanceBills(bills);
+      syncBillsToSupabase();
       renderFinanceBills();
       updateFinanceCalculations();
       showToast(`${item.name}: status ${item.paid ? 'Lunas ' : 'Belum Bayar'}`);
@@ -8121,6 +8169,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       custom: true
     });
     saveFinanceBills(bills);
+    syncBillsToSupabase();
     renderFinanceBills();
     updateFinanceCalculations();
     showToast('Tagihan baru ditambahkan — klik untuk edit');
@@ -8138,6 +8187,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       item.dueDay = Math.min(Math.max(parseInt(value, 10) || 1, 1), 31);
     }
     saveFinanceBills(bills);
+    syncBillsToSupabase();
     if (field === 'amount' || field === 'dueDay') updateFinanceCalculations();
   }
 
@@ -8148,6 +8198,9 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     if (confirm(`Hapus tagihan "${bill.name}"?`)) {
       bills = bills.filter(b => b.id !== id);
       saveFinanceBills(bills);
+      if (supabaseClient) {
+        supabaseClient.from('mghb_bills').delete().eq('id', id).catch(err => console.warn('Supabase delete bill error:', err));
+      }
       renderFinanceBills();
       updateFinanceCalculations();
       showToast('Tagihan berhasil dihapus');
@@ -8266,6 +8319,19 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     if (incomeInput) {
       incomeInput.value = getFinanceIncome().toLocaleString('id-ID');
     }
+    // Pull income dari cloud settings bila lebih baru
+    if (supabaseClient) {
+      supabaseClient.from('mghb_settings').select('value').eq('key', 'finance_income').maybeSingle().then(({ data }) => {
+        if (data && data.value != null) {
+          const cloud = Number(data.value) || parseInt(String(data.value), 10) || 0;
+          if (cloud > 0 && cloud !== getFinanceIncome()) {
+            localStorage.setItem(FIN_INCOME_KEY, String(cloud));
+            incomeInput.value = cloud.toLocaleString('id-ID');
+            updateFinanceCalculations();
+          }
+        }
+      });
+    }
     const dateInput = document.getElementById('fin-tx-date');
     if (dateInput && !dateInput.value) {
       dateInput.value = new Date().toISOString().slice(0, 10);
@@ -8280,6 +8346,11 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     let income = incomeInput ? parseMoney(incomeInput.value) : getFinanceIncome();
     if (income < 0) income = 0;
     localStorage.setItem(FIN_INCOME_KEY, income.toString());
+    if (incomeInput) incomeInput.value = income.toLocaleString('id-ID');
+    if (supabaseClient) {
+      supabaseClient.from('mghb_settings').upsert({ key: 'finance_income', value: income, updated_at: new Date().toISOString() })
+        .catch(err => console.warn('Supabase income sync error:', err));
+    }
 
     const bills = getFinanceBills();
     const totalBills = bills.reduce((s, b) => s + (Number(b.amount) || 0), 0);
