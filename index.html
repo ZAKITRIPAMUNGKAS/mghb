@@ -4626,23 +4626,38 @@
 
       <!-- Expense History Log -->
       <div class="feature-card" style="margin-top: 14px;">
-      <div class="feature-head">
-        <div class="feature-title">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
-            <polyline points="12 8 12 12 14 14"></polyline>
-            <path d="M3.05 11a9 9 0 1 1 .5 4m-.5 5v-5h5"></path>
-          </svg>
+        <div class="feature-head">
+          <div class="feature-title">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+              <polyline points="12 8 12 12 14 14"></polyline>
+              <path d="M3.05 11a9 9 0 1 1 .5 4m-.5 5v-5h5"></path>
+            </svg>
             Riwayat Transaksi
           </div>
           <div style="display: flex; gap: 6px;">
-            <button class="btn-action btn-xs" onclick="exportFinanceSummaryText()">
+            <button class="btn-action btn-xs" onclick="exportFinanceCSV()" title="Download riwayat transaksi ke format CSV / Excel">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              CSV
+            </button>
+            <button class="btn-action btn-xs" onclick="exportFinanceSummaryText()" title="Salin rekap siap kirim ke WhatsApp">
               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-              Salin Rekap (WA)
+              WA
             </button>
             <button class="utility-btn btn-xs" onclick="clearFinanceHistory()" style="color: #ef4444; border-color: rgba(239, 68, 68, 0.3);">
               Reset
             </button>
           </div>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="finance-filter-bar">
+          <div class="finance-filter-chips">
+            <button type="button" class="finance-filter-btn active" id="fin-filter-all" onclick="setFinanceFilter('all')">Semua</button>
+            <button type="button" class="finance-filter-btn" id="fin-filter-today" onclick="setFinanceFilter('today')">Hari Ini</button>
+            <button type="button" class="finance-filter-btn" id="fin-filter-week" onclick="setFinanceFilter('week')">Minggu Ini</button>
+            <button type="button" class="finance-filter-btn" id="fin-filter-month" onclick="setFinanceFilter('month')">Bulan Ini</button>
+          </div>
+          <span id="fin-filter-count" style="font-size: 0.68rem; color: var(--text-tertiary);">0 transaksi</span>
         </div>
 
         <div class="finance-tx-list" id="finance-tx-container">
@@ -7808,30 +7823,168 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     });
   }
 
-  // --- Jakarta Financial Management Engine ---
+  // --- Jakarta Financial Management Engine (Advanced Fintech Suite) ---
   const FIN_INCOME_KEY = 'mghb_fin_income';
   const FIN_EXPENSES_KEY = 'mghb_fin_expenses';
   const FIN_FIXED_KEY = 'mghb_fin_fixed_monthly';
+  const FIN_BILLS_KEY = 'mghb_fin_bills';
+
+  const DEFAULT_BILLS = [
+    { id: 'bill_kos', name: 'Sewa Kos Benhil', amount: 1200000, dueDay: 1, paid: false, icon: '🏠', custom: false },
+    { id: 'bill_listrik', name: 'Token Listrik Kos', amount: 150000, dueDay: 5, paid: false, icon: '⚡', custom: false },
+    { id: 'bill_kuota', name: 'Paket Data / Kuota', amount: 100000, dueDay: 10, paid: false, icon: '📶', custom: false },
+    { id: 'bill_laundry', name: 'Langganan Laundry Kiloan', amount: 150000, dueDay: 15, paid: false, icon: '🧼', custom: false }
+  ];
 
   const FIN_CATEGORY_META = {
-    makan: { label: 'Makan & Minum', badge: '🍱' },
-    transport: { label: 'Transportasi', badge: '🚆' },
-    kos: { label: 'Kos & Utilitas', badge: '🏠' },
-    laundry: { label: 'Laundry & Pribadi', badge: '🧼' },
-    kopi: { label: 'Kopi & Hangout', badge: '☕' },
-    wisuda: { label: 'Wisuda UMS & Solo', badge: '🎓' },
-    lainnya: { label: 'Lain-lain / Darurat', badge: '💡' }
+    makan: { label: 'Makan & Minum', badge: '🍱', color: '#007C89' },
+    transport: { label: 'Transportasi', badge: '🚆', color: '#0284c7' },
+    kos: { label: 'Kos & Utilitas', badge: '🏠', color: '#d97706' },
+    laundry: { label: 'Laundry & Pribadi', badge: '🧼', color: '#8b5cf6' },
+    kopi: { label: 'Kopi & Hangout', badge: '☕', color: '#F15A24' },
+    wisuda: { label: 'Wisuda UMS & Solo', badge: '🎓', color: '#ec4899' },
+    lainnya: { label: 'Lain-lain / Darurat', badge: '💡', color: '#64748b' }
   };
+
+  let currentFinanceFilter = 'all';
 
   function getFinanceIncome() {
     const val = localStorage.getItem(FIN_INCOME_KEY);
     return val ? parseInt(val, 10) : 3500000;
   }
 
+  function getFinanceBills() {
+    try {
+      const stored = localStorage.getItem(FIN_BILLS_KEY);
+      if (!stored) {
+        saveFinanceBills(DEFAULT_BILLS);
+        return DEFAULT_BILLS;
+      }
+      const parsed = JSON.parse(stored);
+      return Array.isArray(parsed) && parsed.length > 0 ? parsed : DEFAULT_BILLS;
+    } catch {
+      return DEFAULT_BILLS;
+    }
+  }
+
+  function saveFinanceBills(bills) {
+    localStorage.setItem(FIN_BILLS_KEY, JSON.stringify(bills));
+  }
+
+  function toggleBillPaid(id) {
+    const bills = getFinanceBills();
+    const item = bills.find(b => b.id === id);
+    if (item) {
+      item.paid = !item.paid;
+      saveFinanceBills(bills);
+      renderFinanceBills();
+      updateFinanceCalculations();
+      showToast(`${item.name}: status ${item.paid ? 'Lunas ✅' : 'Belum Bayar'}`);
+    }
+  }
+
+  function promptAddCustomBill() {
+    const name = prompt('Nama tagihan tetap (mis. Wifi Kos, Gym, Netflix):');
+    if (!name || !name.trim()) return;
+    const amountStr = prompt('Nominal tagihan per bulan (angka, mis. 100000):');
+    const amount = parseInt(amountStr, 10);
+    if (!amount || amount <= 0) {
+      showToast('Nominal tagihan tidak valid');
+      return;
+    }
+    const dueDayStr = prompt('Jatuh tempo setiap tanggal berapa (1 - 31):', '5');
+    const dueDay = Math.min(Math.max(parseInt(dueDayStr, 10) || 1, 1), 31);
+
+    const bills = getFinanceBills();
+    bills.push({
+      id: 'bill_' + Date.now(),
+      name: name.trim(),
+      amount: amount,
+      dueDay: dueDay,
+      paid: false,
+      icon: '📌',
+      custom: true
+    });
+    saveFinanceBills(bills);
+    renderFinanceBills();
+    updateFinanceCalculations();
+    showToast(`Tagihan "${name}" berhasil ditambahkan!`);
+  }
+
+  function deleteBill(id) {
+    let bills = getFinanceBills();
+    const bill = bills.find(b => b.id === id);
+    if (!bill) return;
+    if (confirm(`Hapus tagihan "${bill.name}"?`)) {
+      bills = bills.filter(b => b.id !== id);
+      saveFinanceBills(bills);
+      renderFinanceBills();
+      updateFinanceCalculations();
+      showToast('Tagihan berhasil dihapus');
+    }
+  }
+
+  function renderFinanceBills() {
+    const container = document.getElementById('finance-bills-container');
+    const bills = getFinanceBills();
+
+    const totalAmt = bills.reduce((s, b) => s + (Number(b.amount) || 0), 0);
+    const paidAmt = bills.filter(b => b.paid).reduce((s, b) => s + (Number(b.amount) || 0), 0);
+    const unpaidAmt = totalAmt - paidAmt;
+
+    const totalEl = document.getElementById('fin-bills-total');
+    const paidEl = document.getElementById('fin-bills-paid');
+    const unpaidEl = document.getElementById('fin-bills-unpaid');
+
+    if (totalEl) totalEl.textContent = formatRupiah(totalAmt);
+    if (paidEl) paidEl.textContent = formatRupiah(paidAmt);
+    if (unpaidEl) unpaidEl.textContent = formatRupiah(unpaidAmt);
+
+    // Synchronize legacy fixed input
+    const fixedInput = document.getElementById('fin-fixed-input');
+    if (fixedInput) {
+      fixedInput.value = totalAmt;
+      localStorage.setItem(FIN_FIXED_KEY, String(totalAmt));
+    }
+
+    if (!container) return;
+
+    if (bills.length === 0) {
+      container.innerHTML = '<div style="font-size: 0.74rem; color: var(--text-tertiary); text-align: center; padding: 12px;">Belum ada tagihan tetap terdaftar. Klik "+ Tagihan" di atas.</div>';
+      return;
+    }
+
+    const todayDay = new Date().getDate();
+
+    let html = '';
+    bills.forEach(bill => {
+      const isPastDue = todayDay > bill.dueDay && !bill.paid;
+      const dueLabel = bill.paid 
+        ? '✅ Lunas' 
+        : (isPastDue ? `⚠️ Lewat tgl ${bill.dueDay}` : `Tgl ${bill.dueDay} tiap bulan`);
+
+      html += `
+        <div class="finance-bill-row ${bill.paid ? 'paid' : ''}">
+          <div class="finance-bill-left">
+            <input type="checkbox" class="finance-bill-checkbox" ${bill.paid ? 'checked' : ''} onchange="toggleBillPaid('${bill.id}')" title="Centang jika sudah lunas">
+            <div class="finance-bill-info">
+              <span class="finance-bill-name">${bill.icon || '📌'} ${bill.name}</span>
+              <span class="finance-bill-due" style="${isPastDue ? 'color:#ef4444; font-weight:600;' : ''}">${dueLabel}</span>
+            </div>
+          </div>
+          <div class="finance-bill-right">
+            <span class="finance-bill-amount">${formatRupiah(bill.amount)}</span>
+            ${bill.custom ? `<button type="button" class="finance-bill-del" title="Hapus tagihan" onclick="deleteBill('${bill.id}')">✕</button>` : ''}
+          </div>
+        </div>
+      `;
+    });
+    container.innerHTML = html;
+  }
+
   function getFinanceFixed() {
-    const val = localStorage.getItem(FIN_FIXED_KEY);
-    const n = val ? parseInt(val, 10) : 0;
-    return Number.isFinite(n) && n > 0 ? n : 0;
+    const bills = getFinanceBills();
+    return bills.reduce((s, b) => s + (Number(b.amount) || 0), 0);
   }
 
   function getFinanceExpenses() {
@@ -7851,20 +8004,25 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     return 'Rp ' + Number(num || 0).toLocaleString('id-ID');
   }
 
+  function setFinanceFilter(filter) {
+    currentFinanceFilter = filter;
+    ['all', 'today', 'week', 'month'].forEach(f => {
+      const btn = document.getElementById(`fin-filter-${f}`);
+      if (btn) btn.classList.toggle('active', f === filter);
+    });
+    renderFinanceExpenses();
+  }
+
   function initFinanceManager() {
     const incomeInput = document.getElementById('fin-income-input');
     if (incomeInput) {
       incomeInput.value = getFinanceIncome();
     }
-    const fixedInput = document.getElementById('fin-fixed-input');
-    if (fixedInput) {
-      const f = getFinanceFixed();
-      if (f > 0) fixedInput.value = f;
-    }
     const dateInput = document.getElementById('fin-tx-date');
     if (dateInput && !dateInput.value) {
       dateInput.value = new Date().toISOString().slice(0, 10);
     }
+    renderFinanceBills();
     renderFinanceExpenses();
     updateFinanceCalculations();
   }
@@ -7875,15 +8033,18 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     if (income < 0) income = 0;
     localStorage.setItem(FIN_INCOME_KEY, income.toString());
 
-    const fixedInput = document.getElementById('fin-fixed-input');
-    let fixed = fixedInput ? parseInt(fixedInput.value, 10) || 0 : getFinanceFixed();
-    if (fixed < 0) fixed = 0;
-    localStorage.setItem(FIN_FIXED_KEY, String(fixed));
+    const bills = getFinanceBills();
+    const totalBills = bills.reduce((s, b) => s + (Number(b.amount) || 0), 0);
+    const paidBills = bills.filter(b => b.paid).reduce((s, b) => s + (Number(b.amount) || 0), 0);
+    const unpaidBills = totalBills - paidBills;
 
     const expenses = getFinanceExpenses();
     const totalSpent = expenses.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
-    const remaining = income - totalSpent;
-    const percentSpent = income > 0 ? Math.min(Math.round((totalSpent / income) * 100), 100) : 100;
+    
+    // Remaining = income - actual expenses - unpaid committed fixed bills
+    const remaining = income - totalSpent - unpaidBills;
+    const effectiveTotalSpent = totalSpent + paidBills;
+    const percentSpent = income > 0 ? Math.min(Math.round((effectiveTotalSpent / income) * 100), 100) : 100;
 
     // Days left in current month
     const now = new Date();
@@ -7893,10 +8054,10 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
 
     const safeDailyLimit = remaining > 0 ? Math.round(remaining / daysLeft) : 0;
 
-    // Anggaran variabel = sisa setelah tagihan tetap dikurangi pengeluaran aktual
-    const variableBudget = Math.max(remaining - fixed, 0);
+    // Anggaran variabel
+    const variableBudget = Math.max(remaining, 0);
 
-    // Update DOM
+    // Update Overview DOM
     const totalEl = document.getElementById('fin-total-expense');
     if (totalEl) totalEl.textContent = formatRupiah(totalSpent);
 
@@ -7916,32 +8077,178 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
         : 'Anggaran telah habis!';
     }
 
-    const varEl = document.getElementById('fin-variable-budget');
-    if (varEl) varEl.textContent = formatRupiah(variableBudget);
+    // --- Today's Safe Burn Rate Meter ---
+    const todayStr = new Date().toISOString().slice(0, 10);
+    const todaySpent = expenses
+      .filter(e => e.date === todayStr)
+      .reduce((s, e) => s + (Number(e.amount) || 0), 0);
 
-    const fixedHint = document.getElementById('fin-fixed-hint');
-    if (fixedHint) {
-      fixedHint.textContent = fixed > 0
-        ? `Tagihan tetap ${formatRupiah(fixed)} — variabel tersisa ${formatRupiah(variableBudget)}`
-        : 'Isi tagihan tetap agar batas aman akurat';
+    const todaySpentEl = document.getElementById('fin-today-spent');
+    const todayLimitEl = document.getElementById('fin-today-limit');
+    const todayBadge = document.getElementById('fin-today-badge');
+    const todayFill = document.getElementById('fin-today-meter-fill');
+    const todayLeftText = document.getElementById('fin-today-left-text');
+    const burnRatePace = document.getElementById('fin-burn-rate-pace');
+
+    if (todaySpentEl) todaySpentEl.textContent = formatRupiah(todaySpent);
+    if (todayLimitEl) todayLimitEl.textContent = formatRupiah(safeDailyLimit);
+
+    if (todayFill) {
+      const todayRatio = safeDailyLimit > 0 ? Math.round((todaySpent / safeDailyLimit) * 100) : (todaySpent > 0 ? 100 : 0);
+      todayFill.style.width = Math.min(todayRatio, 100) + '%';
+      if (todaySpent > safeDailyLimit) {
+        todayFill.style.backgroundColor = '#ef4444';
+        if (todayBadge) {
+          todayBadge.textContent = 'Over Limit';
+          todayBadge.style.cssText = 'font-size: 0.68rem; padding: 2px 8px; background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3);';
+        }
+        if (todayLeftText) todayLeftText.textContent = `⚠️ Melebihi jatah harian sebesar ${formatRupiah(todaySpent - safeDailyLimit)}`;
+        if (burnRatePace) burnRatePace.textContent = 'Kecepatan belanja: Agresif';
+      } else if (todayRatio > 75) {
+        todayFill.style.backgroundColor = '#f59e0b';
+        if (todayBadge) {
+          todayBadge.textContent = 'Mendekati Batas';
+          todayBadge.style.cssText = 'font-size: 0.68rem; padding: 2px 8px; background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3);';
+        }
+        if (todayLeftText) todayLeftText.textContent = `Sisa jatah hari ini: ${formatRupiah(safeDailyLimit - todaySpent)}`;
+        if (burnRatePace) burnRatePace.textContent = 'Kecepatan belanja: Cepat';
+      } else {
+        todayFill.style.backgroundColor = '#10b981';
+        if (todayBadge) {
+          todayBadge.textContent = 'Aman';
+          todayBadge.style.cssText = 'font-size: 0.68rem; padding: 2px 8px; background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3);';
+        }
+        if (todayLeftText) todayLeftText.textContent = `Sisa jatah hari ini: ${formatRupiah(Math.max(safeDailyLimit - todaySpent, 0))}`;
+        if (burnRatePace) burnRatePace.textContent = 'Kecepatan belanja: Terkendali';
+      }
     }
 
+    // --- 50/30/20 Digital Envelopes Calculation ---
+    const targetNeeds = Math.round(income * 0.50);
+    const targetWants = Math.round(income * 0.30);
+    const targetSavings = Math.round(income * 0.20);
+
+    let spentNeeds = paidBills; // Paid bills count towards essential Needs
+    let spentWants = 0;
+    let spentSavings = 0;
+
+    expenses.forEach(e => {
+      const amt = Number(e.amount) || 0;
+      if (['makan', 'transport', 'kos'].includes(e.cat)) {
+        spentNeeds += amt;
+      } else if (['kopi', 'laundry', 'wisuda'].includes(e.cat)) {
+        spentWants += amt;
+      } else {
+        spentSavings += amt;
+      }
+    });
+
+    // Envelope Needs 50%
+    const needsPct = targetNeeds > 0 ? Math.round((spentNeeds / targetNeeds) * 100) : 0;
+    const needsAmtEl = document.getElementById('fin-env-needs-spent');
+    const needsTgtEl = document.getElementById('fin-env-needs-target');
+    const needsStatEl = document.getElementById('fin-env-needs-status');
+    const needsFillEl = document.getElementById('fin-env-needs-fill');
+    if (needsAmtEl) needsAmtEl.textContent = formatRupiah(spentNeeds);
+    if (needsTgtEl) needsTgtEl.textContent = `Alokasi target: ${formatRupiah(targetNeeds)}`;
+    if (needsStatEl) {
+      needsStatEl.textContent = `${needsPct}%`;
+      needsStatEl.style.cssText = needsPct > 100 
+        ? 'font-size: 0.65rem; padding: 1px 6px; background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239,68,68,0.3);' 
+        : 'font-size: 0.65rem; padding: 1px 6px; background: rgba(2, 132, 199, 0.15); color: #0284c7; border: 1px solid rgba(2,132,199,0.3);';
+    }
+    if (needsFillEl) {
+      needsFillEl.style.width = Math.min(needsPct, 100) + '%';
+      needsFillEl.style.backgroundColor = needsPct > 100 ? '#ef4444' : '#0284c7';
+    }
+
+    // Envelope Wants 30%
+    const wantsPct = targetWants > 0 ? Math.round((spentWants / targetWants) * 100) : 0;
+    const wantsAmtEl = document.getElementById('fin-env-wants-spent');
+    const wantsTgtEl = document.getElementById('fin-env-wants-target');
+    const wantsStatEl = document.getElementById('fin-env-wants-status');
+    const wantsFillEl = document.getElementById('fin-env-wants-fill');
+    if (wantsAmtEl) wantsAmtEl.textContent = formatRupiah(spentWants);
+    if (wantsTgtEl) wantsTgtEl.textContent = `Alokasi target: ${formatRupiah(targetWants)}`;
+    if (wantsStatEl) {
+      wantsStatEl.textContent = `${wantsPct}%`;
+      wantsStatEl.style.cssText = wantsPct > 100 
+        ? 'font-size: 0.65rem; padding: 1px 6px; background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239,68,68,0.3);' 
+        : 'font-size: 0.65rem; padding: 1px 6px; background: rgba(241, 90, 35, 0.15); color: #F15A24; border: 1px solid rgba(241,90,35,0.3);';
+    }
+    if (wantsFillEl) {
+      wantsFillEl.style.width = Math.min(wantsPct, 100) + '%';
+      wantsFillEl.style.backgroundColor = wantsPct > 100 ? '#ef4444' : '#F15A24';
+    }
+
+    // Envelope Savings 20%
+    const estimatedSavings = Math.max(income - spentNeeds - spentWants - unpaidBills, 0);
+    const savingsPct = targetSavings > 0 ? Math.min(Math.round((estimatedSavings / targetSavings) * 100), 100) : 0;
+    const savingsAmtEl = document.getElementById('fin-env-savings-spent');
+    const savingsTgtEl = document.getElementById('fin-env-savings-target');
+    const savingsStatEl = document.getElementById('fin-env-savings-status');
+    const savingsFillEl = document.getElementById('fin-env-savings-fill');
+    if (savingsAmtEl) savingsAmtEl.textContent = formatRupiah(estimatedSavings);
+    if (savingsTgtEl) savingsTgtEl.textContent = `Target tabungan: ${formatRupiah(targetSavings)}`;
+    if (savingsStatEl) {
+      savingsStatEl.textContent = `${savingsPct}%`;
+      savingsStatEl.style.cssText = 'font-size: 0.65rem; padding: 1px 6px; background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16,185,129,0.3);';
+    }
+    if (savingsFillEl) {
+      savingsFillEl.style.width = savingsPct + '%';
+      savingsFillEl.style.backgroundColor = '#10b981';
+    }
+
+    // --- Category Breakdown Visual Stacked Bar ---
+    const catTotals = {};
+    expenses.forEach(e => {
+      catTotals[e.cat] = (catTotals[e.cat] || 0) + (Number(e.amount) || 0);
+    });
+
+    const catTotalLabel = document.getElementById('fin-cat-total-label');
+    if (catTotalLabel) catTotalLabel.textContent = `Total: ${formatRupiah(totalSpent)}`;
+
+    const trackEl = document.getElementById('fin-stacked-track');
+    const legendEl = document.getElementById('fin-cat-legend');
+    if (trackEl && legendEl) {
+      if (totalSpent === 0) {
+        trackEl.innerHTML = '<div style="width:100%; height:100%; background:var(--surface-hover);"></div>';
+        legendEl.innerHTML = '<span style="font-size:0.7rem; color:var(--text-tertiary);">Belum ada pengeluaran dicatat.</span>';
+      } else {
+        let segHtml = '';
+        let legHtml = '';
+        Object.keys(FIN_CATEGORY_META).forEach(k => {
+          const amt = catTotals[k] || 0;
+          if (amt > 0) {
+            const pct = Math.round((amt / totalSpent) * 100);
+            const meta = FIN_CATEGORY_META[k];
+            segHtml += `<div class="finance-stacked-seg" style="width: ${pct}%; background-color: ${meta.color};" title="${meta.label}: ${formatRupiah(amt)} (${pct}%)"></div>`;
+            legHtml += `
+              <div class="finance-cat-pill">
+                <span class="finance-cat-dot" style="background-color: ${meta.color};"></span>
+                <span>${meta.badge} ${meta.label}: <strong>${pct}%</strong> (${formatRupiah(amt)})</span>
+              </div>
+            `;
+          }
+        });
+        trackEl.innerHTML = segHtml;
+        legendEl.innerHTML = legHtml;
+      }
+    }
+
+    // --- Runway & Balance Banner ---
     const banner = document.getElementById('fin-balance-banner');
     if (banner) {
-      const fixedShort = income > 0 && fixed > 0 ? Math.round(fixed / income * 100) : 0;
       let html = '', bg = '', bd = '', fg = '';
       if (remaining < 0) {
         bg = 'rgba(239,68,68,.08)'; bd = 'rgba(239,68,68,.35)'; fg = '#dc2626';
-        html = `<strong>⛔ Defisit — pengeluaran melebihi pemasukan.</strong><br>Total ${formatRupiah(totalSpent)} dari ${formatRupiah(income)} (${percentSpent}%). Tunda non-esensial &amp; pangkas kategori terbesar.`;
-      } else if (percentSpent > 80 || (fixed > 0 && (totalSpent + fixed) > income * 0.95)) {
+        html = `<strong>⛔ Defisit — pengeluaran & tagihan melebihi pemasukan.</strong><br>Defisit ${formatRupiah(Math.abs(remaining))}. Tunda non-esensial dan amankan kebutuhan pokok.`;
+      } else if (percentSpent > 80 || (unpaidBills > 0 && remaining < safeDailyLimit * 3)) {
         bg = 'rgba(245,158,11,.10)'; bd = 'rgba(245,158,11,.4)'; fg = '#b45309';
-        html = `<strong>⚠️ Waspada — hampir habis.</strong><br>Sisa ${formatRupiah(remaining)}, batas aman ${formatRupiah(safeDailyLimit)}/hari × ${daysLeft} hari.`;
+        html = `<strong>⚠️ Waspada — sisa cadangan menipis.</strong><br>Sisa aman ${formatRupiah(remaining)} (${safeDailyLimit > 0 ? formatRupiah(safeDailyLimit) + '/hari' : 'kritis'}) untuk ${daysLeft} hari ke depan.${unpaidBills > 0 ? `<br><em>Catatan: Masih ada tagihan belum lunas ${formatRupiah(unpaidBills)}.</em>` : ''}`;
       } else {
         bg = 'rgba(16,185,129,.08)'; bd = 'rgba(16,185,129,.35)'; fg = '#15803d';
-        html = `<strong>✅ Balance — aman.</strong><br>Sisa ${formatRupiah(remaining)} (${100 - percentSpent}% pemasukan). Batas harian ${formatRupiah(safeDailyLimit)} × ${daysLeft} hari ke depan.`;
-      }
-      if (fixedShort > 0) {
-        html += `<br><span style="opacity:.85">Tagihan tetap ${formatRupiah(fixed)} = ${fixedShort}% pemasukan.</span>`;
+        html = `<strong>✅ Balance — terkendali dan aman.</strong><br>Sisa aman ${formatRupiah(remaining)} (${100 - percentSpent}% tersisa). Batas harian ${formatRupiah(safeDailyLimit)} × ${daysLeft} hari ke depan.${paidBills > 0 ? ` Tagihan lunas: ${formatRupiah(paidBills)}.` : ''}`;
       }
       banner.style.display = 'block';
       banner.style.background = bg;
@@ -7962,30 +8269,28 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     const daysLeftEl = document.getElementById('fin-days-left');
     if (daysLeftEl) daysLeftEl.textContent = `Sisa ${daysLeft} hari bulan ini`;
 
-      const statusBadge = document.getElementById('fin-status-badge');
-      if (statusBadge) {
-        if (remaining < 0) {
-          statusBadge.textContent = 'Defisit';
-          statusBadge.style.color = '#ef4444';
-          statusBadge.style.borderColor = 'rgba(239, 68, 68, 0.4)';
-        } else if (percentSpent > 80) {
-          statusBadge.textContent = 'Waspada';
-          statusBadge.style.color = '#f59e0b';
-          statusBadge.style.borderColor = 'rgba(245, 158, 11, 0.4)';
-        } else {
-          statusBadge.textContent = 'Terkendali';
-          statusBadge.style.color = '#10b981';
-          statusBadge.style.borderColor = 'rgba(16, 185, 129, 0.4)';
-        }
+    const statusBadge = document.getElementById('fin-status-badge');
+    if (statusBadge) {
+      if (remaining < 0) {
+        statusBadge.textContent = 'Defisit';
+        statusBadge.style.color = '#ef4444';
+        statusBadge.style.borderColor = 'rgba(239, 68, 68, 0.4)';
+      } else if (percentSpent > 80) {
+        statusBadge.textContent = 'Waspada';
+        statusBadge.style.color = '#f59e0b';
+        statusBadge.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+      } else {
+        statusBadge.textContent = 'Terkendali';
+        statusBadge.style.color = '#10b981';
+        statusBadge.style.borderColor = 'rgba(16, 185, 129, 0.4)';
       }
+    }
 
     // Snapshot untuk AI advisor (dibaca requestFinanceAdvice)
     window.__finSnapshot = {
       income, totalSpent, remaining, percentSpent, safeDailyLimit, daysLeft,
-      fixedMonthly: fixed, variableBudget,
-      breakdown: (() => {
-        const m = {}; getFinanceExpenses().forEach(e => { m[e.cat] = (m[e.cat]||0) + Number(e.amount||0); }); return m;
-      })()
+      fixedMonthly: totalBills, variableBudget, unpaidBills, paidBills, todaySpent,
+      breakdown: catTotals
     };
   }
 
@@ -8082,11 +8387,30 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     const container = document.getElementById('finance-tx-container');
     if (!container) return;
 
-    const expenses = getFinanceExpenses();
-    if (expenses.length === 0) {
+    const allExpenses = getFinanceExpenses();
+    const todayStr = new Date().toISOString().slice(0, 10);
+    const now = new Date();
+    const currentYearMonth = now.toISOString().slice(0, 7);
+
+    // Calculate 7 days ago
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    const sevenDaysAgoStr = sevenDaysAgo.toISOString().slice(0, 10);
+
+    const filteredExpenses = allExpenses.filter(item => {
+      if (currentFinanceFilter === 'today') return item.date === todayStr;
+      if (currentFinanceFilter === 'week') return item.date >= sevenDaysAgoStr;
+      if (currentFinanceFilter === 'month') return item.date.startsWith(currentYearMonth);
+      return true;
+    });
+
+    const countEl = document.getElementById('fin-filter-count');
+    if (countEl) countEl.textContent = `${filteredExpenses.length} transaksi`;
+
+    if (filteredExpenses.length === 0) {
       container.innerHTML = `
         <div style="font-size: 0.76rem; color: var(--text-tertiary); text-align: center; padding: 18px 12px;">
-          Belum ada catatan pengeluaran bulan ini.<br>
+          Tidak ada catatan transaksi pada filter ini.<br>
           <span style="font-size: 0.7rem; color: var(--text-secondary); margin-top: 4px; display: inline-block;">Gunakan tombol cepat di atas untuk mencatat dalam 1-klik!</span>
         </div>
       `;
@@ -8094,7 +8418,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     }
 
     let html = '';
-    expenses.forEach(item => {
+    filteredExpenses.forEach(item => {
       const meta = FIN_CATEGORY_META[item.cat] || { label: 'Lainnya', badge: '💡' };
       html += `
         <div class="finance-tx-item">
@@ -8117,11 +8441,41 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     container.innerHTML = html;
   }
 
+  function exportFinanceCSV() {
+    const expenses = getFinanceExpenses();
+    if (expenses.length === 0) {
+      showToast('Belum ada riwayat transaksi untuk diekspor');
+      return;
+    }
+
+    let csvContent = 'Tanggal,Kategori,Deskripsi,Nominal\r\n';
+    expenses.forEach(item => {
+      const meta = FIN_CATEGORY_META[item.cat] || { label: item.cat || 'Lainnya' };
+      const safeDesc = `"${(item.desc || '').replace(/"/g, '""')}"`;
+      csvContent += `${item.date},"${meta.label}",${safeDesc},${item.amount}\r\n`;
+    });
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `mghb_keuangan_jakarta_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    showToast('File CSV berhasil diunduh!');
+  }
+
   function exportFinanceSummaryText() {
     const income = getFinanceIncome();
+    const bills = getFinanceBills();
+    const totalBills = bills.reduce((s, b) => s + (Number(b.amount) || 0), 0);
+    const paidBills = bills.filter(b => b.paid).reduce((s, b) => s + (Number(b.amount) || 0), 0);
+    const unpaidBills = totalBills - paidBills;
+
     const expenses = getFinanceExpenses();
     const totalSpent = expenses.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
-    const remaining = income - totalSpent;
+    const remaining = income - totalSpent - unpaidBills;
 
     const breakdown = {};
     expenses.forEach(item => {
@@ -8134,7 +8488,11 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     text += `━━━━━━━━━━━━━━━━━━━━━\n`;
     text += `💰 Pemasukan / Uang Saku : ${formatRupiah(income)}\n`;
     text += `💸 Total Pengeluaran    : ${formatRupiah(totalSpent)}\n`;
-    text += `🎯 Sisa Anggaran        : ${formatRupiah(remaining)}\n`;
+    text += `🏠 Tagihan Tetap (Lunas) : ${formatRupiah(paidBills)}\n`;
+    if (unpaidBills > 0) {
+      text += `⚠️ Tagihan Belum Lunas  : ${formatRupiah(unpaidBills)}\n`;
+    }
+    text += `🎯 Sisa Anggaran Bersih  : ${formatRupiah(remaining)}\n`;
     text += `━━━━━━━━━━━━━━━━━━━━━\n\n`;
     text += `📌 *Rincian per Kategori:*\n`;
 
