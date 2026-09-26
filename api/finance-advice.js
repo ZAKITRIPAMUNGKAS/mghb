@@ -44,7 +44,8 @@ function buildPrompt(payload) {
 }
 
 module.exports = async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Origin', process.env.ALLOWED_ORIGIN || 'https://mghb.tepegrafi.id');
+  res.setHeader('Vary', 'Origin');
   res.setHeader('Access-Control-Allow-Methods', 'POST,OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   if (req.method === 'OPTIONS') { res.status(200).end(); return; }
@@ -60,20 +61,40 @@ module.exports = async (req, res) => {
   const percentSpent = Math.min(100, Math.max(0, parseInt(body.percentSpent, 10) || (income ? Math.round(totalSpent / income * 100) : 0)));
   const safeDailyLimit = Math.max(0, parseInt(body.safeDailyLimit, 10) || 0);
   const daysLeft = Math.max(1, parseInt(body.daysLeft, 10) || 1);
-  const breakdown = (body.breakdown && typeof body.breakdown === 'object') ? body.breakdown : {};
   const fixedMonthly = Math.max(0, parseInt(body.fixedMonthly, 10) || 0);
   const variableBudget = Math.max(0, parseInt(body.variableBudget, 10) || 0);
 
-  const heuristic = heuAdvice({ income, totalSpent, remaining, percentSpent, safeDailyLimit, daysLeft, breakdown, fixedMonthly, variableBudget });
+  // SECURITY: Sanitasi breakdown — cap 50 keys, coerce semua value ke number, tolak array
+  const rawBreakdown = body.breakdown;
+  let breakdown = {};
+  if (rawBreakdown && typeof rawBreakdown === 'object' && !Array.isArray(rawBreakdown)) {
+    breakdown = Object.fromEntries(
+      Object.entries(rawBreakdown)
+        .slice(0, 50)
+        .map(([k, v]) => [String(k).substring(0, 50), Math.max(0, Number(v) || 0)])
+        .filter(([, v]) => isFinite(v))
+    );
+  }
 
   const apiKey = (process.env.GERAIKITA_API_KEY || process.env.MGHB_TOKEN || '').trim();
   const baseUrl = (process.env.GERAIKITA_BASE_URL || 'https://ai.geraikita.com/v1').replace(/\/+$/, '');
   const model = (process.env.FINANCE_MODEL || process.env.LOGBOOK_MODEL || 'claude-sonnet-5-thinking').trim();
 
+  // heuAdvice dipanggil di dalam try-catch untuk menghindari uncaught TypeError
+  let heuristic = '';
+  try {
+    heuristic = heuAdvice({ income, totalSpent, remaining, percentSpent, safeDailyLimit, daysLeft, breakdown, fixedMonthly, variableBudget });
+  } catch (heuErr) {
+    console.error('[finance-advice] heuAdvice error:', heuErr);
+    heuristic = 'Kelola pengeluaran sesuai anggaran harian dan prioritaskan kebutuhan pokok.';
+  }
+
   if (!apiKey) {
+    // SECURITY: Jangan bedakan pesan berdasarkan keberadaan key (oracle)
     res.status(200).json({ mode: 'heuristic', advice: heuristic, model: null });
     return;
   }
+
 
   try {
     const ctrl = new AbortController();
@@ -92,7 +113,8 @@ module.exports = async (req, res) => {
     clearTimeout(t);
     if (!resp.ok) {
       const txt = await resp.text().catch(() => resp.statusText);
-      res.status(200).json({ mode: 'heuristic', advice: heuristic, warning: `Geraikita ${resp.status}: ${String(txt).slice(0,180)}`, model });
+      console.error('[finance-advice] upstream error', resp.status, String(txt).slice(0, 400));
+      res.status(200).json({ mode: 'heuristic', advice: heuristic, model });
       return;
     }
     const data = await resp.json();

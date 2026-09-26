@@ -78,7 +78,8 @@ function splitSections(raw) {
 }
 
 module.exports = async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Origin', process.env.ALLOWED_ORIGIN || 'https://mghb.tepegrafi.id');
+  res.setHeader('Vary', 'Origin');
   res.setHeader('Access-Control-Allow-Methods', 'POST,OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   if (req.method === 'OPTIONS') { res.status(200).end(); return; }
@@ -88,10 +89,11 @@ module.exports = async (req, res) => {
   if (typeof body === 'string') { try { body = JSON.parse(body); } catch { body = {}; } }
   if (!body || typeof body !== 'object') body = {};
 
-  const catatanRaw = stripBOM((body.catatan ?? body.rough ?? body.notes ?? '') + '').trim();
+  // SECURITY: Cap input untuk mencegah payload oversized ke AI (DoS/biaya)
+  const catatanRaw = stripBOM((body.catatan ?? body.rough ?? body.notes ?? '') + '').trim().substring(0, 2000);
   const isoDate = (body.date ?? body.tanggal ?? new Date().toISOString().slice(0,10) + '').trim().slice(0,10);
-  const obstacleInput = stripBOM((body.obstacle ?? '') + '').trim();
-  const category = (body.category ?? '') + '';
+  const obstacleInput = stripBOM((body.obstacle ?? '') + '').trim().substring(0, 500);
+  const category = ((body.category ?? '') + '').substring(0, 100);
 
   // Guard libur
   if (isWeekend(isoDate)) {
@@ -120,13 +122,12 @@ module.exports = async (req, res) => {
   const model = (process.env.LOGBOOK_MODEL || 'claude-sonnet-5-thinking').trim();
 
   if (!apiKey) {
-    // Tanpa AI: kembalikan fallback (offline-safe)
+    // SECURITY: Tanpa AI — jangan expose nama env var di warning response
     res.status(200).json({
       mode: 'fallback',
       date: isoDate,
       category,
       model: null,
-      warning: 'GERAIKITA_API_KEY belum diset di server — hasil fallback lokal (tanpa AI).',
       activity: fb.activity,
       learning: fb.learning,
       obstacle: fb.obstacle
@@ -145,7 +146,7 @@ module.exports = async (req, res) => {
       max_tokens: 1400
     };
     const ctrl = new AbortController();
-    const t = setTimeout(() => ctrl.abort(), 45000);
+    const t = setTimeout(() => ctrl.abort(), 25000);
     const resp = await fetch(`${baseUrl}/chat/completions`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
@@ -154,14 +155,14 @@ module.exports = async (req, res) => {
     });
     clearTimeout(t);
     if (!resp.ok) {
+      // SECURITY: Log internal saja, jangan echo upstream body ke client
       const txt = await resp.text().catch(() => resp.statusText);
-      console.warn('Geraikita logbook error', resp.status, txt.slice(0,400));
+      console.error('[logbook-generate] upstream error', resp.status, txt.slice(0, 400));
       res.status(200).json({
         mode: 'fallback',
         date: isoDate,
         category,
         model,
-        warning: `Geraikita ${resp.status}: ${String(txt).slice(0,200)} — fallback dipakai.`,
         activity: fb.activity,
         learning: fb.learning,
         obstacle: fb.obstacle

@@ -6184,12 +6184,13 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
     const currentView = document.getElementById('view-packing');
     if (!currentView) return;
 
-    const rows = currentView.querySelectorAll('.task-row');
+    // FIX #15: Ganti '.task-row' → '.inv-row' sesuai class DOM aktual
+    const rows = currentView.querySelectorAll('.inv-row');
     let visibleCount = 0;
 
     rows.forEach(row => {
       const checkbox = row.querySelector('input[type="checkbox"]');
-      const isChecked = checkbox.checked;
+      const isChecked = checkbox ? checkbox.checked : false;
       const text = row.innerText.toLowerCase();
 
       let matchesFilter = true;
@@ -6204,13 +6205,14 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
       if (isVisible) visibleCount++;
     });
 
+    // FIX #15: Juga update category-group visibility berdasarkan .inv-row
     currentView.querySelectorAll('.category-group').forEach(group => {
-      const hasVisibleRows = Array.from(group.querySelectorAll('.task-row')).some(r => !r.classList.contains('is-hidden'));
+      const hasVisibleRows = Array.from(group.querySelectorAll('.inv-row')).some(r => !r.classList.contains('is-hidden'));
       group.classList.toggle('is-empty', !hasVisibleRows);
     });
 
     const emptyEl = document.getElementById('empty-search-state');
-    emptyEl.classList.toggle('visible', visibleCount === 0);
+    if (emptyEl) emptyEl.classList.toggle('visible', visibleCount === 0);
   }
 
   // --- Metrics & Category Counters ---
@@ -6867,10 +6869,11 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
 
   // --- Daily Logbook Formulator Logic (Standar Resmi MagangHub Kemnaker) ---
   function generateLogbook() {
-    const dateVal = document.getElementById('lb-date').value || new Date().toISOString().slice(0, 10);
+    // FIX #7: Guard null \u2014 elemen bisa tidak ada saat template offline
+    const dateVal = document.getElementById('lb-date')?.value || new Date().toISOString().slice(0, 10);
     const category = 'general';
-    let rough = document.getElementById('lb-rough-notes').value.trim();
-    const obstacle = document.getElementById('lb-obstacle').value.trim();
+    let rough = (document.getElementById('lb-rough-notes')?.value || '').trim();
+    const obstacle = (document.getElementById('lb-obstacle')?.value || '').trim();
 
     // Auto-fallback default jika kolom catatan masih kosong
     if (!rough) {
@@ -6959,11 +6962,13 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
       id: recordId,
       date: dateVal,
       category: category,
+      categoryName: catLabel,    // FIX #6: tambah categoryName (dibaca weekly report)
       categoryLabel: catLabel,
       roughNotes: rough,
       activity: act,
       learning: lrn,
-      output: lrn,
+      achievement: lrn,          // FIX #6: achievement = alias learning (dibaca monthly/weekly report)
+      // FIX #6: hapus 'output: lrn' duplikat yang menyebabkan schema mismatch
       obstacle: obs,
       timestamp: Date.now()
     };
@@ -7149,7 +7154,11 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
 
     let logbookEntriesText = '';
     if (records.length > 0) {
-      logbookEntriesText = records.map((r, i) => `[Hari ke-${records.length - i} | ${r.date}]\n- Aktivitas: ${r.activity}\n- Capaian: ${r.achievement}\n- Kendala & Solusi: ${r.obstacle}`).join('\n\n');
+      // FIX #6: Compat shim \u2014 record lama pakai 'learning', baru pakai 'achievement'
+      logbookEntriesText = records.map((r, i) => {
+        const ach = r.achievement ?? r.learning ?? '-';
+        return `[Hari ke-${records.length - i} | ${r.date}]\n- Aktivitas: ${r.activity}\n- Capaian: ${ach}\n- Kendala & Solusi: ${r.obstacle}`;
+      }).join('\n\n');
     } else {
       logbookEntriesText = `[Simulasi Entri Harian Divisi SSE]\n- Aktivitas: Melaksanakan pengolahan, rekapitulasi, dan validasi data realisasi kinerja penjualan cabang pada Divisi Sales Strategy & Execution (SSE).\n- Capaian: Tersusunnya lembar kerja monitoring pencapaian target penjualan cabang.\n- Kendala & Solusi: Format file beberapa cabang anomali; diatasi melalui standardisasi data spreadsheet.`;
     }
@@ -7285,16 +7294,21 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     report += `------------------------------------------------------------------------\n\n`;
 
     recentRecords.slice().reverse().forEach((rec, idx) => {
-      report += `[HARI ${idx + 1} - ${rec.date} | ${rec.categoryName || 'Penugasan SSE'}]\n`;
+      // FIX #6: Compat shim \u2014 record lama pakai 'learning'/'categoryLabel', baru pakai 'achievement'/'categoryName'
+      const catName = rec.categoryName || rec.categoryLabel || 'Penugasan SSE';
+      const ach = rec.achievement ?? rec.learning ?? '-';
+      report += `[HARI ${idx + 1} - ${rec.date} | ${catName}]\n`;
       report += `${rec.activity || '-'}\n`;
-      report += `Output: ${rec.achievement || '-'}\n\n`;
+      report += `Output: ${ach}\n\n`;
     });
 
     report += `------------------------------------------------------------------------\n`;
     report += `B. HIGHLIGHT CAPAIAN UTAMA MINGGU INI:\n`;
     report += `------------------------------------------------------------------------\n`;
     recentRecords.forEach((rec, idx) => {
-      report += `${idx + 1}. ${rec.achievement || rec.categoryName}\n`;
+      // FIX #6: Compat shim untuk achievement
+      const ach = rec.achievement ?? rec.learning ?? rec.categoryName ?? rec.categoryLabel ?? '-';
+      report += `${idx + 1}. ${ach}\n`;
     });
     report += `\n`;
 
@@ -7936,6 +7950,16 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     fetchLiveNews(false);
   }, 180000);
 
+  // SECURITY: XSS escape helper \u2014 gunakan untuk semua data eksternal di innerHTML
+  function escHtml(str) {
+    return String(str ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
   function renderNewsList(items) {
     const container = document.getElementById('news-feed-list');
     if (!container) return;
@@ -7947,30 +7971,32 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
 
     let html = '';
     items.forEach(item => {
-      const topicLabel = item.topic === 'pengumuman' ? 'Pengumuman' : item.topic === 'regulasi' ? 'Regulasi & Hak' : item.topic === 'sertifikasi' ? 'Sertifikasi BNSP' : item.topic === 'kemnaker' ? 'Kemnaker & BNI' : 'Info Magang';
+      const topicLabel = item.topic === 'pengumuman' ? 'Pengumuman' : item.topic === 'regulasi' ? 'Regulasi &amp; Hak' : item.topic === 'sertifikasi' ? 'Sertifikasi BNSP' : item.topic === 'kemnaker' ? 'Kemnaker &amp; BNI' : 'Info Magang';
       const cleanSnippet = cleanSnippetText(item.snippet, item.title, item.source);
-      const thumbUrl = item.image || '';
-      const thumbHtml = thumbUrl
-        ? '<div class="news-thumb-wrap"><img src="' + thumbUrl + '" alt="" class="news-thumb-img" loading="lazy" referrerpolicy="no-referrer" onerror="this.parentElement.style.display=\'none\';"></div>'
+      // SECURITY: Validasi protokol link \u2014 blokir javascript: dan data: URI
+      const safeLink = /^https?:\/\//i.test(item.link) ? item.link : '#';
+      // Thumbnail via data attribute \u2014 src di-set lewat JS setAttribute (bukan string concat)
+      const thumbHtml = item.image
+        ? `<div class="news-thumb-wrap"><img data-src="${escHtml(item.image)}" alt="" class="news-thumb-img" loading="lazy" referrerpolicy="no-referrer" onerror="this.parentElement.style.display='none';"></div>`
         : '';
 
       html += `
-        <article class="news-card" data-topic="${item.topic || 'all'}">
+        <article class="news-card" data-topic="${escHtml(item.topic || 'all')}">
           ${thumbHtml}
           <div class="news-meta-row">
-            <span class="news-source-tag ${item.sourceClass || 'source-antara'}">
-              ${item.source || 'Media Nasional'}
+            <span class="news-source-tag ${escHtml(item.sourceClass || 'source-antara')}">
+              ${escHtml(item.source || 'Media Nasional')}
             </span>
-            <span class="news-date">${item.pubDate || 'Baru'}</span>
+            <span class="news-date">${escHtml(item.pubDate || 'Baru')}</span>
           </div>
           <h3 class="news-title">
-            <a href="${item.link}" target="_blank" rel="noopener noreferrer">${item.title}</a>
+            <a href="${escHtml(safeLink)}" target="_blank" rel="noopener noreferrer">${escHtml(item.title)}</a>
           </h3>
-          <p class="news-snippet">${cleanSnippet}</p>
+          <p class="news-snippet">${escHtml(cleanSnippet)}</p>
           <div class="news-action-row">
-            <span class="news-topic-badge">#${topicLabel}</span>
-            <a href="${item.link}" target="_blank" rel="noopener noreferrer" class="news-read-link">
-              Baca di ${item.source}
+            <span class="news-topic-badge">#${escHtml(topicLabel)}</span>
+            <a href="${escHtml(safeLink)}" target="_blank" rel="noopener noreferrer" class="news-read-link">
+              Baca di ${escHtml(item.source)}
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l9.2-9.2M17 17V8H8"></path></svg>
             </a>
           </div>
@@ -7979,6 +8005,13 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     });
 
     container.innerHTML = html;
+
+    // Set src secara aman via setAttribute (bukan string concat) untuk cegah XSS pada imageUrl
+    container.querySelectorAll('img[data-src]').forEach(img => {
+      img.setAttribute('src', img.getAttribute('data-src'));
+      img.removeAttribute('data-src');
+    });
+
     filterNewsTopic(activeNewsTopic);
   }
 
@@ -8051,14 +8084,23 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     const cards = document.querySelectorAll('#news-feed-list .news-card');
     cards.forEach(card => {
       const a = card.querySelector('.news-title a');
-      if (a && a.getAttribute('href') === link) {
+      if (a && a.getAttribute('href') === escHtml(link)) {
         let img = card.querySelector('.news-thumb-img');
         if (img) {
-          img.src = imageUrl;
+          // SECURITY: setAttribute aman vs string concat ke innerHTML
+          img.setAttribute('src', imageUrl);
         } else {
+          // SECURITY: Buat elemen via DOM API, bukan string concat
           const wrap = document.createElement('div');
           wrap.className = 'news-thumb-wrap';
-          wrap.innerHTML = `<img src="${imageUrl}" alt="${a.textContent}" class="news-thumb-img" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null; this.parentElement.style.display='none';">`;
+          const newImg = document.createElement('img');
+          newImg.setAttribute('src', imageUrl);
+          newImg.setAttribute('alt', '');
+          newImg.className = 'news-thumb-img';
+          newImg.loading = 'lazy';
+          newImg.setAttribute('referrerpolicy', 'no-referrer');
+          newImg.onerror = function() { this.onerror = null; this.parentElement.style.display = 'none'; };
+          wrap.appendChild(newImg);
           card.insertBefore(wrap, card.firstChild);
         }
       }
@@ -8611,6 +8653,15 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     };
   }
 
+  // FIX #5: Parser rupiah yang aman untuk format Indonesia (15.000 → 15000, bukan 15)
+  function parseMoney(str) {
+    if (typeof str === 'number') return Math.max(0, Math.round(str));
+    // Hapus titik ribuan, ganti koma desimal → titik
+    const cleaned = String(str).replace(/\./g, '').replace(',', '.');
+    const val = parseFloat(cleaned);
+    return isFinite(val) ? Math.max(0, Math.round(val)) : 0;
+  }
+
   function handleNewExpense(e) {
     if (e && e.preventDefault) e.preventDefault();
     const catEl = document.getElementById('fin-tx-cat');
@@ -8619,7 +8670,8 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     const dateEl = document.getElementById('fin-tx-date');
 
     const cat = catEl ? catEl.value : 'makan';
-    const amount = amountEl ? parseInt(amountEl.value, 10) : 0;
+    // FIX #5: Pakai parseMoney bukan parseInt agar 15.000 → 15000 (bukan 15)
+    const amount = amountEl ? parseMoney(amountEl.value) : 0;
     const desc = descEl ? descEl.value.trim() : '';
     const date = dateEl && dateEl.value ? dateEl.value : new Date().toISOString().slice(0, 10);
 

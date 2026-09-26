@@ -61,8 +61,10 @@ module.exports = async (req, res) => {
     return clean;
   }
 
+  const crypto = require('crypto');
   function getSlugKey(title) {
-    return (title || '').toLowerCase().replace(/[^a-z0-9]/g, '').substring(0, 35);
+    const slug = (title || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+    return crypto.createHash('md5').update(slug).digest('hex');
   }
 
   function determineTopic(title) {
@@ -101,21 +103,29 @@ module.exports = async (req, res) => {
     return map[topic] || 'https://awsimages.detik.net.id/api/wm/2026/09/02/magang-kemnaker-2026-batch-2-1788346807178_169.png?wid=54&w=1200&v=1&t=jpeg';
   }
 
-  // 1. Scrape Google News RSS (query: maganghub)
-  try {
-    const rssUrl = 'https://news.google.com/rss/search?q=maganghub&hl=id&gl=ID&ceid=ID:id';
-    const c = new AbortController();
-    const t = setTimeout(() => c.abort(), 6000);
-    const resp = await fetch(rssUrl, {
-      signal: c.signal,
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-      }
-    });
-    clearTimeout(t);
+  // 1 & 2. Fetch parallel — Google News RSS + Kemnaker Portal
+  const sharedCtrl = new AbortController();
+  const sharedTimer = setTimeout(() => sharedCtrl.abort(), 8000);
 
-    if (resp.ok) {
-      const xml = await resp.text();
+  const [gnewsResult, kemnakerResult] = await Promise.allSettled([
+    // --- Google News RSS ---
+    fetch('https://news.google.com/rss/search?q=maganghub&hl=id&gl=ID&ceid=ID:id', {
+      signal: sharedCtrl.signal,
+      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; mghb-news/1.0)' }
+    }),
+    // --- Kemnaker Portal ---
+    fetch('https://portal.kemnaker.go.id/api/v1/news?search=magang&limit=15', {
+      signal: sharedCtrl.signal,
+      headers: { 'User-Agent': 'Mozilla/5.0' }
+    })
+  ]);
+
+  clearTimeout(sharedTimer);
+
+  // --- Parse Google News RSS ---
+  if (gnewsResult.status === 'fulfilled' && gnewsResult.value.ok) {
+    try {
+      const xml = await gnewsResult.value.text();
       const regex = /<item>([\s\S]*?)<\/item>/gi;
       let match;
       while ((match = regex.exec(xml)) !== null) {
@@ -131,7 +141,6 @@ module.exports = async (req, res) => {
         const pubDate = getTag('pubDate');
         const sourceRaw = getTag('source');
         const descRaw = getTag('description');
-        // <source url="https://money.kompas.com"> → situs penerbit (untuk thumbnail asli)
         const sourceSiteMatch = block.match(/<source[^>]*url="([^"]+)"/i);
         const sourceSite = sourceSiteMatch ? sourceSiteMatch[1] : '';
 
@@ -150,7 +159,6 @@ module.exports = async (req, res) => {
         const ts = pubDate ? new Date(pubDate).getTime() : 0;
         const topic = determineTopic(title);
         const snippet = cleanSnippetText(descRaw, title, source);
-        // Thumbnail: pakai banner asli penerbit bila ada, else gambar topic
         const bannerMatch = block.match(/<media:content[^>]*url="([^"]+)"/i) || block.match(/<media:thumbnail[^>]*url="([^"]+)"/i);
         const image = bannerMatch ? bannerMatch[1] : getFallbackImage(topic, source);
 
@@ -158,7 +166,7 @@ module.exports = async (req, res) => {
           title,
           source,
           sourceClass: getSourceClass(source),
-          pubDate: pubDate ? new Date(pubDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '',
+          pubDate: pubDate ? (() => { const d = new Date(pubDate); return isNaN(d.getTime()) ? '' : d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Asia/Jakarta' }); })() : '',
           timestamp: ts,
           link: link || '#',
           sourceSite,
@@ -167,24 +175,17 @@ module.exports = async (req, res) => {
           image
         });
       }
+    } catch (err) {
+      console.warn('Google News RSS parse failed:', err.message);
     }
-  } catch (err) {
-    console.warn('Google News RSS direct fetch failed:', err.message);
+  } else {
+    console.warn('Google News RSS fetch failed:', gnewsResult.reason?.message || gnewsResult.value?.status);
   }
 
-  // 2. Fetch official Kemnaker Portal News API
-  try {
-    const kemnakerUrl = 'https://portal.kemnaker.go.id/api/v1/news?search=magang&limit=15';
-    const c = new AbortController();
-    const t = setTimeout(() => c.abort(), 5000);
-    const resp = await fetch(kemnakerUrl, {
-      signal: c.signal,
-      headers: { 'User-Agent': 'Mozilla/5.0' }
-    });
-    clearTimeout(t);
-
-    if (resp.ok) {
-      const json = await resp.json();
+  // --- Parse Kemnaker Portal ---
+  if (kemnakerResult.status === 'fulfilled' && kemnakerResult.value.ok) {
+    try {
+      const json = await kemnakerResult.value.json();
       const items = json.data || [];
       for (const item of items) {
         const title = decodeHtml(item.title).replace(/<[^>]*>/g, '').trim();
@@ -203,7 +204,7 @@ module.exports = async (req, res) => {
           title,
           source: `Kemnaker RI (${sectionName})`,
           sourceClass: 'source-kemnaker',
-          pubDate: dateStr ? new Date(dateStr.replace(' ', 'T')).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '',
+          pubDate: dateStr ? (() => { const d = new Date(dateStr.replace(' ', 'T')); return isNaN(d.getTime()) ? '' : d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Asia/Jakarta' }); })() : '',
           timestamp,
           link: `https://kemnaker.go.id/news/detail/${item.slug}`,
           snippet,
@@ -211,9 +212,11 @@ module.exports = async (req, res) => {
           image
         });
       }
+    } catch (err) {
+      console.warn('Kemnaker news API parse failed:', err.message);
     }
-  } catch (err) {
-    console.warn('Kemnaker news API failed:', err.message);
+  } else {
+    console.warn('Kemnaker news fetch failed:', kemnakerResult.reason?.message || kemnakerResult.value?.status);
   }
 
   // Sort strictly descending: yang paling baru selalu di paling atas
