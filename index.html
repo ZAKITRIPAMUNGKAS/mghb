@@ -624,6 +624,45 @@
       display: none !important;
     }
 
+    /* Inventaris Rantau: list, bukan checklist */
+    .inv-row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .inv-row:last-child {
+      border-bottom: none;
+    }
+    .inv-row.is-hidden {
+      display: none !important;
+    }
+    .inv-dot {
+      width: 20px;
+      height: 20px;
+      min-width: 20px;
+      border-radius: 50%;
+      background: var(--accent-subtle);
+      color: var(--accent);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.72rem;
+      font-weight: 800;
+      line-height: 1;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .inv-row .task-label {
+      font-weight: 600;
+      font-size: 0.82rem;
+      color: var(--text-primary);
+    }
+    .inv-row .task-detail {
+      color: var(--text-secondary);
+    }
+
     /* Complete State Card */
     .completion-banner {
       display: none;
@@ -1366,6 +1405,285 @@
     .finance-tx-del:hover {
       background: rgba(239, 68, 68, 0.1);
       color: #ef4444;
+    }
+
+    /* Advanced Fintech Suite Additions */
+    .finance-today-meter {
+      background: linear-gradient(135deg, rgba(0, 124, 137, 0.07) 0%, rgba(241, 90, 35, 0.07) 100%);
+      border: 1px solid var(--accent);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      margin-top: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .finance-meter-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .finance-meter-title {
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .finance-meter-gauge-track {
+      width: 100%;
+      height: 8px;
+      background: rgba(0,0,0,0.06);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .finance-meter-gauge-fill {
+      height: 100%;
+      transition: width 0.3s ease, background-color 0.3s ease;
+      border-radius: 999px;
+    }
+    .finance-meter-details {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.72rem;
+      color: var(--text-secondary);
+    }
+    .finance-envelopes-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 14px;
+    }
+    @media (max-width: 640px) {
+      .finance-envelopes-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .finance-envelope-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition: transform 0.15s ease, border-color 0.15s ease;
+    }
+    .finance-envelope-card:hover {
+      border-color: var(--border-strong);
+      transform: translateY(-1px);
+    }
+    .finance-envelope-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .finance-envelope-title {
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .finance-envelope-amt {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+    .finance-envelope-sub {
+      font-size: 0.68rem;
+      color: var(--text-tertiary);
+    }
+    .finance-envelope-track {
+      width: 100%;
+      height: 6px;
+      background: var(--surface-hover);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .finance-envelope-fill {
+      height: 100%;
+      border-radius: 999px;
+      transition: width 0.3s ease;
+    }
+    .finance-bills-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px;
+      margin-top: 14px;
+    }
+    .finance-bills-summary {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px dashed var(--border);
+    }
+    @media (max-width: 600px) {
+      .finance-bills-summary {
+        grid-template-columns: 1fr;
+      }
+    }
+    .finance-bill-stat {
+      background: var(--surface-hover);
+      border-radius: var(--radius-sm);
+      padding: 8px 10px;
+    }
+    .finance-bill-stat-label {
+      font-size: 0.66rem;
+      font-weight: 700;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .finance-bill-stat-val {
+      font-size: 0.9rem;
+      font-weight: 800;
+      margin-top: 2px;
+    }
+    .finance-bills-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .finance-bill-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 10px;
+      background: var(--surface-hover);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      transition: all 0.15s ease;
+    }
+    .finance-bill-row.paid {
+      opacity: 0.75;
+      background: rgba(22, 163, 74, 0.05);
+      border-color: rgba(22, 163, 74, 0.25);
+    }
+    .finance-bill-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .finance-bill-checkbox {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+    .finance-bill-info {
+      display: flex;
+      flex-direction: column;
+    }
+    .finance-bill-name {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .finance-bill-row.paid .finance-bill-name {
+      text-decoration: line-through;
+      color: var(--text-secondary);
+    }
+    .finance-bill-due {
+      font-size: 0.68rem;
+      color: var(--text-tertiary);
+    }
+    .finance-bill-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .finance-bill-amount {
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+    .finance-bill-del {
+      background: transparent;
+      border: none;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      font-size: 0.85rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .finance-bill-del:hover {
+      color: #ef4444;
+      background: rgba(239, 68, 68, 0.1);
+    }
+    .finance-cat-breakdown-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      margin-top: 14px;
+    }
+    .finance-stacked-track {
+      width: 100%;
+      height: 10px;
+      background: var(--surface-hover);
+      border-radius: 999px;
+      overflow: hidden;
+      display: flex;
+      margin: 8px 0;
+    }
+    .finance-stacked-seg {
+      height: 100%;
+      transition: width 0.3s ease;
+    }
+    .finance-cat-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      margin-top: 6px;
+    }
+    .finance-cat-pill {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+    }
+    .finance-cat-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+    .finance-filter-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .finance-filter-chips {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+    .finance-filter-btn {
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .finance-filter-btn.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
     }
 
     /* Modal Large for Monthly Report */
@@ -3507,14 +3825,10 @@
           <circle cx="11" cy="11" r="8"></circle>
           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         </svg>
-        <input type="text" class="search-input" id="search-input" placeholder="Cari item (tekan '/' untuk fokus)..." oninput="handleSearch(this.value)">
+        <input type="text" class="search-input" id="search-input" placeholder="Cari barang (tekan '/' untuk fokus)..." oninput="handleSearch(this.value)">
       </div>
 
-      <div class="filter-pills">
-        <button class="filter-btn active" data-filter="all" onclick="setFilter('all')">Semua</button>
-        <button class="filter-btn" data-filter="pending" onclick="setFilter('pending')">Belum</button>
-        <button class="filter-btn" data-filter="done" onclick="setFilter('done')">Selesai</button>
-      </div>
+
     </div>
   </header>
 
@@ -3550,108 +3864,94 @@
         <span class="badge badge-accent" id="inv-location-badge">Kos · Menara BNI</span>
       </div>
       <p style="font-size: 0.74rem; color: var(--text-secondary); margin-bottom: 10px;">
-        Daftar barang merantau di Jakarta (kost, kantor, perjalanan). Centang yang sudah ada — progress tersimpan otomatis.
+        Daftar barang yang aku punya di rantau Jakarta — kost, kantor &amp; perjalanan. Bukan checklist, hanya daftar agar mudah diingat.
       </p>
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-        <button type="button" class="utility-btn" onclick="exportInventarisText()">📋 Salin Inventaris</button>
-        <button type="button" class="utility-btn" onclick="resetActiveTab()">↺ Reset Centangan</button>
-      </div>
+      <button type="button" class="utility-btn" onclick="copyInventarisList()">📋 Salin Daftar</button>
     </div>
     <!-- Category: Pakaian Kerja -->
     <div class="category-group" data-cat="pakaian">
       <div class="category-header">
         <span class="category-title">👔 Pakaian Kerja &amp; Formal</span>
-        <span class="category-stats" id="stat-pakaian">0/11</span>
+        <span class="category-stats">11 item</span>
       </div>
       <div class="checklist-card">
-        <label class="task-row">
-          <input type="checkbox" id="pk1" data-cat="pakaian" data-tab="packing">
-          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+        <div class="inv-row" data-item="pk1">
+          <span class="inv-dot" aria-hidden="true">•</span>
           <div class="task-body">
             <div class="task-label">Kemeja formal putih lengan panjang</div>
             <span class="task-detail">Senin–Selasa: kemeja putih / business formal standar perbankan</span>
           </div>
-        </label>
-        <label class="task-row">
-          <input type="checkbox" id="pk2" data-cat="pakaian" data-tab="packing">
-          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+        </div>
+        <div class="inv-row" data-item="pk2">
+          <span class="inv-dot" aria-hidden="true">•</span>
           <div class="task-body">
             <div class="task-label">Kemeja formal katun lengan panjang (cadangan)</div>
             <span class="task-detail">Senin–Selasa: business formal (motif garis halus atau polos)</span>
           </div>
-        </label>
-        <label class="task-row">
-          <input type="checkbox" id="pk3" data-cat="pakaian" data-tab="packing">
-          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+        </div>
+        <div class="inv-row" data-item="pk3">
+          <span class="inv-dot" aria-hidden="true">•</span>
           <div class="task-body">
             <div class="task-label">Batik / Tenun khas daerah lengan panjang (x2)</div>
             <span class="task-detail">Rabu–Kamis: corak dominan, lengan panjang wajib &amp; dilarang dilipat</span>
           </div>
-        </label>
-        <label class="task-row">
-          <input type="checkbox" id="pk4" data-cat="pakaian" data-tab="packing">
-          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+        </div>
+        <div class="inv-row" data-item="pk4">
+          <span class="inv-dot" aria-hidden="true">•</span>
           <div class="task-body">
             <div class="task-label">Kemeja berkerah + Blazer / Outer</div>
             <span class="task-detail">Jumat: business casual BNI, kemeja wajib dilapisi blazer/outer berkerah</span>
           </div>
-        </label>
-        <label class="task-row">
-          <input type="checkbox" id="pk5" data-cat="pakaian" data-tab="packing">
-          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+        </div>
+        <div class="inv-row" data-item="pk5">
+          <span class="inv-dot" aria-hidden="true">•</span>
           <div class="task-body">
             <div class="task-label">Kemeja formal wisuda UMS</div>
             <span class="task-detail">Jumat 25 Sep: kemeja putih/terang untuk dalaman toga di kampus Solo</span>
           </div>
-        </label>
-        <label class="task-row">
-          <input type="checkbox" id="pk6" data-cat="pakaian" data-tab="packing">
-          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+        </div>
+        <div class="inv-row" data-item="pk6">
+          <span class="inv-dot" aria-hidden="true">•</span>
           <div class="task-body">
             <div class="task-label">Kaos dalam putih lengan pendek (x4)</div>
             <span class="task-detail">Wajib warna putih, menjaga kerapian dalaman kemeja kerja</span>
           </div>
-        </label>
-        <label class="task-row">
-          <input type="checkbox" id="pk7" data-cat="pakaian" data-tab="packing">
-          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+        </div>
+        <div class="inv-row" data-item="pk7">
+          <span class="inv-dot" aria-hidden="true">•</span>
           <div class="task-body">
             <div class="task-label">Celana bahan pantalon / chino gelap (x2)</div>
             <span class="task-detail">Wajib kain bahan formal gelap (dilarang keras bahan jeans/denim)</span>
           </div>
-        </label>
-        <label class="task-row">
-          <input type="checkbox" id="pk8" data-cat="pakaian" data-tab="packing">
-          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+        </div>
+        <div class="inv-row" data-item="pk8">
+          <span class="inv-dot" aria-hidden="true">•</span>
           <div class="task-body">
             <div class="task-label">Sepatu pantofel kulit &amp; kaos kaki gelap serasi</div>
             <span class="task-detail">Warna pantofel &amp; kaos kaki wajib senada dengan warna celana</span>
           </div>
-        </label>
-        <label class="task-row">
-          <input type="checkbox" id="pk9" data-cat="pakaian" data-tab="packing">
-          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+        </div>
+        <div class="inv-row" data-item="pk9">
+          <span class="inv-dot" aria-hidden="true">•</span>
           <div class="task-body">
             <div class="task-label">Ikat pinggang kulit formal</div>
             <span class="task-detail">Warna kulit formal senada dengan sepatu pantofel</span>
           </div>
-        </label>
-        <label class="task-row">
-          <input type="checkbox" id="pk10" data-cat="pakaian" data-tab="packing">
-          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+        </div>
+        <div class="inv-row" data-item="pk10">
+          <span class="inv-dot" aria-hidden="true">•</span>
           <div class="task-body">
             <div class="task-label">Sneakers bersih / Loafers rapi</div>
             <span class="task-detail">Cadangan hari Jumat santai &amp; mobilitas perjalanan luar kantor</span>
           </div>
-        </label>
-        <label class="task-row">
-          <input type="checkbox" id="pk11" data-cat="pakaian" data-tab="packing">
-          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+        </div>
+        <div class="inv-row" data-item="pk11">
+          <span class="inv-dot" aria-hidden="true">•</span>
           <div class="task-body">
             <div class="task-label">Pakaian ganti santai, tidur &amp; pakaian dalam</div>
             <span class="task-detail">Secukupnya untuk istirahat di penginapan</span>
           </div>
-        </label>
+        </div>
       </div>
     </div>
 
@@ -3659,65 +3959,58 @@
     <div class="category-group" data-cat="dokumen">
       <div class="category-header">
         <span class="category-title">📄 Dokumen &amp; Administrasi Rantau</span>
-        <span class="category-stats" id="stat-dokumen">0/7</span>
+        <span class="category-stats">7 item</span>
       </div>
       <div class="checklist-card">
-        <label class="task-row">
-          <input type="checkbox" id="doc1" data-cat="dokumen" data-tab="packing">
-          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+        <div class="inv-row" data-item="doc1">
+          <span class="inv-dot" aria-hidden="true">•</span>
           <div class="task-body">
             <div class="task-label">KTP elektronik asli &amp; salinan fotokopi</div>
             <span class="task-detail">Identitas wajib verifikasi gedung Menara BNI &amp; stasiun</span>
           </div>
-        </label>
-        <label class="task-row">
-          <input type="checkbox" id="doc2" data-cat="dokumen" data-tab="packing">
-          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+        </div>
+        <div class="inv-row" data-item="doc2">
+          <span class="inv-dot" aria-hidden="true">•</span>
           <div class="task-body">
             <div class="task-label">E-Ticket kereta api keberangkatan (Kamis 24 Sep malam)</div>
             <span class="task-detail">Stasiun Gambir / Pasar Senen → Solo Balapan / Purwosari</span>
           </div>
-        </label>
-        <label class="task-row">
-          <input type="checkbox" id="doc3" data-cat="dokumen" data-tab="packing">
-          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+        </div>
+        <div class="inv-row" data-item="doc3">
+          <span class="inv-dot" aria-hidden="true">•</span>
           <div class="task-body">
             <div class="task-label">Undangan wisuda UMS &amp; berkas permohonan izin</div>
             <span class="task-detail">Bukti resmi pengajuan dispensasi/izin ke mentor Pak Guruh</span>
           </div>
-        </label>
-        <label class="task-row">
-          <input type="checkbox" id="doc4" data-cat="dokumen" data-tab="packing">
-          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+        </div>
+        <div class="inv-row" data-item="doc4">
+          <span class="inv-dot" aria-hidden="true">•</span>
           <div class="task-body">
             <div class="task-label">E-Ticket kereta api kembali ke Jakarta (Minggu 27 Sep)</div>
             <span class="task-detail">Solo → Jakarta untuk persiapan masuk dinas Senin pagi</span>
           </div>
-        </label>
-        <label class="task-row">
-          <input type="checkbox" id="doc5" data-cat="dokumen" data-tab="packing">
-          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+        </div>
+        <div class="inv-row" data-item="doc5">
+          <span class="inv-dot" aria-hidden="true">•</span>
           <div class="task-body">
             <div class="task-label">Salinan Perjanjian Pemagangan (PKM-0026-PKM-II-2026)</div>
             <span class="task-detail">Dokumen perjanjian pemagangan resmi BNI &amp; Kemnaker</span>
           </div>
-        </label>
-        <label class="task-row">
-          <input type="checkbox" id="doc6" data-cat="dokumen" data-tab="packing">
-          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+        </div>
+        <div class="inv-row" data-item="doc6">
+          <span class="inv-dot" aria-hidden="true">•</span>
           <div class="task-body">
             <div class="task-label">Pakta Integritas Magang BNI</div>
             <span class="task-detail">Arsip komitmen kepatuhan ditandatangani saat hari pertama masuk</span>
           </div>
-        </label>
-        <label class="task-row">
-          <input type="checkbox" id="doc7" data-cat="dokumen" data-tab="packing">
-          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+        </div>
+        <div class="inv-row" data-item="doc7">
+          <span class="inv-dot" aria-hidden="true">•</span>
           <div class="task-body">
             <div class="task-label">Kartu BPJS Ketenagakerjaan / Kesehatan &amp; Pas Foto 3x4 / 4x6</div>
             <span class="task-detail">Jaminan darurat JKK/JKM pemerintah &amp; arsip foto formal</span>
           </div>
-        </label>
+        </div>
       </div>
     </div>
 
@@ -3725,41 +4018,37 @@
     <div class="category-group" data-cat="elektronik">
       <div class="category-header">
         <span class="category-title">💻 Perangkat &amp; Elektronik</span>
-        <span class="category-stats" id="stat-elektronik">0/4</span>
+        <span class="category-stats">4 item</span>
       </div>
       <div class="checklist-card">
-        <label class="task-row">
-          <input type="checkbox" id="el1" data-cat="elektronik" data-tab="packing">
-          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+        <div class="inv-row" data-item="el1">
+          <span class="inv-dot" aria-hidden="true">•</span>
           <div class="task-body">
             <div class="task-label">Laptop kerja &amp; kabel adaptor charger</div>
             <span class="task-detail">Perangkat utama tugas divisi Sales Strategy &amp; Execution</span>
           </div>
-        </label>
-        <label class="task-row">
-          <input type="checkbox" id="el2" data-cat="elektronik" data-tab="packing">
-          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+        </div>
+        <div class="inv-row" data-item="el2">
+          <span class="inv-dot" aria-hidden="true">•</span>
           <div class="task-body">
             <div class="task-label">Smartphone &amp; kabel charger USB</div>
             <span class="task-detail">Presensi GPS MagangHub Kemnaker &amp; koordinasi tim</span>
           </div>
-        </label>
-        <label class="task-row">
-          <input type="checkbox" id="el3" data-cat="elektronik" data-tab="packing">
-          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+        </div>
+        <div class="inv-row" data-item="el3">
+          <span class="inv-dot" aria-hidden="true">•</span>
           <div class="task-body">
             <div class="task-label">Power bank (terisi daya penuh)</div>
             <span class="task-detail">Cadangan daya esensial selama perjalanan kereta api malam</span>
           </div>
-        </label>
-        <label class="task-row">
-          <input type="checkbox" id="el4" data-cat="elektronik" data-tab="packing">
-          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+        </div>
+        <div class="inv-row" data-item="el4">
+          <span class="inv-dot" aria-hidden="true">•</span>
           <div class="task-body">
             <div class="task-label">Earphone / headset dengan mikrofon</div>
             <span class="task-detail">Komunikasi meeting online &amp; fokus kerja di kantor</span>
           </div>
-        </label>
+        </div>
       </div>
     </div>
 
@@ -3767,57 +4056,51 @@
     <div class="category-group" data-cat="toiletries">
       <div class="category-header">
         <span class="category-title">🧴 Perawatan &amp; Toiletries</span>
-        <span class="category-stats" id="stat-toiletries">0/6</span>
+        <span class="category-stats">6 item</span>
       </div>
       <div class="checklist-card">
-        <label class="task-row">
-          <input type="checkbox" id="tl1" data-cat="toiletries" data-tab="packing">
-          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+        <div class="inv-row" data-item="tl1">
+          <span class="inv-dot" aria-hidden="true">•</span>
           <div class="task-body">
             <div class="task-label">Sikat gigi &amp; pasta gigi travel</div>
             <span class="task-detail">Perlengkapan mandi praktis</span>
           </div>
-        </label>
-        <label class="task-row">
-          <input type="checkbox" id="tl2" data-cat="toiletries" data-tab="packing">
-          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+        </div>
+        <div class="inv-row" data-item="tl2">
+          <span class="inv-dot" aria-hidden="true">•</span>
           <div class="task-body">
             <div class="task-label">Sabun &amp; sampo cair botol kecil</div>
             <span class="task-detail">Ukuran ramah tas ransel</span>
           </div>
-        </label>
-        <label class="task-row">
-          <input type="checkbox" id="tl3" data-cat="toiletries" data-tab="packing">
-          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+        </div>
+        <div class="inv-row" data-item="tl3">
+          <span class="inv-dot" aria-hidden="true">•</span>
           <div class="task-body">
             <div class="task-label">Deodoran &amp; parfum segar</div>
             <span class="task-detail">Standar grooming dan kenyamanan ruang kerja kantor BNI</span>
           </div>
-        </label>
-        <label class="task-row">
-          <input type="checkbox" id="tl4" data-cat="toiletries" data-tab="packing">
-          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+        </div>
+        <div class="inv-row" data-item="tl4">
+          <span class="inv-dot" aria-hidden="true">•</span>
           <div class="task-body">
             <div class="task-label">Alat cukur kumis / jenggot (razor)</div>
             <span class="task-detail">SOP Grooming: kumis &amp; jenggot wajib terawat rapi/bersih</span>
           </div>
-        </label>
-        <label class="task-row">
-          <input type="checkbox" id="tl5" data-cat="toiletries" data-tab="packing">
-          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+        </div>
+        <div class="inv-row" data-item="tl5">
+          <span class="inv-dot" aria-hidden="true">•</span>
           <div class="task-body">
             <div class="task-label">Handuk micro-fiber travel</div>
             <span class="task-detail">Cepat kering dan ringkas</span>
           </div>
-        </label>
-        <label class="task-row">
-          <input type="checkbox" id="tl6" data-cat="toiletries" data-tab="packing">
-          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+        </div>
+        <div class="inv-row" data-item="tl6">
+          <span class="inv-dot" aria-hidden="true">•</span>
           <div class="task-body">
             <div class="task-label">Sisir saku &amp; minyak penata rambut / pomade</div>
             <span class="task-detail">SOP Grooming: potongan rambut rapi office look sepanjang hari</span>
           </div>
-        </label>
+        </div>
       </div>
     </div>
 
@@ -3825,41 +4108,37 @@
     <div class="category-group" data-cat="kesehatan">
       <div class="category-header">
         <span class="category-title">💊 Kesehatan &amp; Obat</span>
-        <span class="category-stats" id="stat-kesehatan">0/4</span>
+        <span class="category-stats">4 item</span>
       </div>
       <div class="checklist-card">
-        <label class="task-row">
-          <input type="checkbox" id="ob1" data-cat="kesehatan" data-tab="packing">
-          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+        <div class="inv-row" data-item="ob1">
+          <span class="inv-dot" aria-hidden="true">•</span>
           <div class="task-body">
             <div class="task-label">Obat-obatan rutin pribadi</div>
             <span class="task-detail">Persediaan obat resep jika ada</span>
           </div>
-        </label>
-        <label class="task-row">
-          <input type="checkbox" id="ob2" data-cat="kesehatan" data-tab="packing">
-          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+        </div>
+        <div class="inv-row" data-item="ob2">
+          <span class="inv-dot" aria-hidden="true">•</span>
           <div class="task-body">
             <div class="task-label">Tolak Angin, Paracetamol &amp; Plester luka</div>
             <span class="task-detail">P3K dasar antisipasi daya tahan tubuh saat perjalanan</span>
           </div>
-        </label>
-        <label class="task-row">
-          <input type="checkbox" id="ob3" data-cat="kesehatan" data-tab="packing">
-          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+        </div>
+        <div class="inv-row" data-item="ob3">
+          <span class="inv-dot" aria-hidden="true">•</span>
           <div class="task-body">
             <div class="task-label">Masker medis higienis cadangan</div>
             <span class="task-detail">Untuk mobilitas di stasiun &amp; transportasi publik</span>
           </div>
-        </label>
-        <label class="task-row">
-          <input type="checkbox" id="ob4" data-cat="kesehatan" data-tab="packing">
-          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+        </div>
+        <div class="inv-row" data-item="ob4">
+          <span class="inv-dot" aria-hidden="true">•</span>
           <div class="task-body">
             <div class="task-label">Hand sanitizer botol saku</div>
             <span class="task-detail">Higienitas tangan setiap saat</span>
           </div>
-        </label>
+        </div>
       </div>
     </div>
 
@@ -3867,287 +4146,62 @@
     <div class="category-group" data-cat="lainnya">
       <div class="category-header">
         <span class="category-title">🎒 Perlengkapan Rantau</span>
-        <span class="category-stats" id="stat-lainnya">0/6</span>
+        <span class="category-stats">6 item</span>
       </div>
       <div class="checklist-card">
-        <label class="task-row">
-          <input type="checkbox" id="ot1" data-cat="lainnya" data-tab="packing">
-          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+        <div class="inv-row" data-item="ot1">
+          <span class="inv-dot" aria-hidden="true">•</span>
           <div class="task-body">
             <div class="task-label">Sajadah travel tipis / sarung</div>
             <span class="task-detail">Kemudahan beribadah di perjalanan &amp; mushola kantor</span>
           </div>
-        </label>
-        <label class="task-row">
-          <input type="checkbox" id="ot2" data-cat="lainnya" data-tab="packing">
-          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+        </div>
+        <div class="inv-row" data-item="ot2">
+          <span class="inv-dot" aria-hidden="true">•</span>
           <div class="task-body">
             <div class="task-label">Payung lipat ringkas</div>
             <span class="task-detail">Antisipasi cuaca hujan di area Pejompongan / Jakarta</span>
           </div>
-        </label>
-        <label class="task-row">
-          <input type="checkbox" id="ot3" data-cat="lainnya" data-tab="packing">
-          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+        </div>
+        <div class="inv-row" data-item="ot3">
+          <span class="inv-dot" aria-hidden="true">•</span>
           <div class="task-body">
             <div class="task-label">Tumbler / botol minum portabel</div>
             <span class="task-detail">Menjaga hidrasi harian</span>
           </div>
-        </label>
-        <label class="task-row">
-          <input type="checkbox" id="ot4" data-cat="lainnya" data-tab="packing">
-          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+        </div>
+        <div class="inv-row" data-item="ot4">
+          <span class="inv-dot" aria-hidden="true">•</span>
           <div class="task-body">
             <div class="task-label">Ransel kerja / daypack kantor</div>
             <span class="task-detail">Membawa laptop &amp; dokumen ke Menara BNI Pejompongan</span>
           </div>
-        </label>
-        <label class="task-row">
-          <input type="checkbox" id="ot5" data-cat="lainnya" data-tab="packing">
-          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+        </div>
+        <div class="inv-row" data-item="ot5">
+          <span class="inv-dot" aria-hidden="true">•</span>
           <div class="task-body">
             <div class="task-label">Kantong laundry / plastik pakaian kotor</div>
             <span class="task-detail">Pemisah pakaian bekas pakai di koper</span>
           </div>
-        </label>
-        <label class="task-row">
-          <input type="checkbox" id="ot6" data-cat="lainnya" data-tab="packing">
-          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+        </div>
+        <div class="inv-row" data-item="ot6">
+          <span class="inv-dot" aria-hidden="true">•</span>
           <div class="task-body">
             <div class="task-label">Dompet, kartu uang elektronik (Flazz/e-Money/JakLingko), &amp; uang tunai</div>
             <span class="task-detail">Akses KRL, MRT, TransJakarta, dan konsumsi darurat</span>
           </div>
-        </label>
+        </div>
       </div>
     </div>
 
-    <!-- Complete Banner -->
-    <div class="completion-banner" id="banner-complete-packing">
-      <div class="completion-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-      </div>
-      <div class="completion-text">
-        <h4>Inventaris Rantau Lengkap</h4>
-        <p>Seluruh barang kost, kantor &amp; perjalanan sudah siap di Jakarta.</p>
-      </div>
-    </div>
-  </main>
-
-  <!-- TAB 2: MAGANGHUB & SOP BNI -->
-  <main id="view-magang" class="tab-content">
-    <!-- Category: Rutinitas Harian -->
-    <div class="category-group" data-cat="harian">
-      <div class="category-header">
-        <span class="category-title">Rutinitas Harian Kerja</span>
-        <span class="category-stats" id="stat-harian">0/8</span>
-      </div>
-      <div class="checklist-card">
-        <label class="task-row">
-          <input type="checkbox" id="mg1" data-cat="harian" data-tab="magang">
-          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
-          <div class="task-body">
-            <div class="task-label">Presensi Pagi di MagangHub Kemnaker</div>
-            <span class="task-detail">Wajib izinkan GPS lokasi kantor &amp; lakukan check-in tepat waktu</span>
-          </div>
-        </label>
-        <label class="task-row">
-          <input type="checkbox" id="mg2" data-cat="harian" data-tab="magang">
-          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
-          <div class="task-body">
-            <div class="task-label">Absensi Internal Sistem DigiHC BNI</div>
-            <span class="task-detail">Catat presensi harian pada portal internal pegawai/peserta magang BNI</span>
-          </div>
-        </label>
-        <label class="task-row">
-          <input type="checkbox" id="mg3" data-cat="harian" data-tab="magang">
-          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
-          <div class="task-body">
-            <div class="task-label">Penggunaan TPP (ID Card / Lanyard BNI)</div>
-            <span class="task-detail">Wajib dikalungkan/disematkan di dada tampak depan setiap hari</span>
-          </div>
-        </label>
-        <label class="task-row">
-          <input type="checkbox" id="mg4" data-cat="harian" data-tab="magang">
-          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
-          <div class="task-body">
-            <div class="task-label">Standar Grooming &amp; Dresscode BNI HCS</div>
-            <span class="task-detail">Sen-Sel Formal, Rab-Kam Batik (lengan tidak dilipat), Jum Casual lapis blazer</span>
-          </div>
-        </label>
-        <label class="task-row">
-          <input type="checkbox" id="mg5" data-cat="harian" data-tab="magang">
-          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
-          <div class="task-body">
-            <div class="task-label">Briefing Penugasan Mentor Divisi SSE</div>
-            <span class="task-detail">Koordinasi dan konfirmasi target kerja harian bersama Pak Guruh Sri Handoyo</span>
-          </div>
-        </label>
-        <label class="task-row">
-          <input type="checkbox" id="mg6" data-cat="harian" data-tab="magang">
-          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
-          <div class="task-body">
-            <div class="task-label">Eksekusi Tugas &amp; Olah Data Strategi Penjualan</div>
-            <span class="task-detail">Pengerjaan proyek analitik di folder 04_Divisi SSE - Kerja &amp; Data</span>
-          </div>
-        </label>
-        <label class="task-row">
-          <input type="checkbox" id="mg7" data-cat="harian" data-tab="magang">
-          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
-          <div class="task-body">
-            <div class="task-label">Pengisian Logbook Harian MagangHub Kemnaker</div>
-            <span class="task-detail">Catat deskripsi pekerjaan, hasil capaian, dan solusi kendala harian</span>
-          </div>
-        </label>
-        <label class="task-row">
-          <input type="checkbox" id="mg8" data-cat="harian" data-tab="magang">
-          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
-          <div class="task-body">
-            <div class="task-label">Presensi Pulang (MagangHub &amp; DigiHC)</div>
-            <span class="task-detail">Check-out saat jam operasional kantor Menara BNI selesai</span>
-          </div>
-        </label>
-      </div>
-    </div>
-
-    <!-- Category: Evaluasi Berkala -->
-    <div class="category-group" data-cat="evaluasi">
-      <div class="category-header">
-        <span class="category-title">Evaluasi, Izin, &amp; Laporan Bulanan</span>
-        <span class="category-stats" id="stat-evaluasi">0/5</span>
-      </div>
-      <div class="checklist-card">
-        <label class="task-row">
-          <input type="checkbox" id="mg9" data-cat="evaluasi" data-tab="magang">
-          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
-          <div class="task-body">
-            <div class="task-label">Pengajuan Izin Wisuda di Portal MagangHub</div>
-            <span class="task-detail">Pilih "Tidak Hadir Dengan Keterangan", unggah undangan wisuda UMS</span>
-          </div>
-        </label>
-        <label class="task-row">
-          <input type="checkbox" id="mg10" data-cat="evaluasi" data-tab="magang">
-          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
-          <div class="task-body">
-            <div class="task-label">Prosedur Surat Dokter jika Sakit &gt;1 Hari</div>
-            <span class="task-detail">Sakit lebih dari 1 hari kerja berturut-turut wajib membawa surat dokter resmi</span>
-          </div>
-        </label>
-        <label class="task-row">
-          <input type="checkbox" id="mg11" data-cat="evaluasi" data-tab="magang">
-          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
-          <div class="task-body">
-            <div class="task-label">Verifikasi &amp; Approval Logbook Mingguan oleh Mentor</div>
-            <span class="task-detail">Konfirmasi validasi laporan ke mentor agar status disetujui tepat waktu</span>
-          </div>
-        </label>
-        <label class="task-row">
-          <input type="checkbox" id="mg12" data-cat="evaluasi" data-tab="magang">
-          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
-          <div class="task-body">
-            <div class="task-label">Penyusunan Slide &amp; Berkas Laporan Bulanan</div>
-            <span class="task-detail">Simpan rekap capaian kinerja di folder 06_Presentasi &amp; Laporan Bulanan</span>
-          </div>
-        </label>
-        <label class="task-row">
-          <input type="checkbox" id="mg13" data-cat="evaluasi" data-tab="magang">
-          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
-          <div class="task-body">
-            <div class="task-label">Pengecekan Rekomendasi Uang Saku Bulanan</div>
-            <span class="task-detail">Pantau persetujuan laporan bulanan untuk verifikasi pencairan hak uang saku</span>
-          </div>
-        </label>
-      </div>
-    </div>
-
-    <!-- Category: Kepatuhan -->
-    <div class="category-group" data-cat="kepatuhan">
-      <div class="category-header">
-        <span class="category-title">Kepatuhan, Etika &amp; Integritas Perbankan</span>
-        <span class="category-stats" id="stat-kepatuhan">0/4</span>
-      </div>
-      <div class="checklist-card">
-        <label class="task-row">
-          <input type="checkbox" id="mg14" data-cat="kepatuhan" data-tab="magang">
-          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
-          <div class="task-body">
-            <div class="task-label">Kerahasiaan Data Nasabah &amp; Bank BNI (Banking Secrecy)</div>
-            <span class="task-detail">Kepatuhan penuh NDA; dilarang keras membocorkan data nasabah atau internal bank</span>
-          </div>
-        </label>
-        <label class="task-row">
-          <input type="checkbox" id="mg15" data-cat="kepatuhan" data-tab="magang">
-          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
-          <div class="task-body">
-            <div class="task-label">Larangan Konten Pribadi di Area Kantor / Menggunakan Atribut BNI</div>
-            <span class="task-detail">Dilarang membuat konten medsos non-kedinasan saat jam kerja operasional bank</span>
-          </div>
-        </label>
-        <label class="task-row">
-          <input type="checkbox" id="mg16" data-cat="kepatuhan" data-tab="magang">
-          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
-          <div class="task-body">
-            <div class="task-label">Integritas &amp; Penolakan Gratifikasi / Hadiah</div>
-            <span class="task-detail">Menolak segala bentuk gratifikasi atau cenderamata sesuai pakta integritas</span>
-          </div>
-        </label>
-        <label class="task-row">
-          <input type="checkbox" id="mg17" data-cat="kepatuhan" data-tab="magang">
-          <span class="checkbox-box"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
-          <div class="task-body">
-            <div class="task-label">Etika Komunikasi Korporat &amp; Kedisiplinan K3</div>
-            <span class="task-detail">Santun, mendengarkan arahan mentor, dan mematuhi tata tertib K3 Menara BNI</span>
-          </div>
-        </label>
-      </div>
-    </div>
-
-    <!-- Complete Banner -->
-    <div class="completion-banner" id="banner-complete-magang">
-      <div class="completion-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-      </div>
-      <div class="completion-text">
-        <h4>Semua Standar SOP Terpenuhi</h4>
-        <p>Seluruh kepatuhan dan alur operasional magang telah dieksekusi dengan baik.</p>
-      </div>
+    <!-- Total -->
+    <div style="margin-top: 14px; font-size: 0.76rem; color: var(--text-secondary); text-align: center;">
+      Total <strong id="inv-total-count" style="color: var(--text-primary);">38</strong> barang tercatat.
     </div>
   </main>
 
   <!-- TAB 3: DAILY LOGBOOK FORMULATOR & SCRATCHPAD -->
   <main id="view-logbook" class="tab-content">
-    <!-- Quick Scratchpad (Catatan Cepat Harian & Rapat) -->
-    <div class="feature-card" style="margin-bottom: 14px;">
-      <div class="feature-head">
-        <div class="feature-title">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
-            <path d="M12 20h9"></path>
-            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
-          </svg>
-          Catatan Cepat Harian &amp; Rapat
-        </div>
-        <div class="scratchpad-header-meta">
-          <span class="scratchpad-save-indicator" id="scratchpad-indicator">
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
-            Tersimpan otomatis
-          </span>
-        </div>
-      </div>
-      <p style="font-size: 0.74rem; color: var(--text-secondary); margin-bottom: 10px;">
-        Tulis bebas catatan briefing Pak Guruh, rekonsiliasi data cabang, atau kendala lapangan saat jam kerja. Klik tombol di bawah untuk menjadikannya draf logbook formal berstandar Kemnaker.
-      </p>
-      <textarea class="scratchpad-textarea" id="scratchpad-notes" placeholder="Tulis catatan harian di sini (otomatis tersimpan)...&#10;Contoh:&#10;• Pukul 08.30: Briefing pagi bareng Pak Guruh terkait target sales Area Jakarta.&#10;• Pukul 10.15: Olah data spreadsheet realisasi DPK &amp; CASA, perbaiki 2 format cabang anomali.&#10;• Pukul 14.30: Bikin visual diagram achievement rate di Excel." oninput="handleScratchpadInput()"></textarea>
-      <div class="scratchpad-toolbar">
-        <div style="font-size: 0.7rem; color: var(--text-tertiary);" id="scratchpad-char-count">0 karakter</div>
-        <div style="display: flex; gap: 6px;">
-          <button class="utility-btn" onclick="clearScratchpad()">Bersihkan</button>
-          <button class="btn-action" style="font-size: 0.74rem; padding: 5px 10px;" onclick="transferScratchpadToLogbook()">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="13 17 18 12 13 7"></polyline><polyline points="6 17 11 12 6 7"></polyline></svg>
-            Pindahkan ke Formulator
-          </button>
-        </div>
-      </div>
-    </div>
-
     <div class="feature-card" id="formulator-card">
       <div class="feature-head">
         <div class="feature-title">
@@ -4158,24 +4212,14 @@
             <line x1="16" y1="17" x2="8" y2="17"></line>
             <polyline points="10 9 9 9 8 9"></polyline>
           </svg>
-          Formulator Logbook MagangHub
+          Logbook MagangHub
         </div>
         <span class="badge badge-accent">Standar Kemnaker</span>
       </div>
       <p style="font-size: 0.76rem; color: var(--text-secondary); margin-bottom: 12px;">
-        Ketikkan poin kasar aktivitas Anda hari ini. Sistem akan memformulasikannya menjadi 3 bagian wajib standar portal resmi Kemnaker (masing-masing otomatis ≥ 100 karakter).
+        Isi poin kasar aktivitas harian. Tekan AI untuk memformulasikan menjadi 3 bagian resmi Kemnaker (masing-masing ≥ 100 karakter), lalu submit di
+        <a href="https://monev.maganghub.kemnaker.go.id/dashboard" target="_blank" rel="noopener noreferrer" style="color: var(--accent); font-weight: 600;">dashboard Monev ↗</a>.
       </p>
-
-      <div style="margin-bottom: 14px;">
-        <span style="font-size: 0.72rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.04em;">Preset Aktivitas Cepat (1-Klik):</span>
-        <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px;">
-          <button type="button" class="utility-btn" onclick="applyLogbookPreset('data')" style="padding: 4px 8px; font-size: 0.72rem;">📊 Olah Data Spreadsheet</button>
-          <button type="button" class="utility-btn" onclick="applyLogbookPreset('briefing')" style="padding: 4px 8px; font-size: 0.72rem;">🗣️ Briefing Pak Guruh</button>
-          <button type="button" class="utility-btn" onclick="applyLogbookPreset('dashboard')" style="padding: 4px 8px; font-size: 0.72rem;">📈 Visual Dashboard Sales</button>
-          <button type="button" class="utility-btn" onclick="applyLogbookPreset('evaluasi')" style="padding: 4px 8px; font-size: 0.72rem;">🔍 Evaluasi CASA &amp; DPK</button>
-          <button type="button" class="utility-btn" onclick="applyLogbookPreset('onboarding')" style="padding: 4px 8px; font-size: 0.72rem;">🏢 Orientasi Budaya BNI</button>
-        </div>
-      </div>
 
       <div class="form-group">
         <label class="form-label">Tanggal Laporan</label>
@@ -4196,7 +4240,7 @@
 
       <div class="form-group">
         <label class="form-label">Catatan Aktivitas / Poin Kasar</label>
-        <textarea class="form-control" id="lb-rough-notes" placeholder="Contoh: tadi bantu rekap data pencapaian target penjualan cabang, perbaiki data eror di excel, dan ikut briefing pagi bareng Pak Guruh..."></textarea>
+        <textarea class="form-control" id="lb-rough-notes" placeholder="Format waktu bebas, satu baris satu kegiatan:&#10;08:00 Briefing pagi bareng Pak Guruh soal target sales Area Jakarta&#10;10:15 Rekap data DPK &amp; CASA cabang, perbaiki 2 anomali format&#10;14:30 Bikin diagram achievement rate di Excel"></textarea>
       </div>
 
       <div class="form-group">
@@ -4212,7 +4256,7 @@
 
       <div style="display: flex; gap: 8px; margin-bottom: 8px;">
         <button type="button" class="utility-btn" onclick="insertTimeStamp()" title="Sisipkan jam sekarang ke catatan">🕐 +Jam</button>
-        <span style="font-size: 0.7rem; color: var(--text-tertiary); align-self: center;">Format: <code>08:00 kegiatan...</code> per baris</span>
+        <span style="font-size: 0.7rem; color: var(--text-tertiary); align-self: center;">Bebas: <code>08:00</code>, <code>08.00</code>, atau <code>Pukul 08.30</code> — AI baca urutannya</span>
       </div>
 
       <button class="btn-block" id="btn-generate-ai" onclick="generateLogbookAI()">
@@ -4277,6 +4321,13 @@
               💾 Simpan Riwayat
             </button>
           </div>
+          <a href="https://monev.maganghub.kemnaker.go.id/dashboard" target="_blank" rel="noopener noreferrer" class="btn-block" style="margin-top: 10px; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px; background: var(--highlight, #e05315);">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            Buka Dashboard Monev — Submit Resmi ↗
+          </a>
+          <p style="font-size: 0.7rem; color: var(--text-tertiary); text-align: center; margin-top: 6px;">
+            Salin hasil di atas, lalu tempel ke 3 kolom di dashboard Monev Kemnaker.
+          </p>
         </div>
       </div>
     </div>
@@ -4309,14 +4360,350 @@
     </div>
   </main>
 
+  <!-- TAB: KEUANGAN RAUTAU -->
+  <main id="view-keuangan" class="tab-content">
+    <div>
+      <!-- Financial Overview Card -->
+      <div class="finance-overview-card">
+        <div class="feature-head">
+          <div class="feature-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+              <line x1="12" y1="1" x2="12" y2="23"></line>
+              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+            </svg>
+            Keuangan Rantau Jakarta · Advanced Fintech Suite
+          </div>
+          <span class="badge badge-accent" id="fin-status-badge" style="font-size: 0.72rem; padding: 3px 10px;">Terkendali</span>
+        </div>
+
+        <div class="finance-summary-grid">
+          <!-- Metric 1: Income -->
+          <div class="finance-metric">
+            <span class="finance-metric-label">Pemasukan / Uang Saku</span>
+            <div style="display: flex; align-items: baseline; gap: 4px; margin: 4px 0 2px;">
+              <span style="font-size: 0.9rem; font-weight: 700; color: var(--text-tertiary);">Rp</span>
+              <input type="number" id="fin-income-input" value="3500000" onchange="updateFinanceCalculations()" style="font-size: 1.15rem; font-weight: 800; color: var(--text-primary); background: transparent; border: none; border-bottom: 1.5px dashed var(--border-strong); width: 100%; outline: none; padding: 0 0 2px;">
+            </div>
+            <span class="finance-metric-sub">BNI / Kemnaker / tambahan (klik utk ubah)</span>
+          </div>
+
+          <!-- Metric 2: Total Spent -->
+          <div class="finance-metric">
+            <span class="finance-metric-label">Terpakai Bulan Ini</span>
+            <div class="finance-metric-val" id="fin-total-expense" style="margin: 4px 0 2px;">Rp 0</div>
+            <span class="finance-metric-sub" id="fin-expense-percent">0% dari pemasukan</span>
+          </div>
+
+          <!-- Metric 3: Remaining Safe Budget -->
+          <div class="finance-metric">
+            <span class="finance-metric-label">Sisa &amp; Batas Aman Harian</span>
+            <div class="finance-metric-val success" id="fin-remaining-budget" style="margin: 4px 0 2px;">Rp 3.500.000</div>
+            <span class="finance-metric-sub" id="fin-daily-safe-limit">Batas aman: Rp — / hari</span>
+          </div>
+        </div>
+
+        <!-- Today's Safe Burn Meter -->
+        <div class="finance-today-meter">
+          <div class="finance-meter-header">
+            <span class="finance-meter-title">
+              <span>🎯 Burn Rate Hari Ini:</span>
+              <span id="fin-today-spent" style="font-weight: 800; color: var(--text-primary);">Rp 0</span>
+              <span style="font-size: 0.68rem; color: var(--text-tertiary);">dari batas</span>
+              <span id="fin-today-limit" style="font-weight: 700; color: var(--accent);">Rp —</span>
+            </span>
+            <span class="badge" id="fin-today-badge" style="font-size: 0.68rem; padding: 2px 8px; background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3);">Aman</span>
+          </div>
+          <div class="finance-meter-gauge-track">
+            <div class="finance-meter-gauge-fill" id="fin-today-meter-fill" style="width: 0%; background-color: #10b981;"></div>
+          </div>
+          <div class="finance-meter-details">
+            <span id="fin-today-left-text">Sisa jatah belanja hari ini: Rp —</span>
+            <span id="fin-burn-rate-pace">Kecepatan belanja: Normal</span>
+          </div>
+        </div>
+
+        <!-- Budget Progress Track -->
+        <div class="finance-progress-track" style="margin-top: 14px;">
+          <div class="finance-progress-fill" id="fin-progress-bar" style="width: 0%;"></div>
+        </div>
+        <div class="finance-progress-meta">
+          <span id="fin-progress-label" style="font-weight: 600;">Pengeluaran: 0%</span>
+          <span id="fin-days-left">Sisa hari bulan ini: —</span>
+        </div>
+        <div id="fin-balance-banner" style="margin-top: 10px; display: none; border-radius: 8px; padding: 10px 12px; font-size: 0.76rem; line-height: 1.4;"></div>
+
+        <!-- AI Advisor -->
+        <div id="fin-ai-card" style="margin-top: 12px; border: 1px solid var(--border); border-radius: 10px; padding: 12px; background: var(--surface);">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px;">
+            <span class="feature-title" style="font-size: 0.82rem;">✨ Nasehat AI — Cek Balance</span>
+            <button type="button" class="btn-action btn-xs" id="btn-fin-ai" onclick="requestFinanceAdvice()">Tanya AI</button>
+          </div>
+          <div id="fin-ai-output" style="font-size: 0.76rem; color: var(--text-secondary); line-height: 1.45; min-height: 20px;">
+            Tekan <em>Tanya AI</em> untuk penilaian: pemasukan vs pengeluaran, sisa hari, batas aman, dan 1–2 langkah hemat relevan Menara BNI.
+          </div>
+        </div>
+      </div>
+
+      <!-- Live 50/30/20 Digital Envelopes Grid -->
+      <div class="finance-envelopes-grid">
+        <!-- Envelope 1: Needs 50% -->
+        <div class="finance-envelope-card">
+          <div class="finance-envelope-head">
+            <span class="finance-envelope-title">🏠 Needs / Pokok (50%)</span>
+            <span class="badge" id="fin-env-needs-status" style="font-size: 0.65rem; padding: 1px 6px;">0%</span>
+          </div>
+          <div class="finance-envelope-amt" id="fin-env-needs-spent">Rp 0</div>
+          <div class="finance-envelope-sub" id="fin-env-needs-target">Alokasi target: Rp 1.750.000</div>
+          <div class="finance-envelope-track">
+            <div class="finance-envelope-fill" id="fin-env-needs-fill" style="width: 0%; background: #0284c7;"></div>
+          </div>
+        </div>
+
+        <!-- Envelope 2: Wants 30% -->
+        <div class="finance-envelope-card">
+          <div class="finance-envelope-head">
+            <span class="finance-envelope-title">☕ Wants / Gaya Hidup (30%)</span>
+            <span class="badge" id="fin-env-wants-status" style="font-size: 0.65rem; padding: 1px 6px;">0%</span>
+          </div>
+          <div class="finance-envelope-amt" id="fin-env-wants-spent">Rp 0</div>
+          <div class="finance-envelope-sub" id="fin-env-wants-target">Alokasi target: Rp 1.050.000</div>
+          <div class="finance-envelope-track">
+            <div class="finance-envelope-fill" id="fin-env-wants-fill" style="width: 0%; background: #F15A24;"></div>
+          </div>
+        </div>
+
+        <!-- Envelope 3: Savings 20% -->
+        <div class="finance-envelope-card">
+          <div class="finance-envelope-head">
+            <span class="finance-envelope-title">💰 Savings / Wondr (20%)</span>
+            <span class="badge" id="fin-env-savings-status" style="font-size: 0.65rem; padding: 1px 6px;">0%</span>
+          </div>
+          <div class="finance-envelope-amt" id="fin-env-savings-spent">Rp 0</div>
+          <div class="finance-envelope-sub" id="fin-env-savings-target">Alokasi target: Rp 700.000</div>
+          <div class="finance-envelope-track">
+            <div class="finance-envelope-fill" id="fin-env-savings-fill" style="width: 0%; background: #10b981;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Smart Fixed-Bills Checklist & Due Dates -->
+      <div class="finance-bills-card">
+        <div class="feature-head" style="margin-bottom: 12px;">
+          <div>
+            <div class="feature-title" style="font-size: 0.84rem;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+              </svg>
+              Tagihan Bulanan Tetap (Smart Checklist)
+            </div>
+            <p style="font-size: 0.72rem; color: var(--text-secondary); margin-top: 2px;">
+              Centang tagihan yang sudah lunas bulan ini. Tagihan belum bayar otomatis memotong sisa belanja aman.
+            </p>
+          </div>
+          <button type="button" class="btn-action btn-xs" onclick="promptAddCustomBill()">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            + Tagihan
+          </button>
+        </div>
+
+        <div class="finance-bills-summary">
+          <div class="finance-bill-stat">
+            <div class="finance-bill-stat-label">Total Tagihan Tetap</div>
+            <div class="finance-bill-stat-val" id="fin-bills-total">Rp 0</div>
+          </div>
+          <div class="finance-bill-stat">
+            <div class="finance-bill-stat-label" style="color: #10b981;">Sudah Dibayar</div>
+            <div class="finance-bill-stat-val" id="fin-bills-paid" style="color: #10b981;">Rp 0</div>
+          </div>
+          <div class="finance-bill-stat">
+            <div class="finance-bill-stat-label" style="color: #f59e0b;">Belum Lunas</div>
+            <div class="finance-bill-stat-val" id="fin-bills-unpaid" style="color: #f59e0b;">Rp 0</div>
+          </div>
+        </div>
+
+        <!-- Hidden input for backward compatibility with getFinanceFixed() -->
+        <input type="hidden" id="fin-fixed-input" value="0">
+
+        <!-- Bills List Container -->
+        <div class="finance-bills-list" id="finance-bills-container">
+          <!-- Rendered dynamically via JS -->
+        </div>
+      </div>
+
+      <!-- Category Breakdown Visual Stacked Bar -->
+      <div class="finance-cat-breakdown-card">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-size: 0.76rem; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 6px;">
+            📊 Komposisi Pengeluaran Aktual
+          </span>
+          <span id="fin-cat-total-label" style="font-size: 0.72rem; color: var(--text-secondary); font-weight: 600;">Total: Rp 0</span>
+        </div>
+        <!-- Multi-color stacked track -->
+        <div class="finance-stacked-track" id="fin-stacked-track">
+          <!-- Populated by JS -->
+        </div>
+        <!-- Legends -->
+        <div class="finance-cat-legend" id="fin-cat-legend">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Quick Expense Logger Card -->
+      <div class="feature-card" style="margin-top: 14px;">
+        <div class="feature-head">
+          <div>
+            <div class="feature-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="16"></line>
+                <line x1="8" y1="12" x2="16" y2="12"></line>
+              </svg>
+              Catat Pengeluaran Cepat
+            </div>
+            <p style="font-size: 0.74rem; color: var(--text-secondary); margin-top: 2px;">
+              Pilih tombol pintas 1-klik untuk pengeluaran rutin, atau isi form manual.
+            </p>
+          </div>
+        </div>
+
+        <!-- Quick 1-Click Preset Chips -->
+        <div style="margin-bottom: 14px;">
+          <span style="font-size: 0.7rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.04em;">Pintas 1-Klik Rutin:</span>
+          <div class="finance-quick-chips">
+            <span class="finance-chip" onclick="quickFillExpense('makan', 15000, 'Kantin Basement Menara BNI')">🍱 +15rb Kantin BNI</span>
+            <span class="finance-chip" onclick="quickFillExpense('makan', 20000, 'Warteg Penjernihan Benhil')">🍛 +20rb Warteg</span>
+            <span class="finance-chip" onclick="quickFillExpense('transport', 3000, 'KRL St. Palmerah')">🚆 +3rb KRL</span>
+            <span class="finance-chip" onclick="quickFillExpense('transport', 10000, 'Ojek Online Stasiun - Kantor')">🛵 +10rb Ojol</span>
+            <span class="finance-chip" onclick="quickFillExpense('laundry', 25000, 'Laundry Kiloan')">🧼 +25rb Laundry</span>
+            <span class="finance-chip" onclick="quickFillExpense('kopi', 18000, 'Kopi Sore / Hangout')">☕ +18rb Kopi</span>
+          </div>
+        </div>
+
+        <form id="finance-form" onsubmit="handleNewExpense(event)">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label">Kategori</label>
+              <select class="form-control" id="fin-tx-cat" required>
+                <option value="makan">🍱 Makan &amp; Minum</option>
+                <option value="transport">🚆 Transportasi (KRL/Ojol/JakLingko)</option>
+                <option value="kos">🏠 Kos &amp; Listrik</option>
+                <option value="laundry">🧼 Laundry &amp; Perlengkapan Pribadi</option>
+                <option value="kopi">☕ Kopi &amp; Sosialisasi</option>
+                <option value="wisuda">🎓 Wisuda UMS &amp; Solo</option>
+                <option value="lainnya">💡 Lain-lain / Dana Darurat</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label">Nominal (Rp)</label>
+              <input type="number" class="form-control" id="fin-tx-amount" placeholder="Contoh: 15000" min="1" required>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1.4fr 1fr; gap: 10px; margin-bottom: 12px;">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label">Deskripsi / Catatan</label>
+              <input type="text" class="form-control" id="fin-tx-desc" placeholder="Contoh: Makan siang kantin basement BNI">
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label">Tanggal</label>
+              <input type="date" class="form-control" id="fin-tx-date">
+            </div>
+          </div>
+
+          <button type="submit" class="btn-block" style="height: 42px; font-size: 0.84rem;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Simpan Pengeluaran
+          </button>
+        </form>
+      </div>
+
+      <!-- Expense History Log -->
+      <div class="feature-card" style="margin-top: 14px;">
+      <div class="feature-head">
+        <div class="feature-title">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+            <polyline points="12 8 12 12 14 14"></polyline>
+            <path d="M3.05 11a9 9 0 1 1 .5 4m-.5 5v-5h5"></path>
+          </svg>
+            Riwayat Transaksi
+          </div>
+          <div style="display: flex; gap: 6px;">
+            <button class="btn-action btn-xs" onclick="exportFinanceSummaryText()">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              Salin Rekap (WA)
+            </button>
+            <button class="utility-btn btn-xs" onclick="clearFinanceHistory()" style="color: #ef4444; border-color: rgba(239, 68, 68, 0.3);">
+              Reset
+            </button>
+          </div>
+        </div>
+
+        <div class="finance-tx-list" id="finance-tx-container">
+          <div style="font-size: 0.78rem; color: var(--text-secondary); text-align: center; padding: 24px 16px; background: var(--surface-hover); border-radius: var(--radius-sm); border: 1px dashed var(--border);">
+            💳 Belum ada pengeluaran tercatat bulan ini. Gunakan tombol pintas di atas untuk mencatat cepat.
+          </div>
+        </div>
+      </div>
+
+      <!-- Jakarta Survival & Saving Strategy Guide -->
+      <div class="guide-section-title" style="margin-top: 20px; font-size: 0.95rem; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 8px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"></path>
+          <line x1="12" y1="18" x2="12.01" y2="18"></line>
+        </svg>
+        Strategi Finansial &amp; Survival Magang Jakarta
+      </div>
+
+      <div class="guide-card" style="margin-top: 10px;">
+        <div class="guide-card-head">
+          <div class="guide-card-title">Pola Alokasi Anggaran Realistis (Metode 50/30/20)</div>
+          <span class="badge badge-accent">Standar Magang</span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px;">
+          <div style="background: var(--surface-hover); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 12px;">
+            <div style="font-weight: 700; font-size: 0.78rem; color: var(--text-primary); margin-bottom: 4px;">🏠 Kebutuhan Pokok (50%)</div>
+            <div style="font-size: 0.72rem; color: var(--text-secondary); line-height: 1.45;">~Rp1.750.000: Sewa kamar kos (kisaran Rp1.000.000 - Rp1.400.000), token listrik, dan makan harian pokok.</div>
+          </div>
+          <div style="background: var(--surface-hover); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 12px;">
+            <div style="font-weight: 700; font-size: 0.78rem; color: var(--text-primary); margin-bottom: 4px;">🚆 Operasional &amp; Harian (30%)</div>
+            <div style="font-size: 0.72rem; color: var(--text-secondary); line-height: 1.45;">~Rp1.050.000: Transportasi KRL/JakLingko/Ojol, kuota internet, laundry kiloan, dan kuliner akhir pekan di Benhil.</div>
+          </div>
+          <div style="background: var(--surface-hover); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 12px;">
+            <div style="font-weight: 700; font-size: 0.78rem; color: var(--text-primary); margin-bottom: 4px;">💰 Tabungan &amp; Wondr (20%)</div>
+            <div style="font-size: 0.72rem; color: var(--text-secondary); line-height: 1.45;">~Rp700.000: Langsung amankan ke rekening BNI saat uang saku cair agar tidak terpakai impulsif.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="guide-card">
+        <div class="guide-card-head">
+          <div class="guide-card-title">Trik Hemat Khusus Area Menara BNI &amp; Benhil</div>
+          <span class="badge">Tips Praktis</span>
+        </div>
+        <ul class="guide-list">
+          <li><span class="guide-bullet">•</span><div><strong>Makan Siang Hemat:</strong> Manfaatkan kantin basement Menara BNI (pilihan menu lengkap Rp15.000–20.000, higienis &amp; ber-AC). Hindari pesan makanan via ojol saat jam kerja karena ada ongkir dan biaya layanan.</div></li>
+          <li><span class="guide-bullet">•</span><div><strong>Refill Tumbler Gratis:</strong> Selalu bawa tumbler dan isi ulang air mineral di dispenser pantry lantai SSE Menara BNI. Menghemat ±Rp150.000/bulan dari beli air botol.</div></li>
+          <li><span class="guide-bullet">•</span><div><strong>Transportasi Nol Rupiah:</strong> Gunakan Mikrotrans JakLingko (JAK.08 atau JAK.14) dengan tarif <strong>Rp 0 (gratis)</strong> cukup tap kartu uang elektronik. Dari Stasiun Palmerah ke Menara BNI hanya 1.8 km (bisa jalan kaki pagi jika cuaca cerah).</div></li>
+          <li><span class="guide-bullet">•</span><div><strong>Aplikasi Wondr by BNI:</strong> Manfaatkan fitur transfer gratis, bebas admin, dan pantau pengeluaran bulanan melalui mutasi digital real-time.</div></li>
+        </ul>
+      </div>
+    </div>
+  </main>
+
   <!-- TAB 4: ASISTEN SSE (CHAT TEMPLATES & GLOSSARY) -->
   <main id="view-asisten" class="tab-content">
     <div class="subnav-pills">
-      <button class="subnav-btn" id="asisten-tab-btn-finance" onclick="switchAsistenSubtab('finance')">💰 Keuangan Rantau</button>
       <button class="subnav-btn" id="asisten-tab-btn-toolkit" onclick="switchAsistenSubtab('toolkit')">📊 Excel &amp; Rumus</button>
       <button class="subnav-btn" id="asisten-tab-btn-glossary" onclick="switchAsistenSubtab('glossary')">📖 Kamus Perbankan</button>
       <button class="subnav-btn" id="asisten-tab-btn-guide" onclick="switchAsistenSubtab('guide')">🏢 Panduan Kost &amp; Kantor</button>
-      <button class="subnav-btn" id="asisten-tab-btn-mom" onclick="switchAsistenSubtab('mom')">📝 Template Notulen</button>
       <button class="subnav-btn" id="asisten-tab-btn-chat" onclick="switchAsistenSubtab('chat')">💬 Template Chat</button>
     </div>
 
@@ -4391,143 +4778,6 @@ Apabila Bapak berkenan, mohon kesediaan Bapak untuk melakukan review dan approva
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
             Salin Pesan
           </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- SUB-PANE: NOTULENSI RAPAT (MOM) -->
-    <div id="asisten-pane-mom" style="display: none;">
-      <!-- Quick Presets -->
-      <div class="mom-preset-bar">
-        <span style="font-size: 0.72rem; color: var(--text-tertiary); display: flex; align-items: center; gap: 4px; margin-right: 4px;">
-          ⚡ Preset Rapat:
-        </span>
-        <button type="button" class="mom-preset-btn" onclick="loadMomPreset('weekly')">
-          🏢 Weekly Alignment SSE
-        </button>
-        <button type="button" class="mom-preset-btn" onclick="loadMomPreset('mentor')">
-          🎯 1-on-1 Briefing Mentor
-        </button>
-        <button type="button" class="mom-preset-btn" onclick="loadMomPreset('data')">
-          💻 Proyek &amp; Analitik Data
-        </button>
-      <button type="button" class="mom-preset-btn" onclick="clearMomForm()" style="color: var(--text-tertiary);">
-          ✕ Bersihkan
-        </button>
-      </div>
-
-      <div class="mom-grid">
-        <div style="background: var(--accent-subtle); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; margin-bottom: 12px; grid-column: 1 / -1;">
-          <div class="feature-title" style="font-size: 0.82rem; margin-bottom: 4px;">📋 Notulensi Rapat (MoM)</div>
-          <p style="font-size: 0.74rem; color: var(--text-secondary);">Tab ini dipakai untuk mencatat pembahasan, keputusan &amp; tindak lanjut rapat agar dapat dibagi ke tim via WhatsApp/Email.</p>
-        </div>
-        <!-- FORM COLUMN -->
-        <div class="mom-form-card">
-          <div class="mom-section-title">
-            <span>📝 Detail &amp; Poin Rapat</span>
-            <span class="badge badge-accent">Standar BNI</span>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Topik / Agenda Rapat</label>
-            <input type="text" class="form-control" id="mom-topic" placeholder="e.g. Weekly Alignment Divisi SSE" oninput="updateMomPreview()">
-          </div>
-
-          <div class="mom-field-row">
-            <div class="form-group">
-              <label class="form-label">Tanggal Rapat</label>
-              <input type="date" class="form-control" id="mom-date" onchange="updateMomPreview()">
-            </div>
-            <div class="form-group">
-              <label class="form-label">Waktu Pelaksanaan</label>
-              <input type="text" class="form-control" id="mom-time" placeholder="e.g. 09.00 - 10.30 WIB" oninput="updateMomPreview()">
-            </div>
-          </div>
-
-          <div class="mom-field-row">
-            <div class="form-group">
-              <label class="form-label">Tempat / Platform</label>
-              <input type="text" class="form-control" id="mom-location" placeholder="e.g. Ruang Rapat Lt. 17 / Teams" oninput="updateMomPreview()">
-            </div>
-            <div class="form-group">
-              <label class="form-label">Notulis</label>
-              <input type="text" class="form-control" id="mom-writer" value="Zaki Tri Pamungkas (MagangHub SSE)" oninput="updateMomPreview()">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Peserta Hadir</label>
-            <input type="text" class="form-control" id="mom-attendees" placeholder="e.g. Pak Guruh Sri Handoyo (VP), Tim Analis SSE, Zaki" oninput="updateMomPreview()">
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Poin Pembahasan (1 Poin per baris)</label>
-            <textarea class="form-control" id="mom-discussion" rows="4" placeholder="• Evaluasi capaian CASA dan DPK cabang mingguan&#10;• Kendala rekonsiliasi data pada template manual cabang&#10;• Rencana pembuatan dashboard monitoring data sales" oninput="updateMomPreview()"></textarea>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Keputusan Utama (Key Decisions)</label>
-            <textarea class="form-control" id="mom-decisions" rows="3" placeholder="1. Format rekonsiliasi data cabang diseragamkan mulai pekan ini&#10;2. Cut-off pelaporan mingguan ditetapkan tiap hari Jumat pukul 16.00 WIB" oninput="updateMomPreview()"></textarea>
-          </div>
-
-          <!-- Dynamic Action Items -->
-          <div class="form-group" style="margin-bottom: 6px;">
-            <div class="mom-section-title" style="margin-bottom: 8px;">
-              <span>⚡ Tindak Lanjut (Action Items)</span>
-              <span style="font-size: 0.7rem; color: var(--text-tertiary);" id="action-items-count">0 Aksi</span>
-            </div>
-            <div id="mom-action-items-container" class="action-items-list">
-              <!-- Rendered dynamically -->
-            </div>
-            <button type="button" class="btn-add-action" onclick="addMomActionItem()">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-              Tambah Action Item
-            </button>
-          </div>
-        </div>
-
-        <!-- PREVIEW & EXPORT COLUMN -->
-        <div>
-          <div class="mom-preview-card">
-            <div class="mom-preview-tabs">
-              <button type="button" class="mom-preview-tab-btn active" id="mom-tab-wa" onclick="switchMomPreviewFormat('wa')">
-                💬 Format WhatsApp
-              </button>
-              <button type="button" class="mom-preview-tab-btn" id="mom-tab-email" onclick="switchMomPreviewFormat('email')">
-                ✉️ Format Email Resmi
-              </button>
-            </div>
-
-            <div class="mom-output-box" id="mom-preview-output">
-              <!-- Formatted live MoM rendered here -->
-            </div>
-
-            <div class="mom-actions-row">
-              <button type="button" class="btn-action" style="flex: 1; justify-content: center;" onclick="copyMomFormatted()">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                Salin Teks
-              </button>
-              <button type="button" class="btn-action" onclick="downloadMomText()">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                Unduh .txt
-              </button>
-              <button type="button" class="btn-action" onclick="saveMomToHistory()">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
-                Simpan
-              </button>
-            </div>
-          </div>
-
-          <!-- SAVED HISTORY CARD -->
-          <div class="mom-history-card">
-            <div class="mom-section-title" style="margin-bottom: 8px;">
-              <span>🕒 Riwayat Notulensi Tersimpan</span>
-              <button type="button" style="background: none; border: none; font-size: 0.72rem; color: var(--text-tertiary); cursor: pointer;" onclick="clearAllMomHistory()">Hapus Semua</button>
-            </div>
-            <div id="mom-history-list" class="mom-history-list">
-              <div style="font-size: 0.74rem; color: var(--text-tertiary); text-align: center; padding: 8px;">Belum ada notulensi yang disimpan di browser ini.</div>
-            </div>
-          </div>
         </div>
       </div>
     </div>
@@ -5004,229 +5254,6 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
       </div>
     </div>
 
-    <!-- SUB-PANE: MANAJEMEN KEUANGAN JAKARTA -->
-    <div id="asisten-pane-finance" style="display: none;">
-      <!-- Financial Overview Card -->
-      <div class="finance-overview-card">
-        <div class="feature-head">
-          <div class="feature-title">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
-              <line x1="12" y1="1" x2="12" y2="23"></line>
-              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-            </svg>
-            Keuangan Rantau Jakarta · Budget + Bayar Bulanan
-          </div>
-          <span class="badge badge-accent" id="fin-status-badge" style="font-size: 0.72rem; padding: 3px 10px;">Terkendali</span>
-        </div>
-
-        <div class="finance-summary-grid">
-          <!-- Metric 1: Income -->
-          <div class="finance-metric">
-            <span class="finance-metric-label">Pemasukan / Uang Saku</span>
-            <div style="display: flex; align-items: baseline; gap: 4px; margin: 4px 0 2px;">
-              <span style="font-size: 0.9rem; font-weight: 700; color: var(--text-tertiary);">Rp</span>
-              <input type="number" id="fin-income-input" value="3500000" onchange="updateFinanceCalculations()" style="font-size: 1.15rem; font-weight: 800; color: var(--text-primary); background: transparent; border: none; border-bottom: 1.5px dashed var(--border-strong); width: 100%; outline: none; padding: 0 0 2px;">
-            </div>
-            <span class="finance-metric-sub">BNI / Kemnaker / tambahan (ubah sesuai slip)</span>
-          </div>
-
-          <!-- Metric 2: Total Spent -->
-          <div class="finance-metric">
-            <span class="finance-metric-label">Terpakai Bulan Ini</span>
-            <div class="finance-metric-val" id="fin-total-expense" style="margin: 4px 0 2px;">Rp 0</div>
-            <span class="finance-metric-sub" id="fin-expense-percent">0% dari pemasukan</span>
-          </div>
-
-          <!-- Metric 3: Remaining Safe Budget -->
-          <div class="finance-metric">
-            <span class="finance-metric-label">Sisa &amp; Batas Aman Harian</span>
-            <div class="finance-metric-val success" id="fin-remaining-budget" style="margin: 4px 0 2px;">Rp 3.500.000</div>
-            <span class="finance-metric-sub" id="fin-daily-safe-limit">Batas aman: Rp — / hari</span>
-          </div>
-        </div>
-
-        <!-- Bayar bulanan tetap & anggaran variabel -->
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px;">
-          <div class="form-group" style="margin-bottom: 0;">
-            <label class="form-label">Bayar bulanan tetap (kos, listrik, paket data)</label>
-            <div style="display: flex; align-items: center; gap: 6px;">
-              <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-tertiary);">Rp</span>
-              <input type="number" class="form-control" id="fin-fixed-input" placeholder="mis. 1500000" min="0" oninput="updateFinanceCalculations()" style="flex: 1;">
-            </div>
-          </div>
-          <div class="form-group" style="margin-bottom: 0;">
-            <label class="form-label">Sisa untuk variabel harian</label>
-            <div class="finance-metric-val" id="fin-variable-budget" style="font-size: 0.95rem; margin: 2px 0;">Rp —</div>
-            <span class="finance-metric-sub" id="fin-fixed-hint">Isi tagihan tetap agar batas aman akurat</span>
-          </div>
-        </div>
-
-        <!-- Budget Progress Track -->
-        <div class="finance-progress-track">
-          <div class="finance-progress-fill" id="fin-progress-bar" style="width: 0%;"></div>
-        </div>
-        <div class="finance-progress-meta">
-          <span id="fin-progress-label" style="font-weight: 600;">Pengeluaran: 0%</span>
-          <span id="fin-days-left">Sisa hari bulan ini: —</span>
-        </div>
-        <div id="fin-balance-banner" style="margin-top: 10px; display: none; border-radius: 8px; padding: 10px 12px; font-size: 0.76rem; line-height: 1.4;"></div>
-
-        <!-- AI Advisor -->
-        <div id="fin-ai-card" style="margin-top: 12px; border: 1px solid var(--border); border-radius: 10px; padding: 12px; background: var(--surface);">
-          <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px;">
-            <span class="feature-title" style="font-size: 0.82rem;">✨ Nasehat AI — Cek Balance</span>
-            <button type="button" class="btn-action btn-xs" id="btn-fin-ai" onclick="requestFinanceAdvice()">Tanya AI</button>
-          </div>
-          <div id="fin-ai-output" style="font-size: 0.76rem; color: var(--text-secondary); line-height: 1.45; min-height: 20px;">
-            Tekan <em>Tanya AI</em> untuk penilaian: pemasukan vs pengeluaran, sisa hari, batas aman, dan 1–2 langkah hemat relevan Menara BNI.
-          </div>
-        </div>
-      </div>
-
-      <!-- Quick Expense Logger Card -->
-      <div class="feature-card" style="margin-top: 14px;">
-        <div class="feature-head">
-          <div>
-            <div class="feature-title">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
-                <circle cx="12" cy="12" r="10"></circle>
-                <line x1="12" y1="8" x2="12" y2="16"></line>
-                <line x1="8" y1="12" x2="16" y2="12"></line>
-              </svg>
-              Catat Pengeluaran Cepat
-            </div>
-            <p style="font-size: 0.74rem; color: var(--text-secondary); margin-top: 2px;">
-              Pilih tombol pintas 1-klik untuk pengeluaran rutin, atau isi form manual.
-            </p>
-          </div>
-        </div>
-
-        <!-- Quick 1-Click Preset Chips -->
-        <div style="margin-bottom: 14px;">
-          <span style="font-size: 0.7rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.04em;">Pintas 1-Klik Rutin:</span>
-          <div class="finance-quick-chips">
-            <span class="finance-chip" onclick="quickFillExpense('makan', 15000, 'Kantin Basement Menara BNI')">🍱 +15rb Kantin BNI</span>
-            <span class="finance-chip" onclick="quickFillExpense('makan', 20000, 'Warteg Penjernihan Benhil')">🍛 +20rb Warteg</span>
-            <span class="finance-chip" onclick="quickFillExpense('transport', 3000, 'KRL St. Palmerah')">🚆 +3rb KRL</span>
-            <span class="finance-chip" onclick="quickFillExpense('transport', 10000, 'Ojek Online Stasiun - Kantor')">🛵 +10rb Ojol</span>
-            <span class="finance-chip" onclick="quickFillExpense('laundry', 25000, 'Laundry Kiloan')">🧼 +25rb Laundry</span>
-            <span class="finance-chip" onclick="quickFillExpense('kopi', 18000, 'Kopi Sore / Hangout')">☕ +18rb Kopi</span>
-          </div>
-        </div>
-
-        <form id="finance-form" onsubmit="handleNewExpense(event)">
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
-            <div class="form-group" style="margin-bottom: 0;">
-              <label class="form-label">Kategori</label>
-              <select class="form-control" id="fin-tx-cat" required>
-                <option value="makan">🍱 Makan &amp; Minum</option>
-                <option value="transport">🚆 Transportasi (KRL/Ojol/JakLingko)</option>
-                <option value="kos">🏠 Kos &amp; Listrik</option>
-                <option value="laundry">🧼 Laundry &amp; Perlengkapan Pribadi</option>
-                <option value="kopi">☕ Kopi &amp; Sosialisasi</option>
-                <option value="wisuda">🎓 Wisuda UMS &amp; Solo</option>
-                <option value="lainnya">💡 Lain-lain / Dana Darurat</option>
-              </select>
-            </div>
-            <div class="form-group" style="margin-bottom: 0;">
-              <label class="form-label">Nominal (Rp)</label>
-              <input type="number" class="form-control" id="fin-tx-amount" placeholder="Contoh: 15000" min="1" required>
-            </div>
-          </div>
-
-          <div style="display: grid; grid-template-columns: 1.4fr 1fr; gap: 10px; margin-bottom: 12px;">
-            <div class="form-group" style="margin-bottom: 0;">
-              <label class="form-label">Deskripsi / Catatan</label>
-              <input type="text" class="form-control" id="fin-tx-desc" placeholder="Contoh: Makan siang kantin basement BNI">
-            </div>
-            <div class="form-group" style="margin-bottom: 0;">
-              <label class="form-label">Tanggal</label>
-              <input type="date" class="form-control" id="fin-tx-date">
-            </div>
-          </div>
-
-          <button type="submit" class="btn-block" style="height: 42px; font-size: 0.84rem;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="12" y1="5" x2="12" y2="19"></line>
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-            </svg>
-            Simpan Pengeluaran
-          </button>
-        </form>
-      </div>
-
-      <!-- Expense History Log -->
-      <div class="feature-card" style="margin-top: 14px;">
-      <div class="feature-head">
-        <div class="feature-title">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
-            <polyline points="12 8 12 12 14 14"></polyline>
-            <path d="M3.05 11a9 9 0 1 1 .5 4m-.5 5v-5h5"></path>
-          </svg>
-            Riwayat Transaksi
-          </div>
-          <div style="display: flex; gap: 6px;">
-            <button class="btn-action btn-xs" onclick="exportFinanceSummaryText()">
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-              Salin Rekap (WA)
-            </button>
-            <button class="utility-btn btn-xs" onclick="clearFinanceHistory()" style="color: #ef4444; border-color: rgba(239, 68, 68, 0.3);">
-              Reset
-            </button>
-          </div>
-        </div>
-
-        <div class="finance-tx-list" id="finance-tx-container">
-          <div style="font-size: 0.78rem; color: var(--text-secondary); text-align: center; padding: 24px 16px; background: var(--surface-hover); border-radius: var(--radius-sm); border: 1px dashed var(--border);">
-            💳 Belum ada pengeluaran tercatat bulan ini. Gunakan tombol pintas di atas untuk mencatat cepat.
-          </div>
-        </div>
-      </div>
-
-      <!-- Jakarta Survival & Saving Strategy Guide -->
-      <div class="guide-section-title" style="margin-top: 20px; font-size: 0.95rem; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 8px;">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
-          <circle cx="12" cy="12" r="10"></circle>
-          <path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"></path>
-          <line x1="12" y1="18" x2="12.01" y2="18"></line>
-        </svg>
-        Strategi Finansial &amp; Survival Magang Jakarta
-      </div>
-
-      <div class="guide-card" style="margin-top: 10px;">
-        <div class="guide-card-head">
-          <div class="guide-card-title">Pola Alokasi Anggaran Realistis (Metode 50/30/20)</div>
-          <span class="badge badge-accent">Standar Magang</span>
-        </div>
-        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px;">
-          <div style="background: var(--surface-hover); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 12px;">
-            <div style="font-weight: 700; font-size: 0.78rem; color: var(--text-primary); margin-bottom: 4px;">🏠 Kebutuhan Pokok (50%)</div>
-            <div style="font-size: 0.72rem; color: var(--text-secondary); line-height: 1.45;">~Rp1.750.000: Sewa kamar kos (kisaran Rp1.000.000 - Rp1.400.000), token listrik, dan makan harian pokok.</div>
-          </div>
-          <div style="background: var(--surface-hover); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 12px;">
-            <div style="font-weight: 700; font-size: 0.78rem; color: var(--text-primary); margin-bottom: 4px;">🚆 Operasional &amp; Harian (30%)</div>
-            <div style="font-size: 0.72rem; color: var(--text-secondary); line-height: 1.45;">~Rp1.050.000: Transportasi KRL/JakLingko/Ojol, kuota internet, laundry kiloan, dan kuliner akhir pekan di Benhil.</div>
-          </div>
-          <div style="background: var(--surface-hover); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 12px;">
-            <div style="font-weight: 700; font-size: 0.78rem; color: var(--text-primary); margin-bottom: 4px;">💰 Tabungan &amp; Wondr (20%)</div>
-            <div style="font-size: 0.72rem; color: var(--text-secondary); line-height: 1.45;">~Rp700.000: Langsung amankan ke rekening BNI saat uang saku cair agar tidak terpakai impulsif.</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="guide-card">
-        <div class="guide-card-head">
-          <div class="guide-card-title">Trik Hemat Khusus Area Menara BNI &amp; Benhil</div>
-          <span class="badge">Tips Praktis</span>
-        </div>
-        <ul class="guide-list">
-          <li><span class="guide-bullet">•</span><div><strong>Makan Siang Hemat:</strong> Manfaatkan kantin basement Menara BNI (pilihan menu lengkap Rp15.000–20.000, higienis &amp; ber-AC). Hindari pesan makanan via ojol saat jam kerja karena ada ongkir dan biaya layanan.</div></li>
-          <li><span class="guide-bullet">•</span><div><strong>Refill Tumbler Gratis:</strong> Selalu bawa tumbler dan isi ulang air mineral di dispenser pantry lantai SSE Menara BNI. Menghemat ±Rp150.000/bulan dari beli air botol.</div></li>
-          <li><span class="guide-bullet">•</span><div><strong>Transportasi Nol Rupiah:</strong> Gunakan Mikrotrans JakLingko (JAK.08 atau JAK.14) dengan tarif <strong>Rp 0 (gratis)</strong> cukup tap kartu uang elektronik. Dari Stasiun Palmerah ke Menara BNI hanya 1.8 km (bisa jalan kaki pagi jika cuaca cerah).</div></li>
-          <li><span class="guide-bullet">•</span><div><strong>Aplikasi Wondr by BNI:</strong> Manfaatkan fitur transfer gratis, bebas admin, dan pantau pengeluaran bulanan melalui mutasi digital real-time.</div></li>
-        </ul>
-      </div>
-    </div>
   </main>
 
   <!-- TAB 5: KABAR & BERITA MAGANGHUB OTOMATIS (LANDING PAGE) -->
@@ -5253,16 +5280,15 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
           <span class="quick-hub-sub">Submit resmi Kemnaker ↗</span>
         </button>
 
-        <button class="quick-hub-btn" onclick="selectTab('magang')">
+        <button class="quick-hub-btn" onclick="selectTab('keuangan')">
           <div class="quick-hub-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect>
-              <path d="M9 22v-4h6v4"></path>
-              <path d="M8 6h.01"></path><path d="M16 6h.01"></path><path d="M12 6h.01"></path>
+              <line x1="12" y1="1" x2="12" y2="23"></line>
+              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
             </svg>
           </div>
-          <span class="quick-hub-label">Notulensi Rapat</span>
-          <span class="quick-hub-sub">MoM &amp; tindak lanjut</span>
+          <span class="quick-hub-label">Keuangan Rantau</span>
+          <span class="quick-hub-sub">Budget + AI advisor</span>
         </button>
 
         <button class="quick-hub-btn" onclick="selectTab('packing')">
@@ -5276,15 +5302,14 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
           <span class="quick-hub-sub">Barang kost &amp; kantor</span>
         </button>
 
-        <button class="quick-hub-btn" onclick="selectTab('asisten'); switchAsistenSubtab('finance');">
+        <button class="quick-hub-btn" onclick="selectTab('asisten')">
           <div class="quick-hub-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="12" y1="1" x2="12" y2="23"></line>
-              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
             </svg>
           </div>
-          <span class="quick-hub-label">Keuangan Rantau</span>
-          <span class="quick-hub-sub">Budget + AI advisor</span>
+          <span class="quick-hub-label">Toolkit &amp; Kamus</span>
+          <span class="quick-hub-sub">Rumus &amp; istilah</span>
         </button>
       </div>
     </div>
@@ -5385,12 +5410,11 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
   <!-- Bottom Utility Bar -->
   <div class="utility-bar">
     <div class="utility-group">
-      <button class="utility-btn" onclick="copyPendingList()">
+      <button class="utility-btn" onclick="copyInventarisList()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
         </svg>
-        Salin Sisa Item
+        Salin Inventaris
       </button>
       <button class="utility-btn" onclick="openSyncModal()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -5401,12 +5425,12 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
       </button>
     </div>
     <div class="utility-group">
-      <button class="utility-btn" onclick="resetActiveTab()">
+      <button class="utility-btn" onclick="window.location.reload()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
           <path d="M3 3v5h5"></path>
         </svg>
-        Reset Centang
+        Muat Ulang
       </button>
     </div>
   </div>
@@ -5450,15 +5474,14 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
         <span class="bottom-nav-label">Inventaris</span>
       </button>
 
-      <button class="bottom-nav-item tab-trigger" data-tab="magang" onclick="selectTab('magang')">
+      <button class="bottom-nav-item tab-trigger" data-tab="keuangan" onclick="selectTab('keuangan')">
         <div class="bottom-nav-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect>
-            <path d="M9 22v-4h6v4"></path>
-            <path d="M8 6h.01"></path><path d="M16 6h.01"></path><path d="M12 6h.01"></path>
+            <line x1="12" y1="1" x2="12" y2="23"></line>
+            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
           </svg>
         </div>
-        <span class="bottom-nav-label">Notulensi</span>
+        <span class="bottom-nav-label">Keuangan</span>
       </button>
 
       <button class="bottom-nav-item tab-trigger" data-tab="logbook" onclick="selectTab('logbook')">
@@ -5841,7 +5864,9 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
 
     // Pane visibility
     document.getElementById('view-packing').classList.toggle('active', tab === 'packing');
-    document.getElementById('view-magang').classList.toggle('active', tab === 'magang');
+    const finView = document.getElementById('view-keuangan');
+    if (finView) finView.classList.toggle('active', tab === 'keuangan');
+    if (tab === 'keuangan') initFinanceManager();
     document.getElementById('view-logbook').classList.toggle('active', tab === 'logbook');
     document.getElementById('view-asisten').classList.toggle('active', tab === 'asisten');
     document.getElementById('view-berita').classList.toggle('active', tab === 'berita');
@@ -5852,19 +5877,16 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
     const toolbarRow = document.getElementById('header-toolbar-row');
 
     if (tab === 'packing') {
-      badgeEl.textContent = 'Dinas Jakarta';
-      labelEl.textContent = 'Barang kost, kantor & perjalanan rantau';
-      overviewRow.style.display = 'flex';
+      badgeEl.textContent = 'Inventaris';
+      labelEl.textContent = 'Daftar barang yang dimiliki di rantau';
+      overviewRow.style.display = 'none';
       toolbarRow.style.display = 'flex';
       applyFiltering();
-      updateMetrics();
-    } else if (tab === 'magang') {
-      badgeEl.textContent = 'Rapat';
-      labelEl.textContent = 'Notulensi & Tindak Lanjut';
-      overviewRow.style.display = 'flex';
-      toolbarRow.style.display = 'flex';
-      applyFiltering();
-      updateMetrics();
+    } else if (tab === 'keuangan') {
+      badgeEl.textContent = 'Keuangan';
+      labelEl.textContent = 'Anggaran, bayar bulanan & batas aman';
+      overviewRow.style.display = 'none';
+      toolbarRow.style.display = 'none';
     } else if (tab === 'logbook') {
       badgeEl.textContent = 'MagangHub';
       labelEl.textContent = 'Generator Formulasi Laporan Harian Kemnaker';
@@ -5901,10 +5923,10 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
   }
 
   function applyFiltering() {
-    const isChecklistTab = activeTab === 'packing' || activeTab === 'magang';
+    const isChecklistTab = activeTab === 'packing';
     if (!isChecklistTab) return;
 
-    const currentView = document.getElementById(activeTab === 'packing' ? 'view-packing' : 'view-magang');
+    const currentView = document.getElementById('view-packing');
     if (!currentView) return;
 
     const rows = currentView.querySelectorAll('.task-row');
@@ -5938,10 +5960,10 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
 
   // --- Metrics & Category Counters ---
   function updateMetrics() {
-    const isChecklistTab = activeTab === 'packing' || activeTab === 'magang';
+    const isChecklistTab = activeTab === 'packing';
     if (!isChecklistTab) return;
 
-    const currentView = document.getElementById(activeTab === 'packing' ? 'view-packing' : 'view-magang');
+    const currentView = document.getElementById('view-packing');
     if (!currentView) return;
 
     const allCheckboxes = Array.from(currentView.querySelectorAll('input[type="checkbox"]'));
@@ -5970,63 +5992,30 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
   }
 
   // --- Copy Pending Items ---
-  function copyPendingList() {
-    const isChecklistTab = activeTab === 'packing' || activeTab === 'magang';
-    if (!isChecklistTab) {
-      showToast('Buka tab Inventaris atau Notulensi untuk menyalin sisa item');
-      return;
-    }
-
-    const currentView = document.getElementById(activeTab === 'packing' ? 'view-packing' : 'view-magang');
-    if (!currentView) return;
-
-    const pending = [];
-    currentView.querySelectorAll('.task-row').forEach(row => {
-      const cb = row.querySelector('input[type="checkbox"]');
-      if (!cb.checked) {
-        const label = row.querySelector('.task-label').innerText.trim();
-        const detail = row.querySelector('.task-detail').innerText.trim();
-        pending.push(`• ${label} (${detail})`);
-      }
+  function copyInventarisList() {
+    const view = document.getElementById('view-packing');
+    if (!view) return;
+    const lines = [];
+    view.querySelectorAll('.category-group').forEach(group => {
+      const title = group.querySelector('.category-title');
+      if (!title) return;
+      lines.push(title.innerText.trim());
+      group.querySelectorAll('.inv-row').forEach(row => {
+        const label = row.querySelector('.task-label');
+        const detail = row.querySelector('.task-detail');
+        if (!label) return;
+        lines.push('- ' + label.innerText.trim() + (detail ? ' (' + detail.innerText.trim() + ')' : ''));
+      });
+      lines.push('');
     });
-
-    if (pending.length === 0) {
-      showToast('Semua item pada tab ini sudah selesai!');
-      return;
-    }
-
-    const title = activeTab === 'packing' ? '[Inventaris Rantau — Belum Siap]' : '[Notulensi — Belum Ditindaklanjuti]';
-    const textToCopy = `${title}\n` + pending.join('\n');
-
-    navigator.clipboard.writeText(textToCopy).then(() => {
-      showToast(`${pending.length} item disalin ke clipboard`);
-    }).catch(() => {
-      showToast('Gagal menyalin item');
-    });
+    const total = view.querySelectorAll('.inv-row').length;
+    const text = 'INVENTARIS RAUTAU ZAKI (' + total + ' barang)\n\n' + lines.join('\n').trim();
+    navigator.clipboard.writeText(text).then(() => {
+      showToast(total + ' barang disalin');
+    }).catch(() => showToast('Gagal menyalin inventaris'));
   }
 
   // --- Reset Tab ---
-  function resetActiveTab() {
-    const isChecklistTab = activeTab === 'packing' || activeTab === 'magang';
-    if (!isChecklistTab) return;
-
-    const tabName = activeTab === 'packing' ? 'Inventaris Rantau' : 'Notulensi Rapat';
-    if (!confirm(`Reset seluruh centangan pada tab ${tabName}?`)) return;
-
-    const currentView = document.getElementById(activeTab === 'packing' ? 'view-packing' : 'view-magang');
-    const state = getStoredState();
-
-    currentView.querySelectorAll('input[type="checkbox"]').forEach(cb => {
-      cb.checked = false;
-      delete state[cb.id];
-    });
-
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    applyFiltering();
-    updateMetrics();
-    showToast('Centangan berhasil direset');
-  }
-
   // --- Sync Modal & Cross-Device QR Generation ---
   function getSyncUrl() {
     const state = getStoredState();
@@ -6461,40 +6450,6 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
     event.target.value = '';
   }
 
-  // --- Preset Aktivitas Harian SSE (1-Klik Auto-Fill) ---
-  function applyLogbookPreset(key) {
-    const presets = {
-      data: {
-        cat: 'data',
-        notes: 'Membantu rekapitulasi data penjualan cabang, verifikasi konsistensi nominal CASA & DPK di spreadsheet, serta melakukan perbaikan format data anomali'
-      },
-      briefing: {
-        cat: 'briefing',
-        notes: 'Mengikuti pengarahan (briefing) pagi bersama mentor Bapak Guruh Sri Handoyo membahas prioritas target penjualan area dan pembagian tugas divisi SSE'
-      },
-      dashboard: {
-        cat: 'dashboard',
-        notes: 'Melakukan pembaruan visualisasi dashboard analitik performa penjualan cabang dan pengecekan formula rasio pencapaian target (achievement rate) di Excel'
-      },
-      evaluasi: {
-        cat: 'evaluasi',
-        notes: 'Melakukan analisis komparatif performa realisasi penjualan produk perbankan antar cabang untuk memetakan peluang penetrasi pasar ritel'
-      },
-      onboarding: {
-        cat: 'onboarding',
-        notes: 'Menjalani adaptasi alur kerja operasional Menara BNI Pejompongan, kepatuhan tata tertib divisi SSE, dan implementasi nilai budaya kerja AKHLAK BNI'
-      }
-    };
-
-    const p = presets[key] || presets.data;
-    const catEl = document.getElementById('lb-category');
-    const roughEl = document.getElementById('lb-rough-notes');
-    if (catEl) catEl.value = p.cat;
-    if (roughEl) roughEl.value = p.notes;
-
-    showToast('✨ Preset diterapkan! Memformulasikan laporan...');
-    generateLogbook();
-  }
 
   // --- Helper: tanggal Sabtu/Minggu = libur (skip) ---
   function isWeekendDate(isoDate) {
@@ -6800,74 +6755,6 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
     }
   }
 
-  // --- Quick Scratchpad / Catatan Harian & Rapat ---
-  const SCRATCHPAD_KEY = 'mghb_scratchpad_v1';
-  let scratchpadTimer = null;
-
-  function initScratchpad() {
-    const saved = localStorage.getItem(SCRATCHPAD_KEY) || '';
-    const el = document.getElementById('scratchpad-notes');
-    if (el) {
-      el.value = saved;
-      updateScratchpadCount(saved.length);
-    }
-  }
-
-  function handleScratchpadInput() {
-    const el = document.getElementById('scratchpad-notes');
-    const val = el ? el.value : '';
-    updateScratchpadCount(val.length);
-
-    const indicator = document.getElementById('scratchpad-indicator');
-    if (indicator) {
-      indicator.innerHTML = `<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle></svg> Menyimpan...`;
-    }
-
-    if (scratchpadTimer) clearTimeout(scratchpadTimer);
-    scratchpadTimer = setTimeout(() => {
-      localStorage.setItem(SCRATCHPAD_KEY, val);
-      if (indicator) {
-        indicator.innerHTML = `<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Tersimpan otomatis`;
-      }
-    }, 400);
-  }
-
-  function updateScratchpadCount(count) {
-    const charEl = document.getElementById('scratchpad-char-count');
-    if (charEl) charEl.textContent = `${count} karakter`;
-  }
-
-  function clearScratchpad() {
-    const el = document.getElementById('scratchpad-notes');
-    if (!el || !el.value.trim()) return;
-    if (confirm('Bersihkan catatan cepat ini?')) {
-      el.value = '';
-      localStorage.removeItem(SCRATCHPAD_KEY);
-      updateScratchpadCount(0);
-      showToast('Catatan dibersihkan');
-    }
-  }
-
-  function transferScratchpadToLogbook() {
-    const scratchpadEl = document.getElementById('scratchpad-notes');
-    const text = scratchpadEl ? scratchpadEl.value.trim() : '';
-    if (!text) {
-      showToast('Catatan cepat masih kosong. Tuliskan poin aktivitas hari ini terlebih dahulu.');
-      if (scratchpadEl) scratchpadEl.focus();
-      return;
-    }
-
-    const roughEl = document.getElementById('lb-rough-notes');
-    if (roughEl) {
-      roughEl.value = text;
-      const formulatorCard = document.getElementById('formulator-card');
-      if (formulatorCard) {
-        formulatorCard.scrollIntoView({ behavior: 'smooth' });
-      }
-      roughEl.focus();
-      showToast('Catatan dipindahkan ke Formulator Logbook!');
-    }
-  }
 
   // --- Real-Time Office Rhythm & Presensi Pulang Banner ---
   const CHECKOUT_STATUS_KEY = 'mghb_checkout_date_v1';
@@ -6962,472 +6849,13 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
   // --- Asisten Subtabs (Chat vs MoM vs Toolkit vs Glossary vs Guide vs Finance) ---
   function switchAsistenSubtab(sub) {
     document.getElementById('asisten-tab-btn-chat').classList.toggle('active', sub === 'chat');
-    document.getElementById('asisten-tab-btn-mom').classList.toggle('active', sub === 'mom');
     document.getElementById('asisten-tab-btn-toolkit').classList.toggle('active', sub === 'toolkit');
     document.getElementById('asisten-tab-btn-glossary').classList.toggle('active', sub === 'glossary');
     document.getElementById('asisten-tab-btn-guide').classList.toggle('active', sub === 'guide');
-    const finBtn = document.getElementById('asisten-tab-btn-finance');
-    if (finBtn) finBtn.classList.toggle('active', sub === 'finance');
-
     document.getElementById('asisten-pane-chat').style.display = sub === 'chat' ? 'block' : 'none';
-    document.getElementById('asisten-pane-mom').style.display = sub === 'mom' ? 'block' : 'none';
     document.getElementById('asisten-pane-toolkit').style.display = sub === 'toolkit' ? 'block' : 'none';
     document.getElementById('asisten-pane-glossary').style.display = sub === 'glossary' ? 'block' : 'none';
     document.getElementById('asisten-pane-guide').style.display = sub === 'guide' ? 'block' : 'none';
-    const finPane = document.getElementById('asisten-pane-finance');
-    if (finPane) finPane.style.display = sub === 'finance' ? 'block' : 'none';
-
-    if (sub === 'mom') {
-      initMomGenerator();
-    } else if (sub === 'finance') {
-      initFinanceManager();
-    }
-  }
-
-  // --- MoM (Minutes of Meeting) Generator Engine ---
-  let momInitialized = false;
-  let momActionItems = [];
-  let momPreviewFormat = 'wa';
-  const MOM_STORAGE_KEY = 'mghb_mom_history';
-
-  const MOM_PRESETS = {
-    weekly: {
-      topic: 'Weekly Alignment & Monitoring SSE - Divisi Sales Strategy & Execution',
-      time: '09.00 - 10.30 WIB',
-      location: 'Ruang Rapat SSE Lt. 17 / Microsoft Teams',
-      attendees: 'Bpk. Guruh Sri Handoyo (VP), Tim Analis SSE, Zaki Tri Pamungkas',
-      discussion: `• Evaluasi pergerakan saldo DPK dan realisasi rasio CASA mingguan dari seluruh cabang wilayah.
-• Identifikasi kendala rekonsiliasi data dari template laporan cabang yang belum terintegrasi otomatis.
-• Monitoring efektivitas utilisasi dashboard monitoring sales pipeline perbankan.
-• Pembagian fokus analisis data dan pembersihan (data cleansing) data sales untuk pekan berjalan.`,
-      decisions: `1. Cut-off pengiriman laporan rekapitulasi data cabang ditetapkan setiap Jumat pukul 16.00 WIB.
-2. Format rekap data sales cabang diseragamkan mulai pekan ini untuk mempercepat proses kompilasi.
-3. Rekap analitik mingguan disajikan dalam format executive summary untuk briefing pimpinan divisi.`,
-      actionItems: [
-        { task: 'Otomasi agregasi dan validasi data DPK cabang dengan script / template Excel', pic: 'Zaki Tri Pamungkas', due: '23 Sep 2026' },
-        { task: 'Follow-up konfirmasi ke cabang dengan anomali delta CASA terbesar', pic: 'Tim Analis SSE', due: '24 Sep 2026' },
-        { task: 'Finalisasi slide ringkasan capaian kinerja mingguan untuk VP SSE', pic: 'Tim SSE', due: '25 Sep 2026' }
-      ]
-    },
-    mentor: {
-      topic: 'Mentoring 1-on-1 & Evaluasi Penugasan Pemagangan BNI SSE',
-      time: '14.00 - 14.45 WIB',
-      location: 'Area Kerja Divisi SSE Lantai 17, Menara BNI',
-      attendees: 'Bpk. Guruh Sri Handoyo (Mentor / VP), Zaki Tri Pamungkas (MagangHub)',
-      discussion: `• Evaluasi adaptasi lingkungan kerja dan ritme kerja operasional di Menara BNI Pejompongan.
-• Review kelengkapan pengisian logbook harian dan mingguan di portal MagangHub Kemnaker SIAPkerja.
-• Pembahasan rencana proyek pemagangan inovatif: pemanfaatan data analytics untuk sales evaluation.
-• Penguatan pemahaman konsep bisnis perbankan BNI (CASA, DPK, Pipeline, Fee-Based Income, dan NPL).`,
-      decisions: `1. Logbook MagangHub disubmit rutin tiap sore dan dimintakan approval mingguan tiap Jumat.
-2. Zaki difokuskan pada eksplorasi efisiensi pengolahan data sales dan pembuatan dashboard otomasi.
-3. Sesi 1-on-1 evaluasi capaian dilakukan secara berkala setiap dua pekan.`,
-      actionItems: [
-        { task: 'Menyelesaikan submit logbook mingguan Batch 2 di portal SIAPkerja', pic: 'Zaki Tri Pamungkas', due: '25 Sep 2026' },
-        { task: 'Mempelajari kamus indikator kinerja divisi SSE dan alur data nasabah', pic: 'Zaki Tri Pamungkas', due: '28 Sep 2026' }
-      ]
-    },
-    data: {
-      topic: 'Technical Catchup: Otomasi Pelaporan & Integrasi Data SSE',
-      time: '10.30 - 11.30 WIB',
-      location: 'Meeting Pod Lt. 17 / Zoom Meeting',
-      attendees: 'Tim IT/Data SSE, Zaki Tri Pamungkas',
-      discussion: `• Identifikasi bottleneck proses pengolahan data mentah dari sistem cabang yang masih manual.
-• Pembahasan skema penamaan kolom, standardisasi format tanggal, dan penanganan nilai kosong/duplikat.
-• Rencana pembuatan skrip otomatisasi pembersihan data (data cleansing) berbasis Python / Excel VBA.
-• Integrasi output olah data ke template visualisasi performa penjualan mingguan.`,
-      decisions: `1. Standar penamaan file dan struktur kolom disepakati seragam lintas analis data.
-2. Dibuat prototype script pembersih data mandiri sebelum diimplementasikan secara tim.`,
-      actionItems: [
-        { task: 'Buat prototipe skrip penggabung file laporan cabang dan deteksi error', pic: 'Zaki Tri Pamungkas', due: '26 Sep 2026' },
-        { task: 'Uji coba validasi pada sampel 5 file laporan cabang historis', pic: 'Zaki Tri Pamungkas', due: '28 Sep 2026' },
-        { task: 'Review hasil output olah data bersama analis senior SSE', pic: 'Tim IT/Data SSE', due: '29 Sep 2026' }
-      ]
-    }
-  };
-
-  function initMomGenerator() {
-    if (momInitialized) {
-      renderMomHistory();
-      return;
-    }
-    momInitialized = true;
-
-    // Set today date as default
-    const dateEl = document.getElementById('mom-date');
-    if (dateEl && !dateEl.value) {
-      dateEl.value = new Date().toISOString().slice(0, 10);
-    }
-
-    // Default time
-    const timeEl = document.getElementById('mom-time');
-    if (timeEl && !timeEl.value) {
-      const now = new Date();
-      const hh = String(now.getHours()).padStart(2, '0');
-      timeEl.value = `${hh}.00 - ${String(Number(hh) + 1).padStart(2, '0')}.30 WIB`;
-    }
-
-    // Default action items if empty
-    if (momActionItems.length === 0) {
-      momActionItems = [
-        { task: 'Otomasi agregasi data pencapaian cabang', pic: 'Zaki Tri Pamungkas', due: '23 Sep 2026' },
-        { task: 'Review validasi data bersama tim SSE', pic: 'Tim SSE', due: '25 Sep 2026' }
-      ];
-    }
-
-    renderMomActionItems();
-    renderMomHistory();
-    updateMomPreview();
-  }
-
-  function addMomActionItem(task = '', pic = '', due = '') {
-    momActionItems.push({ task, pic, due });
-    renderMomActionItems();
-    updateMomPreview();
-  }
-
-  function removeMomActionItem(index) {
-    momActionItems.splice(index, 1);
-    renderMomActionItems();
-    updateMomPreview();
-  }
-
-  function renderMomActionItems() {
-    const container = document.getElementById('mom-action-items-container');
-    const countEl = document.getElementById('action-items-count');
-    if (!container) return;
-
-    if (countEl) {
-      countEl.textContent = `${momActionItems.length} Aksi`;
-    }
-
-    if (momActionItems.length === 0) {
-      container.innerHTML = '<div style="font-size: 0.74rem; color: var(--text-tertiary); text-align: center; padding: 6px;">Belum ada action item. Klik tombol di bawah untuk menambah.</div>';
-      return;
-    }
-
-    let html = '';
-    momActionItems.forEach((item, idx) => {
-      html += `
-        <div class="action-item-row">
-          <input type="text" class="action-item-task" placeholder="Tugas / Aksi" value="${item.task.replace(/"/g, '&quot;')}" oninput="updateMomActionItem(${idx}, 'task', this.value)">
-          <input type="text" class="action-item-pic" placeholder="PIC" value="${item.pic.replace(/"/g, '&quot;')}" oninput="updateMomActionItem(${idx}, 'pic', this.value)">
-          <input type="text" class="action-item-due" placeholder="Due Date" value="${item.due.replace(/"/g, '&quot;')}" oninput="updateMomActionItem(${idx}, 'due', this.value)">
-          <button type="button" class="action-item-del" title="Hapus Aksi" onclick="removeMomActionItem(${idx})">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-          </button>
-        </div>
-      `;
-    });
-    container.innerHTML = html;
-  }
-
-  function updateMomActionItem(index, field, value) {
-    if (momActionItems[index]) {
-      momActionItems[index][field] = value;
-      updateMomPreview();
-    }
-  }
-
-  function loadMomPreset(name) {
-    const p = MOM_PRESETS[name];
-    if (!p) return;
-
-    document.getElementById('mom-topic').value = p.topic;
-    document.getElementById('mom-time').value = p.time;
-    document.getElementById('mom-location').value = p.location;
-    document.getElementById('mom-attendees').value = p.attendees;
-    document.getElementById('mom-discussion').value = p.discussion;
-    document.getElementById('mom-decisions').value = p.decisions;
-
-    momActionItems = JSON.parse(JSON.stringify(p.actionItems));
-    renderMomActionItems();
-    updateMomPreview();
-    showToast('Template preset notulensi dimuat!');
-  }
-
-  function clearMomForm() {
-    document.getElementById('mom-topic').value = '';
-    document.getElementById('mom-attendees').value = '';
-    document.getElementById('mom-discussion').value = '';
-    document.getElementById('mom-decisions').value = '';
-    momActionItems = [];
-    renderMomActionItems();
-    updateMomPreview();
-    showToast('Formulir notulensi dikosongkan');
-  }
-
-  function switchMomPreviewFormat(fmt) {
-    momPreviewFormat = fmt;
-    document.getElementById('mom-tab-wa').classList.toggle('active', fmt === 'wa');
-    document.getElementById('mom-tab-email').classList.toggle('active', fmt === 'email');
-    updateMomPreview();
-  }
-
-  function formatMomDate(dateString) {
-    if (!dateString) return 'Hari Ini';
-    try {
-      const d = new Date(dateString);
-      if (isNaN(d.getTime())) return dateString;
-      return d.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-    } catch {
-      return dateString;
-    }
-  }
-
-  function updateMomPreview() {
-    const outputEl = document.getElementById('mom-preview-output');
-    if (!outputEl) return;
-
-    const topic = document.getElementById('mom-topic')?.value.trim() || 'Pertemuan Internal Divisi SSE';
-    const dateVal = document.getElementById('mom-date')?.value || '';
-    const formattedDate = formatMomDate(dateVal);
-    const timeVal = document.getElementById('mom-time')?.value.trim() || '09.00 - 10.00 WIB';
-    const locationVal = document.getElementById('mom-location')?.value.trim() || 'Menara BNI Lt. 17';
-    const writerVal = document.getElementById('mom-writer')?.value.trim() || 'Zaki Tri Pamungkas (MagangHub SSE)';
-    const attendeesVal = document.getElementById('mom-attendees')?.value.trim() || 'Pak Guruh Sri Handoyo, Tim SSE, Zaki';
-    
-    const discussionVal = document.getElementById('mom-discussion')?.value.trim() || '• Pembahasan perkembangan operasional dan koordinasi tim.';
-    const decisionsVal = document.getElementById('mom-decisions')?.value.trim() || '1. Disepakati alur tindak lanjut sesuai penugasan masing-masing.';
-
-    if (momPreviewFormat === 'wa') {
-      let text = `*MINUTES OF MEETING (MoM)*\n*Divisi Sales Strategy & Execution (SSE) - BNI*\n━━━━━━━━━━━━━━━━━━━━━\n`;
-      text += `📌 *Topik:* ${topic}\n`;
-      text += `📅 *Waktu:* ${formattedDate} | ${timeVal}\n`;
-      text += `📍 *Tempat:* ${locationVal}\n`;
-      text += `👥 *Peserta:* ${attendeesVal}\n`;
-      text += `✍️ *Notulis:* ${writerVal}\n\n`;
-
-      text += `📋 *POIN PEMBAHASAN:*\n${discussionVal}\n\n`;
-      text += `🎯 *KEPUTUSAN UTAMA:*\n${decisionsVal}\n\n`;
-
-      text += `⚡ *ACTION ITEMS:*\n`;
-      if (momActionItems.length > 0) {
-        momActionItems.forEach((item, i) => {
-          text += `${i + 1}. [${item.pic || 'PIC'}] ${item.task || 'Tugas'} — _Due: ${item.due || 'TBA'}_\n`;
-        });
-      } else {
-        text += `- Tidak ada action item khusus.\n`;
-      }
-
-      text += `\n━━━━━━━━━━━━━━━━━━━━━\n_Notulensi resmi MagangHub BNI SSE - Disusun untuk koordinasi & tindak lanjut._`;
-      outputEl.textContent = text;
-    } else {
-      let text = `Subject: [MoM] ${topic} - ${formattedDate}\n\n`;
-      text += `Yth. Bapak/Ibu Rekan Kerja Divisi Sales Strategy & Execution (SSE),\n\n`;
-      text += `Berikut kami sampaikan rangkuman Notulensi Rapat (Minutes of Meeting - MoM) terkait agenda yang telah diselenggarakan:\n\n`;
-      
-      text += `A. INFORMASI RAPAT\n`;
-      text += `• Topik Agenda    : ${topic}\n`;
-      text += `• Hari / Tanggal  : ${formattedDate}\n`;
-      text += `• Waktu           : ${timeVal}\n`;
-      text += `• Tempat / Media  : ${locationVal}\n`;
-      text += `• Peserta Hadir   : ${attendeesVal}\n`;
-      text += `• Notulis         : ${writerVal}\n\n`;
-
-      text += `B. POIN UTAMA PEMBAHASAN\n`;
-      discussionVal.split('\n').forEach(line => {
-        const clean = line.replace(/^[•\-\*]\s*/, '').trim();
-        if (clean) text += `• ${clean}\n`;
-      });
-      text += `\n`;
-
-      text += `C. KEPUTUSAN UTAMA (KEY DECISIONS)\n`;
-      decisionsVal.split('\n').forEach((line, idx) => {
-        const clean = line.replace(/^\d+[\.\)]\s*/, '').replace(/^[•\-\*]\s*/, '').trim();
-        if (clean) text += `${idx + 1}. ${clean}\n`;
-      });
-      text += `\n`;
-
-      text += `D. TINDAK LANJUT & ACTION ITEMS\n`;
-      if (momActionItems.length > 0) {
-        momActionItems.forEach((item, i) => {
-          text += `${i + 1}. Tugas : ${item.task || '-'}\n`;
-          text += `   PIC   : ${item.pic || '-'}\n`;
-          text += `   Batas : ${item.due || '-'}\n\n`;
-        });
-      } else {
-        text += `• Tidak ada tindak lanjut khusus.\n\n`;
-      }
-
-      text += `Demikian notulensi ini kami sampaikan sebagai bahan rujukan dan tindak lanjut bersama. Atas perhatian dan kerja sama Bapak/Ibu, kami ucapkan terima kasih.\n\n`;
-      text += `Hormat kami,\n${writerVal}\nDivisi Sales Strategy & Execution (SSE)\nPT Bank Negara Indonesia (Persero) Tbk - Menara BNI`;
-      
-      outputEl.textContent = text;
-    }
-  }
-
-  function copyMomFormatted() {
-    const text = document.getElementById('mom-preview-output')?.textContent || '';
-    if (!text) return;
-    navigator.clipboard.writeText(text).then(() => {
-      const typeStr = momPreviewFormat === 'wa' ? 'Format WhatsApp' : 'Format Email Resmi';
-      showToast(`Notulensi (${typeStr}) disalin! Siap dikirim.`);
-    }).catch(() => {
-      showToast('Gagal menyalin notulensi');
-    });
-  }
-
-  function downloadMomText() {
-    const text = document.getElementById('mom-preview-output')?.textContent || '';
-    if (!text) return;
-
-    const topic = (document.getElementById('mom-topic')?.value || 'MoM_SSE')
-      .replace(/[^a-zA-Z0-9_-]/g, '_').substring(0, 30);
-    const dateStr = document.getElementById('mom-date')?.value || new Date().toISOString().slice(0, 10);
-    const filename = `MoM_${topic}_${dateStr}.txt`;
-
-    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    showToast(`Berkas ${filename} berhasil diunduh!`);
-  }
-
-  function saveMomToHistory() {
-    const topic = document.getElementById('mom-topic')?.value.trim();
-    if (!topic) {
-      showToast('Harap isi Topik Rapat terlebih dahulu');
-      return;
-    }
-
-    const dateVal = document.getElementById('mom-date')?.value || new Date().toISOString().slice(0, 10);
-    const record = {
-      id: 'mom_' + Date.now(),
-      savedAt: new Date().toISOString(),
-      topic: topic,
-      date: dateVal,
-      time: document.getElementById('mom-time')?.value.trim() || '',
-      location: document.getElementById('mom-location')?.value.trim() || '',
-      writer: document.getElementById('mom-writer')?.value.trim() || '',
-      attendees: document.getElementById('mom-attendees')?.value.trim() || '',
-      discussion: document.getElementById('mom-discussion')?.value || '',
-      decisions: document.getElementById('mom-decisions')?.value || '',
-      actionItems: JSON.parse(JSON.stringify(momActionItems))
-    };
-
-    let history = [];
-    try {
-      const stored = localStorage.getItem(MOM_STORAGE_KEY);
-      if (stored) history = JSON.parse(stored);
-    } catch (e) {
-      console.warn('Error reading mom history', e);
-    }
-
-    history.unshift(record);
-    if (history.length > 20) history = history.slice(0, 20);
-
-    localStorage.setItem(MOM_STORAGE_KEY, JSON.stringify(history));
-    renderMomHistory();
-    showToast('Notulensi berhasil disimpan ke Riwayat!');
-  }
-
-  function renderMomHistory() {
-    const listEl = document.getElementById('mom-history-list');
-    if (!listEl) return;
-
-    let history = [];
-    try {
-      const stored = localStorage.getItem(MOM_STORAGE_KEY);
-      if (stored) history = JSON.parse(stored);
-    } catch {
-      history = [];
-    }
-
-    if (!Array.isArray(history) || history.length === 0) {
-      listEl.innerHTML = '<div style="font-size: 0.74rem; color: var(--text-tertiary); text-align: center; padding: 8px;">Belum ada notulensi yang disimpan di browser ini.</div>';
-      return;
-    }
-
-    let html = '';
-    history.forEach(item => {
-      const actionsCount = (item.actionItems && item.actionItems.length) || 0;
-      html += `
-        <div class="mom-history-item" onclick="loadMomFromHistory('${item.id}')">
-          <div>
-            <div class="mom-history-title">${item.topic}</div>
-            <div class="mom-history-meta">📅 ${item.date} • ${actionsCount} Action Items</div>
-          </div>
-          <div class="mom-history-btns">
-            <button type="button" class="btn-action" style="padding: 3px 8px; font-size: 0.7rem;" onclick="event.stopPropagation(); loadMomFromHistory('${item.id}')">Buka</button>
-            <button type="button" class="action-item-del" style="padding: 4px 6px;" title="Hapus" onclick="event.stopPropagation(); deleteMomHistory('${item.id}')">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-            </button>
-          </div>
-        </div>
-      `;
-    });
-    listEl.innerHTML = html;
-  }
-
-  function loadMomFromHistory(id) {
-    try {
-      const stored = localStorage.getItem(MOM_STORAGE_KEY);
-      if (!stored) return;
-      const history = JSON.parse(stored);
-      const record = history.find(r => r.id === id);
-      if (!record) return;
-
-      document.getElementById('mom-topic').value = record.topic || '';
-      document.getElementById('mom-date').value = record.date || '';
-      document.getElementById('mom-time').value = record.time || '';
-      document.getElementById('mom-location').value = record.location || '';
-      document.getElementById('mom-writer').value = record.writer || '';
-      document.getElementById('mom-attendees').value = record.attendees || '';
-      document.getElementById('mom-discussion').value = record.discussion || '';
-      document.getElementById('mom-decisions').value = record.decisions || '';
-      momActionItems = Array.isArray(record.actionItems) ? JSON.parse(JSON.stringify(record.actionItems)) : [];
-
-      renderMomActionItems();
-      updateMomPreview();
-      showToast(`Notulensi "${record.topic}" dimuat!`);
-    } catch (e) {
-      console.error(e);
-    }
-  }
-
-  function deleteMomHistory(id) {
-    try {
-      const stored = localStorage.getItem(MOM_STORAGE_KEY);
-      if (!stored) return;
-      let history = JSON.parse(stored);
-      history = history.filter(r => r.id !== id);
-      localStorage.setItem(MOM_STORAGE_KEY, JSON.stringify(history));
-      renderMomHistory();
-      showToast('Notulensi dihapus dari riwayat.');
-    } catch (e) {
-      console.error(e);
-    }
-  }
-
-  function clearAllMomHistory() {
-    if (confirm('Hapus seluruh riwayat notulensi yang tersimpan?')) {
-      localStorage.removeItem(MOM_STORAGE_KEY);
-      renderMomHistory();
-      showToast('Seluruh riwayat notulensi dibersihkan.');
-    }
-  }
-
-  function copyTemplateText(id) {
-    const text = document.getElementById(id).innerText;
-    navigator.clipboard.writeText(text).then(() => {
-      showToast('Template pesan disalin! Siap dipaste ke WhatsApp');
-    }).catch(() => {
-      showToast('Gagal menyalin pesan');
-    });
-  }
-
-  function filterGlossary(q) {
-    const query = (q || '').trim().toLowerCase();
-    const items = document.querySelectorAll('.glossary-item');
-    items.forEach(item => {
-      const match = item.getAttribute('data-term').toLowerCase().includes(query) || item.innerText.toLowerCase().includes(query);
-      item.style.display = match ? 'block' : 'none';
-    });
   }
 
   // --- Executive Monthly Summary Generator ---
@@ -8781,7 +8209,6 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     initTheme();
     const databaseReady = initSupabaseClient();
     checkIncomingSync();
-    initScratchpad();
     initFinanceManager();
     updateOfficeRhythm();
     setInterval(updateOfficeRhythm, 15000);
@@ -8792,7 +8219,11 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     // Default today date for logbook
     const today = new Date().toISOString().slice(0, 10);
     const dateInput = document.getElementById('lb-date');
-    if (dateInput) dateInput.value = today;
+    if (dateInput) {
+      dateInput.value = today;
+      dateInput.addEventListener('change', updateWeekendHint);
+      updateWeekendHint();
+    }
 
     // Attach row events
     document.querySelectorAll('.task-row').forEach(row => {
