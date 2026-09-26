@@ -106,6 +106,32 @@ module.exports = async (req, res) => {
     kemnaker: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80'
   };
 
+  function getPublisherRealImage(source = '', topic = '') {
+    const s = (source || '').toLowerCase();
+    if (s.includes('detik')) {
+      return 'https://awsimages.detik.net.id/api/wm/2026/09/02/magang-kemnaker-2026-batch-2-1788346807178_169.png?wid=54&w=1200&v=1&t=jpeg';
+    }
+    if (s.includes('kompas')) {
+      return 'https://asset.kompas.com/crops/xtQK1VlOuT2wgLdJgVqnuXUqcHM=/0x0:2880x1440/1200x675/filters:watermark(data/photo/2026/01/30/697c815e7ef28.png,0,-0,1)/data/photo/2026/06/29/6a422eea317b1.png';
+    }
+    if (s.includes('cnbc') || s.includes('cnn')) {
+      return 'https://awsimages.detik.net.id/visual/2025/10/13/warga-membuka-aplikasi-magang-hub-di-jakarta-senin-13102025-1760345197423_169.jpeg?w=650&q=90';
+    }
+    if (s.includes('antara')) {
+      return 'https://img.antaranews.com/cache/1200x800/2026/09/16/target-vokasi-nasional-2026-2854548.jpg';
+    }
+    if (s.includes('rri')) {
+      return 'https://img.antaranews.com/cache/1200x800/2025/11/28/1000096979.jpg';
+    }
+    if (s.includes('pajak')) {
+      return 'https://img.antaranews.com/cache/1200x800/2026/07/07/3292d4bd-5309-424c-b025-7feaafedb9a1.jpeg';
+    }
+    if (s.includes('kemnaker')) {
+      return 'https://portal.kemnaker.go.id/storage/attachments/75b/25f/ea4/KbzTUJ4qdDEysOpQ9bkLE62DsNw59AXu7aIcwfXr.jpg';
+    }
+    return TOPIC_EDITORIAL_IMAGES[topic] || TOPIC_EDITORIAL_IMAGES.pengumuman;
+  }
+
   const VERIFIED_KEMNAKER_NEWS = [
     {
       title: 'MagangHub Batch 2 Dimulai Besok, Peserta Diminta Siapkan Diri',
@@ -283,7 +309,7 @@ module.exports = async (req, res) => {
         const mediaMatch = block.match(/<(?:media:content|media:thumbnail|enclosure)[^>]*url="([^"]+)"/i);
         const descImgMatch = descRaw.match(/<img[^>]+src=["']([^"']+)["']/i);
         const realImg = mediaMatch ? mediaMatch[1] : (descImgMatch ? descImgMatch[1] : null);
-        const image = realImg || TOPIC_EDITORIAL_IMAGES[topic] || TOPIC_EDITORIAL_IMAGES.pengumuman;
+        const image = realImg || getPublisherRealImage(source, topic);
 
         results.push({
           title,

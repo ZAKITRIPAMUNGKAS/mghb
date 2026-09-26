@@ -7467,12 +7467,12 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   }
 
   // --- MagangHub Live News Feed Engine ---
-  const NEWS_CACHE_KEY = 'mghb_news_cache_v20260926_official';
+  const NEWS_CACHE_KEY = 'mghb_news_cache_v20260926_stable';
   let newsLoadedOnce = false;
   let activeNewsTopic = 'all';
 
   // Bersihkan semua cache lama
-  ['mghb_news_cache', 'mghb_news_cache_v2', 'mghb_news_cache_v3', 'mghb_news_cache_v4', 'mghb_news_cache_v5', 'mghb_news_cache_v6', 'mghb_news_cache_v7', 'mghb_news_cache_v8', 'mghb_news_cache_v20260921', 'mghb_news_cache_v20260921_real', 'mghb_news_cache_v20260921_clean', 'mghb_news_cache_v20260921_text', 'mghb_news_cache_v20260926_live', 'mghb_news_cache_v20260926_thumbs'].forEach(k => {
+  ['mghb_news_cache', 'mghb_news_cache_v2', 'mghb_news_cache_v3', 'mghb_news_cache_v4', 'mghb_news_cache_v5', 'mghb_news_cache_v6', 'mghb_news_cache_v7', 'mghb_news_cache_v8', 'mghb_news_cache_v20260921', 'mghb_news_cache_v20260921_real', 'mghb_news_cache_v20260921_clean', 'mghb_news_cache_v20260921_text', 'mghb_news_cache_v20260926_live', 'mghb_news_cache_v20260926_thumbs', 'mghb_news_cache_v20260926_official'].forEach(k => {
     try { localStorage.removeItem(k); } catch {}
   });
 
@@ -7485,59 +7485,28 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
 
   const CURATED_MAGANG_NEWS = [
     {
-      title: 'MagangHub Batch 2 Dimulai Besok, Ini yang Perlu Disiapkan Peserta',
-      source: 'Radar Bangsa',
-      sourceClass: 'source-detik',
-      pubDate: '20 Sep 2026',
-      timestamp: new Date('2026-09-20T13:20:28+07:00').getTime(),
-      link: 'https://radarbangsa.co.id',
-      snippet: 'JAKARTA, RadarBangsa.co.id - Program Pemagangan Nasional (MagangHub) Batch 2 Angkatan II Tahun 2026 mulai berlangsung Senin, 21 September...',
-      topic: 'pengumuman',
-      image: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=800&q=80'
-    },
-    {
-      title: 'MagangHub Batch 2 Dimulai Besok, Peserta Diminta Siapkan Diri.',
-      source: 'Koran Jakarta ®',
-      sourceClass: 'source-antara',
-      pubDate: '20 Sep 2026',
-      timestamp: new Date('2026-09-20T12:46:00+07:00').getTime(),
-      link: 'https://koran-jakarta.com',
-      snippet: 'Peserta Program Pemagangan Nasional (MagangHub) Batch 2 Angkatan II Tahun 2026 diminta mempersiapkan sejumlah kebutuhan sebelum memulai...',
-      topic: 'pengumuman',
-      image: 'https://portal.kemnaker.go.id/storage/attachments/75b/25f/ea4/KbzTUJ4qdDEysOpQ9bkLE62DsNw59AXu7aIcwfXr.jpg'
-    },
-    {
       title: 'Kemnaker: Cek Pengumuman MagangHub di Portal Resmi',
-      source: 'RRI.co.id',
+      source: 'Kemnaker RI (Binalavotas)',
       sourceClass: 'source-kemnaker',
       pubDate: '20 Sep 2026',
-      timestamp: new Date('2026-09-20T04:04:00+07:00').getTime(),
-      link: 'https://rri.co.id',
-      snippet: 'Kementerian Ketenagakerjaan mengimbau calon peserta memastikan status penerimaan dan dokumen perjanjian kerja hanya melalui dasbor resmi SIAPkerja Kemnaker RI.',
+      timestamp: new Date('2026-09-20T20:00:00+07:00').getTime(),
+      link: 'https://kemnaker.go.id',
+      snippet: 'Kementerian Ketenagakerjaan mengimbau seluruh calon peserta memastikan status penerimaan dan dokumen perjanjian kerja hanya melalui dasbor resmi SIAPkerja Kemnaker RI.',
       topic: 'pengumuman',
-      image: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=800&q=80'
+      image: 'https://portal.kemnaker.go.id/storage/attachments/75b/25f/ea4/KbzTUJ4qdDEysOpQ9bkLE62DsNw59AXu7aIcwfXr.jpg',
+      hasRealImage: true
     },
     {
-      title: 'Seleksi MagangHub Diperketat, Apa yang Berubah?',
-      source: 'Pajakku',
-      sourceClass: 'source-antara',
-      pubDate: '18 Sep 2026',
-      timestamp: new Date('2026-09-18T06:29:39+07:00').getTime(),
-      link: 'https://pajakku.com',
-      snippet: 'Kementerian Ketenagakerjaan (Kemnaker) mulai memperketat sistem pemagangan nasional melalui MagangHub.',
-      topic: 'regulasi',
-      image: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=800&q=80'
-    },
-    {
-      title: 'Program Magang Nasional 2026, Uang Sakunya Bebas Pajak',
-      source: 'Direktorat Jenderal Pajak',
-      sourceClass: 'source-antara',
-      pubDate: '18 Sep 2026',
-      timestamp: new Date('2026-09-18T05:00:07+07:00').getTime(),
-      link: 'https://pajak.go.id',
-      snippet: 'Uang saku program pemagangan nasional dari pemerintah dibebaskan dari potongan pajak penghasilan sesuai ketentuan fasilitas bantuan pemerintah bagi talenta vokasi dan fresh graduate.',
-      topic: 'regulasi',
-      image: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=800&q=80'
+      title: 'MagangHub Batch 2 Angkatan II Masuki Tahap Seleksi, Hasil Diumumkan 18 September',
+      source: 'Kemnaker RI (Binalavotas)',
+      sourceClass: 'source-kemnaker',
+      pubDate: '17 Sep 2026',
+      timestamp: new Date('2026-09-17T14:00:00+07:00').getTime(),
+      link: 'https://kemnaker.go.id',
+      snippet: 'Kementerian Ketenagakerjaan mengumumkan proses seleksi peserta MagangHub Batch 2 Angkatan II telah memasuki tahap verifikasi akhir dan penetapan mitra penempatan.',
+      topic: 'pengumuman',
+      image: 'https://portal.kemnaker.go.id/storage/attachments/f8c/561/cac/KdReUd8jM5A3xCnPfdDWVp2eVlrm5poglb5vZoFq.jpeg',
+      hasRealImage: true
     },
     {
       title: 'Pengumuman Magang Kemnaker Besok, Cek Hasil Kelulusan di Maganghub!',
@@ -7548,7 +7517,8 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       link: 'https://www.detik.com/sumbagsel/berita/d-8662651/pengumuman-magang-kemnaker-besok-cek-hasil-kelulusan-di-maganghub',
       snippet: 'Pengumuman kelulusan Maganghub Kemnaker 2026 Batch 2 dirilis 16-18 September 2026. Cek jadwal seleksi, syarat, dan cara cek hasilnya di portal SIAPkerja.',
       topic: 'pengumuman',
-      image: 'https://portal.kemnaker.go.id/storage/attachments/f8c/561/cac/KdReUd8jM5A3xCnPfdDWVp2eVlrm5poglb5vZoFq.jpeg'
+      image: 'https://awsimages.detik.net.id/api/wm/2026/09/02/magang-kemnaker-2026-batch-2-1788346807178_169.png?wid=54&w=1200&v=1&t=jpeg',
+      hasRealImage: true
     },
     {
       title: 'Siap-siap! Hasil Seleksi MagangHub Batch 2 Angkatan II Diumumkan Jumat Esok',
@@ -7559,18 +7529,8 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       link: 'https://money.kompas.com/read/2026/09/17/084300426/siap-siap-hasil-seleksi-maganghub-batch-2-angkatan-ii-diumumkan-jumat-esok',
       snippet: 'Besok! Pengumuman hasil seleksi MagangHub Batch 2 2026. Peserta terpilih bersiap memulai hari pertama pemagangan nasional pada Senin 21 September 2026.',
       topic: 'pengumuman',
-      image: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=800&q=80'
-    },
-    {
-      title: 'Seleksi Pelatihan Vokasi Nasional 2026 Batch 5 Berlangsung 17–23 September',
-      source: 'Kemnaker RI (Binalavotas)',
-      sourceClass: 'source-kemnaker',
-      pubDate: '17 Sep 2026',
-      timestamp: new Date('2026-09-17T00:00:00+07:00').getTime(),
-      link: 'https://kemnaker.go.id/news/detail/seleksi-pelatihan-vokasi-nasional-2026-batch-5-berlangsung-1723-september',
-      snippet: 'Seleksi Pelatihan Vokasi Nasional 2026 Batch 5 berlangsung pada 17–23 September 2026 guna memastikan kesiapan peserta sebelum mengikuti pelatihan dan sertifikasi.',
-      topic: 'sertifikasi',
-      image: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=800&q=80'
+      image: 'https://asset.kompas.com/crops/xtQK1VlOuT2wgLdJgVqnuXUqcHM=/0x0:2880x1440/1200x675/filters:watermark(data/photo/2026/01/30/697c815e7ef28.png,0,-0,1)/data/photo/2026/06/29/6a422eea317b1.png',
+      hasRealImage: true
     },
     {
       title: 'MagangHub Batch 2 Angkatan II Diumumkan 18 September 2026, Ini Linknya',
@@ -7581,7 +7541,20 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       link: 'https://www.cnbcindonesia.com/news/20260916105008-4-768295/maganghub-batch-2-angkatan-ii-diumumkan-18-september-2026-ini-linknya',
       snippet: 'Kemnaker mengumumkan seleksi peserta Pemagangan Nasional 2026 Batch 2 Angkatan II. Periode pemagangan dimulai Senin 21 September 2026 di berbagai mitra perbankan BUMN.',
       topic: 'pengumuman',
-      image: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=800&q=80'
+      image: 'https://awsimages.detik.net.id/visual/2025/10/13/warga-membuka-aplikasi-magang-hub-di-jakarta-senin-13102025-1760345197423_169.jpeg?w=650&q=90',
+      hasRealImage: true
+    },
+    {
+      title: 'Program Magang Nasional 2026, Uang Sakunya Bebas Pajak',
+      source: 'Direktorat Jenderal Pajak',
+      sourceClass: 'source-antara',
+      pubDate: '18 Sep 2026',
+      timestamp: new Date('2026-09-18T05:00:07+07:00').getTime(),
+      link: 'https://pajak.go.id',
+      snippet: 'Uang saku program pemagangan nasional dari pemerintah dibebaskan dari potongan pajak penghasilan sesuai ketentuan fasilitas bantuan pemerintah bagi talenta vokasi dan fresh graduate.',
+      topic: 'regulasi',
+      image: 'https://img.antaranews.com/cache/1200x800/2026/07/07/3292d4bd-5309-424c-b025-7feaafedb9a1.jpeg',
+      hasRealImage: true
     },
     {
       title: 'Kemnaker Segera Seleksi dan Tetapkan Peserta MagangHub 2026 Tahap 2',
@@ -7592,33 +7565,46 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       link: 'https://www.antaranews.com/berita/5743220/kemnaker-segera-seleksi-dan-tetapkan-peserta-maganghub-2026-tahap-2',
       snippet: 'Kementerian Ketenagakerjaan (Kemnaker) mengatakan program Magang Nasional (MagangHub) 2026 Tahap 2 kini telah memasuki tahap seleksi dan penetapan peserta per September 2026.',
       topic: 'pengumuman',
-      image: 'https://portal.kemnaker.go.id/storage/attachments/d01/3b9/050/yUHQNrOGQztEsQFkegV8m8Q0qHps71yqUPvCwn3b.jpg'
+      image: 'https://img.antaranews.com/cache/1200x800/2026/09/16/target-vokasi-nasional-2026-2854548.jpg',
+      hasRealImage: true
     },
     {
       title: 'Menaker Pantau Program Magang Nasional 2025 di Kantor BNI',
-      source: 'ANTARA News',
+      source: 'Kemnaker RI (Binalavotas)',
       sourceClass: 'source-kemnaker',
       pubDate: '16 Sep 2026',
       timestamp: new Date('2026-09-16T08:00:00+07:00').getTime(),
       link: 'https://jatim.antaranews.com/berita/1008413/menaker-pantau-program-magang-2025-di-kantor-bni',
       snippet: 'Menteri Ketenagakerjaan memantau pelaksanaan program Magang Nasional di kantor BNI, mengapresiasi pembinaan kompetensi perbankan dan kesiapan talenta muda menghadapi dunia kerja.',
       topic: 'kemnaker',
-      image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80'
-    },
-    {
-      title: 'Cek Pengumuman Magang Kemnaker 2026 Batch 2 serta Tahapan Berikutnya',
-      source: 'Detikcom',
-      sourceClass: 'source-detik',
-      pubDate: '15 Sep 2026',
-      timestamp: new Date('2026-09-15T23:00:00+07:00').getTime(),
-      link: 'https://www.detik.com',
-      snippet: 'Panduan lengkap membaca pengumuman seleksi nasional MagangHub Batch 2 dan persiapan teknis hari pertama masuk kerja di perusahaan mitra.',
-      topic: 'pengumuman',
-      image: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=800&q=80'
+      image: 'https://portal.kemnaker.go.id/storage/attachments/d01/3b9/050/yUHQNrOGQztEsQFkegV8m8Q0qHps71yqUPvCwn3b.jpg',
+      hasRealImage: true
     }
   ];
 
   function getTopicFallbackImage(topic, source = '') {
+    const s = (source || '').toLowerCase();
+    if (s.includes('detik')) {
+      return 'https://awsimages.detik.net.id/api/wm/2026/09/02/magang-kemnaker-2026-batch-2-1788346807178_169.png?wid=54&w=1200&v=1&t=jpeg';
+    }
+    if (s.includes('kompas')) {
+      return 'https://asset.kompas.com/crops/xtQK1VlOuT2wgLdJgVqnuXUqcHM=/0x0:2880x1440/1200x675/filters:watermark(data/photo/2026/01/30/697c815e7ef28.png,0,-0,1)/data/photo/2026/06/29/6a422eea317b1.png';
+    }
+    if (s.includes('cnbc') || s.includes('cnn')) {
+      return 'https://awsimages.detik.net.id/visual/2025/10/13/warga-membuka-aplikasi-magang-hub-di-jakarta-senin-13102025-1760345197423_169.jpeg?w=650&q=90';
+    }
+    if (s.includes('antara')) {
+      return 'https://img.antaranews.com/cache/1200x800/2026/09/16/target-vokasi-nasional-2026-2854548.jpg';
+    }
+    if (s.includes('rri')) {
+      return 'https://img.antaranews.com/cache/1200x800/2025/11/28/1000096979.jpg';
+    }
+    if (s.includes('pajak')) {
+      return 'https://img.antaranews.com/cache/1200x800/2026/07/07/3292d4bd-5309-424c-b025-7feaafedb9a1.jpeg';
+    }
+    if (s.includes('kemnaker')) {
+      return 'https://portal.kemnaker.go.id/storage/attachments/75b/25f/ea4/KbzTUJ4qdDEysOpQ9bkLE62DsNw59AXu7aIcwfXr.jpg';
+    }
     return TOPIC_EDITORIAL_IMAGES[topic] || TOPIC_EDITORIAL_IMAGES.pengumuman;
   }
 
@@ -7659,7 +7645,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     };
     const cfg = configs[topic] || configs.pengumuman;
     const cleanSrc = (source || 'Warta Magang').replace(/[<>&"']/g, '').substring(0, 24);
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360"><defs><linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="${cfg.gradient[0]}"/><stop offset="50%" stop-color="${cfg.gradient[1]}"/><stop offset="100%" stop-color="${cfg.gradient[2]}"/></linearGradient><radialGradient id="glow" cx="80%" cy="20%" r="60%"><stop offset="0%" stop-color="#ffffff" stop-opacity="0.12"/><stop offset="100%" stop-color="#ffffff" stop-opacity="0"/></radialGradient><pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M 32 0 L 0 0 0 32" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="1"/></pattern></defs><rect width="640" height="360" fill="url(#bg)"/><rect width="640" height="360" fill="url(#glow)"/><rect width="640" height="360" fill="url(#grid)"/><circle cx="560" cy="80" r="140" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="2"/><circle cx="560" cy="80" r="90" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1.5" stroke-dasharray="6 4"/><g transform="translate(36, 36)"><rect width="160" height="30" rx="15" fill="${cfg.tagBg}" fill-opacity="0.25" stroke="${cfg.tagBg}" stroke-width="1"/><text x="18" y="20" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="700" fill="#ffffff" letter-spacing="1">${cfg.tag}</text></g><g transform="translate(440, 36)"><rect width="164" height="28" rx="6" fill="rgba(0,0,0,0.3)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/><text x="82" y="18" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="600" fill="#93c5fd">${cleanSrc}</text></g><g transform="translate(36, 105)"><rect width="60" height="60" rx="16" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/><g transform="translate(18, 18)" stroke="#ffffff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">${cfg.icon}</g></g><text x="112" y="135" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="22" font-weight="800" fill="#ffffff" letter-spacing="-0.5">${cfg.title}</text><text x="112" y="160" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="500" fill="rgba(255,255,255,0.75)">${cfg.subtitle}</text><g transform="translate(36, 305)"><rect width="568" height="2" rx="1" fill="rgba(255,255,255,0.12)"/><rect width="120" height="2" rx="1" fill="${cfg.tagBg}"/><text x="0" y="24" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="600" fill="rgba(255,255,255,0.5)">PORTAL MAGANGHUB RESMI • SIAPKERJA KEMNAKER RI</text></g></svg>`;
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360"><defs><linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="${cfg.gradient[0]}"/><stop offset="50%" stop-color="${cfg.gradient[1]}"/><stop offset="100%" stop-color="${cfg.gradient[2]}"/></linearGradient><radialGradient id="glow" cx="80%" cy="20%" r="60%"><stop offset="0%" stop-color="#ffffff" stop-opacity="0.12"/><stop offset="100%" stop-color="#ffffff" stop-opacity="0"/></radialGradient><pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M 32 0 L 0 0 0 32" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="1"/></pattern></defs><rect width="640" height="360" fill="url(#bg)"/><rect width="640" height="360" fill="url(#glow)"/><rect width="640" height="360" fill="url(#grid)"/><circle cx="560" cy="80" r="140" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="2"/><circle cx="560" cy="80" r="90" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1.5" stroke-dasharray="6 4"/><g transform="translate(36, 36)"><rect width="160" height="30" rx="15" fill="${cfg.tagBg}" fill-opacity="0.25" stroke="${cfg.tagBg}" stroke-width="1"/><text x="18" y="20" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#ffffff" letter-spacing="1">${cfg.tag}</text></g><g transform="translate(440, 36)"><rect width="164" height="28" rx="6" fill="rgba(0,0,0,0.3)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/><text x="82" y="18" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#93c5fd">${cleanSrc}</text></g><g transform="translate(36, 105)"><rect width="60" height="60" rx="16" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/><g transform="translate(18, 18)" stroke="#ffffff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">${cfg.icon}</g></g><text x="112" y="135" font-family="system-ui, sans-serif" font-size="22" font-weight="800" fill="#ffffff" letter-spacing="-0.5">${cfg.title}</text><text x="112" y="160" font-family="system-ui, sans-serif" font-size="13" font-weight="500" fill="rgba(255,255,255,0.75)">${cfg.subtitle}</text><g transform="translate(36, 305)"><rect width="568" height="2" rx="1" fill="rgba(255,255,255,0.12)"/><rect width="120" height="2" rx="1" fill="${cfg.tagBg}"/><text x="0" y="24" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="rgba(255,255,255,0.5)">PORTAL MAGANGHUB RESMI • SIAPKERJA KEMNAKER RI</text></g></svg>`;
     return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
   }
 
@@ -7799,6 +7785,16 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     return (title || '').toLowerCase().replace(/[^a-z0-9]/g, '');
   }
 
+  function sortNewsItems(list) {
+    if (!list || !Array.isArray(list)) return [];
+    return [...list].sort((a, b) => {
+      const aReal = (a.hasRealImage || (a.image && a.image.includes('portal.kemnaker.go.id')) || (a.source && a.source.includes('Kemnaker'))) ? 1 : 0;
+      const bReal = (b.hasRealImage || (b.image && b.image.includes('portal.kemnaker.go.id')) || (b.source && b.source.includes('Kemnaker'))) ? 1 : 0;
+      if (bReal !== aReal) return bReal - aReal;
+      return getNewsTimestamp(b) - getNewsTimestamp(a);
+    });
+  }
+
   async function fetchLiveNews(forceRefresh = false) {
     const loader = document.getElementById('news-loader');
     const updateEl = document.getElementById('news-last-updated');
@@ -7808,8 +7804,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     if (refreshSvg) refreshSvg.style.animation = 'spin 0.8s linear infinite';
 
     // Selalu siapkan dan tampilkan cache lokal yang tersedia dulu
-    let currentNews = [...CURATED_MAGANG_NEWS];
-    currentNews.sort((a, b) => getNewsTimestamp(b) - getNewsTimestamp(a));
+    let currentNews = sortNewsItems(CURATED_MAGANG_NEWS);
     let lastFetched = null;
 
     if (forceRefresh) {
@@ -7820,8 +7815,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
         try {
           const parsed = JSON.parse(cachedData);
           if (parsed.items && Array.isArray(parsed.items) && parsed.items.length > 0) {
-            currentNews = parsed.items;
-            currentNews.sort((a, b) => getNewsTimestamp(b) - getNewsTimestamp(a));
+            currentNews = sortNewsItems(parsed.items);
             lastFetched = parsed.timestamp;
           }
         } catch (err) {
@@ -7986,8 +7980,8 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       }
     });
 
-    // 5. SORTING MUTLAK: YANG PALING BARU SELALU DI ATAS (DESCENDING TIMESTAMP)
-    scrapedList.sort((a, b) => getNewsTimestamp(b) - getNewsTimestamp(a));
+    // 5. SORTING RESMI: Prioritaskan warta resmi Kemnaker RI dengan foto asli, diikuti warta media terkini
+    scrapedList = sortNewsItems(scrapedList);
 
     if (scrapedList.length > 0) {
       localStorage.setItem(NEWS_CACHE_KEY, JSON.stringify({
@@ -8054,7 +8048,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
             class="news-thumb-img" 
             loading="lazy" 
             referrerpolicy="no-referrer" 
-            onerror="this.onerror=null; this.src='${fallbackSvg}';"
+            onerror="this.onerror=null; this.src=getTopicFallbackSvg('${escHtml(item.topic || 'pengumuman')}', '${escHtml(item.source || 'MagangHub')}');"
           >
         </div>`;
 
