@@ -6250,7 +6250,8 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
   // ==========================================
   // INVENTARIS RANTAU ENGINE (Dynamic & Editable)
   // ==========================================
-  const INVENTARIS_STORAGE_KEY = 'mghb_inventaris_v1';
+  const INVENTARIS_STORAGE_KEY = 'mghb_inventaris_v2';
+  try { localStorage.removeItem('mghb_inventaris_v1'); } catch (_) {}
 
   const INVENTARIS_CATEGORIES = [
     { id: 'pakaian', name: 'Pakaian Kerja & Formal', icon: '👔', iconSvg: '#i-shirt' },
@@ -6261,7 +6262,7 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
     { id: 'lainnya', name: 'Perlengkapan Rantau', iconSvg: '#i-backpack' }
   ];
 
-  const DEFAULT_INVENTARIS = [
+  const TEMPLATE_INVENTARIS_BNI = [
     // Pakaian Kerja & Formal
     { id: 'pk1', cat: 'pakaian', name: 'Kemeja formal putih lengan panjang', detail: 'Senin–Selasa: kemeja putih / business formal standar perbankan' },
     { id: 'pk2', cat: 'pakaian', name: 'Kemeja formal katun lengan panjang (cadangan)', detail: 'Senin–Selasa: business formal (motif garis halus atau polos)' },
@@ -6313,6 +6314,8 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
     { id: 'ot6', cat: 'lainnya', name: 'Dompet, kartu uang elektronik (Flazz/e-Money/JakLingko), & uang tunai', detail: 'Akses KRL, MRT, TransJakarta, dan konsumsi darurat' }
   ];
 
+  const DEFAULT_INVENTARIS = [];
+
   function escapeHtmlAttr(str) {
     if (str == null) return '';
     return String(str)
@@ -6326,21 +6329,19 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
   function getInventarisItems() {
     try {
       const raw = localStorage.getItem(INVENTARIS_STORAGE_KEY);
-      if (raw) {
+      if (raw !== null) {
         const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        if (Array.isArray(parsed)) return parsed;
       }
     } catch (e) {
       console.warn('Gagal membaca inventaris dari localStorage:', e);
     }
-    const initial = JSON.parse(JSON.stringify(DEFAULT_INVENTARIS));
-    saveInventarisItems(initial);
-    return initial;
+    return [];
   }
 
   function saveInventarisItems(items) {
     try {
-      localStorage.setItem(INVENTARIS_STORAGE_KEY, JSON.stringify(items));
+      localStorage.setItem(INVENTARIS_STORAGE_KEY, JSON.stringify(items || []));
     } catch (e) {
       console.warn('Gagal menyimpan inventaris ke localStorage:', e);
     }
@@ -6362,18 +6363,28 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
     const box = document.getElementById('inv-tab-controls');
     if (!box) return;
 
+    const items = getInventarisItems();
+
     if (currentInvSubTab === 'view') {
       box.innerHTML = `
-        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-          <button type="button" class="utility-btn" onclick="copyInventarisList()">
-            <svg class="ic ic-16" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-clipboard"/></svg> Salin Daftar
-          </button>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+          ${items.length > 0 ? `
+            <button type="button" class="utility-btn" onclick="copyInventarisList()">
+              <svg class="ic ic-16" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-clipboard"/></svg> Salin Daftar
+            </button>
+          ` : ''}
           <button type="button" class="utility-btn" onclick="switchInventarisSubTab('edit')">
             <svg class="ic ic-16" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-plus"/></svg> Tambah Barang
           </button>
-          <button type="button" class="utility-btn" onclick="switchInventarisSubTab('delete')" style="color: #ef4444;">
-            <svg class="ic ic-16" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-trash"/></svg> Mode Hapus
-          </button>
+          ${items.length > 0 ? `
+            <button type="button" class="utility-btn" onclick="switchInventarisSubTab('delete')" style="color: #ef4444;">
+              <svg class="ic ic-16" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-trash"/></svg> Mode Hapus
+            </button>
+          ` : `
+            <button type="button" class="utility-btn" onclick="resetInventarisToDefault()" style="font-size: 0.74rem;">
+              <svg class="ic ic-14" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-refresh"/></svg> Muat 38 Rekomendasi BNI
+            </button>
+          `}
         </div>
       `;
     } else if (currentInvSubTab === 'edit') {
@@ -6408,14 +6419,23 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
       `;
     } else if (currentInvSubTab === 'delete') {
       box.innerHTML = `
-        <div class="inv-tab-notice notice-del">
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <svg class="ic ic-18" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-trash"/></svg>
-            <span><strong>Mode Hapus Aktif</strong>: Klik tombol merah <strong>"Hapus"</strong> di samping barang yang ingin dihapus.</span>
+        <div class="inv-tab-notice notice-del" style="display: flex; flex-direction: column; align-items: stretch; gap: 10px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <svg class="ic ic-18" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-trash"/></svg>
+              <span><strong>Mode Hapus Aktif</strong>: Klik tombol merah <strong>"Hapus"</strong> di samping barang, atau kosongkan semua sekaligus.</span>
+            </div>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              ${items.length > 0 ? `
+                <button type="button" class="inv-btn-delete-prominent" onclick="clearAllInventaris()" title="Hapus semua barang inventaris">
+                  <svg class="ic ic-14" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-trash"/></svg> Hapus Semua Inventaris (${items.length})
+                </button>
+              ` : ''}
+              <button type="button" class="utility-btn" onclick="resetInventarisToDefault()" style="color: var(--text-tertiary); font-size: 0.72rem;" title="Muat template 38 barang standar dinas BNI">
+                <svg class="ic ic-14" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-refresh"/></svg> Muat 38 Standar BNI
+              </button>
+            </div>
           </div>
-          <button type="button" class="utility-btn" onclick="resetInventarisToDefault()" style="color: var(--text-tertiary); font-size: 0.72rem;">
-            <svg class="ic ic-14" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-refresh"/></svg> Reset ke 38 Standar
-          </button>
         </div>
       `;
     }
@@ -6566,11 +6586,23 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
   }
 
   function resetInventarisToDefault() {
-    if (!confirm('Pulihkan daftar inventaris ke default 38 barang standar BNI? Perubahan custom Anda akan diganti.')) return;
-    const initial = JSON.parse(JSON.stringify(DEFAULT_INVENTARIS));
+    if (!confirm('Muat template 38 barang standar dinas BNI?')) return;
+    const initial = JSON.parse(JSON.stringify(TEMPLATE_INVENTARIS_BNI));
     saveInventarisItems(initial);
     renderInventaris();
-    showToast('Inventaris dipulihkan ke 38 barang standar');
+    showToast('38 barang standar dinas BNI berhasil dimuat');
+  }
+
+  function clearAllInventaris() {
+    const items = getInventarisItems();
+    if (items.length === 0) {
+      showToast('Daftar inventaris sudah kosong');
+      return;
+    }
+    if (!confirm(`Hapus SEMUA (${items.length}) barang inventaris? Semua data barang akan dikosongkan.`)) return;
+    saveInventarisItems([]);
+    renderInventaris();
+    showToast('Semua barang inventaris berhasil dikosongkan');
   }
 
   function updateInventarisStats() {
@@ -6597,6 +6629,26 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
     if (totalEl) totalEl.textContent = items.length;
 
     let html = '';
+    if (items.length === 0) {
+      html += `
+        <div style="text-align: center; padding: 26px 16px; background: var(--surface); border: 1px dashed var(--border); border-radius: var(--radius-md, 8px); margin-bottom: 18px;">
+          <div style="font-size: 1.6rem; margin-bottom: 6px;">📦</div>
+          <div style="font-weight: 700; font-size: 0.9rem; color: var(--text-primary); margin-bottom: 4px;">Inventaris Sedang Kosong</div>
+          <p style="font-size: 0.76rem; color: var(--text-secondary); margin: 0 0 14px 0; max-width: 440px; margin-inline: auto;">
+            Semua barang inventaris telah dihapus. Anda dapat menambahkan barang baru sendiri atau memuat template rekomendasi dinas BNI.
+          </p>
+          <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+            <button type="button" class="btn-action" onclick="switchInventarisSubTab('edit')">
+              <svg class="ic ic-14" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-plus"/></svg> Mulai Tambah Barang
+            </button>
+            <button type="button" class="utility-btn" onclick="resetInventarisToDefault()">
+              <svg class="ic ic-14" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-refresh"/></svg> Muat 38 Rekomendasi BNI
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
     INVENTARIS_CATEGORIES.forEach(cat => {
       const catItems = items.filter(it => it.cat === cat.id);
       const iconHtml = cat.iconSvg
