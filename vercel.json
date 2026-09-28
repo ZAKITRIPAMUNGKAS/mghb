@@ -2,11 +2,11 @@
   "version": 2,
   "cleanUrls": true,
   "rewrites": [
-    { "source": "/beranda", "destination": "/index.html" },
-    { "source": "/inventaris", "destination": "/index.html" },
-    { "source": "/keuangan", "destination": "/index.html" },
-    { "source": "/logbook", "destination": "/index.html" },
-    { "source": "/toolkit", "destination": "/index.html" }
+    { "source": "/beranda", "destination": "/" },
+    { "source": "/inventaris", "destination": "/" },
+    { "source": "/keuangan", "destination": "/" },
+    { "source": "/logbook", "destination": "/" },
+    { "source": "/toolkit", "destination": "/" }
   ],
   "headers": [
     {
