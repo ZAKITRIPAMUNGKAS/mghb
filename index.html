@@ -1227,17 +1227,176 @@
       100% { background-position: 180% 0; }
     }
 
+    /* ===== Rich Page Entrance Animations ===== */
+    @keyframes pageSlideUp {
+      from { opacity: 0; transform: translateY(22px) scale(.985); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes pageSlideRight {
+      from { opacity: 0; transform: translateX(-18px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes pageSlideLeft {
+      from { opacity: 0; transform: translateX(18px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes pageFadeScale {
+      from { opacity: 0; transform: scale(.96) translateY(8px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    @keyframes cardReveal {
+      from { opacity: 0; transform: translateY(14px) scale(.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes chipPop {
+      0%   { opacity: 0; transform: scale(.8); }
+      65%  { transform: scale(1.06); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    /* View Transitions API — cross-tab slide */
+    @keyframes vtSlideIn {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes vtSlideOut {
+      from { opacity: 1; transform: translateY(0); }
+      to   { opacity: 0; transform: translateY(-10px); }
+    }
+
+    ::view-transition-old(root) {
+      animation: vtSlideOut .2s cubic-bezier(.4, 0, 1, 1) both;
+    }
+    ::view-transition-new(root) {
+      animation: vtSlideIn .28s cubic-bezier(.16, 1, .3, 1) both;
+    }
+
+    /* ─── Beranda (berita): fade+scale from centre ─── */
+    #view-berita.active {
+      animation: pageFadeScale .38s cubic-bezier(.16, 1, .3, 1) both;
+    }
+    #view-berita.active > * {
+      animation: cardReveal .42s cubic-bezier(.16, 1, .3, 1) both;
+      opacity: 0;
+      animation-fill-mode: forwards;
+    }
+    #view-berita.active > *:nth-child(1) { animation-delay: .04s; }
+    #view-berita.active > *:nth-child(2) { animation-delay: .09s; }
+    #view-berita.active > *:nth-child(3) { animation-delay: .14s; }
+    #view-berita.active > *:nth-child(4) { animation-delay: .19s; }
+    #view-berita.active > *:nth-child(5) { animation-delay: .24s; }
+    #view-berita.active > *:nth-child(6) { animation-delay: .29s; }
+    #view-berita.active > *:nth-child(7) { animation-delay: .32s; }
+    #view-berita.active > *:nth-child(8) { animation-delay: .35s; }
+
+    /* ─── Inventaris: slide in from right ─── */
+    #view-packing.active {
+      animation: pageSlideLeft .36s cubic-bezier(.16, 1, .3, 1) both;
+    }
+    #view-packing.active > * {
+      animation: cardReveal .4s cubic-bezier(.16, 1, .3, 1) both;
+      opacity: 0;
+      animation-fill-mode: forwards;
+    }
+    #view-packing.active > *:nth-child(1) { animation-delay: .03s; }
+    #view-packing.active > *:nth-child(2) { animation-delay: .08s; }
+    #view-packing.active > *:nth-child(3) { animation-delay: .13s; }
+    #view-packing.active > *:nth-child(4) { animation-delay: .18s; }
+    #view-packing.active > *:nth-child(5) { animation-delay: .22s; }
+    #view-packing.active > *:nth-child(6) { animation-delay: .26s; }
+
+    /* ─── Keuangan: slide up with subtle scale ─── */
+    #view-keuangan.active {
+      animation: pageSlideUp .38s cubic-bezier(.16, 1, .3, 1) both;
+    }
+    #view-keuangan.active > * {
+      animation: cardReveal .44s cubic-bezier(.16, 1, .3, 1) both;
+      opacity: 0;
+      animation-fill-mode: forwards;
+    }
+    #view-keuangan.active > *:nth-child(1) { animation-delay: .04s; }
+    #view-keuangan.active > *:nth-child(2) { animation-delay: .09s; }
+    #view-keuangan.active > *:nth-child(3) { animation-delay: .14s; }
+    #view-keuangan.active > *:nth-child(4) { animation-delay: .20s; }
+    #view-keuangan.active > *:nth-child(5) { animation-delay: .26s; }
+    #view-keuangan.active > *:nth-child(6) { animation-delay: .30s; }
+    #view-keuangan.active > *:nth-child(7) { animation-delay: .34s; }
+    #view-keuangan.active > *:nth-child(8) { animation-delay: .38s; }
+
+    /* ─── Logbook: slide from right (forward navigation feel) ─── */
+    #view-logbook.active {
+      animation: pageSlideLeft .36s cubic-bezier(.16, 1, .3, 1) both;
+    }
+    #view-logbook.active > * {
+      animation: cardReveal .42s cubic-bezier(.16, 1, .3, 1) both;
+      opacity: 0;
+      animation-fill-mode: forwards;
+    }
+    #view-logbook.active > *:nth-child(1) { animation-delay: .04s; }
+    #view-logbook.active > *:nth-child(2) { animation-delay: .09s; }
+    #view-logbook.active > *:nth-child(3) { animation-delay: .14s; }
+    #view-logbook.active > *:nth-child(4) { animation-delay: .20s; }
+    #view-logbook.active > *:nth-child(5) { animation-delay: .26s; }
+    #view-logbook.active > *:nth-child(6) { animation-delay: .30s; }
+
+    /* ─── Toolkit/Asisten: pop-in from below ─── */
+    #view-asisten.active {
+      animation: pageSlideUp .34s cubic-bezier(.16, 1, .3, 1) both;
+    }
+    #view-asisten.active > * {
+      animation: cardReveal .4s cubic-bezier(.16, 1, .3, 1) both;
+      opacity: 0;
+      animation-fill-mode: forwards;
+    }
+    #view-asisten.active > *:nth-child(1) { animation-delay: .03s; }
+    #view-asisten.active > *:nth-child(2) { animation-delay: .08s; }
+    #view-asisten.active > *:nth-child(3) { animation-delay: .13s; }
+    #view-asisten.active > *:nth-child(4) { animation-delay: .18s; }
+    #view-asisten.active > *:nth-child(5) { animation-delay: .22s; }
+    #view-asisten.active > *:nth-child(6) { animation-delay: .26s; }
+    #view-asisten.active > *:nth-child(7) { animation-delay: .30s; }
+
+    /* ─── Generic fallback (tab-content) ─── */
     .tab-content.active {
-      animation: fadeUp .32s cubic-bezier(.16, 1, .3, 1) both;
+      animation: pageFadeScale .32s cubic-bezier(.16, 1, .3, 1) both;
     }
     .tab-content.active > * {
-      animation: fadeUp .38s cubic-bezier(.16, 1, .3, 1) both;
+      animation: cardReveal .38s cubic-bezier(.16, 1, .3, 1) both;
+      opacity: 0;
+      animation-fill-mode: forwards;
     }
     .tab-content.active > *:nth-child(1) { animation-delay: .02s; }
     .tab-content.active > *:nth-child(2) { animation-delay: .06s; }
     .tab-content.active > *:nth-child(3) { animation-delay: .10s; }
     .tab-content.active > *:nth-child(4) { animation-delay: .14s; }
     .tab-content.active > *:nth-child(5) { animation-delay: .18s; }
+    .tab-content.active > *:nth-child(6) { animation-delay: .22s; }
+    .tab-content.active > *:nth-child(7) { animation-delay: .26s; }
+    .tab-content.active > *:nth-child(8) { animation-delay: .30s; }
+
+    /* Bottom nav icon bounce on activate */
+    .bottom-nav-item.active .nav-icon {
+      animation: chipPop .3s cubic-bezier(.16, 1, .3, 1) both;
+    }
+
+    /* ─── prefers-reduced-motion override ─── */
+    @media (prefers-reduced-motion: reduce) {
+      ::view-transition-old(root),
+      ::view-transition-new(root),
+      #view-berita.active, #view-packing.active,
+      #view-keuangan.active, #view-logbook.active,
+      #view-asisten.active,
+      .tab-content.active,
+      .tab-content.active > *,
+      #view-berita.active > *, #view-packing.active > *,
+      #view-keuangan.active > *, #view-logbook.active > *,
+      #view-asisten.active > *,
+      .bottom-nav-item.active .nav-icon {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+      }
+    }
 
     .feature-card,
     .checklist-card,
@@ -6964,59 +7123,40 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
   }
 
   // --- Tab Selection (5 Pages) ---
-  function selectTab(tab, updateUrl = true) {
-    document.documentElement.removeAttribute('data-initial-tab');
-    activeTab = tab;
-    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-
-    const route = TAB_CONFIG[tab] || TAB_CONFIG['berita'];
-    if (route && route.title) {
-      document.title = route.title;
-    }
-
-    if (updateUrl) {
-      try {
-        const targetPath = (tab === 'berita') ? '/' : (route ? route.path : '/');
-        if (window.location.protocol === 'file:') {
-          window.location.hash = targetPath === '/' ? 'beranda' : targetPath.replace('/', '');
-        } else if (window.location.pathname !== targetPath) {
-          window.history.pushState({ tab }, document.title, targetPath);
-        }
-      } catch (err) {
-        try {
-          const targetPath = (tab === 'berita') ? 'beranda' : (route ? route.path.replace('/', '') : 'beranda');
-          window.location.hash = targetPath;
-        } catch (_) {}
+  function _doSelectTab(tab) {
+    // Pane visibility — CSS animations re-trigger on .active re-add
+    const panes = ['view-packing', 'view-keuangan', 'view-logbook', 'view-asisten', 'view-berita'];
+    panes.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const shouldBeActive = (
+        (id === 'view-packing'  && tab === 'packing')  ||
+        (id === 'view-keuangan' && tab === 'keuangan') ||
+        (id === 'view-logbook'  && tab === 'logbook')  ||
+        (id === 'view-asisten'  && tab === 'asisten')  ||
+        (id === 'view-berita'   && tab === 'berita')
+      );
+      if (shouldBeActive && !el.classList.contains('active')) {
+        // Force animation replay by briefly removing the class
+        el.classList.remove('active');
+        // eslint-disable-next-line no-void
+        void el.offsetWidth; // trigger reflow
+        el.classList.add('active');
+      } else if (!shouldBeActive) {
+        el.classList.remove('active');
       }
-    }
-
-    // Trigger buttons
-    document.querySelectorAll('.tab-trigger').forEach(btn => {
-      const isMatch = btn.getAttribute('data-tab') === tab;
-      btn.classList.toggle('active', isMatch);
-      if (isMatch) btn.setAttribute('aria-current', 'page');
-      else btn.removeAttribute('aria-current');
     });
 
-    // Pane visibility
-    document.getElementById('view-packing').classList.toggle('active', tab === 'packing');
-    const finView = document.getElementById('view-keuangan');
-    if (finView) finView.classList.toggle('active', tab === 'keuangan');
     if (tab === 'keuangan') initFinanceManager();
-    document.getElementById('view-logbook').classList.toggle('active', tab === 'logbook');
-    document.getElementById('view-asisten').classList.toggle('active', tab === 'asisten');
-    document.getElementById('view-berita').classList.toggle('active', tab === 'berita');
 
-    // Office Rhythm banner hanya tampil di Beranda agar halaman lain bersih dan rapi
+    // Office Rhythm banner hanya tampil di Beranda
     const bannerEl = document.getElementById('office-status-banner');
-    if (bannerEl) {
-      bannerEl.style.display = (tab === 'berita') ? '' : 'none';
-    }
+    if (bannerEl) bannerEl.style.display = (tab === 'berita') ? '' : 'none';
 
-    const badgeEl = document.getElementById('badge-context');
-    const labelEl = document.getElementById('label-subcontext');
+    const badgeEl     = document.getElementById('badge-context');
+    const labelEl     = document.getElementById('label-subcontext');
     const overviewRow = document.getElementById('header-overview-row');
-    const toolbarRow = document.getElementById('header-toolbar-row');
+    const toolbarRow  = document.getElementById('header-toolbar-row');
 
     if (tab === 'packing') {
       badgeEl.textContent = 'Inventaris';
@@ -7045,9 +7185,48 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
       labelEl.textContent = 'Warta & Pengumuman MagangHub Kemnaker RI';
       overviewRow.style.display = 'none';
       toolbarRow.style.display = 'none';
-      if (!newsLoadedOnce) {
-        fetchLiveNews(false);
+      if (!newsLoadedOnce) fetchLiveNews(false);
+    }
+  }
+
+  function selectTab(tab, updateUrl = true) {
+    document.documentElement.removeAttribute('data-initial-tab');
+    activeTab = tab;
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+
+    const route = TAB_CONFIG[tab] || TAB_CONFIG['berita'];
+    if (route && route.title) document.title = route.title;
+
+    // Update URL *before* transition (keeps history correct immediately)
+    if (updateUrl) {
+      try {
+        const targetPath = (tab === 'berita') ? '/' : (route ? route.path : '/');
+        if (window.location.protocol === 'file:') {
+          window.location.hash = targetPath === '/' ? 'beranda' : targetPath.replace('/', '');
+        } else if (window.location.pathname !== targetPath) {
+          window.history.pushState({ tab }, document.title, targetPath);
+        }
+      } catch (err) {
+        try {
+          const targetPath = (tab === 'berita') ? 'beranda' : (route ? route.path.replace('/', '') : 'beranda');
+          window.location.hash = targetPath;
+        } catch (_) {}
       }
+    }
+
+    // Trigger buttons (nav highlight)
+    document.querySelectorAll('.tab-trigger').forEach(btn => {
+      const isMatch = btn.getAttribute('data-tab') === tab;
+      btn.classList.toggle('active', isMatch);
+      if (isMatch) btn.setAttribute('aria-current', 'page');
+      else btn.removeAttribute('aria-current');
+    });
+
+    // View Transitions API — silky cross-tab animation
+    if (typeof document.startViewTransition === 'function') {
+      document.startViewTransition(() => _doSelectTab(tab));
+    } else {
+      _doSelectTab(tab);
     }
   }
 
