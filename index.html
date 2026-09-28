@@ -10422,8 +10422,10 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     const savingsTarget = income * 0.2;
     const savingsScore = income > 0 ? Math.min(100, Math.round((totalSaved / Math.max(savingsTarget, 1)) * 100)) : 0;
 
-    // 2. Jatah harian 40 poin — disiplin menggunakan jatah aman (remaining >= 0 & totalSpent <= income)
-    const remaining = income - totalSpent;
+    // 2. Jatah harian 40 poin — disiplin menggunakan jatah aman (remaining >= 0 & effectiveTotalSpent <= income)
+    const paidBillsHS = bills.filter(b => b.paid).reduce((s, b) => s + (Number(b.amount) || 0), 0);
+    const effectiveHS = totalSpent + paidBillsHS;
+    const remaining = income - effectiveHS;
     const dailyScore = Math.min(100, Math.round(Math.max(0, remaining / Math.max(income, 1)) * 100));
 
     // 3. Tagihan tepat waktu 20 poin — % tagihan lunas
@@ -10660,10 +10662,15 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
 
     const expenses = getFinanceExpenses();
     const totalSpent = expenses.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
-    
-    // Remaining = income - actual expenses - unpaid committed fixed bills
-    const remaining = income - totalSpent - unpaidBills;
+
+    // effectiveTotalSpent = pengeluaran manual + tagihan yang sudah dibayar (dicentang)
+    // Ini adalah total uang yang sudah benar-benar keluar / dikunci bulan ini
     const effectiveTotalSpent = totalSpent + paidBills;
+
+    // Remaining = income - semua yang sudah keluar/dikunci - tagihan belum lunas
+    // Tagihan belum lunas (unpaidBills) masih "wajib dibayar" jadi harus dikurangi dari sisa
+    const remaining = income - effectiveTotalSpent - unpaidBills;
+
     const percentSpent = income > 0 ? Math.min(Math.round((effectiveTotalSpent / income) * 100), 100) : 100;
 
     // Days left in current month
@@ -10674,12 +10681,13 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
 
     const safeDailyLimit = remaining > 0 ? Math.round(remaining / daysLeft) : 0;
 
-    // Anggaran variabel
+    // Anggaran variabel (uang yang benar-benar bisa dipakai, sudah di luar tagihan belum lunas)
     const variableBudget = Math.max(remaining, 0);
 
     // Update Overview DOM
     const totalEl = document.getElementById('fin-total-expense');
-    if (totalEl) totalEl.textContent = formatRupiah(totalSpent);
+    // Tampilkan effectiveTotalSpent (pengeluaran + tagihan lunas) sebagai "Terpakai Bulan Ini"
+    if (totalEl) totalEl.textContent = formatRupiah(effectiveTotalSpent);
 
     const percentEl = document.getElementById('fin-expense-percent');
     if (percentEl) percentEl.textContent = `${percentSpent}% dari pemasukan`;
@@ -10818,28 +10826,39 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     }
 
     // --- Category Breakdown Visual Stacked Bar ---
+    // Gabungkan: pengeluaran manual + tagihan yang sudah dibayar (sebagai kategori 'tagihan')
     const catTotals = {};
     expenses.forEach(e => {
       catTotals[e.cat] = (catTotals[e.cat] || 0) + (Number(e.amount) || 0);
     });
+    // Tagihan yang sudah lunas → masuk kategori 'tagihan'
+    if (paidBills > 0) {
+      catTotals['tagihan'] = (catTotals['tagihan'] || 0) + paidBills;
+    }
 
     const catTotalLabel = document.getElementById('fin-cat-total-label');
-    if (catTotalLabel) catTotalLabel.textContent = `Total: ${formatRupiah(totalSpent)}`;
+    if (catTotalLabel) catTotalLabel.textContent = `Total: ${formatRupiah(effectiveTotalSpent)}`;
 
     const trackEl = document.getElementById('fin-stacked-track');
     const legendEl = document.getElementById('fin-cat-legend');
     if (trackEl && legendEl) {
-      if (totalSpent === 0) {
+      if (effectiveTotalSpent === 0) {
         trackEl.innerHTML = '<div style="width:100%; height:100%; background:var(--surface-hover);"></div>';
         legendEl.innerHTML = '<span style="font-size:0.7rem; color:var(--text-tertiary);">Belum ada pengeluaran dicatat.</span>';
       } else {
         let segHtml = '';
         let legHtml = '';
-        Object.keys(FIN_CATEGORY_META).forEach(k => {
+        // Render kategori yang ada di FIN_CATEGORY_META (termasuk 'tagihan' jika ada)
+        const allCats = { ...FIN_CATEGORY_META };
+        // Pastikan 'tagihan' ada jika ada paidBills
+        if (!allCats['tagihan']) {
+          allCats['tagihan'] = { label: 'Tagihan Tetap', badge: '📋', color: '#6366f1' };
+        }
+        Object.keys(allCats).forEach(k => {
           const amt = catTotals[k] || 0;
           if (amt > 0) {
-            const pct = Math.round((amt / totalSpent) * 100);
-            const meta = FIN_CATEGORY_META[k];
+            const pct = Math.round((amt / effectiveTotalSpent) * 100);
+            const meta = allCats[k];
             segHtml += `<div class="finance-stacked-seg" style="width: ${pct}%; background-color: ${meta.color};" title="${meta.label}: ${formatRupiah(amt)} (${pct}%)"></div>`;
             legHtml += `
               <div class="finance-cat-pill">
