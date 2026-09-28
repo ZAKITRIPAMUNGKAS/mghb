@@ -1,0 +1,141 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E6FFFA"/>
+      <stop offset="50%" stop-color="#CCFBF1"/>
+      <stop offset="100%" stop-color="#99F6E4"/>
+    </linearGradient>
+    <linearGradient id="goldCoin" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FDE047"/>
+      <stop offset="50%" stop-color="#EAB308"/>
+      <stop offset="100%" stop-color="#CA8A04"/>
+    </linearGradient>
+    <linearGradient id="umbrellaGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#007C89"/>
+      <stop offset="100%" stop-color="#004D56"/>
+    </linearGradient>
+    <pattern id="diagStripe" width="10" height="10" patternTransform="rotate(30 0 0)" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="0" x2="0" y2="10" stroke="#0F766E" stroke-width="0.7" stroke-opacity="0.12"/>
+    </pattern>
+  </defs>
+
+  <rect width="640" height="360" fill="url(#bg3)"/>
+  <rect width="640" height="360" fill="url(#diagStripe)"/>
+
+  <!-- Protective Cloud & Sun Beam -->
+  <circle cx="100" cy="80" r="45" fill="#FEF08A" opacity="0.6"/>
+  <!-- Raincloud symbol of taxation passing away -->
+  <g transform="translate(420, 50)" opacity="0.75">
+    <ellipse cx="60" cy="35" rx="35" ry="20" fill="#94A3B8"/>
+    <ellipse cx="85" cy="25" rx="25" ry="18" fill="#94A3B8"/>
+    <ellipse cx="40" cy="30" rx="20" ry="15" fill="#94A3B8"/>
+    <!-- Rain streaks (Dotted lines deflected by umbrella) -->
+    <line x1="45" y1="58" x2="40" y2="80" stroke="#64748B" stroke-width="2" stroke-dasharray="3 3"/>
+    <line x1="65" y1="58" x2="60" y2="80" stroke="#64748B" stroke-width="2" stroke-dasharray="3 3"/>
+    <line x1="85" y1="58" x2="80" y2="80" stroke="#64748B" stroke-width="2" stroke-dasharray="3 3"/>
+    <!-- Deflection bounce off umbrella -->
+    <path d="M 40 85 Q 45 75 55 85" fill="none" stroke="#007C89" stroke-width="2.5"/>
+    <path d="M 60 85 Q 65 75 75 85" fill="none" stroke="#007C89" stroke-width="2.5"/>
+  </g>
+
+  <!-- Big Protective Umbrella (Regulasi Kemnaker / Bebas Pajak) -->
+  <g id="protective-umbrella" transform="translate(240, 60)">
+    <!-- Umbrella Canopy -->
+    <path d="M 0 110 C 20 40 160 40 180 110 C 150 95 120 110 90 95 C 60 110 30 95 0 110 Z" fill="url(#umbrellaGrad)" stroke="#0F172A" stroke-width="3.5" stroke-linejoin="round"/>
+    <!-- Umbrella Segments -->
+    <path d="M 90 52 Q 60 85 45 105" fill="none" stroke="#0F172A" stroke-width="2" opacity="0.4"/>
+    <path d="M 90 52 Q 120 85 135 105" fill="none" stroke="#0F172A" stroke-width="2" opacity="0.4"/>
+    <!-- Top Finial / Spire -->
+    <polygon points="90,40 87,52 93,52" fill="#F15A24" stroke="#0F172A" stroke-width="2"/>
+    <!-- Shaft -->
+    <line x1="90" y1="52" x2="90" y2="230" stroke="#0F172A" stroke-width="4.5" stroke-linecap="round"/>
+    <!-- Hook Handle -->
+    <path d="M 90 230 C 90 245 110 245 110 230" fill="none" stroke="#0F172A" stroke-width="4.5" stroke-linecap="round"/>
+
+    <!-- Badge on Umbrella -->
+    <rect x="52" y="68" width="76" height="18" rx="4" fill="#F15A24" stroke="#0F172A" stroke-width="1.8"/>
+    <text x="90" y="81" font-family="'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="8.5" fill="#FFFFFF" text-anchor="middle" letter-spacing="1">BEBAS PAJAK</text>
+  </g>
+
+  <!-- Character: Celengan Ayam Jago Nusantara (Tradisi Rantau & Tabungan) -->
+  <g id="ayam-jago-celengan" transform="translate(180, 160)">
+    <!-- Shadow -->
+    <ellipse cx="60" cy="148" rx="70" ry="14" fill="#0F172A" opacity="0.22"/>
+
+    <!-- Tail Feathers (Classic Rooster) -->
+    <path d="M -15 80 C -35 40 -15 10 5 45" fill="none" stroke="#0F172A" stroke-width="4"/>
+    <path d="M -10 90 C -45 55 -25 20 -5 65" fill="none" stroke="#DC2626" stroke-width="5"/>
+    <path d="M -5 100 C -40 75 -20 40 5 80" fill="none" stroke="#007C89" stroke-width="5"/>
+
+    <!-- Body Oval (Ayam Jago) -->
+    <ellipse cx="55" cy="95" rx="55" ry="45" fill="#FFFBEB" stroke="#0F172A" stroke-width="3.5"/>
+    <!-- Coin Slot on Back -->
+    <rect x="42" y="52" width="26" height="5" rx="2" fill="#0F172A"/>
+
+    <!-- Traditional Rooster Black/Red Motif (Tempo Indonesian Heritage) -->
+    <path d="M 25 100 C 40 85 65 110 75 90 C 85 70 65 130 35 125 Z" fill="#DC2626" opacity="0.85"/>
+    <circle cx="50" cy="115" r="8" fill="#0F172A"/>
+
+    <!-- Tie BNI around Rooster neck -->
+    <polygon points="90,75 105,75 100,120 95,128 88,120" fill="#007C89" stroke="#0F172A" stroke-width="2"/>
+    <line x1="90" y1="88" x2="103" y2="88" stroke="#F15A24" stroke-width="2"/>
+
+    <!-- Head & Comb (Jengger Ayam) -->
+    <circle cx="95" cy="65" r="22" fill="#FFFBEB" stroke="#0F172A" stroke-width="3"/>
+    <!-- Comb (Red Crown) -->
+    <path d="M 85 45 C 80 35 90 25 95 35 C 100 22 112 25 112 38 C 118 30 125 38 120 48 Z" fill="#DC2626" stroke="#0F172A" stroke-width="2.5"/>
+    <!-- Beak (Paruh Kuning) -->
+    <polygon points="115,62 132,68 115,74" fill="#F59E0B" stroke="#0F172A" stroke-width="2.5"/>
+    <!-- Wattle (Gelambir Merah) -->
+    <ellipse cx="112" cy="78" rx="6" ry="10" fill="#DC2626" stroke="#0F172A" stroke-width="2"/>
+    <!-- Eye (Mata Tajam Karikatur) -->
+    <circle cx="102" cy="62" r="5" fill="#0F172A"/>
+    <circle cx="104" cy="60" r="1.8" fill="#FFFFFF"/>
+
+    <!-- Feet -->
+    <path d="M 40 140 L 35 152 M 40 152 L 48 152" stroke="#0F172A" stroke-width="3" stroke-linecap="round"/>
+    <path d="M 70 140 L 65 152 M 70 152 L 78 152" stroke="#0F172A" stroke-width="3" stroke-linecap="round"/>
+  </g>
+
+  <!-- Pile of Golden Rupiah Coins (Hak Uang Saku) -->
+  <g id="koin-emas" transform="translate(370, 200)">
+    <!-- Stack 1 -->
+    <ellipse cx="30" cy="100" rx="30" ry="10" fill="url(#goldCoin)" stroke="#0F172A" stroke-width="2.5"/>
+    <rect x="0" y="85" width="60" height="15" fill="url(#goldCoin)" stroke="#0F172A" stroke-width="2.5"/>
+    <ellipse cx="30" cy="85" rx="30" ry="10" fill="url(#goldCoin)" stroke="#0F172A" stroke-width="2.5"/>
+    <text x="30" y="89" font-family="'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="10" fill="#78350F" text-anchor="middle">Rp</text>
+
+    <!-- Stack 2 (Taller) -->
+    <rect x="55" y="60" width="55" height="40" fill="url(#goldCoin)" stroke="#0F172A" stroke-width="2.5"/>
+    <ellipse cx="82" cy="60" rx="27" ry="9" fill="url(#goldCoin)" stroke="#0F172A" stroke-width="2.5"/>
+    <text x="82" y="64" font-family="'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="10" fill="#78350F" text-anchor="middle">Rp</text>
+
+    <!-- Stack 3 (Front) -->
+    <rect x="25" y="70" width="55" height="30" fill="url(#goldCoin)" stroke="#0F172A" stroke-width="2.5"/>
+    <ellipse cx="52" cy="70" rx="27" ry="9" fill="url(#goldCoin)" stroke="#0F172A" stroke-width="2.5"/>
+    <text x="52" y="74" font-family="'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="10" fill="#78350F" text-anchor="middle">Rp</text>
+
+    <!-- One coin falling in slot -->
+    <g transform="translate(42, -50) rotate(-15)">
+      <ellipse cx="0" cy="0" rx="18" ry="7" fill="url(#goldCoin)" stroke="#0F172A" stroke-width="2.5"/>
+      <text x="0" y="3" font-family="'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="7" fill="#78350F" text-anchor="middle">Rp</text>
+      <!-- Sparkle -->
+      <polygon points="18,-10 21,-4 27,-2 22,2 24,8 18,5 13,8 15,2 10,-2 16,-4" fill="#FEF08A"/>
+    </g>
+  </g>
+
+  <!-- Official Badge "KEPPRES / KEMNAKER RI" -->
+  <g transform="translate(50, 45) rotate(-6)">
+    <rect x="0" y="0" width="135" height="40" rx="6" fill="#007C89" stroke="#0F172A" stroke-width="2.5"/>
+    <text x="67" y="18" font-family="'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="10" fill="#FFFFFF" text-anchor="middle" letter-spacing="1">UANG SAKU RESMI</text>
+    <text x="67" y="31" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="8" fill="#FDE68A" text-anchor="middle" letter-spacing="0.5">STANDAR REGULASI</text>
+  </g>
+
+  <!-- Ground Line -->
+  <line x1="0" y1="320" x2="640" y2="320" stroke="#0F172A" stroke-width="4"/>
+  <rect x="0" y="320" width="640" height="40" fill="#F8FAFC"/>
+
+  <!-- Caption Strip ala Tempo -->
+  <rect x="25" y="327" width="240" height="24" rx="3" fill="#0F172A"/>
+  <text x="145" y="343" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="9" fill="#A7F3D0" text-anchor="middle" letter-spacing="0.5">REGULASI &amp; HAK PEMAGANGAN BNI</text>
+</svg>

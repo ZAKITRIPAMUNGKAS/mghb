@@ -4144,6 +4144,8 @@
       border: none;
       cursor: pointer;
       color: var(--text-secondary);
+      text-decoration: none;
+      user-select: none;
       transition: all 0.15s ease;
       padding: 4px 2px;
       border-radius: var(--radius-sm);
@@ -4403,7 +4405,7 @@
   <header class="sticky-header">
     <div class="header-bar">
       <div class="brand-meta">
-        <a href="#" onclick="selectTab('berita'); return false;" class="brand-logo" title="Portal MagangHub Kemnaker RI">
+        <a href="/" onclick="navigateTo('berita', event)" class="brand-logo" title="Portal MagangHub Kemnaker RI">
           <img src="maganghub-logo.svg" alt="MagangHub" class="brand-maganghub-logo">
         </a>
         <div class="brand-bni-badge" title="PT Bank Negara Indonesia (Persero) Tbk - Divisi Sales Strategy &amp; Execution">
@@ -5887,7 +5889,7 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
       <p style="font-size: 0.72rem; color: var(--text-secondary); margin-top: 2px;">Menara BNI Pejompongan</p>
     </div>
     <div class="bottom-nav-inner">
-      <button class="bottom-nav-item tab-trigger active" data-tab="berita" onclick="selectTab('berita')">
+      <a href="/" class="bottom-nav-item tab-trigger active" data-tab="berita" onclick="navigateTo('berita', event)">
         <div class="bottom-nav-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
             <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"></path>
@@ -5897,9 +5899,9 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
           </svg>
         </div>
         <span class="bottom-nav-label">Beranda</span>
-      </button>
+      </a>
 
-      <button class="bottom-nav-item tab-trigger" data-tab="packing" onclick="selectTab('packing')">
+      <a href="/inventaris" class="bottom-nav-item tab-trigger" data-tab="packing" onclick="navigateTo('packing', event)">
         <div class="bottom-nav-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
             <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
@@ -5907,9 +5909,9 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
           </svg>
         </div>
         <span class="bottom-nav-label">Inventaris</span>
-      </button>
+      </a>
 
-      <button class="bottom-nav-item tab-trigger" data-tab="keuangan" onclick="selectTab('keuangan')">
+      <a href="/keuangan" class="bottom-nav-item tab-trigger" data-tab="keuangan" onclick="navigateTo('keuangan', event)">
         <div class="bottom-nav-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
             <line x1="12" y1="1" x2="12" y2="23"></line>
@@ -5917,9 +5919,9 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
           </svg>
         </div>
         <span class="bottom-nav-label">Keuangan</span>
-      </button>
+      </a>
 
-      <button class="bottom-nav-item tab-trigger" data-tab="logbook" onclick="selectTab('logbook')">
+      <a href="/logbook" class="bottom-nav-item tab-trigger" data-tab="logbook" onclick="navigateTo('logbook', event)">
         <div class="bottom-nav-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
@@ -5927,16 +5929,16 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
           </svg>
         </div>
         <span class="bottom-nav-label">Logbook</span>
-      </button>
+      </a>
 
-      <button class="bottom-nav-item tab-trigger" data-tab="asisten" onclick="selectTab('asisten')">
+      <a href="/toolkit" class="bottom-nav-item tab-trigger" data-tab="asisten" onclick="navigateTo('asisten', event)">
         <div class="bottom-nav-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
           </svg>
         </div>
         <span class="bottom-nav-label">Toolkit</span>
-      </button>
+      </a>
     </div>
     <div class="workspace-profile">
       <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
@@ -6397,15 +6399,96 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
     applyTheme(current === 'dark' ? 'light' : 'dark');
   }
 
-  // --- Tab Selection (5 Tabs) ---
-  function selectTab(tab) {
+  // --- Routing & Tab Page Configuration (Clean URL & Distinct Pages) ---
+  const TAB_CONFIG = {
+    'berita': {
+      path: '/beranda',
+      aliases: ['/', '/index.html', '/berita', '/beranda'],
+      title: 'Beranda & Warta | MagangHub BNI'
+    },
+    'packing': {
+      path: '/inventaris',
+      aliases: ['/inventaris', '/packing'],
+      title: 'Inventaris Rantau | MagangHub BNI'
+    },
+    'keuangan': {
+      path: '/keuangan',
+      aliases: ['/keuangan', '/finance'],
+      title: 'Keuangan Rantau | MagangHub BNI'
+    },
+    'logbook': {
+      path: '/logbook',
+      aliases: ['/logbook'],
+      title: 'Logbook Kemnaker | MagangHub BNI'
+    },
+    'asisten': {
+      path: '/toolkit',
+      aliases: ['/toolkit', '/asisten'],
+      title: 'Toolkit & Panduan | MagangHub BNI'
+    }
+  };
+
+  function getTabFromLocation() {
+    const hash = (window.location.hash || '').replace(/^#\/?/, '').toLowerCase().trim();
+    if (hash) {
+      if (['inventaris', 'packing'].includes(hash)) return 'packing';
+      if (['keuangan', 'finance'].includes(hash)) return 'keuangan';
+      if (['logbook'].includes(hash)) return 'logbook';
+      if (['toolkit', 'asisten'].includes(hash)) return 'asisten';
+      if (['beranda', 'berita'].includes(hash)) return 'berita';
+    }
+
+    const pathname = (window.location.pathname || '').toLowerCase().replace(/\/+$/, '') || '/';
+    for (const [tabKey, config] of Object.entries(TAB_CONFIG)) {
+      if (config.aliases.includes(pathname)) {
+        return tabKey;
+      }
+    }
+    return 'berita';
+  }
+
+  function navigateTo(tab, event) {
+    if (event) {
+      // Izinkan buka di tab baru jika ditekan Ctrl / Cmd / Shift / Middle Click
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.button === 1) {
+        return;
+      }
+      event.preventDefault();
+    }
+    selectTab(tab, true);
+  }
+
+  // --- Tab Selection (5 Pages) ---
+  function selectTab(tab, updateUrl = true) {
     activeTab = tab;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+
+    const route = TAB_CONFIG[tab] || TAB_CONFIG['berita'];
+    if (route && route.title) {
+      document.title = route.title;
+    }
+
+    if (updateUrl) {
+      try {
+        const targetPath = (tab === 'berita') ? '/' : (route ? route.path : '/');
+        if (window.location.protocol === 'file:') {
+          window.location.hash = targetPath === '/' ? 'beranda' : targetPath.replace('/', '');
+        } else if (window.location.pathname !== targetPath) {
+          window.history.pushState({ tab }, document.title, targetPath);
+        }
+      } catch (err) {
+        try {
+          const targetPath = (tab === 'berita') ? 'beranda' : (route ? route.path.replace('/', '') : 'beranda');
+          window.location.hash = targetPath;
+        } catch (_) {}
+      }
+    }
 
     // Trigger buttons
     document.querySelectorAll('.tab-trigger').forEach(btn => {
-      btn.classList.toggle('active', btn.getAttribute('data-tab') === tab);
-      if (btn.getAttribute('data-tab') === tab) btn.setAttribute('aria-current', 'page');
+      const isMatch = btn.getAttribute('data-tab') === tab;
+      btn.classList.toggle('active', isMatch);
+      if (isMatch) btn.setAttribute('aria-current', 'page');
       else btn.removeAttribute('aria-current');
     });
 
@@ -6417,6 +6500,12 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
     document.getElementById('view-logbook').classList.toggle('active', tab === 'logbook');
     document.getElementById('view-asisten').classList.toggle('active', tab === 'asisten');
     document.getElementById('view-berita').classList.toggle('active', tab === 'berita');
+
+    // Office Rhythm banner hanya tampil di Beranda agar halaman lain bersih dan rapi
+    const bannerEl = document.getElementById('office-status-banner');
+    if (bannerEl) {
+      bannerEl.style.display = (tab === 'berita') ? '' : 'none';
+    }
 
     const badgeEl = document.getElementById('badge-context');
     const labelEl = document.getElementById('label-subcontext');
@@ -6455,6 +6544,12 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
       }
     }
   }
+
+  // Handle browser back & forward button navigation
+  window.addEventListener('popstate', (e) => {
+    const tab = (e.state && e.state.tab) || getTabFromLocation();
+    selectTab(tab, false);
+  });
 
   // --- Filtering & Searching for Checklists ---
   function setFilter(filter) {
@@ -7986,7 +8081,7 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
   }
 
   function handleBannerAction() {
-    updateOfficeRhythm();
+    selectTab('logbook');
   }
 
   function toggleBannerCollapse() {
@@ -8335,21 +8430,41 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   }
 
   // --- MagangHub Live News Feed Engine ---
-  const NEWS_CACHE_KEY = 'mghb_news_cache_v20260926_recency';
+  const NEWS_CACHE_KEY = 'mghb_news_cache_v20260927_tempo_v1';
   let newsLoadedOnce = false;
   let activeNewsTopic = 'all';
 
   // Bersihkan semua cache lama
-  ['mghb_news_cache', 'mghb_news_cache_v2', 'mghb_news_cache_v3', 'mghb_news_cache_v4', 'mghb_news_cache_v5', 'mghb_news_cache_v6', 'mghb_news_cache_v7', 'mghb_news_cache_v8', 'mghb_news_cache_v20260921', 'mghb_news_cache_v20260921_real', 'mghb_news_cache_v20260921_clean', 'mghb_news_cache_v20260921_text', 'mghb_news_cache_v20260926_live', 'mghb_news_cache_v20260926_thumbs', 'mghb_news_cache_v20260926_official', 'mghb_news_cache_v20260926_stable', 'mghb_news_cache_v20260926_fast'].forEach(k => {
+  ['mghb_news_cache', 'mghb_news_cache_v2', 'mghb_news_cache_v3', 'mghb_news_cache_v4', 'mghb_news_cache_v5', 'mghb_news_cache_v6', 'mghb_news_cache_v7', 'mghb_news_cache_v8', 'mghb_news_cache_v20260921', 'mghb_news_cache_v20260921_real', 'mghb_news_cache_v20260921_clean', 'mghb_news_cache_v20260921_text', 'mghb_news_cache_v20260926_live', 'mghb_news_cache_v20260926_thumbs', 'mghb_news_cache_v20260926_official', 'mghb_news_cache_v20260926_stable', 'mghb_news_cache_v20260926_fast', 'mghb_news_cache_v20260926_recency'].forEach(k => {
     try { localStorage.removeItem(k); } catch {}
   });
 
-  const TOPIC_EDITORIAL_IMAGES = {
-    pengumuman: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=800&q=80',
-    regulasi: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=800&q=80',
-    sertifikasi: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=800&q=80',
-    kemnaker: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80'
-  };
+  const TEMPO_CARTOON_IMAGES = [
+    '/news-tempo-1.svg', // Orientasi & Menara BNI
+    '/news-tempo-2.svg', // Seleksi & Pengumuman 70.000 Kuota
+    '/news-tempo-3.svg', // Regulasi Uang Saku Bebas Pajak
+    '/news-tempo-4.svg', // Uji Kompetensi & Sertifikasi BNSP
+    '/news-tempo-5.svg'  // Digitalisasi Perbankan & Data SSE
+  ];
+
+  function getTempoCartoonImage(title = '', topic = '', source = '') {
+    const key = String(title || '') + String(source || '');
+    if (key) {
+      let hash = 0;
+      for (let i = 0; i < key.length; i++) {
+        hash = ((hash << 5) - hash) + key.charCodeAt(i);
+        hash |= 0;
+      }
+      return TEMPO_CARTOON_IMAGES[Math.abs(hash) % 5];
+    }
+    const map = {
+      pengumuman: '/news-tempo-2.svg',
+      regulasi: '/news-tempo-3.svg',
+      sertifikasi: '/news-tempo-4.svg',
+      kemnaker: '/news-tempo-1.svg'
+    };
+    return map[topic] || '/news-tempo-5.svg';
+  }
 
   const CURATED_MAGANG_NEWS = [
     {
@@ -8361,7 +8476,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       link: 'https://news.google.com/rss/articles/CBMiZkFVX3lxTE42N1JLVHNYT2p1b2d1cFRmZ25WcER2WGNjR1Vub1ZLV013V2lFSUh4c1B5b1Y0Y3FpY3ZZdkU5RThwMnhzSWNkdDdtb3Mtb0kxaEVoUW56cUVrckJidkJtV0tVTW9mSFE?oc=5',
       snippet: 'Kementerian Ketenagakerjaan kembali membuka Program MagangHub Batch 3 pada Oktober 2026 dengan puluhan ribu kuota bagi lulusan perguruan tinggi.',
       topic: 'pengumuman',
-      image: 'https://awsimages.detik.net.id/api/wm/2026/09/02/magang-kemnaker-2026-batch-2-1788346807178_169.png?wid=54&w=1200&v=1&t=jpeg',
+      image: '/news-tempo-2.svg',
       hasRealImage: true
     },
     {
@@ -8373,7 +8488,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       link: 'https://kemnaker.go.id/news/detail/kemnaker-mulai-maganghub-batch-2-sebanyak-40962-peserta-siap-ikuti-pemagangan',
       snippet: 'Kemnaker resmi memulai pelaksanaan Pemagangan Dalam Negeri MagangHub Batch 2 dengan total 40.962 peserta yang ditempatkan di ribuan mitra industri dan perbankan BUMN.',
       topic: 'pengumuman',
-      image: 'https://portal.kemnaker.go.id/storage/attachments/2fb/634/1c9/7918341e3d64fe28204689b71d604e3b1c67eacb.jpeg',
+      image: '/news-tempo-1.svg',
       hasRealImage: true
     },
     {
@@ -8385,7 +8500,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       link: 'https://kemnaker.go.id/news/detail/wamenaker-peserta-maganghub-harus-siap-hadapi-dunia-kerja',
       snippet: 'Wakil Menteri Ketenagakerjaan mengingatkan para peserta MagangHub untuk memanfaatkan kesempatan belajar secara maksimal, menjaga etika profesional, dan membangun jejaring kerja.',
       topic: 'pengumuman',
-      image: 'https://portal.kemnaker.go.id/storage/attachments/63d/93f/4c4/d463ef18512140cbff327e572099307775f14fc2.jpeg',
+      image: '/news-tempo-4.svg',
       hasRealImage: true
     },
     {
@@ -8397,7 +8512,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       link: 'https://kemnaker.go.id',
       snippet: 'Kementerian Ketenagakerjaan mengimbau seluruh calon peserta memastikan status penerimaan dan dokumen perjanjian kerja hanya melalui dasbor resmi SIAPkerja Kemnaker RI.',
       topic: 'pengumuman',
-      image: 'https://portal.kemnaker.go.id/storage/attachments/75b/25f/ea4/KbzTUJ4qdDEysOpQ9bkLE62DsNw59AXu7aIcwfXr.jpg',
+      image: '/news-tempo-2.svg',
       hasRealImage: true
     },
     {
@@ -8409,7 +8524,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       link: 'https://kemnaker.go.id',
       snippet: 'Kementerian Ketenagakerjaan mengumumkan proses seleksi peserta MagangHub Batch 2 Angkatan II telah memasuki tahap verifikasi akhir dan penetapan mitra penempatan.',
       topic: 'pengumuman',
-      image: 'https://portal.kemnaker.go.id/storage/attachments/f8c/561/cac/KdReUd8jM5A3xCnPfdDWVp2eVlrm5poglb5vZoFq.jpeg',
+      image: '/news-tempo-2.svg',
       hasRealImage: true
     },
     {
@@ -8421,7 +8536,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       link: 'https://www.detik.com/sumbagsel/berita/d-8662651/pengumuman-magang-kemnaker-besok-cek-hasil-kelulusan-di-maganghub',
       snippet: 'Pengumuman kelulusan Maganghub Kemnaker 2026 Batch 2 dirilis 16-18 September 2026. Cek jadwal seleksi, syarat, dan cara cek hasilnya di portal SIAPkerja.',
       topic: 'pengumuman',
-      image: 'https://awsimages.detik.net.id/api/wm/2026/09/02/magang-kemnaker-2026-batch-2-1788346807178_169.png?wid=54&w=1200&v=1&t=jpeg',
+      image: '/news-tempo-2.svg',
       hasRealImage: true
     },
     {
@@ -8433,7 +8548,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       link: 'https://money.kompas.com/read/2026/09/17/084300426/siap-siap-hasil-seleksi-maganghub-batch-2-angkatan-ii-diumumkan-jumat-esok',
       snippet: 'Besok! Pengumuman hasil seleksi MagangHub Batch 2 2026. Peserta terpilih bersiap memulai hari pertama pemagangan nasional pada Senin 21 September 2026.',
       topic: 'pengumuman',
-      image: 'https://asset.kompas.com/crops/xtQK1VlOuT2wgLdJgVqnuXUqcHM=/0x0:2880x1440/1200x675/filters:watermark(data/photo/2026/01/30/697c815e7ef28.png,0,-0,1)/data/photo/2026/06/29/6a422eea317b1.png',
+      image: '/news-tempo-1.svg',
       hasRealImage: true
     },
     {
@@ -8445,7 +8560,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       link: 'https://www.cnbcindonesia.com/news/20260916105008-4-768295/maganghub-batch-2-angkatan-ii-diumumkan-18-september-2026-ini-linknya',
       snippet: 'Kemnaker mengumumkan seleksi peserta Pemagangan Nasional 2026 Batch 2 Angkatan II. Periode pemagangan dimulai Senin 21 September 2026 di berbagai mitra perbankan BUMN.',
       topic: 'pengumuman',
-      image: 'https://awsimages.detik.net.id/visual/2025/10/13/warga-membuka-aplikasi-magang-hub-di-jakarta-senin-13102025-1760345197423_169.jpeg?w=650&q=90',
+      image: '/news-tempo-5.svg',
       hasRealImage: true
     },
     {
@@ -8457,7 +8572,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       link: 'https://pajak.go.id',
       snippet: 'Uang saku program pemagangan nasional dari pemerintah dibebaskan dari potongan pajak penghasilan sesuai ketentuan fasilitas bantuan pemerintah bagi talenta vokasi dan fresh graduate.',
       topic: 'regulasi',
-      image: 'https://img.antaranews.com/cache/1200x800/2026/07/07/3292d4bd-5309-424c-b025-7feaafedb9a1.jpeg',
+      image: '/news-tempo-3.svg',
       hasRealImage: true
     },
     {
@@ -8469,7 +8584,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       link: 'https://www.antaranews.com/berita/5743220/kemnaker-segera-seleksi-dan-tetapkan-peserta-maganghub-2026-tahap-2',
       snippet: 'Kementerian Ketenagakerjaan (Kemnaker) mengatakan program Magang Nasional (MagangHub) 2026 Tahap 2 kini telah memasuki tahap seleksi dan penetapan peserta per September 2026.',
       topic: 'pengumuman',
-      image: 'https://img.antaranews.com/cache/1200x800/2026/09/16/target-vokasi-nasional-2026-2854548.jpg',
+      image: '/news-tempo-1.svg',
       hasRealImage: true
     },
     {
@@ -8481,35 +8596,13 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       link: 'https://jatim.antaranews.com/berita/1008413/menaker-pantau-program-magang-2025-di-kantor-bni',
       snippet: 'Menteri Ketenagakerjaan memantau pelaksanaan program Magang Nasional di kantor BNI, mengapresiasi pembinaan kompetensi perbankan dan kesiapan talenta muda menghadapi dunia kerja.',
       topic: 'kemnaker',
-      image: 'https://portal.kemnaker.go.id/storage/attachments/d01/3b9/050/yUHQNrOGQztEsQFkegV8m8Q0qHps71yqUPvCwn3b.jpg',
+      image: '/news-tempo-5.svg',
       hasRealImage: true
     }
   ];
 
-  function getTopicFallbackImage(topic, source = '') {
-    const s = (source || '').toLowerCase();
-    if (s.includes('detik')) {
-      return 'https://awsimages.detik.net.id/api/wm/2026/09/02/magang-kemnaker-2026-batch-2-1788346807178_169.png?wid=54&w=1200&v=1&t=jpeg';
-    }
-    if (s.includes('kompas')) {
-      return 'https://asset.kompas.com/crops/xtQK1VlOuT2wgLdJgVqnuXUqcHM=/0x0:2880x1440/1200x675/filters:watermark(data/photo/2026/01/30/697c815e7ef28.png,0,-0,1)/data/photo/2026/06/29/6a422eea317b1.png';
-    }
-    if (s.includes('cnbc') || s.includes('cnn')) {
-      return 'https://awsimages.detik.net.id/visual/2025/10/13/warga-membuka-aplikasi-magang-hub-di-jakarta-senin-13102025-1760345197423_169.jpeg?w=650&q=90';
-    }
-    if (s.includes('antara')) {
-      return 'https://img.antaranews.com/cache/1200x800/2026/09/16/target-vokasi-nasional-2026-2854548.jpg';
-    }
-    if (s.includes('rri')) {
-      return 'https://img.antaranews.com/cache/1200x800/2025/11/28/1000096979.jpg';
-    }
-    if (s.includes('pajak')) {
-      return 'https://img.antaranews.com/cache/1200x800/2026/07/07/3292d4bd-5309-424c-b025-7feaafedb9a1.jpeg';
-    }
-    if (s.includes('kemnaker')) {
-      return 'https://portal.kemnaker.go.id/storage/attachments/75b/25f/ea4/KbzTUJ4qdDEysOpQ9bkLE62DsNw59AXu7aIcwfXr.jpg';
-    }
-    return TOPIC_EDITORIAL_IMAGES[topic] || TOPIC_EDITORIAL_IMAGES.pengumuman;
+  function getTopicFallbackImage(topic, source = '', title = '') {
+    return getTempoCartoonImage(title, topic, source);
   }
 
   function getTopicFallbackSvg(topic, source = 'Media Nasional') {
@@ -8965,9 +9058,10 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       const cleanSnippet = cleanSnippetText(item.snippet, item.title, item.source);
       // SECURITY: Validasi protokol link — blokir javascript: dan data: URI
       const safeLink = /^https?:\/\//i.test(item.link) ? item.link : '#';
-      // Thumbnail via data attribute dengan fallback instan ke vector SVG jika gagal load
-      const fallbackSvg = getTopicFallbackSvg(item.topic, item.source);
-      const initialImage = item.image || getTopicFallbackImage(item.topic, item.source) || fallbackSvg;
+      // Thumbnail: prioritas kartunis Tempo lokal yang tajam & terdistribusi acak (16:9)
+      const tempoImage = getTempoCartoonImage(item.title, item.topic, item.source);
+      const isOfficialStorage = item.image && item.image.includes('portal.kemnaker.go.id/storage/');
+      const initialImage = isOfficialStorage ? item.image : tempoImage;
       const thumbHtml = `
         <div class="news-thumb-wrap">
           <img 
@@ -8976,7 +9070,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
             class="news-thumb-img" 
             loading="lazy" 
             referrerpolicy="no-referrer" 
-            onerror="this.onerror=null; this.src=getTopicFallbackSvg('${escHtml(item.topic || 'pengumuman')}', '${escHtml(item.source || 'MagangHub')}');"
+            onerror="this.onerror=null; this.src='${escHtml(tempoImage)}';"
           >
         </div>`;
 
@@ -10611,7 +10705,12 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     try { renderLogbookHistory(); } catch (e) { console.error('renderLogbookHistory error:', e); }
     try { applyFiltering(); } catch (e) { console.error('applyFiltering error:', e); }
     try { updateMetrics(); } catch (e) { console.error('updateMetrics error:', e); }
-    try { selectTab('berita'); } catch (e) { console.error('selectTab error:', e); }
+    try {
+      const initialTab = getTabFromLocation();
+      selectTab(initialTab, false);
+    } catch (e) {
+      console.error('selectTab error:', e);
+    }
 
     // Trigger initial silent background sync if Supabase is connected
     try {

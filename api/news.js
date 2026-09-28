@@ -99,37 +99,31 @@ module.exports = async (req, res) => {
     return 'source-detik';
   }
 
-  const TOPIC_EDITORIAL_IMAGES = {
-    pengumuman: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=800&q=80',
-    regulasi: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=800&q=80',
-    sertifikasi: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=800&q=80',
-    kemnaker: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80'
-  };
+  const TEMPO_CARTOON_IMAGES = [
+    '/news-tempo-1.svg', // Orientasi & Menara BNI
+    '/news-tempo-2.svg', // Seleksi & Pengumuman 70.000 Kuota
+    '/news-tempo-3.svg', // Regulasi Uang Saku & Bebas Pajak
+    '/news-tempo-4.svg', // Uji Kompetensi & Sertifikasi BNSP
+    '/news-tempo-5.svg'  // Digitalisasi Perbankan & Data SSE
+  ];
 
-  function getPublisherRealImage(source = '', topic = '') {
-    const s = (source || '').toLowerCase();
-    if (s.includes('detik')) {
-      return 'https://awsimages.detik.net.id/api/wm/2026/09/02/magang-kemnaker-2026-batch-2-1788346807178_169.png?wid=54&w=1200&v=1&t=jpeg';
+  function getTempoCartoonImage(title = '', topic = '', source = '') {
+    const str = String(title || '') + String(source || '');
+    if (str) {
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) {
+        hash = ((hash << 5) - hash) + str.charCodeAt(i);
+        hash |= 0;
+      }
+      return TEMPO_CARTOON_IMAGES[Math.abs(hash) % 5];
     }
-    if (s.includes('kompas')) {
-      return 'https://asset.kompas.com/crops/xtQK1VlOuT2wgLdJgVqnuXUqcHM=/0x0:2880x1440/1200x675/filters:watermark(data/photo/2026/01/30/697c815e7ef28.png,0,-0,1)/data/photo/2026/06/29/6a422eea317b1.png';
-    }
-    if (s.includes('cnbc') || s.includes('cnn')) {
-      return 'https://awsimages.detik.net.id/visual/2025/10/13/warga-membuka-aplikasi-magang-hub-di-jakarta-senin-13102025-1760345197423_169.jpeg?w=650&q=90';
-    }
-    if (s.includes('antara')) {
-      return 'https://img.antaranews.com/cache/1200x800/2026/09/16/target-vokasi-nasional-2026-2854548.jpg';
-    }
-    if (s.includes('rri')) {
-      return 'https://img.antaranews.com/cache/1200x800/2025/11/28/1000096979.jpg';
-    }
-    if (s.includes('pajak')) {
-      return 'https://img.antaranews.com/cache/1200x800/2026/07/07/3292d4bd-5309-424c-b025-7feaafedb9a1.jpeg';
-    }
-    if (s.includes('kemnaker')) {
-      return 'https://portal.kemnaker.go.id/storage/attachments/75b/25f/ea4/KbzTUJ4qdDEysOpQ9bkLE62DsNw59AXu7aIcwfXr.jpg';
-    }
-    return TOPIC_EDITORIAL_IMAGES[topic] || TOPIC_EDITORIAL_IMAGES.pengumuman;
+    const map = {
+      pengumuman: '/news-tempo-2.svg',
+      regulasi: '/news-tempo-3.svg',
+      sertifikasi: '/news-tempo-4.svg',
+      kemnaker: '/news-tempo-1.svg'
+    };
+    return map[topic] || '/news-tempo-5.svg';
   }
 
   const VERIFIED_KEMNAKER_NEWS = [
@@ -139,7 +133,7 @@ module.exports = async (req, res) => {
       created_at: '2026-09-20 20:00:00',
       section: { name: 'Binalavotas' },
       body: 'Peserta Program MagangHub Batch 2 Angkatan II Tahun 2026 diminta mempersiapkan kelengkapan administrasi dan tata tertib sebelum mulai penempatan kerja.',
-      banner: 'https://portal.kemnaker.go.id/storage/attachments/75b/25f/ea4/KbzTUJ4qdDEysOpQ9bkLE62DsNw59AXu7aIcwfXr.jpg'
+      banner: '/news-tempo-1.svg'
     },
     {
       title: 'MagangHub Batch 2 Angkatan II Masuki Tahap Seleksi, Hasil Diumumkan 18 September',
@@ -147,23 +141,23 @@ module.exports = async (req, res) => {
       created_at: '2026-09-17 14:00:00',
       section: { name: 'Binalavotas' },
       body: 'Kementerian Ketenagakerjaan mengumumkan proses seleksi peserta MagangHub Batch 2 Angkatan II telah memasuki tahap verifikasi akhir dan penetapan mitra penempatan.',
-      banner: 'https://portal.kemnaker.go.id/storage/attachments/f8c/561/cac/KdReUd8jM5A3xCnPfdDWVp2eVlrm5poglb5vZoFq.jpeg'
+      banner: '/news-tempo-2.svg'
     },
     {
       title: 'MagangHub Jadi Jembatan Fresh Graduate Memasuki Dunia Kerja',
       slug: 'maganghub-jadi-jembatan-fresh-graduate-memasuki-dunia-kerja',
-      created_at: '2026-09-10 10:00:00',
+      created_at: '2026-09-16 11:00:00',
       section: { name: 'Binalavotas' },
-      body: 'Program Pemagangan Nasional MagangHub menjadi wadah akselerasi pengalaman profesional, transfer kompetensi, dan peningkatan employability bagi lulusan muda.',
-      banner: 'https://portal.kemnaker.go.id/storage/attachments/d01/3b9/050/yUHQNrOGQztEsQFkegV8m8Q0qHps71yqUPvCwn3b.jpg'
+      body: 'Program MagangHub menjadi terobosan strategis pemerintah dalam menghubungkan lulusan perguruan tinggi dengan kebutuhan kompetensi industri perbankan.',
+      banner: '/news-tempo-4.svg'
     },
     {
-      title: 'Magang Nasional Batch I Ditutup, Kemnaker Perkuat Sertifikasi Kompetensi dan Akses Kerja',
-      slug: 'magang-nasional-batch-i-ditutup-kemnaker-perkuat-sertifikasi-kompetensi-dan-akses-kerja',
-      created_at: '2026-08-30 09:00:00',
+      title: 'Pemerintah Buka Magang Nasional Batch 2 untuk 80.000 Posisi Fresh Graduate',
+      slug: 'pemerintah-buka-magang-nasional-batch-2-untuk-80000-posisi-fresh-graduate',
+      created_at: '2026-09-15 15:00:00',
       section: { name: 'Binalavotas' },
-      body: 'Kemnaker menutup pelaksanaan Magang Nasional Batch I dan memastikan seluruh alumni magang difasilitasi uji sertifikasi BNSP serta kanal rekrutmen kerja.',
-      banner: 'https://portal.kemnaker.go.id/storage/attachments/8e1/1f6/76f/pz1oK8VGhbFS29NLmMFZda91a4xOfaWZYSs0uJIX.jpeg'
+      body: 'Kementerian Ketenagakerjaan resmi membuka program pemagangan nasional serentak bekerja sama dengan BUMN dan sektor swasta terkemuka di Indonesia.',
+      banner: '/news-tempo-5.svg'
     }
   ];
 
@@ -214,7 +208,7 @@ module.exports = async (req, res) => {
         const topic = determineTopic(title);
         const snippet = cleanSnippetText(item.body, title, `Kemnaker RI (${sectionName})`);
         const realBanner = item.banner || item.thumb || null;
-        const image = realBanner || TOPIC_EDITORIAL_IMAGES[topic] || TOPIC_EDITORIAL_IMAGES.kemnaker;
+        const image = realBanner || getTempoCartoonImage(title, topic, 'Kemnaker');
 
         results.push({
           title,
@@ -309,7 +303,7 @@ module.exports = async (req, res) => {
         const mediaMatch = block.match(/<(?:media:content|media:thumbnail|enclosure)[^>]*url="([^"]+)"/i);
         const descImgMatch = descRaw.match(/<img[^>]+src=["']([^"']+)["']/i);
         const realImg = mediaMatch ? mediaMatch[1] : (descImgMatch ? descImgMatch[1] : null);
-        const image = realImg || getPublisherRealImage(source, topic);
+        const image = realImg || getTempoCartoonImage(title, topic, source);
 
         results.push({
           title,

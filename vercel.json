@@ -1,6 +1,13 @@
 {
   "version": 2,
   "cleanUrls": true,
+  "rewrites": [
+    { "source": "/beranda", "destination": "/index.html" },
+    { "source": "/inventaris", "destination": "/index.html" },
+    { "source": "/keuangan", "destination": "/index.html" },
+    { "source": "/logbook", "destination": "/index.html" },
+    { "source": "/toolkit", "destination": "/index.html" }
+  ],
   "headers": [
     {
       "source": "/api/news",

@@ -1,0 +1,136 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg4" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#EEF2FF"/>
+      <stop offset="60%" stop-color="#E0E7FF"/>
+      <stop offset="100%" stop-color="#C7D2FE"/>
+    </linearGradient>
+    <linearGradient id="certGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FEF08A"/>
+      <stop offset="50%" stop-color="#FDE047"/>
+      <stop offset="100%" stop-color="#CA8A04"/>
+    </linearGradient>
+    <linearGradient id="ribbonRed" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#EF4444"/>
+      <stop offset="100%" stop-color="#B91C1C"/>
+    </linearGradient>
+    <pattern id="gridDot" width="14" height="14" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.2" fill="#4338CA" opacity="0.18"/>
+    </pattern>
+  </defs>
+
+  <rect width="640" height="360" fill="url(#bg4)"/>
+  <rect width="640" height="360" fill="url(#gridDot)"/>
+
+  <!-- Radial Sunbeams (Tempo Opini Spotlight) -->
+  <g opacity="0.35" fill="#A5B4FC">
+    <polygon points="320,160 200,0 280,0"/>
+    <polygon points="320,160 360,0 440,0"/>
+    <polygon points="320,160 520,30 580,80"/>
+    <polygon points="320,160 600,160 640,220"/>
+    <polygon points="320,160 0,60 40,110"/>
+    <polygon points="320,160 0,180 30,240"/>
+  </g>
+
+  <!-- Big Official Certificate Scroll (Sertifikasi BNSP) -->
+  <g id="sertifikat-resmi" transform="translate(240, 45) rotate(4)">
+    <!-- Shadow -->
+    <rect x="8" y="8" width="220" height="260" rx="8" fill="#0F172A" opacity="0.2"/>
+    <!-- Parchment Paper -->
+    <rect x="0" y="0" width="220" height="260" rx="8" fill="#FFFDF7" stroke="#0F172A" stroke-width="3.5"/>
+    
+    <!-- Gold Foil Border Frame -->
+    <rect x="10" y="10" width="200" height="240" rx="4" fill="none" stroke="#CA8A04" stroke-width="2.5"/>
+    <rect x="14" y="14" width="192" height="232" rx="2" fill="none" stroke="#0F172A" stroke-width="1.2" stroke-dasharray="4 2"/>
+
+    <!-- Certificate Header Emblem -->
+    <circle cx="110" cy="42" r="16" fill="url(#certGold)" stroke="#0F172A" stroke-width="2"/>
+    <polygon points="110,31 113,38 120,39 115,44 116,51 110,47 104,51 105,44 100,39 107,38" fill="#78350F"/>
+
+    <!-- Title Lines -->
+    <text x="110" y="74" font-family="Georgia, serif" font-weight="900" font-size="12" fill="#0F172A" text-anchor="middle" letter-spacing="1.5">SERTIFIKAT KOMPETENSI</text>
+    <text x="110" y="86" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="7" fill="#4338CA" text-anchor="middle" letter-spacing="1">BADAN NASIONAL SERTIFIKASI PROFESI</text>
+    <line x1="45" y1="92" x2="175" y2="92" stroke="#CA8A04" stroke-width="1.5"/>
+
+    <!-- Simulated Recipient Name -->
+    <text x="110" y="112" font-family="'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="11" fill="#007C89" text-anchor="middle">ZAKI TRI PAMUNGKAS</text>
+    <text x="110" y="123" font-family="'Plus Jakarta Sans', sans-serif" font-weight="600" font-size="6.5" fill="#64748B" text-anchor="middle">SALES STRATEGY &amp; EXECUTION ANALYST</text>
+
+    <!-- Content Lines -->
+    <g fill="#94A3B8">
+      <rect x="35" y="135" width="150" height="3" rx="1"/>
+      <rect x="45" y="143" width="130" height="3" rx="1"/>
+      <rect x="35" y="151" width="150" height="3" rx="1"/>
+      <rect x="55" y="159" width="110" height="3" rx="1"/>
+    </g>
+
+    <!-- Signatures & Wax Seal with Ribbons -->
+    <g transform="translate(110, 205)">
+      <!-- Red Ribbon Tails -->
+      <polygon points="-8,10 -16,42 -4,36 0,42" fill="url(#ribbonRed)" stroke="#0F172A" stroke-width="1.8"/>
+      <polygon points="8,10 0,42 4,36 16,42" fill="url(#ribbonRed)" stroke="#0F172A" stroke-width="1.8"/>
+      <!-- Seal Medallion -->
+      <circle cx="0" cy="8" r="18" fill="url(#ribbonRed)" stroke="#0F172A" stroke-width="2.5"/>
+      <circle cx="0" cy="8" r="14" fill="none" stroke="#FEE2E2" stroke-width="1.5" stroke-dasharray="3 2"/>
+      <text x="0" y="12" font-family="'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="8" fill="#FFFFFF" text-anchor="middle">BNSP</text>
+    </g>
+
+    <!-- Signatures -->
+    <path d="M 40 215 Q 55 205 70 215" fill="none" stroke="#0F172A" stroke-width="1.8"/>
+    <text x="55" y="226" font-family="'Plus Jakarta Sans', sans-serif" font-weight="700" font-size="5.5" fill="#64748B" text-anchor="middle">KETUA PENGUJI</text>
+    <path d="M 150 215 Q 165 205 180 215" fill="none" stroke="#0F172A" stroke-width="1.8"/>
+    <text x="165" y="226" font-family="'Plus Jakarta Sans', sans-serif" font-weight="700" font-size="5.5" fill="#64748B" text-anchor="middle">MENTOR BNI</text>
+  </g>
+
+  <!-- Character: Wisudawan / Talenta Berprestasi (Tempo Caricature) -->
+  <g id="karikatur-lulusan" transform="translate(60, 90)">
+    <!-- Shadow -->
+    <ellipse cx="75" cy="235" rx="50" ry="11" fill="#0F172A" opacity="0.25"/>
+
+    <!-- Toga Hat / Mortarboard (Miring Elegan Khas Karikatur) -->
+    <g transform="translate(75, 40) rotate(-12)">
+      <!-- Hat Base -->
+      <polygon points="0,-18 45,0 0,18 -45,0" fill="#1E293B" stroke="#0F172A" stroke-width="3"/>
+      <rect x="-18" y="0" width="36" height="16" fill="#0F172A" stroke="#0F172A" stroke-width="2"/>
+      <!-- Tassel (Kucir Kuning Emas) -->
+      <circle cx="0" cy="0" r="3" fill="#F59E0B"/>
+      <path d="M 0 0 C 15 5 28 15 26 28" fill="none" stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round"/>
+      <ellipse cx="26" cy="30" rx="3" ry="5" fill="#F59E0B"/>
+    </g>
+
+    <!-- Head & Expressive Face -->
+    <ellipse cx="75" cy="85" rx="30" ry="32" fill="#FDBA74" stroke="#0F172A" stroke-width="3.5"/>
+    <circle cx="65" cy="85" r="3.5" fill="#0F172A"/>
+    <circle cx="85" cy="85" r="3.5" fill="#0F172A"/>
+    <!-- Big Happy Editorial Smile -->
+    <path d="M 64 100 Q 75 112 86 100" fill="none" stroke="#0F172A" stroke-width="3" stroke-linecap="round"/>
+    <ellipse cx="58" cy="94" rx="4" ry="2.5" fill="#F87171" opacity="0.7"/>
+    <ellipse cx="92" cy="94" rx="4" ry="2.5" fill="#F87171" opacity="0.7"/>
+
+    <!-- Body & Selempang Sarjana -->
+    <path d="M 45 125 L 105 125 L 115 220 L 35 220 Z" fill="#1E293B" stroke="#0F172A" stroke-width="3"/>
+    <!-- Selempang Emas BNI (Sash) -->
+    <polygon points="50,125 65,125 105,220 90,220" fill="#F59E0B" stroke="#0F172A" stroke-width="2.5"/>
+    <text x="80" y="175" font-family="'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="7" fill="#1E293B" transform="rotate(64 80 175)">KOMPETEN</text>
+
+    <!-- Hands thumbs-up -->
+    <circle cx="120" cy="155" r="10" fill="#FDBA74" stroke="#0F172A" stroke-width="2.5"/>
+    <path d="M 120 148 L 120 140" stroke="#0F172A" stroke-width="4" stroke-linecap="round"/>
+  </g>
+
+  <!-- Big Stamp Badge "STANDAR KOMPETENSI 100%" -->
+  <g transform="translate(480, 200) rotate(-10)">
+    <circle cx="45" cy="45" r="42" fill="#007C89" stroke="#0F172A" stroke-width="3"/>
+    <circle cx="45" cy="45" r="36" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-dasharray="5 3"/>
+    <text x="45" y="40" font-family="'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="15" fill="#FFFFFF" text-anchor="middle">100%</text>
+    <text x="45" y="54" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="7.5" fill="#FDE68A" text-anchor="middle" letter-spacing="1">TERUJI</text>
+  </g>
+
+  <!-- Ground Line -->
+  <line x1="0" y1="320" x2="640" y2="320" stroke="#0F172A" stroke-width="4"/>
+  <rect x="0" y="320" width="640" height="40" fill="#F8FAFC"/>
+
+  <!-- Caption Strip ala Tempo -->
+  <rect x="25" y="327" width="240" height="24" rx="3" fill="#0F172A"/>
+  <text x="145" y="343" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="9" fill="#C7D2FE" text-anchor="middle" letter-spacing="0.5">UJI KOMPETENSI &amp; SERTIFIKASI BNSP</text>
+</svg>
