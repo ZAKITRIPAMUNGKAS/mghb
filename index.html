@@ -6409,7 +6409,7 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
         tab: id.startsWith('pk') ? 'packing' : 'magang',
         is_checked: Boolean(isChecked),
         updated_at: new Date().toISOString()
-      }).catch(err => console.warn('Supabase checklist sync error:', err));
+      }).then(() => {}, err => console.warn('Supabase checklist sync error:', err));
     }
   }
 
@@ -9318,7 +9318,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       sort_order: idx + 1,
       updated_at: new Date().toISOString()
     }));
-    supabaseClient.from('mghb_bills').upsert(rows).catch(err => console.warn('Supabase bills sync error:', err));
+    supabaseClient.from('mghb_bills').upsert(rows).then(() => {}, err => console.warn('Supabase bills sync error:', err));
   }
 
   function toggleBillPaid(id) {
@@ -9376,7 +9376,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       bills = bills.filter(b => b.id !== id);
       saveFinanceBills(bills);
       if (supabaseClient) {
-        supabaseClient.from('mghb_bills').delete().eq('id', id).catch(err => console.warn('Supabase delete bill error:', err));
+        supabaseClient.from('mghb_bills').delete().eq('id', id).then(() => {}, err => console.warn('Supabase delete bill error:', err));
       }
       renderFinanceBills();
       updateFinanceCalculations();
@@ -9495,7 +9495,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       sort_order: idx + 1,
       updated_at: new Date().toISOString()
     }));
-    supabaseClient.from('mghb_goals').upsert(rows).catch(err => console.warn('Supabase goals sync error:', err));
+    supabaseClient.from('mghb_goals').upsert(rows).then(() => {}, err => console.warn('Supabase goals sync error:', err));
   }
 
   function promptAddGoal() {
@@ -9541,7 +9541,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     if (confirm(`Hapus tujuan "${g.name}"?`)) {
       goals = goals.filter(x => x.id !== id);
       saveFinanceGoals(goals);
-      if (supabaseClient) supabaseClient.from('mghb_goals').delete().eq('id', id).catch(() => {});
+      if (supabaseClient) supabaseClient.from('mghb_goals').delete().eq('id', id).then(() => {}, () => {});
       renderFinanceGoals();
       showToast('Tujuan dihapus');
     }
@@ -9843,7 +9843,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       localStorage.setItem(FIN_INCOME_KEY, String(income));
       if (supabaseClient) {
         supabaseClient.from('mghb_settings').upsert({ key: 'finance_income', value: income, updated_at: new Date().toISOString() })
-          .catch(err => console.warn('Supabase income sync error:', err));
+          .then(() => {}, err => console.warn('Supabase income sync error:', err));
       }
       updateFinanceCalculations(true);
       showToast('Pemasukan disimpan: ' + formatRupiah(income));
@@ -9912,7 +9912,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     }
     if (supabaseClient) {
       supabaseClient.from('mghb_settings').upsert({ key: 'finance_income', value: income, updated_at: new Date().toISOString() })
-        .catch(err => console.warn('Supabase income sync error:', err));
+        .then(() => {}, err => console.warn('Supabase income sync error:', err));
     }
 
     const bills = getFinanceBills();
@@ -10255,7 +10255,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
 
     if (supabaseClient) {
       supabaseClient.from('mghb_expenses').delete().eq('id', id)
-        .catch(err => console.warn('Supabase delete expense error:', err));
+        .then(() => {}, err => console.warn('Supabase delete expense error:', err));
     }
   }
 
@@ -10264,7 +10264,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       const ids = getFinanceExpenses().map(e => e.id);
       saveFinanceExpenses([]);
       if (supabaseClient && ids.length > 0) {
-        supabaseClient.from('mghb_expenses').delete().in('id', ids).catch(err => console.warn('Supabase clear expense error:', err));
+        supabaseClient.from('mghb_expenses').delete().in('id', ids).then(() => {}, err => console.warn('Supabase clear expense error:', err));
       }
       renderFinanceExpenses();
       updateFinanceCalculations(false);

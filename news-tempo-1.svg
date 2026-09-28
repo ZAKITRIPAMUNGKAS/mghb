@@ -59,9 +59,9 @@
       <line x1="460" y1="180" x2="505" y2="180"/><line x1="460" y1="200" x2="505" y2="200"/>
       <line x1="460" y1="220" x2="505" y2="220"/><line x1="460" y1="240" x2="505" y2="240"/>
     </g>
-    <!-- BNI Badge on Tower -->
-    <rect x="465" y="85" width="34" height="12" rx="3" fill="#F15A24"/>
-    <text x="482" y="94" font-family="'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="7" fill="#FFFFFF" text-anchor="middle">BNI</text>
+    <!-- MITRA Badge on Tower -->
+    <rect x="462" y="85" width="40" height="12" rx="3" fill="#F15A24"/>
+    <text x="482" y="94" font-family="'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="7" fill="#FFFFFF" text-anchor="middle">MITRA</text>
   </g>
 
   <!-- Editorial Sun / Halftone Orb -->
@@ -152,6 +152,6 @@
   </g>
 
   <!-- Caption Strip ala Majalah Tempo -->
-  <rect x="25" y="327" width="220" height="24" rx="3" fill="#0F172A"/>
-  <text x="135" y="343" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="9" fill="#FDE68A" text-anchor="middle" letter-spacing="0.5">ORIENTASI DINAS · MENARA BNI</text>
+  <rect x="25" y="327" width="240" height="24" rx="3" fill="#0F172A"/>
+  <text x="145" y="343" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="9" fill="#FDE68A" text-anchor="middle" letter-spacing="0.5">ORIENTASI PESERTA · MAGANGHUB KEMNAKER</text>
 </svg>

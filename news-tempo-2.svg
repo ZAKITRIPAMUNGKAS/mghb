@@ -66,7 +66,7 @@
     <!-- Illustration of hands shaking inside newspaper photo -->
     <circle cx="355" cy="145" r="18" fill="#FDBA74" stroke="#0F172A" stroke-width="1.5"/>
     <path d="M 335 175 C 340 160 370 160 375 175 Z" fill="#007C89" stroke="#0F172A" stroke-width="1.5"/>
-    <text x="355" y="193" font-family="'Plus Jakarta Sans', sans-serif" font-weight="700" font-size="6" fill="#64748B" text-anchor="middle">MITRA PERBANKAN BNI</text>
+    <text x="355" y="193" font-family="'Plus Jakarta Sans', sans-serif" font-weight="700" font-size="6" fill="#64748B" text-anchor="middle">MITRA INDUSTRI NASIONAL</text>
 
     <!-- Stempel "DITERIMA / LOLOS SELEKSI" (Tempo Editorial Caricature Stamp) -->
     <g transform="translate(195, 140) rotate(-14)">
