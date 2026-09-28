@@ -4743,12 +4743,20 @@
 
         <!-- AI Advisor -->
         <div id="fin-ai-card" style="margin-top: 12px; border: 1px solid var(--border); border-radius: 10px; padding: 12px; background: var(--surface);">
-          <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px;">
-            <span class="feature-title" style="font-size: 0.82rem;"><svg class="ic ic-16" aria-hidden="true"><use href="#i-sparkles"/></svg> Nasehat AI — Cek Balance</span>
-            <button type="button" class="btn-action btn-xs" id="btn-fin-ai" onclick="requestFinanceAdvice()">Tanya AI</button>
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; flex-wrap: wrap;">
+            <span class="feature-title" style="font-size: 0.82rem;"><svg class="ic ic-16" aria-hidden="true"><use href="#i-sparkles"/></svg> Asisten Finansial AI (Claude)</span>
+            <div style="display: flex; gap: 6px;">
+              <button type="button" class="btn-action btn-xs" id="btn-fin-ai" onclick="requestFinanceAdvice('quick')">Tanya AI</button>
+              <button type="button" class="btn-action btn-xs" style="background: var(--accent-subtle); color: var(--accent); border: 1px solid var(--accent); font-weight: 600;" onclick="openFinanceReportModal()">📊 Raport (+AI)</button>
+            </div>
+          </div>
+          <div style="display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 8px;">
+            <button type="button" class="finance-chip" style="font-size: 0.68rem; padding: 2px 8px;" onclick="requestFinanceAdvice('quick')">⚡ Analisis Kilat</button>
+            <button type="button" class="finance-chip" style="font-size: 0.68rem; padding: 2px 8px;" onclick="requestFinanceAdvice('saving')">💡 Kiat Hemat Benhil</button>
+            <button type="button" class="finance-chip" style="font-size: 0.68rem; padding: 2px 8px;" onclick="requestFinanceAdvice('leakage')">🔍 Cek Kebocoran</button>
           </div>
           <div id="fin-ai-output" style="font-size: 0.76rem; color: var(--text-secondary); line-height: 1.45; min-height: 20px;">
-            Tekan <em>Tanya AI</em> untuk penilaian: pemasukan vs pengeluaran, sisa hari, batas aman, dan 1–2 langkah hemat relevan Menara BNI.
+            Tekan salah satu tombol di atas atau <em>Tanya AI</em> untuk penilaian pemasukan, batas aman belanja, dan strategi penghematan Menara BNI.
           </div>
         </div>
       </div>
@@ -5009,7 +5017,10 @@
             </svg>
             Riwayat Transaksi
           </div>
-          <div style="display: flex; gap: 6px;">
+          <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+            <button class="btn-action btn-xs" onclick="openFinanceReportModal()" style="background: var(--accent-subtle); color: var(--accent); border: 1px solid var(--accent); font-weight: 600;" title="Buka Raport Keuangan Bulanan Anak Rantau">
+              <svg class="ic ic-14" aria-hidden="true"><use href="#i-chart"/></svg> Raport Bulanan
+            </button>
             <button class="btn-action btn-xs" onclick="exportFinanceCSV()" title="Download riwayat transaksi ke format CSV / Excel">
               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
               CSV
@@ -6239,6 +6250,76 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
           Salin ke Clipboard
         </button>
         <button class="btn-action btn-secondary" onclick="downloadWeeklyReportText()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          Unduh .TXT
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Raport Keuangan Bulanan Anak Rantau (Financial Monthly Report + AI) -->
+<div class="modal-overlay" id="finance-report-modal" onclick="handleFinanceReportModalBackdrop(event)">
+  <div class="modal-box modal-box-lg">
+    <div class="modal-head">
+      <div class="modal-title-wrap">
+        <h3>Raport Keuangan Bulanan Anak Rantau</h3>
+        <p>Evaluasi Arus Kas, Disiplin Belanja, &amp; Analisis Cerdas Menara BNI</p>
+      </div>
+      <button class="btn-close" onclick="closeFinanceReportModal()" title="Tutup">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <div class="modal-body modal-body-scroll">
+      <div class="report-stat-grid">
+        <div class="report-stat-card">
+          <div class="report-stat-num" id="fin-rep-stat-score">—</div>
+          <div class="report-stat-label">Skor Kesehatan</div>
+        </div>
+        <div class="report-stat-card">
+          <div class="report-stat-num" id="fin-rep-stat-saved" style="color: #10b981;">Rp 0</div>
+          <div class="report-stat-label">Total Disisihkan</div>
+        </div>
+        <div class="report-stat-card">
+          <div class="report-stat-num" id="fin-rep-stat-safe" style="color: var(--accent);">Rp 0</div>
+          <div class="report-stat-label">Sisa Anggaran</div>
+        </div>
+      </div>
+
+      <!-- AI Analysis Section -->
+      <div style="background: var(--surface-hover); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px 14px; margin-bottom: 14px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; flex-wrap: wrap; gap: 6px;">
+          <span style="font-size: 0.74rem; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 6px;">
+            <svg class="ic ic-16" aria-hidden="true"><use href="#i-sparkles"/></svg> Evaluasi &amp; Diagnosis AI (Claude)
+          </span>
+          <button type="button" class="btn-action btn-xs" id="btn-fin-rep-ai" onclick="generateFinanceReportAI()">
+            ✨ Jalankan Analisis AI
+          </button>
+        </div>
+        <div id="fin-rep-ai-content" style="font-size: 0.76rem; color: var(--text-secondary); line-height: 1.45; white-space: pre-wrap;">Klik tombol di atas untuk menjalankan audit finansial mendalam berbasis AI: analisis rasio belanja, titik kebocoran dana, dan strategi personal bertahan di Jakarta.</div>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary);">Pratinjau Dokumen Raport (Lokal / WA)</span>
+        <span class="badge badge-accent">Format Lengkap</span>
+      </div>
+
+      <pre class="report-preview-pre" id="finance-report-preview"></pre>
+
+      <div style="display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap;">
+        <button class="btn-action" style="flex: 1;" onclick="copyFinanceReportText()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+          Salin Raport (WA)
+        </button>
+        <button class="btn-action btn-secondary" onclick="downloadFinanceReportText()">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
             <polyline points="7 10 12 15 17 10"></polyline>
@@ -8219,6 +8300,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     if (e.key === 'Escape') {
       closeSyncModal();
       closeMonthlyReportModal();
+      try { closeFinanceReportModal(); } catch {}
       try { closeInvEditModal(); } catch {}
       if (document.activeElement === document.getElementById('search-input')) {
         document.getElementById('search-input').value = '';
@@ -10189,12 +10271,12 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   }
 
   // --- AI Finance Advisor (via /api/finance-advice, heuristik bila offline) ---
-  async function requestFinanceAdvice() {
+  async function requestFinanceAdvice(promptType = 'quick') {
     const out = document.getElementById('fin-ai-output');
     const btn = document.getElementById('btn-fin-ai');
     const snap = window.__finSnapshot || null;
     if (btn) btn.disabled = true;
-    if (out) out.textContent = '⏳ Menganalisis keuangan...';
+    if (out) out.textContent = '⏳ Menganalisis keuangan dengan AI...';
     updateFinanceCalculations();
     const s = window.__finSnapshot || snap;
     if (!s || !s.income) {
@@ -10208,7 +10290,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       const resp = await fetch('/api/finance-advice', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(s),
+        body: JSON.stringify({ ...s, promptType }),
         signal: ctrl.signal
       });
       clearTimeout(t);
@@ -10220,7 +10302,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
         out.innerHTML = '';
         const badge = document.createElement('div');
         badge.style.cssText = 'display:inline-block;font-size:0.66rem;font-weight:700;padding:2px 8px;border-radius:9999px;margin-bottom:6px;' + (data.mode === 'ai' ? 'background: var(--accent-subtle); color: var(--accent);' : 'background: var(--surface-hover); color: var(--text-secondary); border: 1px solid var(--border);');
-        badge.textContent = data.mode === 'ai' ? 'Nasehat AI' : 'Estimasi Offline';
+        badge.textContent = data.mode === 'ai' ? 'Nasehat AI (Claude)' : 'Estimasi Offline';
         const p = document.createElement('div');
         p.textContent = advice;
         out.appendChild(badge);
@@ -10233,6 +10315,253 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     } finally {
       if (btn) btn.disabled = false;
     }
+  }
+
+  // --- Raport Keuangan Bulanan Anak Rantau (Modal & AI Engine) ---
+  function openFinanceReportModal() {
+    updateFinanceCalculations(true);
+    const score = computeHealthScore();
+    const goals = getFinanceGoals();
+    const income = getFinanceIncome();
+    const expenses = getFinanceExpenses();
+    const bills = getFinanceBills();
+
+    const totalSpent = expenses.reduce((s, e) => s + (Number(e.amount) || 0), 0);
+    const totalSaved = goals.reduce((s, g) => s + (Number(g.saved) || 0), 0);
+    const totalBills = bills.reduce((s, b) => s + (Number(b.amount) || 0), 0);
+    const paidBills = bills.filter(b => b.paid).reduce((s, b) => s + (Number(b.amount) || 0), 0);
+    const unpaidBills = totalBills - paidBills;
+    const remaining = income - totalSpent - unpaidBills;
+
+    const scoreEl = document.getElementById('fin-rep-stat-score');
+    const savedEl = document.getElementById('fin-rep-stat-saved');
+    const safeEl = document.getElementById('fin-rep-stat-safe');
+    if (scoreEl) scoreEl.textContent = `${score.total}/100`;
+    if (savedEl) savedEl.textContent = formatRupiah(totalSaved);
+    if (safeEl) safeEl.textContent = formatRupiah(Math.max(0, remaining));
+
+    const previewEl = document.getElementById('finance-report-preview');
+    if (previewEl) {
+      previewEl.textContent = generateFinanceReportLocalText();
+    }
+
+    const modal = document.getElementById('finance-report-modal');
+    if (modal) modal.classList.add('active');
+  }
+
+  function closeFinanceReportModal() {
+    const modal = document.getElementById('finance-report-modal');
+    if (modal) modal.classList.remove('active');
+  }
+
+  function handleFinanceReportModalBackdrop(e) {
+    if (e.target === document.getElementById('finance-report-modal')) {
+      closeFinanceReportModal();
+    }
+  }
+
+  function generateFinanceReportLocalText() {
+    const income = getFinanceIncome();
+    const expenses = getFinanceExpenses();
+    const bills = getFinanceBills();
+    const goals = getFinanceGoals();
+    const score = computeHealthScore();
+
+    const totalSpent = expenses.reduce((s, e) => s + (Number(e.amount) || 0), 0);
+    const totalBills = bills.reduce((s, b) => s + (Number(b.amount) || 0), 0);
+    const paidBills = bills.filter(b => b.paid).reduce((s, b) => s + (Number(b.amount) || 0), 0);
+    const unpaidBills = totalBills - paidBills;
+    const remaining = income - totalSpent - unpaidBills;
+    const effectiveTotalSpent = totalSpent + paidBills;
+    const percentSpent = income > 0 ? Math.min(Math.round((effectiveTotalSpent / income) * 100), 100) : 100;
+
+    const now = new Date();
+    const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+    const currentDay = now.getDate();
+    const daysLeft = Math.max(daysInMonth - currentDay + 1, 1);
+    const safeDaily = remaining > 0 ? Math.round(remaining / daysLeft) : 0;
+
+    const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+    const currentPeriod = `${monthNames[now.getMonth()]} ${now.getFullYear()}`;
+
+    let grade = 'C';
+    if (score.total >= 85) grade = 'A (Sangat Sehat)';
+    else if (score.total >= 70) grade = 'B (Baik & Stabil)';
+    else if (score.total >= 55) grade = 'C (Cukup / Waspada)';
+    else grade = 'D (Perlu Penyesuaian)';
+
+    // Envelopes
+    const targetNeeds = Math.round(income * 0.50);
+    const targetWants = Math.round(income * 0.30);
+    const targetSavings = Math.round(income * 0.20);
+    let spentNeeds = paidBills;
+    let spentWants = 0;
+    expenses.forEach(e => {
+      const amt = Number(e.amount) || 0;
+      if (['makan', 'transport', 'kos'].includes(e.cat)) spentNeeds += amt;
+      else if (['kopi', 'laundry', 'wisuda'].includes(e.cat)) spentWants += amt;
+    });
+    const estimatedSavings = Math.max(income - spentNeeds - spentWants - unpaidBills, 0);
+
+    // Breakdown
+    const catTotals = {};
+    expenses.forEach(e => { catTotals[e.cat] = (catTotals[e.cat] || 0) + (Number(e.amount) || 0); });
+
+    let t = `📊 RAPORT KEUANGAN BULANAN ANAK RANTAU BNI\n`;
+    t += `Unit Penempatan : Divisi Sales Strategy & Execution (SSE)\n`;
+    t += `Lokasi Dinas    : Menara BNI Pejompongan, Jakarta Pusat\n`;
+    t += `Pemagang        : Zaki Tri Pamungkas\n`;
+    t += `Periode Laporan : ${currentPeriod}\n`;
+    t += `Tanggal Cetak   : ${new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Asia/Jakarta' })}\n`;
+    t += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+
+    t += `🎯 SKOR KESEHATAN FINANSIAL: ${score.total}/100 — Grade ${grade}\n`;
+    t += `• Sisihan/Tabungan     : ${score.savingsScore}/100\n`;
+    t += `• Disiplin Jatah Harian: ${score.dailyScore}/100\n`;
+    t += `• Tagihan Tepat Waktu  : ${score.billScore}/100\n`;
+    t += `• Disiplin Amplop      : ${score.envelopeScore}/100\n\n`;
+
+    t += `💰 RINGKASAN ARUS KAS (CASH FLOW)\n`;
+    t += `• Pemasukan / Uang Saku : ${formatRupiah(income)}\n`;
+    t += `• Belanja Aktual        : ${formatRupiah(totalSpent)} (${percentSpent}% terpakai)\n`;
+    t += `• Tagihan Tetap Lunas   : ${formatRupiah(paidBills)}\n`;
+    if (unpaidBills > 0) {
+      t += `• Tagihan Belum Lunas   : ${formatRupiah(unpaidBills)}\n`;
+    }
+    t += `• Sisa Likuiditas Bersih: ${formatRupiah(remaining)}\n`;
+    t += `• Batas Belanja Aman    : ${formatRupiah(safeDaily)} / hari (sisa ${daysLeft} hari)\n\n`;
+
+    t += `🏛️ EVALUASI ALOKASI ANGGARAN 50/30/20\n`;
+    t += `• Needs (Pokok 50%)  : ${formatRupiah(spentNeeds)} / Target ${formatRupiah(targetNeeds)} (${targetNeeds > 0 ? Math.round(spentNeeds / targetNeeds * 100) : 0}%)\n`;
+    t += `• Wants (Gaya 30%)   : ${formatRupiah(spentWants)} / Target ${formatRupiah(targetWants)} (${targetWants > 0 ? Math.round(spentWants / targetWants * 100) : 0}%)\n`;
+    t += `• Savings (Wondr 20%): ${formatRupiah(estimatedSavings)} / Target ${formatRupiah(targetSavings)} (${targetSavings > 0 ? Math.round(estimatedSavings / targetSavings * 100) : 0}%)\n\n`;
+
+    t += `📌 DISTRIBUSI POS BELANJA AKTUAL\n`;
+    const sortedCats = Object.entries(catTotals).sort((a, b) => b[1] - a[1]);
+    if (sortedCats.length === 0) {
+      t += `(Belum ada pengeluaran harian tercatat)\n`;
+    } else {
+      sortedCats.forEach(([cat, amt]) => {
+        const meta = FIN_CATEGORY_META[cat] || { label: cat };
+        const share = totalSpent > 0 ? Math.round(amt / totalSpent * 100) : 0;
+        t += `• ${meta.label}: ${formatRupiah(amt)} (${share}%)\n`;
+      });
+    }
+    t += `\n`;
+
+    t += `🎯 PROGRES TUJUAN & SISIHAN DANA (GOALS)\n`;
+    if (goals.length === 0) {
+      t += `(Belum ada pos tujuan aktif)\n`;
+    } else {
+      goals.forEach(g => {
+        const pct = g.target > 0 ? Math.min(100, Math.round(g.saved / g.target * 100)) : 0;
+        t += `• ${g.name}: ${formatRupiah(g.saved)} / ${formatRupiah(g.target)} (${pct}%)\n`;
+      });
+    }
+    t += `\n`;
+
+    t += `💡 STRATEGI SURVIVAL & PENGHEMATAN MENARA BNI\n`;
+    t += `1. Makan Siang: Kantin Basement Menara BNI (Rp15rb-20rb) hemat ~Rp300rb/bln dibanding pesanan ojol.\n`;
+    t += `2. Mobilitas  : Mikrotrans JakLingko JAK-08 / JAK-14 (Rp 0) dari Palmerah / Benhil.\n`;
+    t += `3. Air Minum  : Refill tumbler di pantry SSE hemat ±Rp150rb/bln dari beli air kemasan.\n`;
+    t += `4. Rekening   : Amankan sisihan 20% ke rekening Wondr BNI sebelum dana terpakai impulsif.\n\n`;
+    t += `_Disusun otomatis oleh MGHB Workspace · Zaki Tri Pamungkas_`;
+
+    return t;
+  }
+
+  async function generateFinanceReportAI() {
+    const btn = document.getElementById('btn-fin-rep-ai');
+    const contentEl = document.getElementById('fin-rep-ai-content');
+    if (btn) btn.disabled = true;
+    if (contentEl) contentEl.textContent = '⏳ Menjalankan audit finansial mendalam berbasis AI (Claude)...';
+
+    updateFinanceCalculations(true);
+    const score = computeHealthScore();
+    const goals = getFinanceGoals();
+    const snap = window.__finSnapshot || {};
+
+    const payload = {
+      mode: 'report',
+      income: snap.income || getFinanceIncome(),
+      totalSpent: snap.totalSpent || 0,
+      remaining: snap.remaining != null ? snap.remaining : (snap.income || 3500000),
+      percentSpent: snap.percentSpent || 0,
+      safeDailyLimit: snap.safeDailyLimit || 0,
+      daysLeft: snap.daysLeft || 1,
+      fixedMonthly: snap.fixedMonthly || 0,
+      paidBills: snap.paidBills || 0,
+      unpaidBills: snap.unpaidBills || 0,
+      breakdown: snap.breakdown || {},
+      healthScore: score,
+      goals: goals.map(g => ({ name: g.name, target: g.target, saved: g.saved }))
+    };
+
+    try {
+      const ctrl = new AbortController();
+      const t = setTimeout(() => ctrl.abort(), 45000);
+      const resp = await fetch('/api/finance-advice', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        signal: ctrl.signal
+      });
+      clearTimeout(t);
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      const data = await resp.json();
+      const advice = (data.advice || '').trim();
+      if (!advice) throw new Error('Respons kosong');
+
+      if (contentEl) {
+        contentEl.textContent = advice;
+      }
+      showToast(data.mode === 'ai' ? '✨ Evaluasi AI berhasil dibuat!' : '📊 Estimasi offline selesai dibuat.');
+    } catch (e) {
+      console.warn('generateFinanceReportAI error:', e);
+      if (contentEl) {
+        contentEl.textContent = '⚠️ Evaluasi AI tidak dapat dijangkau saat ini. Pratinjau dokumen di bawah tetap akurat dan lengkap untuk digunakan.';
+      }
+      showToast('AI tidak terjangkau — cek pratinjau dokumen');
+    } finally {
+      if (btn) btn.disabled = false;
+    }
+  }
+
+  function copyFinanceReportText() {
+    const previewEl = document.getElementById('finance-report-preview');
+    const aiContentEl = document.getElementById('fin-rep-ai-content');
+    const localText = previewEl ? previewEl.textContent : generateFinanceReportLocalText();
+    const aiText = (aiContentEl && aiContentEl.textContent && !aiContentEl.textContent.startsWith('Klik tombol') && !aiContentEl.textContent.startsWith('⏳') && !aiContentEl.textContent.startsWith('⚠️'))
+      ? `\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🧠 EVALUASI & AUDIT AI (CLAUDE):\n${aiContentEl.textContent}`
+      : '';
+
+    const fullReport = localText + aiText;
+    navigator.clipboard.writeText(fullReport).then(() => {
+      showToast('📋 Raport keuangan bulanan disalin!');
+    }).catch(() => {
+      showToast('Gagal menyalin raport keuangan');
+    });
+  }
+
+  function downloadFinanceReportText() {
+    const previewEl = document.getElementById('finance-report-preview');
+    const aiContentEl = document.getElementById('fin-rep-ai-content');
+    const localText = previewEl ? previewEl.textContent : generateFinanceReportLocalText();
+    const aiText = (aiContentEl && aiContentEl.textContent && !aiContentEl.textContent.startsWith('Klik tombol') && !aiContentEl.textContent.startsWith('⏳') && !aiContentEl.textContent.startsWith('⚠️'))
+      ? `\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🧠 EVALUASI & AUDIT AI (CLAUDE):\n${aiContentEl.textContent}`
+      : '';
+
+    const fullReport = localText + aiText;
+    const blob = new Blob([fullReport], { type: 'text/plain;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    const todayStr = new Date().toISOString().slice(0, 10);
+    link.href = url;
+    link.download = `mghb_raport_keuangan_${todayStr}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    showToast('File raport bulanan berhasil diunduh!');
   }
 
   // --- Initialization ---
