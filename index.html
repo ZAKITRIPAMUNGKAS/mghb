@@ -18,7 +18,42 @@
       document.write('<script src="https://unpkg.com/@supabase/supabase-js@2"><\/script>');
     }
   </script>
+  <script>
+    /* Early Route Pre-hydration to eliminate flash */
+    (function() {
+      try {
+        var hash = (window.location.hash || '').replace(/^#\/?/, '').toLowerCase().trim();
+        var p = (window.location.pathname || '').toLowerCase().replace(/\/+$/, '') || '/';
+        var t = 'berita';
+        if (['inventaris', 'packing'].indexOf(hash) !== -1 || ['/inventaris', '/packing'].indexOf(p) !== -1) t = 'packing';
+        else if (['keuangan', 'finance'].indexOf(hash) !== -1 || ['/keuangan', '/finance'].indexOf(p) !== -1) t = 'keuangan';
+        else if (hash === 'logbook' || p === '/logbook') t = 'logbook';
+        else if (['toolkit', 'asisten'].indexOf(hash) !== -1 || ['/toolkit', '/asisten'].indexOf(p) !== -1) t = 'asisten';
+        
+        if (t !== 'berita') {
+          document.documentElement.setAttribute('data-initial-tab', t);
+        }
+      } catch (_) {}
+    })();
+  </script>
   <style>
+    /* Pre-hydration view overrides */
+    html[data-initial-tab="keuangan"] #view-berita { display: none !important; }
+    html[data-initial-tab="keuangan"] #view-keuangan { display: block !important; }
+    html[data-initial-tab="keuangan"] #office-status-banner { display: none !important; }
+
+    html[data-initial-tab="packing"] #view-berita { display: none !important; }
+    html[data-initial-tab="packing"] #view-packing { display: block !important; }
+    html[data-initial-tab="packing"] #office-status-banner { display: none !important; }
+
+    html[data-initial-tab="logbook"] #view-berita { display: none !important; }
+    html[data-initial-tab="logbook"] #view-logbook { display: block !important; }
+    html[data-initial-tab="logbook"] #office-status-banner { display: none !important; }
+
+    html[data-initial-tab="asisten"] #view-berita { display: none !important; }
+    html[data-initial-tab="asisten"] #view-asisten { display: block !important; }
+    html[data-initial-tab="asisten"] #office-status-banner { display: none !important; }
+
     :root {
       --font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       
@@ -6460,6 +6495,7 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
 
   // --- Tab Selection (5 Pages) ---
   function selectTab(tab, updateUrl = true) {
+    document.documentElement.removeAttribute('data-initial-tab');
     activeTab = tab;
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
 
