@@ -111,3 +111,29 @@ ON CONFLICT (key) DO NOTHING;
 CREATE INDEX IF NOT EXISTS idx_bills_due ON mghb_bills(due_day ASC);
 ALTER TABLE mghb_bills ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Akses publik tagihan" ON mghb_bills FOR ALL USING (true) WITH CHECK (true);
+
+-- 7. TABEL TUJUAN KEUANGAN & SISIHAN (Financial Goals - Perisai Masa Depan)
+CREATE TABLE IF NOT EXISTS mghb_goals (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    target NUMERIC(14, 2) NOT NULL DEFAULT 0,
+    saved NUMERIC(14, 2) NOT NULL DEFAULT 0,
+    deadline TEXT,            -- YYYY-MM (bulan target tercapai)
+    icon TEXT,
+    color TEXT,
+    is_preset BOOLEAN NOT NULL DEFAULT FALSE,
+    sort_order INTEGER NOT NULL DEFAULT 0,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Seed tujuan default anak rantau (aman: ON CONFLICT DO NOTHING)
+INSERT INTO mghb_goals (id, name, target, saved, deadline, icon, color, is_preset, sort_order) VALUES
+    ('goal_darurat', 'Dana Darurat (3× pengeluaran)', 4500000, 0, NULL, 'shield', '#10b981', FALSE, 1),
+    ('goal_mudik', 'Mudik Solo (Tiket KA PP)', 900000, 0, NULL, 'train', '#0284c7', FALSE, 2),
+    ('goal_ortu', 'Kirim ke Orang Tua', 600000, 0, NULL, 'heart', '#ec4899', FALSE, 3)
+ON CONFLICT (id) DO NOTHING;
+
+CREATE INDEX IF NOT EXISTS idx_goals_sort ON mghb_goals(sort_order ASC);
+ALTER TABLE mghb_goals ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Akses publik tujuan" ON mghb_goals FOR ALL USING (true) WITH CHECK (true);

@@ -1184,6 +1184,105 @@
       justify-content: center;
     }
 
+    /* ===== Finance Health Score ===== */
+    .fin-health-card {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 16px 18px;
+      margin-top: 14px;
+      box-shadow: var(--shadow-card);
+    }
+    .fin-score-ring {
+      position: relative;
+      width: 96px;
+      height: 96px;
+      flex-shrink: 0;
+    }
+    .fin-score-ring svg { transform: rotate(-90deg); width: 96px; height: 96px; }
+    .fin-score-ring .ring-bg { fill: none; stroke: var(--border-subtle); stroke-width: 9; }
+    .fin-score-ring .ring-val { fill: none; stroke-width: 9; stroke-linecap: round; transition: stroke-dashoffset .6s cubic-bezier(.16,1,.3,1); }
+    .fin-score-center {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+    }
+    .fin-score-num { font-size: 1.6rem; font-weight: 800; line-height: 1; color: var(--text-primary); }
+    .fin-score-grade { font-size: 0.66rem; font-weight: 700; color: var(--text-secondary); margin-top: 2px; }
+    .fin-health-sub {
+      flex: 1; min-width: 0;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .fin-sub-row { display: flex; align-items: center; gap: 8px; }
+    .fin-sub-label { width: 120px; font-size: 0.7rem; color: var(--text-secondary); font-weight: 600; flex-shrink: 0; }
+    .fin-sub-track { flex: 1; height: 7px; background: var(--surface-hover); border-radius: 99px; overflow: hidden; }
+    .fin-sub-fill { height: 100%; border-radius: 99px; transition: width .5s cubic-bezier(.16,1,.3,1); }
+    .fin-sub-val { width: 34px; text-align: right; font-size: 0.68rem; font-weight: 700; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+
+    /* ===== Goals & Sisihan ===== */
+    .finance-goals-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    @media (min-width: 640px) { .finance-goals-grid { grid-template-columns: 1fr 1fr; } }
+    .finance-goal-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      box-shadow: var(--shadow-card);
+      transition: transform .2s cubic-bezier(.16,1,.3,1), box-shadow .2s ease, border-color .18s ease;
+    }
+    .finance-goal-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px -8px rgb(0 0 0 / .18); }
+    .finance-goal-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
+    .finance-goal-name { display: flex; align-items: center; gap: 6px; font-size: 0.82rem; font-weight: 700; color: var(--text-primary); }
+    .finance-goal-icon { width: 26px; height: 26px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; color: #fff; flex-shrink: 0; }
+    .finance-goal-amt { font-size: 0.78rem; font-weight: 700; color: var(--text-primary); margin-bottom: 2px; }
+    .finance-goal-meta { font-size: 0.68rem; color: var(--text-tertiary); margin-bottom: 8px; }
+    .finance-goal-track { height: 8px; background: var(--surface-hover); border-radius: 99px; overflow: hidden; margin-bottom: 6px; }
+    .finance-goal-fill { height: 100%; border-radius: 99px; transition: width .5s cubic-bezier(.16,1,.3,1); }
+    .finance-goal-actions { display: flex; gap: 5px; flex-wrap: wrap; }
+    .finance-goal-chip {
+      background: var(--surface-hover); border: 1px solid var(--border); border-radius: var(--radius-pill);
+      padding: 3px 9px; font-size: 0.68rem; font-weight: 600; color: var(--text-secondary); cursor: pointer;
+      transition: all .15s ease;
+    }
+    .finance-goal-chip:hover { background: var(--accent-subtle); border-color: var(--accent); color: var(--accent); }
+
+    /* ===== Due reminder strip ===== */
+    .fin-due-strip { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+    .fin-due-chip {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 0.68rem; font-weight: 600; padding: 3px 9px; border-radius: 99px;
+      background: var(--surface-hover); color: var(--text-secondary); border: 1px solid var(--border);
+    }
+    .fin-due-chip.overdue { background: rgba(239,68,68,.12); color: #dc2626; border-color: rgba(239,68,68,.35); }
+    .fin-due-chip.soon { background: rgba(245,158,11,.12); color: #b45309; border-color: rgba(245,158,11,.35); }
+
+    /* ===== Insights ===== */
+    .fin-insight-list { display: flex; flex-direction: column; gap: 7px; margin-top: 10px; }
+    .fin-insight {
+      display: flex; align-items: flex-start; gap: 8px;
+      font-size: 0.74rem; color: var(--text-primary); line-height: 1.4;
+      background: var(--surface-hover); border: 1px solid var(--border-subtle);
+      border-radius: 8px; padding: 9px 11px;
+    }
+    .fin-insight .ic { margin-top: 1px; color: var(--accent); }
+
+    /* ===== What-if simulator ===== */
+    .fin-sim-row { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
+    .fin-sim-head { display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--text-secondary); font-weight: 600; }
+    .fin-sim-head b { color: var(--text-primary); font-variant-numeric: tabular-nums; }
+    .fin-sim-range { width: 100%; accent-color: var(--accent); }
+    .fin-sim-result {
+      margin-top: 4px; background: var(--accent-subtle); border: 1px solid var(--accent);
+      border-radius: 8px; padding: 10px 12px; font-size: 0.76rem; color: var(--text-primary); line-height: 1.45;
+    }
+
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
         animation-duration: .01ms !important;
@@ -4654,6 +4753,27 @@
         </div>
       </div>
 
+      <!-- Skor Kesehatan Finansial -->
+      <div class="fin-health-card">
+        <div class="fin-score-ring">
+          <svg viewBox="0 0 96 96">
+            <circle class="ring-bg" cx="48" cy="48" r="42"></circle>
+            <circle class="ring-val" id="fin-score-ring-val" cx="48" cy="48" r="42" stroke="#10b981" stroke-dasharray="263.9" stroke-dashoffset="263.9"></circle>
+          </svg>
+          <div class="fin-score-center">
+            <div class="fin-score-num" id="fin-score-num">—</div>
+            <div class="fin-score-grade" id="fin-score-grade">—</div>
+          </div>
+        </div>
+        <div class="fin-health-sub">
+          <div class="feature-title" style="font-size: 0.8rem;"><svg class="ic ic-16" aria-hidden="true"><use href="#i-target"/></svg> Skor Sehat Finansial</div>
+          <div class="fin-sub-row"><span class="fin-sub-label">Sisihan / Tabungan</span><div class="fin-sub-track"><div class="fin-sub-fill" id="fin-score-savings" style="width:0%"></div></div><span class="fin-sub-val" id="fin-score-savings-val">0</span></div>
+          <div class="fin-sub-row"><span class="fin-sub-label">Jatah Harian</span><div class="fin-sub-track"><div class="fin-sub-fill" id="fin-score-daily" style="width:0%"></div></div><span class="fin-sub-val" id="fin-score-daily-val">0</span></div>
+          <div class="fin-sub-row"><span class="fin-sub-label">Tagihan Tepat Waktu</span><div class="fin-sub-track"><div class="fin-sub-fill" id="fin-score-bills" style="width:0%"></div></div><span class="fin-sub-val" id="fin-score-bills-val">0</span></div>
+          <div class="fin-sub-row"><span class="fin-sub-label">Disiplin Amplop</span><div class="fin-sub-track"><div class="fin-sub-fill" id="fin-score-envelope" style="width:0%"></div></div><span class="fin-sub-val" id="fin-score-envelope-val">0</span></div>
+        </div>
+      </div>
+
       <!-- Live 50/30/20 Digital Envelopes Grid -->
       <div class="finance-envelopes-grid">
         <!-- Envelope 1: Needs 50% -->
@@ -4693,6 +4813,31 @@
           <div class="finance-envelope-track">
             <div class="finance-envelope-fill" id="fin-env-savings-fill" style="width: 0%; background: #10b981;"></div>
           </div>
+        </div>
+      </div>
+
+      <!-- Tujuan & Sisihan (Financial Goals) -->
+      <div class="feature-card" style="margin-top: 14px;" id="fin-goals-card">
+        <div class="feature-head">
+          <div>
+            <div class="feature-title" style="font-size: 0.84rem;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+              </svg>
+              Tujuan &amp; Sisihan (Perisai Masa Depan)
+            </div>
+            <p style="font-size: 0.72rem; color: var(--text-secondary); margin-top: 2px;">
+              Sisihkan uang ke tujuan sebelum terpakai. Dana Darurat, Mudik, dan Kirim Orang Tua siap pasang.
+            </p>
+          </div>
+          <button type="button" class="btn-action btn-xs" onclick="promptAddGoal()">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            + Tujuan
+          </button>
+        </div>
+        <div class="finance-goals-grid" id="finance-goals-container">
+          <!-- Rendered dynamically via JS -->
         </div>
       </div>
 
@@ -4738,6 +4883,11 @@
         <!-- Hidden input for backward compatibility with getFinanceFixed() -->
         <input type="hidden" id="fin-fixed-input" value="0">
 
+        <!-- Jatuh tempo 7 hari ke depan -->
+        <div class="fin-due-strip" id="fin-due-strip">
+          <!-- Rendered dynamically via JS -->
+        </div>
+
         <!-- Bills List Container -->
         <div class="finance-bills-list" id="finance-bills-container">
           <!-- Rendered dynamically via JS -->
@@ -4759,6 +4909,21 @@
         <!-- Legends -->
         <div class="finance-cat-legend" id="fin-cat-legend">
           <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Insight Otomatis -->
+      <div class="feature-card" style="margin-top: 14px;">
+        <div class="feature-head">
+          <div class="feature-title" style="font-size: 0.84rem;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+              <path d="M12 3l1.9 5.8L20 10l-6.1 1.2L12 17l-1.9-5.8L4 10l6.1-1.2z"></path>
+            </svg>
+            Insight Otomatis Keuanganmu
+          </div>
+        </div>
+        <div class="fin-insight-list" id="fin-insight-list">
+          <div style="font-size: 0.74rem; color: var(--text-tertiary);">Insight muncul otomatis setelah ada pemasukan &amp; transaksi.</div>
         </div>
       </div>
 
@@ -4784,12 +4949,12 @@
         <div style="margin-bottom: 14px;">
           <span style="font-size: 0.7rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.04em;">Pintas 1-Klik Rutin:</span>
           <div class="finance-quick-chips">
-            <span class="finance-chip" onclick="quickFillExpense('makan', 15000, 'Kantin Basement Menara BNI')">🍱 +15rb Kantin BNI</span>
-            <span class="finance-chip" onclick="quickFillExpense('makan', 20000, 'Warteg Penjernihan Benhil')">🍛 +20rb Warteg</span>
-            <span class="finance-chip" onclick="quickFillExpense('transport', 3000, 'KRL St. Palmerah')">🚆 +3rb KRL</span>
-            <span class="finance-chip" onclick="quickFillExpense('transport', 10000, 'Ojek Online Stasiun - Kantor')">🛵 +10rb Ojol</span>
-            <span class="finance-chip" onclick="quickFillExpense('laundry', 25000, 'Laundry Kiloan')">🧼 +25rb Laundry</span>
-            <span class="finance-chip" onclick="quickFillExpense('kopi', 18000, 'Kopi Sore / Hangout')">☕ +18rb Kopi</span>
+            <span class="finance-chip" onclick="quickFillExpense('makan', 15000, 'Kantin Basement Menara BNI')"><svg class="ic ic-14" aria-hidden="true"><use href="#i-utensils"/></svg> +15rb Kantin BNI</span>
+            <span class="finance-chip" onclick="quickFillExpense('makan', 20000, 'Warteg Penjernihan Benhil')"><svg class="ic ic-14" aria-hidden="true"><use href="#i-utensils"/></svg> +20rb Warteg</span>
+            <span class="finance-chip" onclick="quickFillExpense('transport', 3000, 'KRL St. Palmerah')"><svg class="ic ic-14" aria-hidden="true"><use href="#i-train"/></svg> +3rb KRL</span>
+            <span class="finance-chip" onclick="quickFillExpense('transport', 10000, 'Ojek Online Stasiun - Kantor')"><svg class="ic ic-14" aria-hidden="true"><use href="#i-car"/></svg> +10rb Ojol</span>
+            <span class="finance-chip" onclick="quickFillExpense('laundry', 25000, 'Laundry Kiloan')"><svg class="ic ic-14" aria-hidden="true"><use href="#i-droplet"/></svg> +25rb Laundry</span>
+            <span class="finance-chip" onclick="quickFillExpense('kopi', 18000, 'Kopi Sore / Hangout')"><svg class="ic ic-14" aria-hidden="true"><use href="#i-coffee"/></svg> +18rb Kopi</span>
           </div>
         </div>
 
@@ -4798,10 +4963,10 @@
             <div class="form-group" style="margin-bottom: 0;">
               <label class="form-label">Kategori</label>
               <select class="form-control" id="fin-tx-cat" required>
-                <option value="makan">🍱 Makan &amp; Minum</option>
+                <option value="makan"><svg class="ic ic-16" aria-hidden="true"><use href="#i-utensils"/></svg> Makan &amp; Minum</option>
                 <option value="transport"><svg class="ic ic-16" aria-hidden="true"><use href="#i-bus"/></svg> Transportasi (KRL/Ojol/JakLingko)</option>
                 <option value="kos"><svg class="ic ic-16" aria-hidden="true"><use href="#i-home"/></svg> Kos &amp; Listrik</option>
-                <option value="laundry">🧼 Laundry &amp; Perlengkapan Pribadi</option>
+                <option value="laundry"><svg class="ic ic-16" aria-hidden="true"><use href="#i-droplet"/></svg> Laundry &amp; Perlengkapan Pribadi</option>
                 <option value="kopi"><svg class="ic ic-16" aria-hidden="true"><use href="#i-coffee"/></svg> Kopi &amp; Sosialisasi</option>
                 <option value="wisuda"><svg class="ic ic-16" aria-hidden="true"><use href="#i-cap"/></svg> Wisuda UMS &amp; Solo</option>
                 <option value="lainnya"><svg class="ic ic-16" aria-hidden="true"><use href="#i-bulb"/></svg> Lain-lain / Dana Darurat</option>
@@ -4874,6 +5039,40 @@
           <div style="font-size: 0.78rem; color: var(--text-secondary); text-align: center; padding: 24px 16px; background: var(--surface-hover); border-radius: var(--radius-sm); border: 1px dashed var(--border);">
             <svg class="ic ic-16" aria-hidden="true"><use href="#i-coins"/></svg> Belum ada pengeluaran tercatat bulan ini. Gunakan tombol pintas di atas untuk mencatat cepat.
           </div>
+        </div>
+      </div>
+
+      <!-- What-If Simulator -->
+      <div class="feature-card" style="margin-top: 14px;">
+        <div class="feature-head">
+          <div>
+            <div class="feature-title" style="font-size: 0.84rem;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+              </svg>
+              Simulator Hemat (What-If)
+            </div>
+            <p style="font-size: 0.72rem; color: var(--text-secondary); margin-top: 2px;">
+              Geser untuk lihat dampak perubahan habit harian terhadap sisa uang bulanan.
+            </p>
+          </div>
+        </div>
+
+        <div class="fin-sim-row">
+          <div class="fin-sim-head"><span>Makan siang rata-rata / hari</span><b id="sim-makan-val">Rp 15.000</b></div>
+          <input type="range" class="fin-sim-range" id="sim-makan" min="5000" max="40000" step="1000" value="15000" oninput="updateSimulator()">
+        </div>
+        <div class="fin-sim-row">
+          <div class="fin-sim-head"><span>Kopi / hangout per minggu</span><b id="sim-kopi-val">Rp 18.000</b></div>
+          <input type="range" class="fin-sim-range" id="sim-kopi" min="0" max="100000" step="1000" value="18000" oninput="updateSimulator()">
+        </div>
+        <div class="fin-sim-row">
+          <div class="fin-sim-head"><span>Ojol per minggu</span><b id="sim-ojol-val">Rp 10.000</b></div>
+          <input type="range" class="fin-sim-range" id="sim-ojol" min="0" max="100000" step="1000" value="10000" oninput="updateSimulator()">
+        </div>
+
+        <div class="fin-sim-result" id="fin-sim-result">
+          Geser slider untuk melihat potensi penghematan bulanan.
         </div>
       </div>
 
@@ -6905,6 +7104,19 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
             }
           });
         })
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'mghb_goals' }, () => {
+          supabaseClient.from('mghb_goals').select('*').order('sort_order', { ascending: true }).then(({ data }) => {
+            if (data && Array.isArray(data)) {
+              saveFinanceGoals(data.map(cg => ({
+                id: cg.id, name: cg.name, target: Number(cg.target) || 0,
+                saved: Number(cg.saved) || 0, deadline: cg.deadline || '',
+                icon: cg.icon || 'i-target', color: cg.color || '#10b981', custom: false
+              })));
+              renderFinanceGoals();
+              updateFinanceCalculations(false);
+            }
+          });
+        })
         .subscribe();
     } catch (e) {
       console.warn('Realtime subscription skipped:', e);
@@ -7203,6 +7415,53 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
         saveFinanceBills(mergedBills);
         renderFinanceBills();
         updateFinanceCalculations(false);
+      }
+
+      // 9. Sync & Fetch cloud goals (Tujuan & Sisihan)
+      const localGoals = getFinanceGoals();
+      if (localGoals.length > 0 && supabaseClient) {
+        const goalRows = localGoals.map((g, idx) => ({
+          id: g.id,
+          name: g.name,
+          target: Number(g.target) || 0,
+          saved: Number(g.saved) || 0,
+          deadline: g.deadline || null,
+          icon: g.icon || '',
+          color: g.color || '#10b981',
+          is_preset: false,
+          sort_order: idx + 1,
+          updated_at: new Date().toISOString()
+        }));
+        await supabaseClient.from('mghb_goals').upsert(goalRows);
+      }
+      const { data: cloudGoals } = await supabaseClient.from('mghb_goals').select('*').order('sort_order', { ascending: true });
+      if (cloudGoals && Array.isArray(cloudGoals)) {
+        const localGoalMap = new Map();
+        localGoals.forEach(g => { if (g && g.id) localGoalMap.set(g.id, g); });
+        cloudGoals.forEach(cg => {
+          if (!cg || !cg.id) return;
+          const existing = localGoalMap.get(cg.id);
+          if (!existing) {
+            localGoalMap.set(cg.id, {
+              id: cg.id,
+              name: cg.name,
+              target: Number(cg.target) || 0,
+              saved: Number(cg.saved) || 0,
+              deadline: cg.deadline || '',
+              icon: cg.icon || 'i-target',
+              color: cg.color || '#10b981',
+              custom: false
+            });
+          } else {
+            localGoalMap.set(cg.id, {
+              ...existing,
+              saved: existing.saved != null ? existing.saved : Number(cg.saved) || 0,
+              target: existing.target != null ? existing.target : Number(cg.target) || 0
+            });
+          }
+        });
+        saveFinanceGoals(Array.from(localGoalMap.values()));
+        renderFinanceGoals();
       }
 
       if (!silent) {
@@ -8983,6 +9242,325 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     return bills.reduce((s, b) => s + (Number(b.amount) || 0), 0);
   }
 
+  // ===== Tujuan & Sisihan (Goals) =====
+  const FIN_GOALS_KEY = 'mghb_fin_goals';
+
+  const DEFAULT_GOALS = [
+    { id: 'goal_darurat', name: 'Dana Darurat', target: 4500000, saved: 0, deadline: '', icon: 'i-target', color: '#10b981', custom: false },
+    { id: 'goal_mudik', name: 'Mudik Solo (Tiket KA PP)', target: 900000, saved: 0, deadline: '', icon: 'i-train', color: '#0284c7', custom: false },
+    { id: 'goal_ortu', name: 'Kirim ke Orang Tua', target: 600000, saved: 0, deadline: '', icon: 'i-heart', color: '#ec4899', custom: false }
+  ];
+
+  function getFinanceGoals() {
+    try {
+      const stored = localStorage.getItem(FIN_GOALS_KEY);
+      if (!stored) {
+        saveFinanceGoals(DEFAULT_GOALS);
+        return DEFAULT_GOALS.slice();
+      }
+      const parsed = JSON.parse(stored);
+      return Array.isArray(parsed) && parsed.length > 0 ? parsed : DEFAULT_GOALS.slice();
+    } catch {
+      return DEFAULT_GOALS.slice();
+    }
+  }
+
+  function saveFinanceGoals(goals) {
+    localStorage.setItem(FIN_GOALS_KEY, JSON.stringify(goals));
+  }
+
+  function syncGoalsToSupabase() {
+    if (!supabaseClient) return;
+    const rows = getFinanceGoals().map((g, idx) => ({
+      id: g.id,
+      name: g.name,
+      target: Number(g.target) || 0,
+      saved: Number(g.saved) || 0,
+      deadline: g.deadline || null,
+      icon: g.icon || '',
+      color: g.color || '#10b981',
+      is_preset: false,
+      sort_order: idx + 1,
+      updated_at: new Date().toISOString()
+    }));
+    supabaseClient.from('mghb_goals').upsert(rows).catch(err => console.warn('Supabase goals sync error:', err));
+  }
+
+  function promptAddGoal() {
+    const name = prompt('Nama tujuan (mis. Laptop Baru, Bayar SKS):');
+    if (!name || !name.trim()) return;
+    const target = parseMoney(prompt('Target nominal (angka, mis. 3000000):') || '');
+    if (!target || target <= 0) { showToast('Nominal target tidak valid'); return; }
+    const goals = getFinanceGoals();
+    goals.push({ id: 'goal_' + Date.now(), name: name.trim(), target, saved: 0, deadline: '', icon: 'i-target', color: '#0284c7', custom: true });
+    saveFinanceGoals(goals);
+    syncGoalsToSupabase();
+    renderFinanceGoals();
+    showToast('Tujuan baru dibuat — klik untuk sisihkan');
+  }
+
+  function depositToGoal(id, amount) {
+    const goals = getFinanceGoals();
+    const g = goals.find(x => x.id === id);
+    if (!g) return;
+    g.saved = Math.max(0, Math.round((Number(g.saved) || 0) + amount));
+    saveFinanceGoals(goals);
+    syncGoalsToSupabase();
+    renderFinanceGoals();
+    updateFinanceCalculations(false);
+    showToast(`Sisihkan ${formatRupiah(amount)} ke "${g.name}"`);
+  }
+
+  function adjustGoalSaved(id, value) {
+    const goals = getFinanceGoals();
+    const g = goals.find(x => x.id === id);
+    if (!g) return;
+    g.saved = Math.max(0, parseMoney(value));
+    saveFinanceGoals(goals);
+    syncGoalsToSupabase();
+    renderFinanceGoals();
+    updateFinanceCalculations(false);
+  }
+
+  function deleteGoal(id) {
+    let goals = getFinanceGoals();
+    const g = goals.find(x => x.id === id);
+    if (!g) return;
+    if (confirm(`Hapus tujuan "${g.name}"?`)) {
+      goals = goals.filter(x => x.id !== id);
+      saveFinanceGoals(goals);
+      if (supabaseClient) supabaseClient.from('mghb_goals').delete().eq('id', id).catch(() => {});
+      renderFinanceGoals();
+      showToast('Tujuan dihapus');
+    }
+  }
+
+  function renderFinanceGoals() {
+    const container = document.getElementById('finance-goals-container');
+    if (!container) return;
+    const goals = getFinanceGoals();
+    if (goals.length === 0) {
+      container.innerHTML = '<div style="font-size:0.74rem;color:var(--text-tertiary);text-align:center;padding:12px;grid-column:1/-1;">Belum ada tujuan. Klik "+ Tujuan" di atas.</div>';
+      return;
+    }
+    container.innerHTML = goals.map(g => {
+      const icn = (g.icon && String(g.icon).startsWith('i-')) ? g.icon : ('i-' + (g.icon || 'target'));
+      const pct = g.target > 0 ? Math.min(100, Math.round((g.saved / g.target) * 100)) : 0;
+      const remaining = Math.max(0, (Number(g.target) || 0) - (Number(g.saved) || 0));
+      const monthsLeft = g.deadline ? Math.max(1, Math.ceil((new Date(g.deadline + '-01') - new Date()) / (30 * 24 * 3600 * 1000))) : 3;
+      const monthly = g.deadline ? Math.round(remaining / monthsLeft) : Math.round(remaining / 3);
+      return `
+        <div class="finance-goal-card">
+          <div class="finance-goal-head">
+            <span class="finance-goal-name">
+              <span class="finance-goal-icon" style="background:${g.color || '#10b981'}"><svg class="ic ic-14" aria-hidden="true"><use href="#${escHtml(icn)}"/></svg></span>
+              ${escHtml(g.name)}
+            </span>
+            <button type="button" class="finance-tx-del" title="Hapus tujuan" onclick="deleteGoal('${escHtml(g.id)}')"><svg class="ic ic-14" aria-hidden="true"><use href="#i-trash"/></svg></button>
+          </div>
+          <div class="finance-goal-amt">${formatRupiah(g.saved)} <span style="opacity:.55;font-weight:500;">/ ${formatRupiah(g.target)}</span></div>
+          <div class="finance-goal-meta">Selisih ${formatRupiah(remaining)} · sisihkan ~${formatRupiah(monthly)}/bln</div>
+          <div class="finance-goal-track"><div class="finance-goal-fill" style="width:${pct}%;background:${g.color || '#10b981'}"></div></div>
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">
+            <input type="text" inputmode="numeric" class="finance-goal-input" style="flex:1;font-family:inherit;font-size:0.72rem;color:var(--text-primary);background:var(--surface-hover);border:1px solid var(--border);border-radius:6px;padding:4px 8px;" value="${Number(g.saved || 0).toLocaleString('id-ID')}" oninput="formatMoneyInput(this)" onchange="adjustGoalSaved('${escHtml(g.id)}', this.value)" title="Jumlah tersimpan (klik untuk edit)">
+          </div>
+          <div class="finance-goal-actions">
+            <button type="button" class="finance-goal-chip" onclick="depositToGoal('${escHtml(g.id)}', 25000)">+25rb</button>
+            <button type="button" class="finance-goal-chip" onclick="depositToGoal('${escHtml(g.id)}', 50000)">+50rb</button>
+            <button type="button" class="finance-goal-chip" onclick="depositToGoal('${escHtml(g.id)}', 100000)">+100rb</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // ===== Pengingat Jatuh Tempo =====
+  function renderFinanceDueStrip() {
+    const strip = document.getElementById('fin-due-strip');
+    if (!strip) return;
+    const bills = getFinanceBills().filter(b => !b.paid);
+    const todayD = new Date().getDate();
+
+    const chips = [];
+    bills.forEach(b => {
+      const dueDay = Number(b.dueDay) || 1;
+      if (todayD > dueDay) {
+        chips.push({ name: b.name, label: `Lewat tgl ${dueDay}`, cls: 'overdue' });
+      } else {
+        const delta = dueDay - todayD;
+        if (delta <= 7) {
+          chips.push({ name: b.name, label: delta === 0 ? 'Jatuh tempo hari ini' : `Tgl ${dueDay} (${delta} hr lagi)`, cls: delta <= 2 ? 'soon' : '' });
+        }
+      }
+    });
+
+    if (chips.length === 0) {
+      strip.innerHTML = '<span class="fin-due-chip">Tidak ada tagihan jatuh tempo 7 hari ke depan</span>';
+      return;
+    }
+    strip.innerHTML = chips.map(c => `<span class="fin-due-chip ${c.cls}"><svg class="ic ic-14" aria-hidden="true"><use href="#i-alert"/></svg> ${escHtml(c.name)} — ${c.label}</span>`).join('');
+  }
+
+  // ===== Insight Otomatis =====
+  function renderInsights() {
+    const container = document.getElementById('fin-insight-list');
+    if (!container) return;
+    const income = getFinanceIncome();
+    const expenses = getFinanceExpenses();
+    const bills = getFinanceBills();
+    const goals = getFinanceGoals();
+    const totalSpent = expenses.reduce((s, e) => s + (Number(e.amount) || 0), 0);
+    const insights = [];
+
+    if (income > 0 && totalSpent === 0) {
+      insights.push({ icon: 'i-clock', text: 'Belum ada pengeluaran tercatat. Mulai catat pengeluaran pertama agar insight & jatah harian akurat.' });
+    }
+    if (totalSpent > 0) {
+      const catTotals = {};
+      expenses.forEach(e => { catTotals[e.cat] = (catTotals[e.cat] || 0) + (Number(e.amount) || 0); });
+      const top = Object.entries(catTotals).sort((a, b) => b[1] - a[1])[0];
+      if (top) {
+        const meta = FIN_CATEGORY_META[top[0]] || { label: 'Lainnya' };
+        const share = Math.round((top[1] / totalSpent) * 100);
+        insights.push({ icon: 'i-chart-pie', text: `Kategori terbesar: ${meta.label}, ${formatRupiah(top[1])} (${share}% pengeluaran).${share > 40 ? ' Pertimbangkan memangkas di sini.' : ''}` });
+      }
+      const biggest = [...expenses].sort((a, b) => (Number(b.amount) || 0) - (Number(a.amount) || 0))[0];
+      if (biggest && (Number(biggest.amount) || 0) >= income * 0.1) {
+        insights.push({ icon: 'i-alert', text: `Transaksi tunggal terbesar ${formatRupiah(biggest.amount)} (${escHtml(biggest.desc || '')}) — ${Math.round((biggest.amount / income) * 100)}% pemasukan.` });
+      }
+    }
+    // Langganan tahunan
+    const monthly = bills.filter(b => b.name.toLowerCase().includes('kuota') || b.name.toLowerCase().includes('langganan') || b.name.toLowerCase().includes('data'))
+      .reduce((s, b) => s + (Number(b.amount) || 0), 0);
+    if (monthly > 0) {
+      insights.push({ icon: 'i-coins', text: `Langganan harian-harian ${formatRupiah(monthly)}/bln = ${formatRupiah(monthly * 12)}/tahun (${monthly > 0 ? `≈ ${Math.round(monthly / 15000)} x makan siang kantin` : ''}).` });
+    }
+    const overdue = bills.filter(b => !b.paid && new Date().getDate() > (Number(b.dueDay) || 1));
+    if (overdue.length > 0) {
+      insights.push({ icon: 'i-alert', text: `${overdue.length} tagihan lewat tempo: ${overdue.map(b => b.name).join(', ')}. Selesaikan untuk jaga skor & hindari denda.` });
+    }
+    // Dana darurat
+    const emergency = goals.find(g => /darurat/i.test(g.name));
+    if (emergency && emergency.target > 0 && emergency.saved < emergency.target) {
+      const pct = Math.round((emergency.saved / emergency.target) * 100);
+      insights.push({ icon: 'i-target', text: `Dana darurat baru ${pct}% (${formatRupiah(emergency.saved)}/${formatRupiah(emergency.target)}). Sisihkan bertahap.` });
+    }
+    // Tabungan
+    const totalSaved = goals.reduce((s, g) => s + (Number(g.saved) || 0), 0);
+    if (totalSaved > 0) {
+      insights.push({ icon: 'i-wallet', text: `Total sudah disisihkan ke tujuan: ${formatRupiah(totalSaved)}. Pertahankan disiplin!` });
+    }
+
+    if (insights.length === 0) {
+      container.innerHTML = '<div style="font-size:0.74rem;color:var(--text-tertiary);">Insight muncul otomatis setelah ada pemasukan & transaksi.</div>';
+      return;
+    }
+    container.innerHTML = insights.map(i => `<div class="fin-insight"><svg class="ic ic-16" aria-hidden="true"><use href="#${i.icon}"/></svg><span>${i.text}</span></div>`).join('');
+  }
+
+  // ===== Skor Kesehatan Finansial =====
+  function computeHealthScore() {
+    const income = getFinanceIncome();
+    const expenses = getFinanceExpenses();
+    const bills = getFinanceBills();
+    const goals = getFinanceGoals();
+
+    const totalSpent = expenses.reduce((s, e) => s + (Number(e.amount) || 0), 0);
+    const totalSaved = goals.reduce((s, g) => s + (Number(g.saved) || 0), 0);
+
+    // 1. Sisihan 30 poin — berdasarkan proporsi tersimpan vs 20% income
+    const savingsTarget = income * 0.2;
+    const savingsScore = income > 0 ? Math.min(100, Math.round((totalSaved / Math.max(savingsTarget, 1)) * 100)) : 0;
+
+    // 2. Jatah harian 40 poin — disiplin menggunakan jatah aman (remaining >= 0 & totalSpent <= income)
+    const remaining = income - totalSpent;
+    const dailyScore = Math.min(100, Math.round(Math.max(0, remaining / Math.max(income, 1)) * 100));
+
+    // 3. Tagihan tepat waktu 20 poin — % tagihan lunas
+    const billScore = bills.length > 0 ? Math.round((bills.filter(b => b.paid).length / bills.length) * 100) : 100;
+
+    // 4. Disiplin amplop 10 poin — needs/wants enforcement
+    let envelopeScore = 100;
+    const catTotals = {};
+    expenses.forEach(e => { catTotals[e.cat] = (catTotals[e.cat] || 0) + (Number(e.amount) || 0); });
+    const wants = (catTotals.kopi || 0) + (catTotals.laundry || 0) + (catTotals.wisuda || 0);
+    const wantsTarget = income * 0.3;
+    if (wantsTarget > 0 && wants > wantsTarget) {
+      envelopeScore = Math.max(0, 100 - Math.round(((wants - wantsTarget) / wantsTarget) * 100));
+    }
+
+    const total = Math.round(savingsScore * 0.30 + dailyScore * 0.40 + billScore * 0.20 + envelopeScore * 0.10);
+    return { total, savingsScore, dailyScore, billScore, envelopeScore };
+  }
+
+  function renderHealthScore() {
+    const score = computeHealthScore();
+    const numEl = document.getElementById('fin-score-num');
+    const gradeEl = document.getElementById('fin-score-grade');
+    const ringEl = document.getElementById('fin-score-ring-val');
+    if (numEl) numEl.textContent = score.total;
+    let grade = 'C', color = '#f59e0b';
+    if (score.total >= 85) { grade = 'A'; color = '#10b981'; }
+    else if (score.total >= 70) { grade = 'B'; color = '#0284c7'; }
+    else if (score.total >= 55) { grade = 'C'; color = '#f59e0b'; }
+    else { grade = 'D'; color = '#ef4444'; }
+    if (gradeEl) { gradeEl.textContent = 'Grade ' + grade; gradeEl.style.color = color; }
+    if (ringEl) {
+      const CIRC = 263.9;
+      ringEl.style.strokeDashoffset = String(CIRC - (CIRC * score.total / 100));
+      ringEl.style.stroke = color;
+    }
+    const setBar = (id, idVal, v) => {
+      const bar = document.getElementById(id);
+      const val = document.getElementById(idVal);
+      if (bar) { bar.style.width = v + '%'; bar.style.backgroundColor = v >= 70 ? '#10b981' : v >= 40 ? '#f59e0b' : '#ef4444'; }
+      if (val) val.textContent = v;
+    };
+    setBar('fin-score-savings', 'fin-score-savings-val', score.savingsScore);
+    setBar('fin-score-daily', 'fin-score-daily-val', score.dailyScore);
+    setBar('fin-score-bills', 'fin-score-bills-val', score.billScore);
+    setBar('fin-score-envelope', 'fin-score-envelope-val', score.envelopeScore);
+  }
+
+  // ===== Simulator What-If =====
+  function updateSimulator() {
+    const makan = parseMoney(document.getElementById('sim-makan').value);
+    const kopi = parseMoney(document.getElementById('sim-kopi').value);
+    const ojol = parseMoney(document.getElementById('sim-ojol').value);
+    if (document.getElementById('sim-makan-val')) document.getElementById('sim-makan-val').textContent = formatRupiah(makan);
+    if (document.getElementById('sim-kopi-val')) document.getElementById('sim-kopi-val').textContent = formatRupiah(kopi);
+    if (document.getElementById('sim-ojol-val')) document.getElementById('sim-ojol-val').textContent = formatRupiah(ojol);
+
+    const result = document.getElementById('fin-sim-result');
+    if (!result) return;
+
+    // Estimasi: 22 hari kerja makan siang; 4 minggu kopi & ojol
+    const makanMonth = makan * 22;
+    const kopiMonth = kopi * 4;
+    const ojolMonth = ojol * 4;
+    const total = makanMonth + kopiMonth + ojolMonth;
+
+    // Baseline: makan 15rb, kopi 18rb/4, ojol 10rb/4
+    const base = (15000 * 22) + (18000 * 4) + (10000 * 4) + (3000 * 22); // + KRL 3rb/hari
+    const baseSim = (makan * 22) + (kopi * 4) + (ojol * 4) + (3000 * 22);
+    const delta = baseSim - base;
+
+    const monthlySpend = (function () {
+      const expenses = getFinanceExpenses();
+      return expenses.reduce((s, e) => s + (Number(e.amount) || 0), 0);
+    })();
+    const income = getFinanceIncome();
+    const remaining = income - monthlySpend;
+
+    const daysRunway = remaining > 0 ? Math.max(0, Math.floor(remaining / ((makan + 3000) * 1.2))) : 0;
+
+    if (delta <= 0) {
+      result.innerHTML = `<strong>Hemat ${formatRupiah(Math.abs(delta))}/bulan</strong> dibanding rutin 15rb makan + 18rb kopi + 10rb ojol.<br>Estimasi total habis ini ${formatRupiah(baseSim)}/bln. Runway sisa ≈ ${daysRunway} hari (makan ${formatRupiah(makan)}/hari + KRL).`;
+    } else {
+      result.innerHTML = `<strong>Boros ${formatRupiah(delta)}/bulan</strong> dibanding rutin standar.<br>Estimasi total ${formatRupiah(baseSim)}/bln. Runway sisa ≈ ${daysRunway} hari. Pertimbangkan pangkas kopi/ojol.`;
+    }
+  }
+
   function getFinanceExpenses() {
     try {
       const stored = localStorage.getItem(FIN_EXPENSES_KEY);
@@ -9066,6 +9644,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
 
   function setFinanceFilter(filter) {
     currentFinanceFilter = filter;
+    localStorage.setItem('mghb_finance_filter', filter);
     ['all', 'today', 'week', 'month'].forEach(f => {
       const btn = document.getElementById(`fin-filter-${f}`);
       if (btn) btn.classList.toggle('active', f === filter);
@@ -9074,6 +9653,8 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   }
 
   function initFinanceManager() {
+    const savedFilter = localStorage.getItem('mghb_finance_filter');
+    if (savedFilter && ['all', 'today', 'week', 'month'].includes(savedFilter)) currentFinanceFilter = savedFilter;
     const incomeInput = document.getElementById('fin-income-input');
     const localIncome = getFinanceIncome();
     if (incomeInput) {
@@ -9097,7 +9678,14 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     if (dateInput && !dateInput.value) {
       dateInput.value = getWibDateString();
     }
+    ['all', 'today', 'week', 'month'].forEach(f => {
+      const btn = document.getElementById(`fin-filter-${f}`);
+      if (btn) btn.classList.toggle('active', f === currentFinanceFilter);
+    });
     renderFinanceBills();
+    renderFinanceGoals();
+    renderFinanceDueStrip();
+    renderInsights();
     renderFinanceExpenses();
     updateFinanceCalculations(true);
   }
@@ -9372,6 +9960,11 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       fixedMonthly: totalBills, variableBudget, unpaidBills, paidBills, todaySpent,
       breakdown: catTotals
     };
+
+    renderHealthScore();
+    renderInsights();
+    renderFinanceDueStrip();
+    if (document.getElementById('fin-sim-result')) updateSimulator();
   }
 
   function handleNewExpense(e) {
@@ -9456,7 +10049,11 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
 
   function clearFinanceHistory() {
     if (confirm('Hapus seluruh riwayat pengeluaran yang tersimpan?')) {
+      const ids = getFinanceExpenses().map(e => e.id);
       saveFinanceExpenses([]);
+      if (supabaseClient && ids.length > 0) {
+        supabaseClient.from('mghb_expenses').delete().in('id', ids).catch(err => console.warn('Supabase clear expense error:', err));
+      }
       renderFinanceExpenses();
       updateFinanceCalculations(false);
       showToast('Seluruh riwayat pengeluaran berhasil di-reset');
@@ -9502,15 +10099,15 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       html += `
         <div class="finance-tx-item">
           <div class="finance-tx-left">
-            <span class="finance-tx-badge">${meta.badge}</span>
+            <span class="finance-tx-badge">${escHtml(meta.badge)}</span>
             <div class="finance-tx-info">
-              <span class="finance-tx-desc">${item.desc}</span>
-              <span class="finance-tx-date">${item.date} • ${meta.label}</span>
+              <span class="finance-tx-desc">${escHtml(item.desc)}</span>
+              <span class="finance-tx-date">${escHtml(item.date)} • ${escHtml(meta.label)}</span>
             </div>
           </div>
           <div class="finance-tx-right">
             <span class="finance-tx-amount">${formatRupiah(item.amount)}</span>
-            <button type="button" class="finance-tx-del" title="Hapus transaksi" onclick="deleteExpense('${item.id}')">
+            <button type="button" class="finance-tx-del" title="Hapus transaksi" onclick="deleteExpense('${escHtml(item.id)}')">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </button>
           </div>
@@ -9778,6 +10375,10 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     <symbol id="i-clipboard" viewBox="0 0 24 24"><rect x="8" y="3" width="8" height="4" rx="1"/><path d="M16 5h2a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2"/><path d="M9 12h6M9 16h4"/></symbol>
     <symbol id="i-coins" viewBox="0 0 24 24"><ellipse cx="8" cy="7" rx="5" ry="2.5"/><path d="M3 7v4c0 1.4 2.2 2.5 5 2.5s5-1.1 5-2.5V7"/><path d="M6 14.5c-1.7.4-3 1.3-3 2.2 0 1.4 2.2 2.5 5 2.5s5-1.1 5-2.5c0-.9-1.3-1.8-3-2.2"/><path d="M16 9.5c2.2.2 4 1.1 4 2.2 0 1.4-2.2 2.5-5 2.5-.8 0-1.6-.1-2.2-.3"/></symbol>
     <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-train" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="14" rx="3"/><path d="M5 11h14M8 17l-2 4M16 17l2 4"/><circle cx="9" cy="14" r="1.2"/><circle cx="15" cy="14" r="1.2"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M19.5 12.6L12 20l-7.5-7.4a4.6 4.6 0 0 1 6.5-6.5l1 1 1-1a4.6 4.6 0 0 1 6.5 6.5z"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 4.5-3.4 7.6-8 9-4.6-1.4-8-4.5-8-9V6z"/></symbol>
+    <symbol id="i-piggy-bank" viewBox="0 0 24 24"><path d="M19 8c1 .8 2 2 2 4s-1 3.2-2 4v2H5v-2c-1-.8-2-2-2-4s1-3.2 2-4"/><path d="M5 8V6a2 2 0 0 1 2-2h4"/><path d="M12 4a3 3 0 0 1 5 3M8 12h5"/></symbol>
   </defs>
 </svg>
 
