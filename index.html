@@ -19,9 +19,15 @@
     }
   </script>
   <script>
-    /* Early Route Pre-hydration to eliminate flash */
+    /* Early Security & Route Pre-hydration to eliminate flash */
     (function() {
       try {
+        var exp = localStorage.getItem('mghb_auth_session_v1');
+        var now = Date.now();
+        if (!exp || isNaN(parseInt(exp, 10)) || now > parseInt(exp, 10)) {
+          document.documentElement.classList.add('app-locked');
+        }
+
         var hash = (window.location.hash || '').replace(/^#\/?/, '').toLowerCase().trim();
         var p = (window.location.pathname || '').toLowerCase().replace(/\/+$/, '') || '/';
         var t = 'berita';
@@ -37,6 +43,133 @@
     })();
   </script>
   <style>
+    /* Lock Screen Overlay (PIN: 272800, Sesi 7 Hari) */
+    html.app-locked body {
+      overflow: hidden !important;
+    }
+    html.app-locked #app-lock-screen {
+      display: flex !important;
+    }
+    #app-lock-screen {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 999999;
+      background: var(--bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .lock-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 20px 45px -15px rgba(0, 0, 0, 0.2);
+      padding: 28px 24px 24px;
+      max-width: 340px;
+      width: 100%;
+      text-align: center;
+      animation: popIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+      position: relative;
+    }
+    .lock-shield-wrap {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: var(--accent-subtle);
+      color: var(--accent);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 14px;
+      box-shadow: 0 4px 14px rgba(0, 94, 106, 0.18);
+    }
+    .lock-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
+      margin-bottom: 4px;
+    }
+    .lock-sub {
+      font-size: 0.74rem;
+      color: var(--text-secondary);
+      line-height: 1.45;
+      margin-bottom: 20px;
+    }
+    .lock-pin-display {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .lock-pin-dot {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      border: 2px solid var(--border-strong);
+      background: transparent;
+      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .lock-pin-dot.filled {
+      background: var(--accent);
+      border-color: var(--accent);
+      transform: scale(1.15);
+      box-shadow: 0 0 8px rgba(0, 94, 106, 0.4);
+    }
+    .lock-pin-dot.error {
+      background: #ef4444 !important;
+      border-color: #ef4444 !important;
+    }
+    .lock-keypad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 9px;
+      max-width: 250px;
+      margin: 0 auto;
+    }
+    .lock-key {
+      height: 50px;
+      border-radius: 50%;
+      background: var(--surface-hover);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 1.25rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      transition: all 0.12s ease;
+    }
+    .lock-key:active {
+      transform: scale(0.9);
+      background: var(--accent-subtle);
+      color: var(--accent);
+    }
+    .lock-key.key-action {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: transparent;
+      border-color: transparent;
+    }
+    .lock-shake {
+      animation: lockShake 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+    }
+    @keyframes lockShake {
+      10%, 90% { transform: translate3d(-3px, 0, 0); }
+      20%, 80% { transform: translate3d(5px, 0, 0); }
+      30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
+      40%, 60% { transform: translate3d(6px, 0, 0); }
+    }
+
     /* Pre-hydration view overrides */
     html[data-initial-tab="keuangan"] #view-berita { display: none !important; }
     html[data-initial-tab="keuangan"] #view-keuangan { display: block !important; }
@@ -4435,6 +4568,57 @@
 </head>
 <body>
 
+  <!-- Lock Screen Overlay (PIN: 272800, Sesi: 7 Hari) -->
+  <div id="app-lock-screen" role="dialog" aria-modal="true" aria-labelledby="lock-title">
+    <div class="lock-card" id="lock-card">
+      <div class="lock-shield-wrap">
+        <svg class="ic" style="width: 26px; height: 26px;" aria-hidden="true"><use href="#i-shield"/></svg>
+      </div>
+      <h2 class="lock-title" id="lock-title">Workspace Terkunci</h2>
+      <p class="lock-sub">
+        Masukkan PIN 6-digit untuk mengakses dashboard. Sesi aktif tersimpan selama <strong>7 hari</strong> di peramban ini.
+      </p>
+
+      <div class="lock-pin-display" id="lock-pin-display" aria-label="Indikator PIN">
+        <div class="lock-pin-dot" id="pindot-0"></div>
+        <div class="lock-pin-dot" id="pindot-1"></div>
+        <div class="lock-pin-dot" id="pindot-2"></div>
+        <div class="lock-pin-dot" id="pindot-3"></div>
+        <div class="lock-pin-dot" id="pindot-4"></div>
+        <div class="lock-pin-dot" id="pindot-5"></div>
+      </div>
+
+      <!-- Hidden input for desktop keyboard support -->
+      <input 
+        type="password" 
+        id="lock-hidden-input" 
+        inputmode="numeric" 
+        maxlength="6" 
+        autocomplete="off" 
+        style="position: absolute; opacity: 0; pointer-events: none; width: 1px; height: 1px;"
+      >
+
+      <div class="lock-keypad">
+        <button type="button" class="lock-key" onclick="pressPinKey('1')">1</button>
+        <button type="button" class="lock-key" onclick="pressPinKey('2')">2</button>
+        <button type="button" class="lock-key" onclick="pressPinKey('3')">3</button>
+        <button type="button" class="lock-key" onclick="pressPinKey('4')">4</button>
+        <button type="button" class="lock-key" onclick="pressPinKey('5')">5</button>
+        <button type="button" class="lock-key" onclick="pressPinKey('6')">6</button>
+        <button type="button" class="lock-key" onclick="pressPinKey('7')">7</button>
+        <button type="button" class="lock-key" onclick="pressPinKey('8')">8</button>
+        <button type="button" class="lock-key" onclick="pressPinKey('9')">9</button>
+        <button type="button" class="lock-key key-action" onclick="clearPin()">Hapus</button>
+        <button type="button" class="lock-key" onclick="pressPinKey('0')">0</button>
+        <button type="button" class="lock-key key-action" onclick="backspacePin()" aria-label="Hapus satu angka">
+          <svg class="ic ic-18" aria-hidden="true"><use href="#i-x"/></svg>
+        </button>
+      </div>
+
+      <div id="lock-error-msg" style="margin-top: 14px; font-size: 0.72rem; color: #ef4444; font-weight: 600; min-height: 18px;"></div>
+    </div>
+  </div>
+
 <div class="app-shell">
   <!-- Sticky Header -->
   <header class="sticky-header">
@@ -4463,6 +4647,12 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
             <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
             <line x1="12" y1="18" x2="12.01" y2="18"></line>
+          </svg>
+        </button>
+        <button class="btn-icon" id="btn-lock" title="Kunci Workspace (PIN 272800)" onclick="lockAppSession()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
           </svg>
         </button>
         <button class="btn-icon" id="btn-theme" title="Ganti Tema" onclick="toggleTheme()">
@@ -5982,7 +6172,10 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
         </div>
         <div style="min-width: 0; flex: 1;">
           <strong style="font-size: 0.82rem; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-primary);">Zaki Tri Pamungkas</strong>
-          <p style="font-size: 0.7rem; color: var(--text-secondary); margin: 0;">Divisi SSE · BNI</p>
+          <p style="font-size: 0.7rem; color: var(--text-secondary); margin: 0; display: flex; justify-content: space-between; align-items: center;">
+            <span>Divisi SSE · BNI</span>
+            <button type="button" onclick="lockAppSession()" style="background: none; border: none; color: var(--text-tertiary); font-size: 0.68rem; cursor: pointer; text-decoration: underline; padding: 0;" title="Kunci workspace sekarang (PIN 272800)">Kunci</button>
+          </p>
         </div>
       </div>
       <div class="workspace-connection" id="workspace-db-status" role="status" style="font-size: 0.72rem; display: flex; align-items: center; gap: 6px;">
@@ -6376,6 +6569,175 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
 </div>
 
 <script>
+  // ===== Security Lock Screen Engine (PIN: 272800, Sesi 7 Hari) =====
+  const LOCK_SESSION_KEY = 'mghb_auth_session_v1';
+  const LOCK_PIN_HASH = '272800'; // Target PIN
+  const ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+  let enteredPin = '';
+
+  function isAppUnlocked() {
+    try {
+      const exp = localStorage.getItem(LOCK_SESSION_KEY);
+      if (!exp) return false;
+      const expTime = parseInt(exp, 10);
+      if (isNaN(expTime) || Date.now() > expTime) {
+        localStorage.removeItem(LOCK_SESSION_KEY);
+        return false;
+      }
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  function initLockScreen() {
+    if (isAppUnlocked()) {
+      document.documentElement.classList.remove('app-locked');
+      const lockScreen = document.getElementById('app-lock-screen');
+      if (lockScreen) lockScreen.style.display = 'none';
+      return;
+    }
+
+    document.documentElement.classList.add('app-locked');
+    const lockScreen = document.getElementById('app-lock-screen');
+    if (lockScreen) lockScreen.style.display = 'flex';
+
+    // Desktop keyboard listener on hidden input
+    const hiddenInput = document.getElementById('lock-hidden-input');
+    const lockCard = document.getElementById('lock-card');
+    if (lockCard && hiddenInput) {
+      lockCard.addEventListener('click', () => {
+        try { hiddenInput.focus(); } catch (_) {}
+      });
+      hiddenInput.addEventListener('input', () => {
+        const val = hiddenInput.value.replace(/[^\d]/g, '').slice(0, 6);
+        enteredPin = val;
+        updatePinDisplay();
+        if (enteredPin.length === 6) {
+          verifyPin();
+        }
+      });
+      try { hiddenInput.focus(); } catch (_) {}
+    }
+
+    window.addEventListener('keydown', handleLockKeyboard);
+  }
+
+  function handleLockKeyboard(e) {
+    if (!document.documentElement.classList.contains('app-locked')) return;
+    if (e.key >= '0' && e.key <= '9') {
+      pressPinKey(e.key);
+    } else if (e.key === 'Backspace') {
+      backspacePin();
+    } else if (e.key === 'Escape') {
+      clearPin();
+    }
+  }
+
+  function pressPinKey(digit) {
+    if (enteredPin.length >= 6) return;
+    enteredPin += digit;
+    const hiddenInput = document.getElementById('lock-hidden-input');
+    if (hiddenInput) hiddenInput.value = enteredPin;
+    updatePinDisplay();
+    if (enteredPin.length === 6) {
+      verifyPin();
+    }
+  }
+
+  function backspacePin() {
+    if (enteredPin.length > 0) {
+      enteredPin = enteredPin.slice(0, -1);
+      const hiddenInput = document.getElementById('lock-hidden-input');
+      if (hiddenInput) hiddenInput.value = enteredPin;
+      updatePinDisplay();
+      clearLockError();
+    }
+  }
+
+  function clearPin() {
+    enteredPin = '';
+    const hiddenInput = document.getElementById('lock-hidden-input');
+    if (hiddenInput) hiddenInput.value = '';
+    updatePinDisplay();
+    clearLockError();
+  }
+
+  function updatePinDisplay() {
+    for (let i = 0; i < 6; i++) {
+      const dot = document.getElementById(`pindot-${i}`);
+      if (dot) {
+        dot.classList.toggle('filled', i < enteredPin.length);
+        dot.classList.remove('error');
+      }
+    }
+  }
+
+  function clearLockError() {
+    const msg = document.getElementById('lock-error-msg');
+    if (msg) msg.textContent = '';
+  }
+
+  function verifyPin() {
+    if (enteredPin === LOCK_PIN_HASH) {
+      // Success! Grant 1 week session
+      const expiry = Date.now() + ONE_WEEK_MS;
+      localStorage.setItem(LOCK_SESSION_KEY, String(expiry));
+
+      const lockScreen = document.getElementById('app-lock-screen');
+      for (let i = 0; i < 6; i++) {
+        const dot = document.getElementById(`pindot-${i}`);
+        if (dot) {
+          dot.style.background = '#10b981';
+          dot.style.borderColor = '#10b981';
+        }
+      }
+
+      window.removeEventListener('keydown', handleLockKeyboard);
+
+      setTimeout(() => {
+        document.documentElement.classList.remove('app-locked');
+        if (lockScreen) {
+          lockScreen.style.transition = 'opacity 0.25s ease';
+          lockScreen.style.opacity = '0';
+          setTimeout(() => {
+            lockScreen.style.display = 'none';
+            lockScreen.style.opacity = '1';
+          }, 250);
+        }
+        showToast('PIN benar! Selamat datang kembali.');
+      }, 180);
+    } else {
+      // Failed PIN
+      const lockCard = document.getElementById('lock-card');
+      const msg = document.getElementById('lock-error-msg');
+
+      for (let i = 0; i < 6; i++) {
+        const dot = document.getElementById(`pindot-${i}`);
+        if (dot) dot.classList.add('error');
+      }
+
+      if (lockCard) {
+        lockCard.classList.remove('lock-shake');
+        void lockCard.offsetWidth; // Reflow
+        lockCard.classList.add('lock-shake');
+      }
+
+      if (msg) msg.textContent = 'PIN salah. Silakan coba lagi.';
+
+      setTimeout(() => {
+        clearPin();
+      }, 500);
+    }
+  }
+
+  function lockAppSession() {
+    localStorage.removeItem(LOCK_SESSION_KEY);
+    enteredPin = '';
+    initLockScreen();
+    showToast('Sesi dikunci.');
+  }
+
   let activeTab = 'berita';
   let currentFilter = 'all';
   let searchQuery = '';
@@ -6755,6 +7117,13 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
       localStorage.setItem(INVENTARIS_STORAGE_KEY, JSON.stringify(items || []));
     } catch (e) {
       console.warn('Gagal menyimpan inventaris ke localStorage:', e);
+    }
+    if (supabaseClient) {
+      supabaseClient.from('mghb_settings').upsert({
+        key: 'inventaris_items',
+        value: items || [],
+        updated_at: new Date().toISOString()
+      }).then(() => {}, err => console.warn('Supabase inventaris sync error:', err));
     }
   }
 
@@ -7632,25 +8001,49 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
       // 9. Sync & Fetch cloud goals (Tujuan & Sisihan)
       const localGoals = getFinanceGoals();
       if (localGoals.length > 0 && supabaseClient) {
-        const goalRows = localGoals.map((g, idx) => ({
-          id: g.id,
-          name: g.name,
-          target: Number(g.target) || 0,
-          saved: Number(g.saved) || 0,
-          deadline: g.deadline || null,
-          icon: g.icon || '',
-          color: g.color || '#10b981',
-          is_preset: false,
-          sort_order: idx + 1,
+        // Simpan ke mghb_settings sebagai cadangan terjamin
+        await supabaseClient.from('mghb_settings').upsert({
+          key: 'finance_goals',
+          value: localGoals,
           updated_at: new Date().toISOString()
-        }));
-        await supabaseClient.from('mghb_goals').upsert(goalRows);
+        });
+
+        try {
+          const goalRows = localGoals.map((g, idx) => ({
+            id: g.id,
+            name: g.name,
+            target: Number(g.target) || 0,
+            saved: Number(g.saved) || 0,
+            deadline: g.deadline || null,
+            icon: g.icon || '',
+            color: g.color || '#10b981',
+            is_preset: false,
+            sort_order: idx + 1,
+            updated_at: new Date().toISOString()
+          }));
+          await supabaseClient.from('mghb_goals').upsert(goalRows);
+        } catch (_) {}
       }
-      const { data: cloudGoals } = await supabaseClient.from('mghb_goals').select('*').order('sort_order', { ascending: true });
-      if (cloudGoals && Array.isArray(cloudGoals)) {
+
+      let cloudGoalsList = null;
+      try {
+        const { data: cloudGoals, error: cgErr } = await supabaseClient.from('mghb_goals').select('*').order('sort_order', { ascending: true });
+        if (!cgErr && cloudGoals && Array.isArray(cloudGoals) && cloudGoals.length > 0) {
+          cloudGoalsList = cloudGoals;
+        }
+      } catch (_) {}
+
+      if (!cloudGoalsList) {
+        const { data: settingsGoals } = await supabaseClient.from('mghb_settings').select('value').eq('key', 'finance_goals').maybeSingle();
+        if (settingsGoals && Array.isArray(settingsGoals.value) && settingsGoals.value.length > 0) {
+          cloudGoalsList = settingsGoals.value;
+        }
+      }
+
+      if (cloudGoalsList && Array.isArray(cloudGoalsList)) {
         const localGoalMap = new Map();
         localGoals.forEach(g => { if (g && g.id) localGoalMap.set(g.id, g); });
-        cloudGoals.forEach(cg => {
+        cloudGoalsList.forEach(cg => {
           if (!cg || !cg.id) return;
           const existing = localGoalMap.get(cg.id);
           if (!existing) {
@@ -7674,6 +8067,54 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
         });
         saveFinanceGoals(Array.from(localGoalMap.values()));
         renderFinanceGoals();
+      }
+
+      // 10. Sync & Fetch Inventaris Rantau (Barang Bawaan & Tambahan)
+      const localInvItems = getInventarisItems();
+      if (localInvItems && localInvItems.length > 0 && supabaseClient) {
+        await supabaseClient.from('mghb_settings').upsert({
+          key: 'inventaris_items',
+          value: localInvItems,
+          updated_at: new Date().toISOString()
+        });
+      }
+      const { data: cloudInvData } = await supabaseClient.from('mghb_settings').select('value').eq('key', 'inventaris_items').maybeSingle();
+      if (cloudInvData && Array.isArray(cloudInvData.value) && cloudInvData.value.length > 0) {
+        const currentLocal = getInventarisItems();
+        if (!currentLocal || currentLocal.length === 0) {
+          saveInventarisItems(cloudInvData.value);
+          renderInventaris();
+        } else {
+          const invMap = new Map();
+          currentLocal.forEach(it => { if (it && it.id) invMap.set(it.id, it); });
+          cloudInvData.value.forEach(it => {
+            if (it && it.id && !invMap.has(it.id)) {
+              invMap.set(it.id, it);
+            }
+          });
+          const mergedInv = Array.from(invMap.values());
+          saveInventarisItems(mergedInv);
+          renderInventaris();
+        }
+      }
+
+      // 11. Sync & Fetch Pemasukan Bulanan (Income)
+      const currentIncome = getFinanceIncome();
+      if (currentIncome > 0 && supabaseClient) {
+        await supabaseClient.from('mghb_settings').upsert({
+          key: 'finance_income',
+          value: currentIncome,
+          updated_at: new Date().toISOString()
+        });
+      }
+      const { data: cloudIncomeData } = await supabaseClient.from('mghb_settings').select('value').eq('key', 'finance_income').maybeSingle();
+      if (cloudIncomeData && cloudIncomeData.value != null) {
+        const incVal = Number(cloudIncomeData.value) || 0;
+        if (incVal > 0) {
+          localStorage.setItem(FIN_INCOME_KEY, String(incVal));
+          const incEl = document.getElementById('fin-income-input');
+          if (incEl && document.activeElement !== incEl) incEl.value = incVal.toLocaleString('id-ID');
+        }
       }
 
       if (!silent) {
@@ -9483,7 +9924,16 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
 
   function syncGoalsToSupabase() {
     if (!supabaseClient) return;
-    const rows = getFinanceGoals().map((g, idx) => ({
+    const goals = getFinanceGoals();
+    // 1. Sinkronisasi terjamin via mghb_settings (JSONB)
+    supabaseClient.from('mghb_settings').upsert({
+      key: 'finance_goals',
+      value: goals || [],
+      updated_at: new Date().toISOString()
+    }).then(() => {}, err => console.warn('Supabase goals settings sync error:', err));
+
+    // 2. Sinkronisasi ke tabel dedicated mghb_goals jika ada
+    const rows = (goals || []).map((g, idx) => ({
       id: g.id,
       name: g.name,
       target: Number(g.target) || 0,
@@ -9495,7 +9945,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       sort_order: idx + 1,
       updated_at: new Date().toISOString()
     }));
-    supabaseClient.from('mghb_goals').upsert(rows).then(() => {}, err => console.warn('Supabase goals sync error:', err));
+    supabaseClient.from('mghb_goals').upsert(rows).then(() => {}, () => {});
   }
 
   function promptAddGoal() {
@@ -9541,6 +9991,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     if (confirm(`Hapus tujuan "${g.name}"?`)) {
       goals = goals.filter(x => x.id !== id);
       saveFinanceGoals(goals);
+      syncGoalsToSupabase();
       if (supabaseClient) supabaseClient.from('mghb_goals').delete().eq('id', id).then(() => {}, () => {});
       renderFinanceGoals();
       showToast('Tujuan dihapus');
@@ -10696,6 +11147,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
 
   // --- Initialization ---
   async function initApp() {
+    try { initLockScreen(); } catch (e) { console.error('initLockScreen error:', e); }
     try { initTheme(); } catch (e) { console.error('initTheme error:', e); }
     try { fetchLiveNews(false); } catch (e) { console.error('fetchLiveNews error:', e); }
     try { updateOfficeRhythm(); } catch (e) { console.error('updateOfficeRhythm error:', e); }
