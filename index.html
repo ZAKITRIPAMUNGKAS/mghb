@@ -55,110 +55,177 @@
       position: fixed;
       inset: 0;
       z-index: 999999;
-      background: var(--bg);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      background: rgba(15, 23, 42, 0.68);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 20px;
+      padding: 16px;
     }
     .lock-card {
       background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      box-shadow: 0 20px 45px -15px rgba(0, 0, 0, 0.2);
-      padding: 28px 24px 24px;
-      max-width: 340px;
+      border: 1px solid rgba(0, 124, 137, 0.22);
+      border-radius: 28px;
+      box-shadow: 0 30px 70px -15px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.6) inset;
+      padding: 32px 24px 26px;
+      max-width: 360px;
       width: 100%;
       text-align: center;
       animation: popIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
       position: relative;
     }
-    .lock-shield-wrap {
-      width: 52px;
-      height: 52px;
-      border-radius: 50%;
-      background: var(--accent-subtle);
-      color: var(--accent);
+    .lock-emblem-wrap {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 14px;
-      box-shadow: 0 4px 14px rgba(0, 94, 106, 0.18);
+      position: relative;
+      margin-bottom: 16px;
+    }
+    .lock-shield-wrap {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #007C89 0%, #004D56 100%);
+      color: #ffffff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 24px rgba(0, 124, 137, 0.35);
+      position: relative;
+      z-index: 2;
+    }
+    .lock-pulse-ring {
+      position: absolute;
+      inset: -6px;
+      border-radius: 50%;
+      border: 2px solid rgba(0, 124, 137, 0.35);
+      animation: dotPulse 2.4s ease-in-out infinite;
+      z-index: 1;
     }
     .lock-title {
-      font-size: 1.15rem;
+      font-size: 1.2rem;
       font-weight: 800;
       color: var(--text-primary);
       letter-spacing: -0.02em;
       margin-bottom: 4px;
     }
     .lock-sub {
-      font-size: 0.74rem;
+      font-size: 0.75rem;
       color: var(--text-secondary);
       line-height: 1.45;
-      margin-bottom: 20px;
+      margin-bottom: 22px;
+      max-width: 290px;
+      margin-left: auto;
+      margin-right: auto;
     }
     .lock-pin-display {
       display: flex;
       justify-content: center;
-      gap: 10px;
-      margin-bottom: 20px;
+      gap: 12px;
+      margin-bottom: 24px;
     }
     .lock-pin-dot {
       width: 15px;
       height: 15px;
       border-radius: 50%;
-      border: 2px solid var(--border-strong);
-      background: transparent;
-      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+      border: 1.5px solid var(--border-strong);
+      background: var(--surface-hover);
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .lock-pin-dot.filled {
-      background: var(--accent);
-      border-color: var(--accent);
+      background: linear-gradient(135deg, #007C89 0%, #14B8A6 100%);
+      border-color: #007C89;
       transform: scale(1.15);
-      box-shadow: 0 0 8px rgba(0, 94, 106, 0.4);
+      box-shadow: 0 0 12px rgba(0, 124, 137, 0.6), 0 2px 4px rgba(0, 124, 137, 0.3);
     }
     .lock-pin-dot.error {
       background: #ef4444 !important;
       border-color: #ef4444 !important;
+      box-shadow: 0 0 12px rgba(239, 68, 68, 0.6) !important;
     }
     .lock-keypad {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 9px;
-      max-width: 250px;
+      row-gap: 12px;
+      column-gap: 14px;
+      max-width: 260px;
       margin: 0 auto;
     }
     .lock-key {
-      height: 50px;
+      width: 66px;
+      height: 66px;
+      margin: 0 auto;
       border-radius: 50%;
-      background: var(--surface-hover);
-      border: 1px solid var(--border-subtle);
+      background: linear-gradient(180deg, var(--surface) 0%, var(--surface-hover) 100%);
+      border: 1px solid var(--border);
       color: var(--text-primary);
       font-family: inherit;
-      font-size: 1.25rem;
-      font-weight: 700;
       display: inline-flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       user-select: none;
       -webkit-tap-highlight-color: transparent;
-      transition: all 0.12s ease;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04), 0 1px 0 rgba(255, 255, 255, 0.8) inset;
+      transition: transform 0.12s ease, background 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
+    }
+    .lock-key:hover {
+      border-color: var(--accent);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 94, 106, 0.15);
     }
     .lock-key:active {
       transform: scale(0.9);
       background: var(--accent-subtle);
+      border-color: var(--accent);
       color: var(--accent);
     }
+    .lock-key .key-num {
+      font-size: 1.4rem;
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: -0.01em;
+    }
+    .lock-key .key-sub {
+      font-size: 0.55rem;
+      font-weight: 700;
+      color: var(--text-tertiary);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      line-height: 1;
+      margin-top: 3px;
+    }
     .lock-key.key-action {
+      background: transparent;
+      border-color: transparent;
+      box-shadow: none;
       font-size: 0.78rem;
       font-weight: 600;
       color: var(--text-secondary);
-      background: transparent;
-      border-color: transparent;
+    }
+    .lock-key.key-action:hover {
+      background: var(--surface-hover);
+      border-color: var(--border-subtle);
+    }
+    .lock-key.key-action:active {
+      transform: scale(0.92);
+      color: var(--text-primary);
+    }
+    .lock-badge-footer {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      margin-top: 18px;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      background: var(--surface-hover);
+      border: 1px solid var(--border-subtle);
     }
     .lock-shake {
       animation: lockShake 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
@@ -4571,12 +4638,16 @@
   <!-- Lock Screen Overlay (PIN: 272800, Sesi: 7 Hari) -->
   <div id="app-lock-screen" role="dialog" aria-modal="true" aria-labelledby="lock-title">
     <div class="lock-card" id="lock-card">
-      <div class="lock-shield-wrap">
-        <svg class="ic" style="width: 26px; height: 26px;" aria-hidden="true"><use href="#i-shield"/></svg>
+      <div class="lock-emblem-wrap">
+        <div class="lock-shield-wrap">
+          <svg class="ic" style="width: 26px; height: 26px;" aria-hidden="true"><use href="#i-shield"/></svg>
+        </div>
+        <div class="lock-pulse-ring"></div>
       </div>
-      <h2 class="lock-title" id="lock-title">Workspace Terkunci</h2>
+
+      <h2 class="lock-title" id="lock-title">Workspace MagangHub</h2>
       <p class="lock-sub">
-        Masukkan PIN 6-digit untuk mengakses dashboard. Sesi aktif tersimpan selama <strong>7 hari</strong> di peramban ini.
+        Masukkan PIN 6-digit untuk membuka akses. Sesi aktif tersimpan selama <strong>7 hari</strong>.
       </p>
 
       <div class="lock-pin-display" id="lock-pin-display" aria-label="Indikator PIN">
@@ -4599,23 +4670,60 @@
       >
 
       <div class="lock-keypad">
-        <button type="button" class="lock-key" onclick="pressPinKey('1')">1</button>
-        <button type="button" class="lock-key" onclick="pressPinKey('2')">2</button>
-        <button type="button" class="lock-key" onclick="pressPinKey('3')">3</button>
-        <button type="button" class="lock-key" onclick="pressPinKey('4')">4</button>
-        <button type="button" class="lock-key" onclick="pressPinKey('5')">5</button>
-        <button type="button" class="lock-key" onclick="pressPinKey('6')">6</button>
-        <button type="button" class="lock-key" onclick="pressPinKey('7')">7</button>
-        <button type="button" class="lock-key" onclick="pressPinKey('8')">8</button>
-        <button type="button" class="lock-key" onclick="pressPinKey('9')">9</button>
-        <button type="button" class="lock-key key-action" onclick="clearPin()">Hapus</button>
-        <button type="button" class="lock-key" onclick="pressPinKey('0')">0</button>
+        <button type="button" class="lock-key" onclick="pressPinKey('1')">
+          <span class="key-num">1</span>
+          <span class="key-sub">&nbsp;</span>
+        </button>
+        <button type="button" class="lock-key" onclick="pressPinKey('2')">
+          <span class="key-num">2</span>
+          <span class="key-sub">ABC</span>
+        </button>
+        <button type="button" class="lock-key" onclick="pressPinKey('3')">
+          <span class="key-num">3</span>
+          <span class="key-sub">DEF</span>
+        </button>
+        <button type="button" class="lock-key" onclick="pressPinKey('4')">
+          <span class="key-num">4</span>
+          <span class="key-sub">GHI</span>
+        </button>
+        <button type="button" class="lock-key" onclick="pressPinKey('5')">
+          <span class="key-num">5</span>
+          <span class="key-sub">JKL</span>
+        </button>
+        <button type="button" class="lock-key" onclick="pressPinKey('6')">
+          <span class="key-num">6</span>
+          <span class="key-sub">MNO</span>
+        </button>
+        <button type="button" class="lock-key" onclick="pressPinKey('7')">
+          <span class="key-num">7</span>
+          <span class="key-sub">PQRS</span>
+        </button>
+        <button type="button" class="lock-key" onclick="pressPinKey('8')">
+          <span class="key-num">8</span>
+          <span class="key-sub">TUV</span>
+        </button>
+        <button type="button" class="lock-key" onclick="pressPinKey('9')">
+          <span class="key-num">9</span>
+          <span class="key-sub">WXYZ</span>
+        </button>
+        <button type="button" class="lock-key key-action" onclick="clearPin()">
+          <span>Hapus</span>
+        </button>
+        <button type="button" class="lock-key" onclick="pressPinKey('0')">
+          <span class="key-num">0</span>
+          <span class="key-sub">+</span>
+        </button>
         <button type="button" class="lock-key key-action" onclick="backspacePin()" aria-label="Hapus satu angka">
           <svg class="ic ic-18" aria-hidden="true"><use href="#i-x"/></svg>
         </button>
       </div>
 
       <div id="lock-error-msg" style="margin-top: 14px; font-size: 0.72rem; color: #ef4444; font-weight: 600; min-height: 18px;"></div>
+
+      <div class="lock-badge-footer">
+        <svg class="ic ic-14" aria-hidden="true"><use href="#i-check-circle"/></svg>
+        <span>Keamanan Sesi Lokal · 7 Hari Aktif</span>
+      </div>
     </div>
   </div>
 
