@@ -3179,6 +3179,7 @@
     document.getElementById('view-route-explorer').classList.remove('hidden');
     currentStopMarkers.forEach(function(m) { map.removeLayer(m); });
     currentStopMarkers = [];
+    if (stopFocusMarker) { map.removeLayer(stopFocusMarker); stopFocusMarker = null; }
   };
 
   window.onDirectionChange = function(dirIdx) {
@@ -3236,13 +3237,67 @@
     document.getElementById('dt-summary-metrics').textContent = stops.length + ' halte · Estimasi ±' + estTime + ' menit';
   }
 
+  var stopFocusMarker = null;
+
   window.focusDetailStop = function(lat, lon, name) {
     if (!lat || !lon) return;
-    map.setView([lat, lon], 17, { animate: true });
-    L.popup().setLatLng([lat, lon]).setContent('<b>Halte TransJakarta:</b><br>' + name).openOn(map);
+
+    if (stopFocusMarker) {
+      map.removeLayer(stopFocusMarker);
+      stopFocusMarker = null;
+    }
+
+    map.invalidateSize();
+
+    var isMobile = window.innerWidth <= 768;
+    var targetLatLng = [lat, lon];
+
+    if (isMobile) {
+      var panel = document.getElementById('main-control-panel');
+      if (panel) {
+        panel.classList.remove('state-expanded', 'state-half');
+        panel.classList.add('state-collapsed');
+      }
+
+      var pt = map.project([lat, lon], 17);
+      pt.y += 42;
+      targetLatLng = map.unproject(pt, 17);
+    }
+
+    map.stop();
+    map.setView(targetLatLng, 17, { animate: true, duration: 0.5 });
+
+    var focusIcon = L.divIcon({
+      className: '',
+      html: '<div style="position:relative;width:28px;height:28px;display:flex;align-items:center;justify-content:center;">' +
+              '<div style="position:absolute;width:28px;height:28px;border-radius:50%;background:rgba(255,90,31,0.35);animation:gpsPulse 1.8s infinite ease-out;"></div>' +
+              '<div style="width:14px;height:14px;border-radius:50%;background:#FF5A1F;border:2.5px solid #FFFFFF;box-shadow:0 2px 10px rgba(0,0,0,0.45);"></div>' +
+            '</div>',
+      iconSize: [28, 28],
+      iconAnchor: [14, 14]
+    });
+
+    stopFocusMarker = L.marker([lat, lon], { icon: focusIcon, zIndexOffset: 2000 }).addTo(map);
+
+    L.popup({
+      autoPan: false,
+      offset: [0, -12],
+      className: 'custom-stop-popup'
+    })
+    .setLatLng([lat, lon])
+    .setContent('<div style="font-family:Plus Jakarta Sans,sans-serif;padding:3px 6px;text-align:center;">' +
+                  '<div style="font-size:10px;font-weight:800;color:#005BAC;letter-spacing:0.3px;text-transform:uppercase;">Halte TransJakarta</div>' +
+                  '<div style="font-size:13px;font-weight:800;color:#172033;margin-top:2px;">' + name + '</div>' +
+                  '<div style="font-size:10.5px;color:#667085;margin-top:2px;">' + lat.toFixed(5) + ', ' + lon.toFixed(5) + '</div>' +
+                '</div>')
+    .openOn(map);
   };
 
   function drawRouteGeometry(routeId) {
+    if (stopFocusMarker) {
+      map.removeLayer(stopFocusMarker);
+      stopFocusMarker = null;
+    }
     if (currentRouteLayer) {
       map.removeLayer(currentRouteLayer);
       currentRouteLayer = null;
