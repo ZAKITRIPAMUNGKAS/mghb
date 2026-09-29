@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Jakarta Journey Planner — Transportasi Publik</title>
-  <meta name="description" content="Cari rute transportasi publik Jakarta. TransJakarta, Mikrotrans, Metrotrans, Royaltrans. Data resmi PPID GTFS.">
+  <title>Jakarta Journey Planner — TransJakarta & JakLingko</title>
+  <meta name="description" content="Rencanakan perjalanan transportasi publik Jakarta. BRT TransJakarta, Mikrotrans, Metrotrans, dan Royaltrans. Data resmi GTFS PPID.">
   <link rel="icon" href="favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,199 +13,861 @@
   <style>
     :root {
       --font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      --bg: #f0f2f5; --surface: #fff; --text: #1e293b; --t2: #64748b; --t3: #94a3b8;
-      --brand: #007C89; --brand-l: #e0f2f4; --border: #e2e8f0; --red: #dc2626;
-      --green: #16a34a; --orange: #ea580c; --radius: 16px;
+      --bg: #F8FAFC;
+      --surface: #FFFFFF;
+      --text: #0F172A;
+      --text-secondary: #475569;
+      --text-muted: #94A3B8;
+      --border: #E2E8F0;
+      --border-light: #F1F5F9;
+
+      /* Signature TransJakarta & BNI White-Orange Palette */
+      --brand-orange: #FF5500;
+      --brand-orange-hover: #E04B00;
+      --brand-orange-light: #FFF7ED;
+      --brand-orange-subtle: #FFEDD5;
+      --brand-orange-border: #FED7AA;
+      --brand-blue: #002D62;
+
+      /* Transport Category Tokens */
+      --cat-brt: #DC2626;
+      --cat-brt-bg: #FEF2F2;
+      --cat-metro: #2563EB;
+      --cat-metro-bg: #EFF6FF;
+      --cat-mikro: #16A34A;
+      --cat-mikro-bg: #F0FDF4;
+      --cat-royal: #9333EA;
+      --cat-royal-bg: #FAF5FF;
+      --cat-jabodetabek: #EA580C;
+      --cat-jabodetabek-bg: #FFF7ED;
+
+      --radius: 14px;
+      --radius-sm: 8px;
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+      --shadow-md: 0 4px 16px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
+      --shadow-lg: 0 12px 32px -4px rgba(15, 23, 42, 0.08), 0 4px 12px rgba(15, 23, 42, 0.04);
     }
+
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; }
-    .container { max-width: 560px; margin: 0 auto; padding: 24px 16px 80px; }
-
-    .hero { text-align: center; padding: 32px 0 16px; }
-    .hero h1 { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; }
-    .hero p { font-size: 13px; color: var(--t2); margin-top: 6px; }
-
-    .search-card {
-      background: var(--surface); border-radius: var(--radius);
-      box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-      border: 1px solid var(--border); overflow: hidden;
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
-    .search-row {
-      display: flex; align-items: center; padding: 0 16px; position: relative;
+
+    /* ─── TOP NAVIGATION BAR ─── */
+    .topbar {
+      background: #FFFFFF;
       border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: var(--shadow-sm);
     }
-    .search-row:last-of-type { border-bottom: none; }
-    .search-row .dot {
-      width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; margin-right: 12px;
+    .topbar-stripe {
+      height: 4px;
+      background: linear-gradient(90deg, #FF5500 0%, #FF8800 50%, #002D62 100%);
     }
-    .dot.from { background: var(--green); }
-    .dot.to { background: var(--red); }
-    .search-row .line { width: 1.5px; height: 20px; background: var(--border); position: absolute; left: 20px; top: 36px; }
-    .search-row input {
-      flex: 1; border: none; padding: 16px 0; font-size: 15px; font-family: var(--font);
-      outline: none; background: transparent; color: var(--text);
+    .topbar-content {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
     }
-    .search-row input::placeholder { color: var(--t3); }
+    .logos-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .logo-divider {
+      width: 1px;
+      height: 20px;
+      background: var(--border);
+    }
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .top-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: all 0.15s ease;
+      box-shadow: var(--shadow-sm);
+    }
+    .top-btn:hover {
+      background: var(--brand-orange-light);
+      border-color: var(--brand-orange-border);
+      color: var(--brand-orange);
+      transform: translateY(-1px);
+    }
+    .top-btn.primary {
+      background: var(--brand-orange-light);
+      border-color: var(--brand-orange-border);
+      color: var(--brand-orange);
+    }
+
+    /* ─── MAIN CONTAINER ─── */
+    .container {
+      max-width: 680px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 24px 18px 60px;
+      flex: 1;
+    }
+
+    /* ─── HERO HEADER ─── */
+    .hero-box {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      background: var(--brand-orange-light);
+      border: 1px solid var(--brand-orange-border);
+      color: var(--brand-orange);
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .badge-pill .pulse-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--brand-orange);
+      box-shadow: 0 0 0 2px rgba(255, 85, 0, 0.25);
+    }
+    .hero-box h1 {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: var(--text);
+      line-height: 1.25;
+    }
+    .hero-box p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-top: 6px;
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* ─── SEARCH CARD ─── */
+    .search-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      overflow: visible;
+    }
+    .search-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #FF5500 0%, #FF8800 100%);
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
+
+    .inputs-wrapper {
+      padding: 18px 20px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      position: relative;
+    }
+
+    .input-field-group {
+      display: flex;
+      align-items: center;
+      position: relative;
+      background: #F8FAFC;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      transition: all 0.15s ease;
+    }
+    .input-field-group:focus-within {
+      background: #FFFFFF;
+      border-color: var(--brand-orange);
+      box-shadow: 0 0 0 3px rgba(255, 85, 0, 0.12);
+    }
+
+    .field-icon {
+      width: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .dot-marker {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 2.5px solid #FFFFFF;
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.1);
+    }
+    .dot-marker.from { background: #16A34A; }
+    .dot-marker.to { background: var(--brand-orange); }
+
+    .input-field-group input {
+      flex: 1;
+      border: none;
+      padding: 13px 40px 13px 0;
+      font-size: 14.5px;
+      font-family: var(--font);
+      font-weight: 500;
+      background: transparent;
+      color: var(--text);
+      outline: none;
+    }
+    .input-field-group input::placeholder {
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    /* Floating Swap Button */
+    .swap-divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 0;
+      position: relative;
+      z-index: 5;
+    }
     .swap-btn {
-      position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
-      width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--border);
-      background: var(--surface); cursor: pointer; display: flex; align-items: center;
-      justify-content: center; z-index: 2; color: var(--t2); transition: all 0.15s;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: #FFFFFF;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+      box-shadow: var(--shadow-md);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .swap-btn:hover { background: var(--brand-l); color: var(--brand); border-color: var(--brand); }
+    .swap-btn:hover {
+      background: var(--brand-orange-light);
+      border-color: var(--brand-orange-border);
+      color: var(--brand-orange);
+      transform: rotate(180deg) scale(1.08);
+    }
 
-    .time-row {
-      display: flex; align-items: center; gap: 8px; padding: 12px 16px;
-      border-top: 1px solid var(--border); background: #f8fafc;
+    /* Clear input button */
+    .clear-btn {
+      position: absolute;
+      right: 12px;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: none;
+      background: #E2E8F0;
+      color: var(--text-secondary);
+      font-size: 12px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
     }
-    .time-row select {
-      padding: 6px 10px; border: 1px solid var(--border); border-radius: 8px;
-      font-size: 12px; font-family: var(--font); background: var(--surface); color: var(--text); cursor: pointer;
-    }
-    .time-row select:last-child { width: 56px; }
-    .search-btn {
-      margin-left: auto; padding: 10px 24px; background: var(--brand); color: #fff;
-      border: none; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer;
-      font-family: var(--font); transition: background 0.15s; display: flex; align-items: center; gap: 6px;
-    }
-    .search-btn:hover { background: #006a75; }
-    .search-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .clear-btn:hover { background: #CBD5E1; color: var(--text); }
 
+    /* Autocomplete Suggestions */
     .suggestions {
-      position: absolute; top: 100%; left: 0; right: 0; background: var(--surface);
-      border: 1px solid var(--border); border-radius: 0 0 12px 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-      z-index: 100; max-height: 220px; overflow-y: auto; display: none;
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.12);
+      z-index: 200;
+      max-height: 240px;
+      overflow-y: auto;
+      display: none;
     }
     .suggestions.show { display: block; }
     .suggestion-item {
-      padding: 10px 16px; cursor: pointer; font-size: 13px; border-bottom: 1px solid #f1f5f9;
+      padding: 10px 14px;
+      cursor: pointer;
+      font-size: 13px;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      transition: background 0.12s ease;
     }
-    .suggestion-item:hover { background: var(--brand-l); }
-    .suggestion-item .name { font-weight: 600; }
-    .suggestion-item .addr { font-size: 11px; color: var(--t3); margin-top: 1px; }
-
-    /* Journey Results */
-    .results { margin-top: 20px; display: none; }
-    .results.show { display: block; }
-    .result-header { font-size: 14px; font-weight: 700; color: var(--t2); margin-bottom: 10px; }
-    .journey-card {
-      background: var(--surface); border-radius: var(--radius);
-      box-shadow: 0 1px 3px rgba(0,0,0,0.06); border: 1px solid var(--border);
-      margin-bottom: 10px; overflow: hidden; cursor: pointer; transition: box-shadow 0.15s;
+    .suggestion-item:last-child { border-bottom: none; }
+    .suggestion-item:hover { background: var(--brand-orange-light); }
+    .sug-icon {
+      color: var(--brand-orange);
+      font-size: 14px;
+      margin-top: 1px;
     }
-    .journey-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
-    .journey-card.active { border-color: var(--brand); }
-    .jc-summary {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 14px 16px;
+    .suggestion-item .name {
+      font-weight: 700;
+      color: var(--text);
     }
-    .jc-times { display: flex; align-items: center; gap: 10px; }
-    .jc-time { font-size: 20px; font-weight: 800; }
-    .jc-arrow { color: var(--t3); font-size: 14px; }
-    .jc-duration { font-size: 12px; color: var(--t2); font-weight: 600; }
-    .jc-meta { display: flex; gap: 12px; font-size: 11px; color: var(--t2); }
-    .jc-meta span { display: flex; align-items: center; gap: 3px; }
-    .jc-badge {
-      font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 6px;
-    }
-    .jc-badge.fastest { background: #f0fdf4; color: var(--green); }
-    .jc-badge.min-transfer { background: #eff6ff; color: #2563eb; }
-
-    .jc-detail { display: none; padding: 0 16px 16px; border-top: 1px solid var(--border); }
-    .jc-detail.show { display: block; }
-    .leg-item {
-      display: flex; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid #f1f5f9;
-    }
-    .leg-item:last-child { border-bottom: none; }
-    .leg-icon {
-      width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center;
-      justify-content: center; flex-shrink: 0; margin-right: 12px; font-size: 14px;
-    }
-    .leg-icon.walk { background: #f1f5f9; }
-    .leg-icon.bus { background: var(--brand-l); }
-    .leg-icon.transfer { background: #fef3c7; }
-    .leg-desc { font-size: 13px; font-weight: 600; }
-    .leg-sub { font-size: 11px; color: var(--t2); margin-top: 1px; }
-    .leg-connector { width: 1.5px; height: 14px; background: var(--border); margin-left: 16px; }
-
-    #map { width: 100%; height: 300px; border-radius: var(--radius); margin-top: 16px; border: 1px solid var(--border); display: none; }
-
-    .status-bar {
-      text-align: center; padding: 8px; font-size: 11px; color: var(--t3);
-      background: var(--surface); border-top: 1px solid var(--border); margin-top: 20px;
+    .suggestion-item .addr {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 1px;
+      line-height: 1.3;
     }
 
-    .loading-state { text-align: center; padding: 32px; color: var(--t2); display: none; }
+    /* Quick Preset Chips */
+    .quick-chips-bar {
+      padding: 0 20px 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .quick-chips-bar::-webkit-scrollbar { display: none; }
+    .chips-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+      margin-right: 2px;
+    }
+    .preset-chip {
+      padding: 4px 10px;
+      border-radius: 16px;
+      background: #F8FAFC;
+      border: 1px solid var(--border);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s ease;
+    }
+    .preset-chip:hover {
+      background: var(--brand-orange-light);
+      border-color: var(--brand-orange-border);
+      color: var(--brand-orange);
+    }
+    .preset-chip.active {
+      background: var(--brand-orange-light);
+      border-color: var(--brand-orange);
+      color: var(--brand-orange);
+      font-weight: 700;
+    }
+
+    /* Bottom Time & Action Row */
+    .action-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 20px;
+      border-top: 1px solid var(--border);
+      background: #FAFBFD;
+      border-radius: 0 0 var(--radius) var(--radius);
+      flex-wrap: wrap;
+    }
+    .time-selector-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .time-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .time-select-wrap {
+      display: flex;
+      align-items: center;
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 3px 6px;
+      box-shadow: var(--shadow-sm);
+    }
+    .time-select-wrap select {
+      border: none;
+      outline: none;
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      background: transparent;
+      cursor: pointer;
+      padding: 2px;
+    }
+    .time-colon {
+      font-weight: 800;
+      color: var(--text-secondary);
+      margin: 0 2px;
+    }
+    .now-btn {
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: #FFFFFF;
+      color: var(--text-secondary);
+      font-size: 10.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .now-btn:hover {
+      background: var(--brand-orange-light);
+      color: var(--brand-orange);
+      border-color: var(--brand-orange-border);
+    }
+
+    .search-btn {
+      padding: 10px 22px;
+      background: var(--brand-orange);
+      color: #FFFFFF;
+      border: none;
+      border-radius: 10px;
+      font-size: 13.5px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: var(--font);
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 2px 8px rgba(255, 85, 0, 0.25);
+    }
+    .search-btn:hover {
+      background: var(--brand-orange-hover);
+      box-shadow: 0 4px 12px rgba(255, 85, 0, 0.35);
+      transform: translateY(-1px);
+    }
+    .search-btn:active {
+      transform: translateY(0);
+    }
+
+    /* ─── LOADING STATE ─── */
+    .loading-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-secondary);
+      display: none;
+      background: #FFFFFF;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      margin-top: 20px;
+    }
     .loading-state.show { display: block; }
-    .spinner { width: 28px; height: 28px; border: 3px solid var(--border); border-top-color: var(--brand); border-radius: 50%; animation: spin 0.7s linear infinite; margin: 0 auto 10px; }
+    .spinner {
+      width: 36px;
+      height: 36px;
+      border: 3.5px solid var(--brand-orange-border);
+      border-top-color: var(--brand-orange);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin: 0 auto 12px;
+    }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    .empty-state { text-align: center; padding: 32px; color: var(--t3); font-size: 13px; display: none; }
+    /* ─── EMPTY STATE ─── */
+    .empty-state {
+      text-align: center;
+      padding: 36px 20px;
+      color: var(--text-secondary);
+      font-size: 13px;
+      display: none;
+      background: #FFFFFF;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      margin-top: 20px;
+    }
     .empty-state.show { display: block; }
 
-    @media (max-width: 480px) {
-      .hero h1 { font-size: 22px; }
-      .search-row input { font-size: 14px; }
-      .jc-time { font-size: 17px; }
+    /* ─── RESULTS CONTAINER ─── */
+    .results {
+      margin-top: 24px;
+      display: none;
+    }
+    .results.show { display: block; }
+    .results-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      padding: 0 4px;
+    }
+    .results-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .results-subtitle {
+      font-size: 11.5px;
+      color: var(--text-secondary);
     }
 
-    @media (prefers-color-scheme: dark) {
-      :root { --bg: #0f172a; --surface: #1e293b; --text: #f1f5f9; --t2: #94a3b8; --t3: #64748b; --border: #334155; --brand-l: rgba(0,124,137,0.15); }
-      .time-row { background: #1a2332; }
-      .leg-icon.walk { background: #334155; }
-      .suggestion-item { border-bottom-color: #1e293b; }
+    /* ─── JOURNEY CARD ─── */
+    .journey-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .journey-card:hover {
+      box-shadow: var(--shadow-md);
+      border-color: var(--brand-orange-border);
+    }
+    .journey-card.active {
+      border-color: var(--brand-orange);
+      box-shadow: 0 0 0 1px var(--brand-orange), var(--shadow-md);
+    }
+
+    .jc-summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 18px;
+      gap: 12px;
+    }
+    .jc-times {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .jc-time {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.3px;
+    }
+    .jc-arrow {
+      color: var(--brand-orange);
+      font-weight: 700;
+      font-size: 14px;
+    }
+    .jc-duration-pill {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--brand-orange);
+      background: var(--brand-orange-light);
+      border: 1px solid var(--brand-orange-border);
+      padding: 3px 8px;
+      border-radius: 6px;
+      margin-left: 4px;
+    }
+
+    .jc-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11.5px;
+      color: var(--text-secondary);
+    }
+    .jc-badge {
+      font-size: 10px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .jc-badge.fastest {
+      background: #F0FDF4;
+      color: #16A34A;
+      border: 1px solid #BBF7D0;
+    }
+    .jc-badge.min-transfer {
+      background: #EFF6FF;
+      color: #2563EB;
+      border: 1px solid #BFDBFE;
+    }
+
+    /* Detailed Stepper */
+    .jc-detail {
+      display: none;
+      padding: 14px 18px 18px;
+      border-top: 1px solid var(--border-light);
+      background: #FAFAFC;
+    }
+    .jc-detail.show { display: block; }
+
+    .leg-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 10px 0;
+      position: relative;
+    }
+    .leg-icon-wrap {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 14px;
+      box-shadow: var(--shadow-sm);
+    }
+    .leg-icon-wrap.walk { background: #FFFFFF; border: 1.5px solid var(--border); }
+    .leg-icon-wrap.bus { background: var(--brand-orange-light); border: 1.5px solid var(--brand-orange-border); color: var(--brand-orange); }
+    .leg-icon-wrap.transfer { background: #FEF3C7; border: 1.5px solid #FDE68A; }
+
+    .leg-body { flex: 1; }
+    .leg-desc {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .leg-sub {
+      font-size: 11.5px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    /* ─── MAP CARD ─── */
+    #map-box {
+      margin-top: 20px;
+      background: #FFFFFF;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+      display: none;
+    }
+    .map-header {
+      padding: 10px 16px;
+      background: #FFFFFF;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-secondary);
+    }
+    #map {
+      width: 100%;
+      height: 320px;
+    }
+
+    /* ─── FOOTER ─── */
+    .status-bar {
+      text-align: center;
+      padding: 16px 20px;
+      font-size: 11px;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border);
+      background: #FFFFFF;
+      margin-top: auto;
+      line-height: 1.6;
+    }
+    .status-bar a {
+      color: var(--brand-orange);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    @media (max-width: 600px) {
+      .container { padding: 16px 12px 40px; }
+      .hero-box h1 { font-size: 21px; }
+      .jc-summary { flex-direction: column; align-items: flex-start; gap: 8px; }
+      .action-row { flex-direction: column; align-items: stretch; gap: 10px; }
+      .search-btn { justify-content: center; width: 100%; }
+      .time-selector-group { justify-content: space-between; }
     }
   </style>
 </head>
 <body>
-<div class="container">
-  <div class="hero">
-    <h1>Jakarta Journey Planner</h1>
-    <p>Transportasi publik Jakarta — data resmi GTFS PT Transportasi Jakarta</p>
+
+<!-- Unified Clean Topbar with Real Logos -->
+<header class="topbar">
+  <div class="topbar-stripe"></div>
+  <div class="topbar-content">
+    <div class="logos-group">
+      <!-- Real TransJakarta Logo -->
+      <a href="transit.html" title="TransJakarta Explorer">
+        <img src="transjakarta-logo.svg" alt="TransJakarta" height="24" style="display: block; width: auto; max-height: 24px;">
+      </a>
+      <div class="logo-divider"></div>
+      <!-- Real JakLingko Logo -->
+      <img src="jaklingko-logo.svg" alt="JakLingko" height="22" style="display: block; width: auto; max-height: 22px;">
+    </div>
+
+    <div class="top-actions">
+      <!-- Link to Transit Interactive Map -->
+      <a href="transit.html" class="top-btn" title="Lihat Peta Rute TransJakarta">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+        <span>Peta Rute</span>
+      </a>
+
+      <!-- Link to BNI MagangHub -->
+      <a href="index.html" class="top-btn primary" title="Kembali ke Dashboard Asisten Magang BNI">
+        <img src="bni-logo.svg" alt="BNI" height="13" style="display: block; width: auto;">
+        <span>MagangHub</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <!-- Hero Heading -->
+  <div class="hero-box">
+    <div class="badge-pill">
+      <span class="pulse-dot"></span>
+      TransJakarta Journey Planner
+    </div>
+    <h1>Rencanakan Perjalanan Publik Jakarta</h1>
+    <p>Kalkulasi rute terintegrasi BRT TransJakarta, Mikrotrans, Metrotrans & Royaltrans dengan data GTFS resmi.</p>
   </div>
 
+  <!-- Search Card -->
   <div class="search-card">
-    <div class="search-row" style="position:relative;">
-      <div class="dot from"></div>
-      <input type="text" id="from-input" placeholder="Dari (alamat, tempat, halte)..." autocomplete="off">
-      <div class="suggestions" id="from-suggestions"></div>
+    <div class="inputs-wrapper">
+      <!-- Origin Row -->
+      <div class="input-field-group" style="position:relative;">
+        <div class="field-icon">
+          <div class="dot-marker from"></div>
+        </div>
+        <input type="text" id="from-input" placeholder="Titik asal (alamat, gedung, halte)..." autocomplete="off">
+        <button type="button" class="clear-btn" id="from-clear" onclick="clearInput('from-input', 'from-clear')">✕</button>
+        <div class="suggestions" id="from-suggestions"></div>
+      </div>
+
+      <!-- Center Swap Divider -->
+      <div class="swap-divider">
+        <button type="button" class="swap-btn" onclick="swapLocations()" title="Tukar Lokasi Asal & Tujuan">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="7 10 12 15 17 10"/><polyline points="17 14 12 9 7 14"/></svg>
+        </button>
+      </div>
+
+      <!-- Destination Row -->
+      <div class="input-field-group" style="position:relative;">
+        <div class="field-icon">
+          <div class="dot-marker to"></div>
+        </div>
+        <input type="text" id="to-input" placeholder="Tujuan perjalanan..." autocomplete="off">
+        <button type="button" class="clear-btn" id="to-clear" onclick="clearInput('to-input', 'to-clear')">✕</button>
+        <div class="suggestions" id="to-suggestions"></div>
+      </div>
     </div>
-    <div class="search-row" style="position:relative;">
-      <div class="dot to"></div>
-      <input type="text" id="to-input" placeholder="Ke tujuan..." autocomplete="off">
-      <button class="swap-btn" onclick="swapLocations()" title="Tukar lokasi">⇅</button>
-      <div class="suggestions" id="to-suggestions"></div>
+
+    <!-- Quick Location Chips (Instant Test Presets) -->
+    <div class="quick-chips-bar">
+      <span class="chips-label">Populer:</span>
+      <button type="button" class="preset-chip" onclick="applyPreset('Menara BNI Pejompongan', -6.2088, 106.8041)">
+        🏢 Menara BNI
+      </button>
+      <button type="button" class="preset-chip" onclick="applyPreset('Stasiun Palmerah', -6.2071, 106.7975)">
+        🚉 St. Palmerah
+      </button>
+      <button type="button" class="preset-chip" onclick="applyPreset('Halte CSW / ASEAN', -6.2403, 106.7989)">
+        🚏 CSW / ASEAN
+      </button>
+      <button type="button" class="preset-chip" onclick="applyPreset('Monumen Nasional (Monas)', -6.1754, 106.8272)">
+        🏛️ Monas
+      </button>
+      <button type="button" class="preset-chip" onclick="applyPreset('Bundaran HI', -6.1951, 106.8230)">
+        🛍️ Bundaran HI
+      </button>
+      <button type="button" class="preset-chip" onclick="applyPreset('Blok M Plaza', -6.2443, 106.7982)">
+        🏬 Blok M
+      </button>
     </div>
-    <div class="time-row">
-      <span style="font-size:12px;color:var(--t2);">Berangkat</span>
-      <select id="dep-hour"></select>
-      <span style="font-size:12px;color:var(--t2);">:</span>
-      <select id="dep-minute"></select>
+
+    <!-- Bottom Time & Action Controls -->
+    <div class="action-row">
+      <div class="time-selector-group">
+        <span class="time-label">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Berangkat:
+        </span>
+        <div class="time-select-wrap">
+          <select id="dep-hour" aria-label="Jam keberangkatan"></select>
+          <span class="time-colon">:</span>
+          <select id="dep-minute" aria-label="Menit keberangkatan"></select>
+        </div>
+        <button type="button" class="now-btn" onclick="setNowTime()" title="Gunakan waktu sekarang">Sekarang</button>
+      </div>
+
       <button class="search-btn" id="search-btn" onclick="searchJourney()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        Cari Rute
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <span>Cari Rute</span>
       </button>
     </div>
   </div>
 
+  <!-- Loading State -->
   <div class="loading-state" id="loading">
     <div class="spinner"></div>
-    Mencari rute terbaik...
+    <div style="font-weight:700;font-size:14px;color:var(--text);">Mencari rute transportasi publik terbaik...</div>
+    <div style="font-size:12px;color:var(--text-secondary);margin-top:4px;">Menghubungkan jaringan BRT TransJakarta & Mikrotrans</div>
   </div>
 
+  <!-- Empty State -->
   <div class="empty-state" id="empty">
-    <div style="font-size:40px;margin-bottom:8px;">🔍</div>
-    <p>Belum ditemukan rute transportasi publik untuk perjalanan ini.</p>
-    <p style="margin-top:4px;">Coba perluas pencarian atau ubah waktu keberangkatan.</p>
+    <div style="font-size:36px;margin-bottom:8px;">🗺️</div>
+    <div style="font-weight:700;font-size:14px;color:var(--text);margin-bottom:4px;" id="empty-title">Tidak ditemukan rute langsung</div>
+    <p id="empty-desc">Coba pilih lokasi asal/tujuan lain atau sesuaikan jam keberangkatan.</p>
   </div>
 
+  <!-- Journey Results List -->
   <div class="results" id="results"></div>
-  <div id="map"></div>
 
-  <div class="status-bar">
-    Data: GTFS PT Transportasi Jakarta (PPID) · CC BY 4.0 · Status: ESTIMATED (frequency-based)
+  <!-- Map Display -->
+  <div id="map-box">
+    <div class="map-header">
+      <span>Visualisasi Rute Perjalanan</span>
+      <span style="font-size:11px;font-weight:500;color:var(--text-muted);">OSM & PPID TransJakarta</span>
+    </div>
+    <div id="map"></div>
   </div>
-</div>
+</main>
+
+<footer class="status-bar">
+  Data resmi GTFS PT Transportasi Jakarta via PPID · Lisensi CC BY 4.0 · Terintegrasi dengan <a href="transit.html">TransJakarta Explorer</a> & <a href="index.html">Asisten Magang BNI</a>
+</footer>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script>
@@ -220,23 +882,37 @@
   function initTimes() {
     var h = document.getElementById('dep-hour');
     var m = document.getElementById('dep-minute');
+    var now = new Date();
+    var currentHour = now.getHours();
+    var currentMin = Math.floor(now.getMinutes() / 5) * 5;
+
     for (var i = 0; i < 24; i++) {
-      h.innerHTML += '<option value="'+i+'"'+(i===7?' selected':'')+'>'+String(i).padStart(2,'0')+'</option>';
+      h.innerHTML += '<option value="'+i+'"'+(i === currentHour ? ' selected':'')+'>'+String(i).padStart(2,'0')+'</option>';
     }
     for (var i = 0; i < 60; i += 5) {
-      m.innerHTML += '<option value="'+i+'"'+(i===0?' selected':'')+'>'+String(i).padStart(2,'0')+'</option>';
+      m.innerHTML += '<option value="'+i+'"'+(i === currentMin ? ' selected':'')+'>'+String(i).padStart(2,'0')+'</option>';
     }
   }
   initTimes();
 
-  // Geocoding autocomplete via Nominatim
+  window.setNowTime = function() {
+    var now = new Date();
+    document.getElementById('dep-hour').value = now.getHours();
+    document.getElementById('dep-minute').value = Math.floor(now.getMinutes() / 5) * 5;
+  };
+
+  // Autocomplete setup
   var debounceTimer;
-  function setupAutocomplete(inputId, suggestionsId, coordVar) {
+  function setupAutocomplete(inputId, suggestionsId, clearBtnId, isOrigin) {
     var input = document.getElementById(inputId);
     var sug = document.getElementById(suggestionsId);
+    var clearBtn = document.getElementById(clearBtnId);
+
     input.addEventListener('input', function() {
       clearTimeout(debounceTimer);
       var q = input.value.trim();
+      clearBtn.style.display = q.length > 0 ? 'inline-flex' : 'none';
+
       if (q.length < 2) { sug.classList.remove('show'); return; }
       debounceTimer = setTimeout(function() {
         fetch('https://nominatim.openstreetmap.org/search?q='+encodeURIComponent(q)+'&format=json&limit=5&countrycodes=id&bounded=1&viewbox=106.6,-6.5,107.0,-5.9', {
@@ -244,35 +920,43 @@
         })
         .then(function(r){ return r.json(); })
         .then(function(data){
-          if (!data.length) { sug.classList.remove('show'); return; }
+          if (!data || !data.length) { sug.classList.remove('show'); return; }
           sug.innerHTML = data.map(function(d){
-            return '<div class="suggestion-item" data-lat="'+d.lat+'" data-lon="'+d.lon+'" data-name="'+d.display_name.replace(/"/g,'&quot;')+'">' +
-              '<div class="name">'+d.display_name.split(',')[0]+'</div>' +
-              '<div class="addr">'+d.display_name+'</div>' +
+            var shortName = d.display_name.split(',')[0];
+            return '<div class="suggestion-item" data-lat="'+d.lat+'" data-lon="'+d.lon+'" data-name="'+shortName.replace(/"/g,'&quot;')+'">' +
+              '<span class="sug-icon">📍</span>' +
+              '<div>' +
+                '<div class="name">'+shortName+'</div>' +
+                '<div class="addr">'+d.display_name+'</div>' +
+              '</div>' +
             '</div>';
           }).join('');
           sug.classList.add('show');
         }).catch(function(){});
-      }, 350);
+      }, 300);
     });
+
     input.addEventListener('blur', function() {
-      setTimeout(function(){ sug.classList.remove('show'); }, 200);
+      setTimeout(function(){ sug.classList.remove('show'); }, 250);
     });
+
     sug.addEventListener('click', function(e) {
       var item = e.target.closest('.suggestion-item');
       if (!item) return;
-      input.value = item.dataset.name.split(',')[0];
-      if (inputId === 'from-input') {
+      var name = item.dataset.name;
+      input.value = name;
+      clearBtn.style.display = 'inline-flex';
+
+      if (isOrigin) {
         fromCoord = [parseFloat(item.dataset.lat), parseFloat(item.dataset.lon)];
-        fromName = item.dataset.name.split(',')[0];
+        fromName = name;
       } else {
         toCoord = [parseFloat(item.dataset.lat), parseFloat(item.dataset.lon)];
-        toName = item.dataset.name.split(',')[0];
+        toName = name;
       }
       sug.classList.remove('show');
     });
 
-    // Also handle enter key
     input.addEventListener('keydown', function(e) {
       if (e.key === 'Enter') {
         var first = sug.querySelector('.suggestion-item');
@@ -286,31 +970,64 @@
     });
   }
 
-  setupAutocomplete('from-input', 'from-suggestions', 'fromCoord');
-  setupAutocomplete('to-input', 'to-suggestions', 'toCoord');
+  setupAutocomplete('from-input', 'from-suggestions', 'from-clear', true);
+  setupAutocomplete('to-input', 'to-suggestions', 'to-clear', false);
+
+  window.clearInput = function(inputId, clearBtnId) {
+    document.getElementById(inputId).value = '';
+    document.getElementById(clearBtnId).style.display = 'none';
+    if (inputId === 'from-input') {
+      fromCoord = null; fromName = '';
+    } else {
+      toCoord = null; toName = '';
+    }
+  };
+
+  window.applyPreset = function(name, lat, lon) {
+    var fromInput = document.getElementById('from-input');
+    var toInput = document.getElementById('to-input');
+
+    if (!fromCoord && !fromInput.value.trim()) {
+      fromInput.value = name;
+      fromCoord = [lat, lon];
+      fromName = name;
+      document.getElementById('from-clear').style.display = 'inline-flex';
+    } else {
+      toInput.value = name;
+      toCoord = [lat, lon];
+      toName = name;
+      document.getElementById('to-clear').style.display = 'inline-flex';
+    }
+  };
 
   window.swapLocations = function() {
     var fi = document.getElementById('from-input');
     var ti = document.getElementById('to-input');
-    var tmp = fi.value; fi.value = ti.value; ti.value = tmp;
-    var ctmp = fromCoord; fromCoord = toCoord; toCoord = ctmp;
-    var ntmp = fromName; fromName = toName; toName = ntmp;
+    var fc = document.getElementById('from-clear');
+    var tc = document.getElementById('to-clear');
+
+    var tmpVal = fi.value; fi.value = ti.value; ti.value = tmpVal;
+    var tmpCoord = fromCoord; fromCoord = toCoord; toCoord = tmpCoord;
+    var tmpName = fromName; fromName = toName; toName = tmpName;
+
+    fc.style.display = fi.value ? 'inline-flex' : 'none';
+    tc.style.display = ti.value ? 'inline-flex' : 'none';
   };
 
-  // Map init (lazy)
+  // Map Initialization
   function initMap() {
     if (map) return;
-    map = L.map('map', { zoomControl: true }).setView([-6.208, 106.845], 13);
+    document.getElementById('map-box').style.display = 'block';
+    map = L.map('map', { zoomControl: true }).setView([-6.2088, 106.845], 13);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: 'OSM | Data: PPID TransJakarta CC BY 4.0', maxZoom: 19
+      attribution: '&copy; OpenStreetMap · PT Transportasi Jakarta PPID', maxZoom: 19
     }).addTo(map);
-    document.getElementById('map').style.display = 'block';
     setTimeout(function(){ map.invalidateSize(); }, 200);
   }
 
   window.searchJourney = function() {
     if (!fromCoord || !toCoord) {
-      alert('Silakan pilih lokasi asal dan tujuan dari daftar saran terlebih dahulu.');
+      alert('Silakan tentukan titik keberangkatan dan tujuan perjalanan terlebih dahulu.');
       return;
     }
 
@@ -321,11 +1038,12 @@
     document.getElementById('results').classList.remove('show');
     document.getElementById('empty').classList.remove('show');
     document.getElementById('loading').classList.add('show');
-    document.getElementById('map').style.display = 'none';
+    document.getElementById('map-box').style.display = 'none';
+
     if (map) { map.remove(); map = null; }
     if (activeLayer) { activeLayer = null; }
 
-    fetch(API+'/api/v1/journeys/search', {
+    fetch(API + '/api/v1/journeys/search', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -335,27 +1053,32 @@
         max_transfers: 2
       })
     })
-    .then(function(r){ return r.json(); })
-    .then(function(data){
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
       document.getElementById('loading').classList.remove('show');
       var journeys = data.journeys || [];
       if (!journeys.length) {
+        document.getElementById('empty-title').textContent = 'Tidak Ditemukan Rute';
+        document.getElementById('empty-desc').textContent = 'Belum ditemukan rute transportasi publik untuk pasangan lokasi ini. Coba pilih halte terdekat.';
         document.getElementById('empty').classList.add('show');
         return;
       }
       renderResults(journeys);
     })
-    .catch(function(e){
+    .catch(function(e) {
       document.getElementById('loading').classList.remove('show');
+      document.getElementById('empty-title').textContent = 'Backend Service Belum Aktif';
+      document.getElementById('empty-desc').innerHTML = 'Jalankan server backend python: <br><code style="background:#FFF7ED;color:#FF5500;padding:2px 6px;border-radius:4px;font-weight:700;">python server.py</code> pada folder proyek (port 8765).';
       document.getElementById('empty').classList.add('show');
-      document.getElementById('empty').querySelector('p').textContent = 'Gagal terhubung ke server. Pastikan backend berjalan di port 8765.';
     });
   };
 
   function renderResults(journeys) {
     var container = document.getElementById('results');
-    var labels = ['TERCEPAT', 'ALTERNATIF 2', 'ALTERNATIF 3'];
-    var html = '<div class="result-header">'+journeys.length+' rute ditemukan</div>';
+    var html = '<div class="results-heading">' +
+      '<div class="results-title"><span style="color:var(--brand-orange)">●</span> '+journeys.length+' Rute Perjalanan Ditemukan</div>' +
+      '<div class="results-subtitle">Klik kartu untuk melihat rincian halte & jalur</div>' +
+    '</div>';
 
     journeys.forEach(function(j, idx) {
       var dep = j.departure_time;
@@ -364,33 +1087,34 @@
       var walks = Math.round(j.walking_distance);
       var tx = j.transfer_count;
       var badgeClass = idx === 0 ? 'fastest' : 'min-transfer';
-      var badgeText = idx === 0 ? 'Tercepat' : (tx === 0 ? 'Langsung' : tx + ' transit');
+      var badgeText = idx === 0 ? 'Tercepat' : (tx === 0 ? 'Langsung' : tx + ' Transit');
 
-      html += '<div class="journey-card" id="jc-'+idx+'" onclick="toggleJourney('+idx+')">' +
+      html += '<div class="journey-card '+(idx === 0 ? 'active' : '')+'" id="jc-'+idx+'" onclick="toggleJourney('+idx+')">' +
         '<div class="jc-summary">' +
           '<div class="jc-times">' +
             '<span class="jc-time">'+dep+'</span>' +
             '<span class="jc-arrow">→</span>' +
             '<span class="jc-time">'+arr+'</span>' +
-            '<span class="jc-duration">'+dur+' mnt</span>' +
+            '<span class="jc-duration-pill">⏱️ '+dur+' mnt</span>' +
           '</div>' +
           '<div class="jc-meta">' +
             '<span>🚶 '+walks+'m</span>' +
             '<span class="jc-badge '+badgeClass+'">'+badgeText+'</span>' +
           '</div>' +
         '</div>' +
-        '<div class="jc-detail" id="jd-'+idx+'">' +
+        '<div class="jc-detail '+(idx === 0 ? 'show' : '')+'" id="jd-'+idx+'">' +
           j.legs.map(function(leg) {
             var icon = leg.type === 'WALK' ? '🚶' : (leg.type === 'BUS' ? '🚌' : '🔄');
             var cls = leg.type === 'WALK' ? 'walk' : (leg.type === 'BUS' ? 'bus' : 'transfer');
+            var routeBadge = leg.route_id ? '<span style="background:var(--brand-orange);color:#fff;padding:1px 6px;border-radius:4px;font-size:10px;font-weight:800;margin-right:6px;">'+leg.route_id+'</span>' : '';
             return '<div class="leg-item">' +
-              '<div class="leg-icon '+cls+'">'+icon+'</div>' +
-              '<div>' +
-                '<div class="leg-desc">'+leg.description+'</div>' +
+              '<div class="leg-icon-wrap '+cls+'">'+icon+'</div>' +
+              '<div class="leg-body">' +
+                '<div class="leg-desc">'+routeBadge+leg.description+'</div>' +
                 '<div class="leg-sub">'+
-                  (leg.type === 'WALK' ? leg.distance_m+'m' :
-                   leg.type === 'BUS' ? 'Halte '+leg.from_stop_name+' → '+leg.to_stop_name+' ('+leg.stop_count+' stops, '+leg.status+')' :
-                   'Tunggu '+Math.round(leg.waiting_seconds/60)+' menit')+
+                  (leg.type === 'WALK' ? 'Jalan kaki sejauh '+leg.distance_m+' meter' :
+                   leg.type === 'BUS' ? 'Naik dari Halte <b>'+leg.from_stop_name+'</b> turun di <b>'+leg.to_stop_name+'</b> ('+leg.stop_count+' halte)' :
+                   'Transit & tunggu armada berikutnya (~'+Math.round(leg.waiting_seconds/60)+' menit)')+
                 '</div>' +
               '</div>' +
             '</div>';
@@ -402,20 +1126,21 @@
     container.innerHTML = html;
     container.classList.add('show');
 
-    // Show on map
+    // Show map
     initMap();
     showJourneyOnMap(journeys[0]);
-
-    document.getElementById('map').scrollIntoView({ behavior: 'smooth' });
+    document.getElementById('map-box').scrollIntoView({ behavior: 'smooth' });
   }
 
   window.toggleJourney = function(idx) {
     var detail = document.getElementById('jd-'+idx);
     var card = document.getElementById('jc-'+idx);
-    var show = !detail.classList.contains('show');
+    var isExpanded = detail.classList.contains('show');
+
     document.querySelectorAll('.jc-detail').forEach(function(d){ d.classList.remove('show'); });
     document.querySelectorAll('.journey-card').forEach(function(c){ c.classList.remove('active'); });
-    if (show) {
+
+    if (!isExpanded) {
       detail.classList.add('show');
       card.classList.add('active');
     }
@@ -428,26 +1153,31 @@
     var group = L.featureGroup();
     var bounds = [];
 
-    // Origin marker
+    // Custom Start Pin
     if (fromCoord) {
       L.marker(fromCoord, {
-        icon: L.divIcon({ html: '<div style="width:16px;height:16px;border-radius:50%;background:#16a34a;border:3px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3);"></div>', iconSize:[16,16], iconAnchor:[8,8] })
-      }).addTo(group).bindPopup('<b>Asal:</b> '+fromName);
+        icon: L.divIcon({
+          html: '<div style="width:18px;height:18px;border-radius:50%;background:#16A34A;border:3px solid #FFFFFF;box-shadow:0 2px 8px rgba(0,0,0,0.35);"></div>',
+          iconSize:[18,18], iconAnchor:[9,9]
+        })
+      }).addTo(group).bindPopup('<b>Titik Keberangkatan:</b><br>'+fromName);
       bounds.push(fromCoord);
     }
 
-    // Destination marker
+    // Custom Destination Pin
     if (toCoord) {
       L.marker(toCoord, {
-        icon: L.divIcon({ html: '<div style="width:16px;height:16px;border-radius:50%;background:#dc2626;border:3px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3);"></div>', iconSize:[16,16], iconAnchor:[8,8] })
-      }).addTo(group).bindPopup('<b>Tujuan:</b> '+toName);
+        icon: L.divIcon({
+          html: '<div style="width:18px;height:18px;border-radius:50%;background:#FF5500;border:3px solid #FFFFFF;box-shadow:0 2px 8px rgba(255,85,0,0.45);"></div>',
+          iconSize:[18,18], iconAnchor:[9,9]
+        })
+      }).addTo(group).bindPopup('<b>Tujuan:</b><br>'+toName);
       bounds.push(toCoord);
     }
 
-    // Bus legs geometry
+    // Bus Legs Polylines
     journey.legs.forEach(function(leg) {
       if (leg.type === 'BUS' && leg.geometry && leg.geometry.length >= 2) {
-        // Check if geometry is actually valid (not just 2 identical points)
         var latlngs = leg.geometry.map(function(c) { return [c[1], c[0]]; });
         var uniqueLatLngs = [];
         latlngs.forEach(function(ll) {
@@ -456,25 +1186,24 @@
           }
         });
         if (uniqueLatLngs.length >= 2) {
-          var color = '#007C89';
-          if (leg.route_id) {
-            var firstNum = leg.route_id.match(/\d+/);
-            if (leg.route_category === 'BRT') color = '#dc2626';
-            else if (leg.route_category === 'Mikrotrans') color = '#16a34a';
-            else if (leg.route_category === 'Royaltrans') color = '#9333ea';
-            else if (leg.route_category === 'Transjabodetabek') color = '#ea580c';
-          }
-          L.polyline(uniqueLatLngs, { color: color, weight: 4, opacity: 0.85, dashArray: null }).addTo(group);
+          var color = '#FF5500';
+          if (leg.route_category === 'BRT') color = '#DC2626';
+          else if (leg.route_category === 'Mikrotrans') color = '#16A34A';
+          else if (leg.route_category === 'Royaltrans') color = '#9333EA';
+          else if (leg.route_category === 'Metrotrans') color = '#2563EB';
+
+          L.polyline(uniqueLatLngs, { color: color, weight: 5, opacity: 0.88 }).addTo(group);
         }
       }
-      // Stop markers
+
       if (leg.type === 'BUS') {
         if (leg.from_lat && leg.from_lon) {
           bounds.push([leg.from_lat, leg.from_lon]);
-          L.circleMarker([leg.from_lat, leg.from_lon], { radius: 4, color: '#007C89', fillOpacity: 0.8, weight: 2 }).addTo(group).bindTooltip(leg.from_stop_name, {direction:'top'});
+          L.circleMarker([leg.from_lat, leg.from_lon], { radius: 5, color: '#FF5500', fillOpacity: 0.9, fillColor: '#FFFFFF', weight: 3 }).addTo(group).bindTooltip(leg.from_stop_name, {direction:'top'});
         }
         if (leg.to_lat && leg.to_lon) {
           bounds.push([leg.to_lat, leg.to_lon]);
+          L.circleMarker([leg.to_lat, leg.to_lon], { radius: 5, color: '#FF5500', fillOpacity: 0.9, fillColor: '#FFFFFF', weight: 3 }).addTo(group).bindTooltip(leg.to_stop_name, {direction:'top'});
         }
       }
     });
