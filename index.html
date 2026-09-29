@@ -11698,9 +11698,9 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
 
     try {
       const [routesRes, routeDetailsRes, geoRes] = await Promise.all([
-        fetch('/data/routes.json').then(r => r.json()),
-        fetch('/data/route_details.json').then(r => r.json()),
-        fetch('/data/route_geometries.json').then(r => r.json()),
+        fetch('data/routes.json').then(r => r.json()),
+        fetch('data/route_details.json').then(r => r.json()),
+        fetch('data/route_geometries.json').then(r => r.json()),
       ]);
       transitDataLoaded = true;
 
@@ -11756,9 +11756,9 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
 
       // Init Leaflet map
       const map = L.map('transit-map', { zoomControl: false, attributionControl: false }).setView([-6.208, 106.845], 12);
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',
-        maxZoom: 18
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors',
+        maxZoom: 19
       }).addTo(map);
       L.control.zoom({ position: 'bottomright' }).addTo(map);
       L.control.attribution({ position: 'bottomleft', prefix: false }).addTo(map);
