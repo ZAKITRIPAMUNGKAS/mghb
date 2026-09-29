@@ -35,6 +35,7 @@
         else if (['keuangan', 'finance'].indexOf(hash) !== -1 || ['/keuangan', '/finance'].indexOf(p) !== -1) t = 'keuangan';
         else if (hash === 'logbook' || p === '/logbook') t = 'logbook';
         else if (['toolkit', 'asisten'].indexOf(hash) !== -1 || ['/toolkit', '/asisten'].indexOf(p) !== -1) t = 'asisten';
+        else if (['transit','transjakarta','busway'].indexOf(hash) !== -1 || ['/transit','/transjakarta'].indexOf(p) !== -1) t = 'transit';
         
         if (t !== 'berita') {
           document.documentElement.setAttribute('data-initial-tab', t);
@@ -253,6 +254,10 @@
     html[data-initial-tab="asisten"] #view-berita { display: none !important; }
     html[data-initial-tab="asisten"] #view-asisten { display: block !important; }
     html[data-initial-tab="asisten"] #office-status-banner { display: none !important; }
+
+    html[data-initial-tab="transit"] #view-berita { display: none !important; }
+    html[data-initial-tab="transit"] #view-transit { display: block !important; }
+    html[data-initial-tab="transit"] #office-status-banner { display: none !important; }
 
     :root {
       --font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -1356,6 +1361,16 @@
     #view-asisten.active > *:nth-child(6) { animation-delay: .26s; }
     #view-asisten.active > *:nth-child(7) { animation-delay: .30s; }
 
+    #view-transit.active { animation: fadeSlideIn .28s cubic-bezier(0.16, 1, 0.3, 1) both; }
+    #view-transit.active > * { animation: fadeSlideIn .32s cubic-bezier(0.16, 1, 0.3, 1) both; }
+    #view-transit.active > *:nth-child(1) { animation-delay: .03s; }
+    #view-transit.active > *:nth-child(2) { animation-delay: .08s; }
+    #view-transit.active > *:nth-child(3) { animation-delay: .13s; }
+    #view-transit.active > *:nth-child(4) { animation-delay: .18s; }
+    #view-transit.active > *:nth-child(5) { animation-delay: .22s; }
+    #view-transit.active > *:nth-child(6) { animation-delay: .26s; }
+    #view-transit.active > *:nth-child(7) { animation-delay: .30s; }
+
     /* ─── Generic fallback (tab-content) ─── */
     .tab-content.active {
       animation: pageFadeScale .32s cubic-bezier(.16, 1, .3, 1) both;
@@ -1385,12 +1400,12 @@
       ::view-transition-new(root),
       #view-berita.active, #view-packing.active,
       #view-keuangan.active, #view-logbook.active,
-      #view-asisten.active,
+      #view-asisten.active, #view-transit.active,
       .tab-content.active,
       .tab-content.active > *,
       #view-berita.active > *, #view-packing.active > *,
       #view-keuangan.active > *, #view-logbook.active > *,
-      #view-asisten.active > *,
+      #view-asisten.active > *, #view-transit.active > *,
       .bottom-nav-item.active .nav-icon {
         animation: none !important;
         opacity: 1 !important;
@@ -6185,6 +6200,18 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
 
   </main>
 
+  <!-- TAB 6: TRANSJAKARTA TRANSIT EXPLORER -->
+  <main id="view-transit" class="tab-content">
+    <!-- Transit Explorer loaded dynamically -->
+    <div id="transit-root">
+      <div class="transit-loading" style="padding:48px 24px;text-align:center;">
+        <div class="transit-spinner" style="width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--brand);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 12px;"></div>
+        <p style="font-size:13px;color:var(--muted);font-weight:500;">Memuat data TransJakarta...</p>
+        <p style="font-size:11px;color:var(--muted);margin-top:4px;">240 rute · 8.091 halte · GTFS resmi PPID</p>
+      </div>
+    </div>
+  </main>
+
   <!-- TAB 5: KABAR & BERITA MAGANGHUB OTOMATIS (LANDING PAGE) -->
   <main id="view-berita" class="tab-content active">
     <!-- Landing Greeting & Quick Action Hub for Zaki -->
@@ -6239,6 +6266,17 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
           </div>
           <span class="quick-hub-label">Toolkit &amp; Kamus</span>
           <span class="quick-hub-sub">Rumus &amp; istilah</span>
+        </button>
+
+        <button class="quick-hub-btn" onclick="selectTab('transit')">
+          <div class="quick-hub-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="4 17 10 11 4 5"></polyline>
+              <line x1="12" y1="19" x2="20" y2="19"></line>
+            </svg>
+          </div>
+          <span class="quick-hub-label">TransJakarta</span>
+          <span class="quick-hub-sub">240 Rute &amp; BRT</span>
         </button>
       </div>
     </div>
@@ -6430,6 +6468,18 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
           </svg>
         </div>
         <span class="bottom-nav-label">Toolkit</span>
+      </a>
+
+      <a href="/transit" class="bottom-nav-item tab-trigger" data-tab="transit" onclick="navigateTo('transit', event)">
+        <div class="bottom-nav-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="1" y="3" width="15" height="13"></rect>
+            <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+            <circle cx="5.5" cy="18.5" r="2.5"></circle>
+            <circle cx="18.5" cy="18.5" r="2.5"></circle>
+          </svg>
+        </div>
+        <span class="bottom-nav-label">TransJakarta</span>
       </a>
     </div>
     <div class="workspace-profile">
@@ -7089,6 +7139,11 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
       path: '/toolkit',
       aliases: ['/toolkit', '/asisten'],
       title: 'Toolkit & Panduan | MagangHub BNI'
+    },
+    'transit': {
+      path: '/transit',
+      aliases: ['/transit', '/transjakarta', '/busway'],
+      title: 'TransJakarta Explorer | MagangHub BNI'
     }
   };
 
@@ -7099,6 +7154,7 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
       if (['keuangan', 'finance'].includes(hash)) return 'keuangan';
       if (['logbook'].includes(hash)) return 'logbook';
       if (['toolkit', 'asisten'].includes(hash)) return 'asisten';
+      if (['transit', 'transjakarta', 'busway'].includes(hash)) return 'transit';
       if (['beranda', 'berita'].includes(hash)) return 'berita';
     }
 
@@ -7125,7 +7181,7 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
   // --- Tab Selection (5 Pages) ---
   function _doSelectTab(tab) {
     // Pane visibility — CSS animations re-trigger on .active re-add
-    const panes = ['view-packing', 'view-keuangan', 'view-logbook', 'view-asisten', 'view-berita'];
+    const panes = ['view-packing', 'view-keuangan', 'view-logbook', 'view-asisten', 'view-berita', 'view-transit'];
     panes.forEach(id => {
       const el = document.getElementById(id);
       if (!el) return;
@@ -7134,7 +7190,8 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
         (id === 'view-keuangan' && tab === 'keuangan') ||
         (id === 'view-logbook'  && tab === 'logbook')  ||
         (id === 'view-asisten'  && tab === 'asisten')  ||
-        (id === 'view-berita'   && tab === 'berita')
+        (id === 'view-berita'   && tab === 'berita')   ||
+        (id === 'view-transit'  && tab === 'transit')
       );
       if (shouldBeActive && !el.classList.contains('active')) {
         // Force animation replay by briefly removing the class
@@ -7180,6 +7237,12 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
       labelEl.textContent = 'Rumus, istilah & template siap pakai';
       overviewRow.style.display = 'none';
       toolbarRow.style.display = 'none';
+    } else if (tab === 'transit') {
+      badgeEl.textContent = 'TransJakarta';
+      labelEl.textContent = '240 Rute & 8.091 Halte BRT Jakarta';
+      overviewRow.style.display = 'none';
+      toolbarRow.style.display = 'none';
+      if (!transitDataLoaded) initTransitExplorer();
     } else if (tab === 'berita') {
       badgeEl.textContent = 'Live Feed';
       labelEl.textContent = 'Warta & Pengumuman MagangHub Kemnaker RI';
@@ -9197,6 +9260,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   const NEWS_CACHE_KEY = 'mghb_news_cache_v20260927_tempo_v1';
   let newsLoadedOnce = false;
   let activeNewsTopic = 'all';
+  let transitDataLoaded = false;
 
   // Bersihkan semua cache lama
   ['mghb_news_cache', 'mghb_news_cache_v2', 'mghb_news_cache_v3', 'mghb_news_cache_v4', 'mghb_news_cache_v5', 'mghb_news_cache_v6', 'mghb_news_cache_v7', 'mghb_news_cache_v8', 'mghb_news_cache_v20260921', 'mghb_news_cache_v20260921_real', 'mghb_news_cache_v20260921_clean', 'mghb_news_cache_v20260921_text', 'mghb_news_cache_v20260926_live', 'mghb_news_cache_v20260926_thumbs', 'mghb_news_cache_v20260926_official', 'mghb_news_cache_v20260926_stable', 'mghb_news_cache_v20260926_fast', 'mghb_news_cache_v20260926_recency'].forEach(k => {
@@ -11549,6 +11613,136 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     await initSupabaseClient();
     if (supabaseClient) syncAllDataWithCloud(true);
   });
+
+  // --- TransJakarta Transit Explorer ---
+  async function initTransitExplorer() {
+    if (transitDataLoaded) return;
+    const root = document.getElementById('transit-root');
+    if (!root) return;
+
+    root.innerHTML = '<div style="padding:48px 24px;text-align:center;"><div style="width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--brand);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 12px;"></div><p style="font-size:13px;color:var(--muted);">Memuat data TransJakarta...</p></div>';
+
+    try {
+      const [routesRes, routeDetailsRes] = await Promise.all([
+        fetch('/data/routes.json').then(r => r.json()),
+        fetch('/data/route_details.json').then(r => r.json()),
+      ]);
+      transitDataLoaded = true;
+
+      const categories = {};
+      routesRes.forEach(r => {
+        const c = r.route_category || 'Unknown';
+        categories[c] = (categories[c] || 0) + 1;
+      });
+
+      const categoryChips = Object.entries(categories).map(([cat, cnt]) =>
+        '<span style="display:inline-block;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:4px 10px;font-size:11px;font-weight:600;color:var(--text);margin:3px;">'+cat+' <b style="color:var(--brand);">'+cnt+'</b></span>'
+      ).join('');
+
+      const routeListHTML = routesRes.sort((a,b) => a.route_id.localeCompare(b.route_id)).map(r => {
+        const catColors = {
+          BRT: 'color:#dc2626;', Metrotrans: 'color:#2563eb;', Mikrotrans: 'color:#16a34a;',
+          Royaltrans: 'color:#9333ea;', Transjabodetabek: 'color:#ea580c;', 'Bus Wisata': 'color:#d97706;'
+        };
+        const cStyle = catColors[r.route_category] || 'color:var(--text);';
+        const isBRT = r.route_category === 'BRT' ? 'border-left:3px solid #dc2626;' : '';
+        return '<div class="transit-route-row" data-rid="'+r.route_id+'" style="'+isBRT+'padding:10px 14px;border-bottom:1px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:background .15s;">' +
+          '<div style="min-width:0;flex:1;">' +
+            '<span style="font-weight:700;font-size:13px;color:var(--text);">'+r.route_id+'</span>' +
+            '<span style="margin-left:8px;font-size:12px;color:var(--muted);">'+((r.route_long_name && r.route_long_name !== r.route_id) ? r.route_long_name : (r.route_desc || ''))+'</span>' +
+          '</div>' +
+          '<span style="font-size:10px;font-weight:600;white-space:nowrap;margin-left:8px;'+cStyle+'">'+r.route_category+'</span>' +
+        '</div>';
+      }).join('');
+
+      root.innerHTML = '' +
+        '<div style="max-width:720px;margin:0 auto;">' +
+          '<div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px 18px;margin-bottom:12px;">' +
+            '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;">' +
+              '<div><span style="font-weight:800;font-size:16px;color:var(--text);">TransJakarta Explorer</span><span style="margin-left:8px;font-size:11px;color:var(--muted);">GTFS PPID · CC BY 4.0</span></div>' +
+              '<span style="font-size:12px;font-weight:700;color:var(--brand);background:var(--brand-bg, #e6f4f5);padding:3px 10px;border-radius:8px;">'+routesRes.length+' Rute · 8.091 Halte</span>' +
+            '</div>' +
+            '<div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:4px;">'+categoryChips+'</div>' +
+            '<div style="margin-top:10px;"><input id="transit-search" type="text" placeholder="Cari rute (nama/kode)... " style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:10px;font-size:13px;font-family:inherit;background:var(--bg);color:var(--text);" oninput="filterTransitRoutes(this.value)"></div>' +
+          '</div>' +
+          '<div id="transit-list-container" style="background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;max-height:380px;overflow-y:auto;">' +
+            routeListHTML +
+          '</div>' +
+          '<div id="transit-detail" style="margin-top:12px;display:none;background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;"></div>' +
+          '<div style="margin-top:12px;padding:12px 16px;background:linear-gradient(135deg,rgba(0,124,137,.06),rgba(10,37,64,.06));border:1px solid rgba(0,124,137,.15);border-radius:12px;font-size:11px;color:var(--muted);text-align:center;">' +
+            'Data resmi PT Transportasi Jakarta · Lisensi CC BY 4.0 · 700 shapes geometri tersedia' +
+          '</div>' +
+        '</div>';
+
+      // Route click handler
+      document.querySelectorAll('.transit-route-row').forEach(row => {
+        row.addEventListener('click', function() {
+          const rid = this.dataset.rid;
+          document.querySelectorAll('.transit-route-row').forEach(r => r.style.background = '');
+          this.style.background = 'var(--brand-bg, #e6f4f5)';
+          showTransitDetail(rid, routeDetailsRes);
+        });
+      });
+
+      window._transitRoutes = routesRes;
+      window._transitDetails = routeDetailsRes;
+    } catch (e) {
+      root.innerHTML = '<div style="padding:32px;text-align:center;color:#dc2626;font-size:13px;">Gagal memuat data transit. Pastikan file JSON tersedia di folder /data/.</div>';
+      console.error('Transit init error:', e);
+    }
+  }
+
+  function filterTransitRoutes(query) {
+    const q = (query || '').toLowerCase();
+    document.querySelectorAll('.transit-route-row').forEach(row => {
+      const rid = (row.dataset.rid || '').toLowerCase();
+      const text = (row.textContent || '').toLowerCase();
+      row.style.display = (!q || rid.includes(q) || text.includes(q)) ? '' : 'none';
+    });
+  }
+
+  function showTransitDetail(rid, details) {
+    const container = document.getElementById('transit-detail');
+    const rd = details.find(d => d.route_id === rid);
+    if (!rd) { container.style.display = 'none'; return; }
+
+    const directionsHTML = rd.directions.map(d => {
+      const stopsHTML = d.stops.map((s, i) => {
+        const isFirst = i === 0, isLast = i === d.stops.length - 1;
+        const dotColor = isFirst ? '#16a34a' : isLast ? '#dc2626' : 'var(--brand)';
+        return '<div style="display:flex;align-items:flex-start;padding:6px 0;">' +
+          '<div style="display:flex;flex-direction:column;align-items:center;margin-right:10px;flex-shrink:0;">' +
+            '<div style="width:20px;height:20px;border-radius:50%;background:'+dotColor+';color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;">'+(i+1)+'</div>' +
+            (i < d.stops.length-1 ? '<div style="width:1.5px;height:14px;background:var(--border);"></div>' : '') +
+          '</div>' +
+          '<div style="min-width:0;">' +
+            '<div style="font-size:12px;font-weight:600;color:var(--text);">'+s.name+'</div>' +
+            '<div style="font-size:10px;color:var(--muted);">'+s.stop_id+' · '+s.lat.toFixed(4)+', '+s.lon.toFixed(4)+'</div>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+      return '<div style="padding:12px 14px;border-bottom:1px solid var(--border);">' +
+        '<div style="font-size:11px;font-weight:700;color:var(--brand);margin-bottom:6px;">Arah '+(d.direction_id===0?'A':'B')+' — '+d.headsign+' ('+d.stop_count+' halte)</div>' +
+        '<div style="max-height:300px;overflow-y:auto;">'+stopsHTML+'</div>' +
+      '</div>';
+    }).join('');
+
+    const routeMeta = (window._transitRoutes || []).find(r => r.route_id === rid) || {};
+    container.innerHTML = '' +
+      '<div style="padding:14px 16px;background:linear-gradient(135deg,var(--brand),#0A2540);color:#fff;">' +
+        '<div style="display:flex;align-items:center;justify-content:space-between;">' +
+          '<div><span style="font-size:18px;font-weight:800;">'+rid+'</span><span style="margin-left:8px;font-size:11px;opacity:.8;">'+((routeMeta.route_category||''))+'</span></div>' +
+          '<span style="font-size:11px;opacity:.8;">'+rd.directions.length+' arah perjalanan</span>' +
+        '</div>' +
+        '<div style="font-size:12px;opacity:.7;margin-top:2px;">'+((routeMeta.route_long_name && routeMeta.route_long_name !== rid) ? routeMeta.route_long_name : (routeMeta.route_desc || ''))+'</div>' +
+      '</div>' +
+      directionsHTML +
+      '<div style="padding:8px 14px;text-align:center;"><button onclick="document.getElementById(\'transit-detail\').style.display=\'none\'" style="font-size:11px;color:var(--brand);background:none;border:none;cursor:pointer;font-family:inherit;font-weight:600;">Tutup Detail</button></div>';
+    container.style.display = 'block';
+    container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  window.initTransitExplorer = initTransitExplorer;
 </script>
 <!-- ===== Icon Sprite (Lucide-style, stroke-based, no external dependency) ===== -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
