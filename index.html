@@ -4825,6 +4825,265 @@
       }
     }
 
+    /* ─── LANDING PAGE TRANSIT & ROUTE CHOICES ─── */
+    .landing-transit-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px 22px;
+      margin-top: 14px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow-card);
+      position: relative;
+      overflow: hidden;
+    }
+    .landing-transit-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3.5px;
+      background: linear-gradient(90deg, #FF5500 0%, #FF8800 50%, #002D62 100%);
+    }
+    .transit-card-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+    .transit-card-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      letter-spacing: -0.01em;
+    }
+    .transit-card-sub {
+      font-size: 0.76rem;
+      color: var(--text-secondary);
+      margin-top: 3px;
+      line-height: 1.45;
+    }
+    .transit-card-badges {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      padding: 4px 10px;
+      border-radius: 20px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+    }
+    .transit-action-pills {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+    .transit-main-action-btn {
+      flex: 1;
+      min-width: 200px;
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .transit-main-action-btn.primary {
+      background: #FF5500;
+      color: #FFFFFF;
+      border: 1px solid #E04B00;
+      box-shadow: 0 2px 8px rgba(255, 85, 0, 0.25);
+    }
+    .transit-main-action-btn.primary:hover {
+      background: #E04B00;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(255, 85, 0, 0.35);
+    }
+    .transit-main-action-btn.secondary {
+      background: #FFF7ED;
+      color: #EA580C;
+      border: 1px solid #FED7AA;
+    }
+    .transit-main-action-btn.secondary:hover {
+      background: #FFEDD5;
+      transform: translateY(-1px);
+    }
+
+    /* Landing Route Tabs */
+    .landing-route-tabs {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      margin-bottom: 12px;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    .landing-route-tabs::-webkit-scrollbar { display: none; }
+    .landing-route-tab {
+      padding: 6px 13px;
+      border-radius: 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+      touch-action: manipulation;
+    }
+    .landing-route-tab:hover {
+      border-color: #FED7AA;
+      color: #FF5500;
+    }
+    .landing-route-tab.active {
+      background: #FFF7ED;
+      border-color: #FF5500;
+      color: #FF5500;
+    }
+
+    /* Route Cards Grid */
+    .landing-routes-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    @media (min-width: 600px) {
+      .landing-routes-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    .landing-route-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: all 0.18s ease;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+      text-decoration: none;
+      color: inherit;
+    }
+    .landing-route-card:hover {
+      border-color: #FED7AA;
+      box-shadow: 0 4px 14px rgba(255, 85, 0, 0.08);
+      transform: translateY(-1.5px);
+    }
+    .lrc-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .lrc-badge-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+    .lrc-num-badge {
+      font-size: 13px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 6px;
+      color: #FFFFFF;
+      flex-shrink: 0;
+    }
+    .lrc-num-badge.brt { background: #DC2626; }
+    .lrc-num-badge.metro { background: #2563EB; }
+    .lrc-num-badge.mikro { background: #16A34A; }
+    .lrc-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .lrc-type-tag {
+      font-size: 9.5px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .lrc-type-tag.brt { background: #FEF2F2; color: #DC2626; border: 1px solid #FECACA; }
+    .lrc-type-tag.metro { background: #EFF6FF; color: #2563EB; border: 1px solid #BFDBFE; }
+    .lrc-type-tag.mikro { background: #F0FDF4; color: #16A34A; border: 1px solid #BBF7D0; }
+
+    .lrc-body {
+      font-size: 0.73rem;
+      color: var(--text-secondary);
+      line-height: 1.4;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .lrc-stop {
+      display: flex;
+      align-items: flex-start;
+      gap: 5px;
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+    .lrc-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+      padding-top: 6px;
+      border-top: 1px dashed var(--border-subtle);
+    }
+    .lrc-action-btn {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #FF5500;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      text-decoration: none;
+    }
+    .lrc-action-btn:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 600px) {
+      .landing-transit-card {
+        padding: 16px 14px;
+      }
+      .transit-main-action-btn {
+        min-width: 100%;
+      }
+      .transit-card-head {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      .transit-card-badges {
+        width: 100%;
+        justify-content: space-between;
+      }
+    }
+
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
         animation-duration: 0.01ms !important;
@@ -6279,6 +6538,29 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
           <span class="quick-hub-sub">Budget + AI advisor</span>
         </button>
 
+        <button class="quick-hub-btn" onclick="window.location.href='journey.html'">
+          <div class="quick-hub-icon" style="color:#FF5500;background:#FFF7ED;border-color:#FED7AA;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+          </div>
+          <span class="quick-hub-label" style="color:#FF5500;">Journey Planner</span>
+          <span class="quick-hub-sub">Cari Rute &amp; Waktu ↗</span>
+        </button>
+
+        <button class="quick-hub-btn" onclick="window.location.href='transit.html'">
+          <div class="quick-hub-icon" style="color:#FF5500;background:#FFF7ED;border-color:#FED7AA;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
+              <line x1="8" y1="2" x2="8" y2="18"></line>
+              <line x1="16" y1="6" x2="16" y2="22"></line>
+            </svg>
+          </div>
+          <span class="quick-hub-label">Peta TransJakarta</span>
+          <span class="quick-hub-sub">240 Rute &amp; Halte ↗</span>
+        </button>
+
         <button class="quick-hub-btn" onclick="selectTab('packing')">
           <div class="quick-hub-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -6299,17 +6581,206 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
           <span class="quick-hub-label">Toolkit &amp; Kamus</span>
           <span class="quick-hub-sub">Rumus &amp; istilah</span>
         </button>
+      </div>
+    </div>
 
-        <button class="quick-hub-btn" onclick="selectTab('transit')">
-          <div class="quick-hub-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="4 17 10 11 4 5"></polyline>
-              <line x1="12" y1="19" x2="20" y2="19"></line>
+    <!-- SEKSI PILIHAN RUTE & AKSES MENARA BNI -->
+    <div class="landing-transit-card">
+      <div class="transit-card-head">
+        <div>
+          <div class="transit-card-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:#FF5500;">
+              <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
+              <line x1="8" y1="2" x2="8" y2="18"></line>
+              <line x1="16" y1="6" x2="16" y2="22"></line>
             </svg>
+            Pilihan Rute Menara BNI &amp; Komuter
           </div>
-          <span class="quick-hub-label">TransJakarta</span>
-          <span class="quick-hub-sub">240 Rute &amp; BRT</span>
-        </button>
+          <div class="transit-card-sub">
+            Akses langsung halte busway &amp; mikrotrans ke kantor Menara BNI Pejompongan (Kawasan Benhil &amp; Palmerah)
+          </div>
+        </div>
+
+        <div class="transit-card-badges">
+          <img src="transjakarta-logo.svg" alt="TransJakarta" height="20" style="display:block;width:auto;max-height:20px;">
+          <div style="width:1px;height:14px;background:var(--border);"></div>
+          <img src="jaklingko-logo.svg" alt="JakLingko" height="17" style="display:block;width:auto;max-height:17px;">
+          <span class="badge badge-accent" style="background:#FFF7ED;color:#FF5500;border:1px solid #FED7AA;font-weight:700;">240 Rute GTFS</span>
+        </div>
+      </div>
+
+      <!-- Action buttons -->
+      <div class="transit-action-pills">
+        <a href="journey.html" class="transit-main-action-btn primary" title="Rencanakan rute dari lokasi Anda ke kantor">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <span>Buka Journey Planner</span>
+          <span style="font-size:10.5px;opacity:0.9;font-weight:600;">(Cari Rute &amp; Waktu ↗)</span>
+        </a>
+        <a href="transit.html" class="transit-main-action-btn secondary" title="Lihat peta interaktif seluruh rute Jakarta">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/></svg>
+          <span>Peta Interaktif 240 Rute ↗</span>
+        </a>
+      </div>
+
+      <!-- Category Filter Tabs -->
+      <div class="landing-route-tabs">
+        <button type="button" class="landing-route-tab active" onclick="filterLandingRoutes('all', this)">⭐ Rute Menara BNI</button>
+        <button type="button" class="landing-route-tab" onclick="filterLandingRoutes('brt', this)">🔴 Busway BRT Koridor</button>
+        <button type="button" class="landing-route-tab" onclick="filterLandingRoutes('metro', this)">🔵 Metrotrans (KRL/MRT)</button>
+        <button type="button" class="landing-route-tab" onclick="filterLandingRoutes('mikro', this)">🟢 Mikrotrans Rp0 (JakLingko)</button>
+      </div>
+
+      <!-- Interactive Route Cards Grid -->
+      <div class="landing-routes-grid" id="landing-routes-container">
+        <!-- Rute 9 -->
+        <div class="landing-route-card" data-cat="brt bni">
+          <div class="lrc-head">
+            <div class="lrc-badge-group">
+              <span class="lrc-num-badge brt">9</span>
+              <span class="lrc-title">Pluit ⇄ Pinang Ranti</span>
+            </div>
+            <span class="lrc-type-tag brt">BRT 24 Jam</span>
+          </div>
+          <div class="lrc-body">
+            <div class="lrc-stop">
+              <span>📍</span>
+              <span>Halte Slipi Petamburan (Jalan 300m / 4 mnt ke Menara BNI)</span>
+            </div>
+            <div>Jalur busway steril bebas macet Grogol–Gatot Subroto · Tarif Rp3.500</div>
+          </div>
+          <div class="lrc-meta">
+            <span>⏱️ Tiap 5–10 mnt · 24 Jam</span>
+            <div style="display:flex;gap:8px;">
+              <a href="transit.html" class="lrc-action-btn">🗺️ Peta</a>
+              <a href="journey.html" class="lrc-action-btn">🧭 Rencanakan</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rute 1B -->
+        <div class="landing-route-card" data-cat="metro bni">
+          <div class="lrc-head">
+            <div class="lrc-badge-group">
+              <span class="lrc-num-badge metro">1B</span>
+              <span class="lrc-title">St. Palmerah ⇄ Tosari / Dukuh Atas</span>
+            </div>
+            <span class="lrc-type-tag metro">Metrotrans</span>
+          </div>
+          <div class="lrc-body">
+            <div class="lrc-stop">
+              <span>📍</span>
+              <span>Halte Menara BNI / Gedung Manggala Wanabakti</span>
+            </div>
+            <div>Koneksi langsung KRL Commuter Line Palmerah &amp; MRT Dukuh Atas</div>
+          </div>
+          <div class="lrc-meta">
+            <span>⏱️ 05.00 – 22.00 · Rp3.500</span>
+            <div style="display:flex;gap:8px;">
+              <a href="transit.html" class="lrc-action-btn">🗺️ Peta</a>
+              <a href="journey.html" class="lrc-action-btn">🧭 Rencanakan</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rute 1F -->
+        <div class="landing-route-card" data-cat="metro bni">
+          <div class="lrc-head">
+            <div class="lrc-badge-group">
+              <span class="lrc-num-badge metro">1F</span>
+              <span class="lrc-title">St. Palmerah ⇄ Bundaran Senayan</span>
+            </div>
+            <span class="lrc-type-tag metro">Metrotrans</span>
+          </div>
+          <div class="lrc-body">
+            <div class="lrc-stop">
+              <span>📍</span>
+              <span>Akses KRL Stasiun Palmerah ⇄ Koridor Sudirman</span>
+            </div>
+            <div>Koneksi cepat dari stasiun kereta ke kawasan perkantoran Senayan/GBK</div>
+          </div>
+          <div class="lrc-meta">
+            <span>⏱️ 05.00 – 22.00 · Rp3.500</span>
+            <div style="display:flex;gap:8px;">
+              <a href="transit.html" class="lrc-action-btn">🗺️ Peta</a>
+              <a href="journey.html" class="lrc-action-btn">🧭 Rencanakan</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rute JAK.11 -->
+        <div class="landing-route-card" data-cat="mikro bni">
+          <div class="lrc-head">
+            <div class="lrc-badge-group">
+              <span class="lrc-num-badge mikro">JAK.11</span>
+              <span class="lrc-title">Tanah Abang ⇄ Kebayoran Lama</span>
+            </div>
+            <span class="lrc-type-tag mikro">Mikrotrans Rp0</span>
+          </div>
+          <div class="lrc-body">
+            <div class="lrc-stop">
+              <span>📍</span>
+              <span>Halte Pejompongan Raya (Tepat di seberang Menara BNI)</span>
+            </div>
+            <div>Armada ber-AC, tarif Rp0 dengan kartu JakLingko/BNI TapCash</div>
+          </div>
+          <div class="lrc-meta">
+            <span>⏱️ 05.00 – 22.00 · Gratis (Rp0)</span>
+            <div style="display:flex;gap:8px;">
+              <a href="transit.html" class="lrc-action-btn">🗺️ Peta</a>
+              <a href="journey.html" class="lrc-action-btn">🧭 Rencanakan</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rute JAK.14 -->
+        <div class="landing-route-card" data-cat="mikro bni">
+          <div class="lrc-head">
+            <div class="lrc-badge-group">
+              <span class="lrc-num-badge mikro">JAK.14</span>
+              <span class="lrc-title">Tanah Abang ⇄ Meruya Ilir via Benhil</span>
+            </div>
+            <span class="lrc-type-tag mikro">Mikrotrans Rp0</span>
+          </div>
+          <div class="lrc-body">
+            <div class="lrc-stop">
+              <span>📍</span>
+              <span>Kawasan Kost &amp; Kuliner Benhil (Jl. Danau Toba / Tondano)</span>
+            </div>
+            <div>Akses mudah antar kost Bendungan Hilir ke Menara BNI Pejompongan</div>
+          </div>
+          <div class="lrc-meta">
+            <span>⏱️ 05.00 – 22.00 · Gratis (Rp0)</span>
+            <div style="display:flex;gap:8px;">
+              <a href="transit.html" class="lrc-action-btn">🗺️ Peta</a>
+              <a href="journey.html" class="lrc-action-btn">🧭 Rencanakan</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Koridor 1 -->
+        <div class="landing-route-card" data-cat="brt">
+          <div class="lrc-head">
+            <div class="lrc-badge-group">
+              <span class="lrc-num-badge brt">1</span>
+              <span class="lrc-title">Blok M ⇄ Kota</span>
+            </div>
+            <span class="lrc-type-tag brt">BRT Utama</span>
+          </div>
+          <div class="lrc-body">
+            <div class="lrc-stop">
+              <span>📍</span>
+              <span>Halte Benhil / Dukuh Atas (Transit Koridor 9, MRT, &amp; LRT)</span>
+            </div>
+            <div>Koridor utama Sudirman–Thamrin terhubung seluruh moda transportasi Jakarta</div>
+          </div>
+          <div class="lrc-meta">
+            <span>⏱️ Tiap 3–5 mnt · 24 Jam</span>
+            <div style="display:flex;gap:8px;">
+              <a href="transit.html" class="lrc-action-btn">🗺️ Peta</a>
+              <a href="journey.html" class="lrc-action-btn">🧭 Rencanakan</a>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -10134,6 +10605,24 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       card.style.display = isVisible ? 'block' : 'none';
     });
   }
+
+  function filterLandingRoutes(cat, btn) {
+    document.querySelectorAll('.landing-route-tab').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+
+    const cards = document.querySelectorAll('#landing-routes-container .landing-route-card');
+    cards.forEach(card => {
+      const cardCat = card.getAttribute('data-cat') || '';
+      let isVisible = false;
+      if (cat === 'all') {
+        isVisible = cardCat.includes('bni');
+      } else {
+        isVisible = cardCat.includes(cat);
+      }
+      card.style.display = isVisible ? 'flex' : 'none';
+    });
+  }
+  window.filterLandingRoutes = filterLandingRoutes;
 
   // --- Jakarta Financial Management Engine (Advanced Fintech Suite) ---
   const FIN_INCOME_KEY = 'mghb_fin_income';
