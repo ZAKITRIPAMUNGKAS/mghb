@@ -4,8 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
   <meta name="theme-color" content="#FFFFFF">
-  <title>TransJakarta Explorer & Journey Planner</title>
-  <meta name="description" content="Peta interaktif TransJakarta & perencana perjalanan. 240 rute, 8.091 halte, BRT/Mikrotrans/Metrotrans. Data GTFS resmi PPID.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <title>TransJakarta Explorer & Journey Planner — Rute & Navigasi Live</title>
+  <meta name="description" content="Peta rute interaktif TransJakarta & navigasi live transum GPS. 240 rute, 8.091 halte terintegrasi BRT, Metrotrans & Mikrotrans. Data GTFS resmi PPID.">
   <link rel="icon" href="favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,561 +16,2061 @@
   <style>
     :root {
       --font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      --bg: #F8FAFC; --surface: #FFFFFF; --text: #0F172A; --t2: #475569; --t3: #94A3B8;
-      --border: #E2E8F0; --border-light: #F1F5F9;
-      --brand: #FF5500; --brand-hover: #E04B00; --brand-light: #FFF7ED; --brand-border: #FED7AA;
-      --radius: 14px; --radius-sm: 8px;
-      --cat-brt:#DC2626;--cat-metro:#2563EB;--cat-mikro:#16A34A;--cat-royal:#9333EA;--cat-jabodetabek:#EA580C;--cat-wisata:#D97706;
-      --cat-brt-bg:#FEF2F2;--cat-metro-bg:#EFF6FF;--cat-mikro-bg:#F0FDF4;--cat-royal-bg:#FAF5FF;--cat-jabodetabek-bg:#FFF7ED;--cat-wisata-bg:#FFFBEB;
-      --shadow: 0 1px 3px rgba(0,0,0,0.05); --shadow-lg: 0 12px 32px -4px rgba(15,23,42,0.08);
+      --bg: #F8FAFC;
+      --surface: #FFFFFF;
+      --text: #0F172A;
+      --text-secondary: #475569;
+      --text-muted: #94A3B8;
+      --border: #E2E8F0;
+      --border-light: #F1F5F9;
+
+      /* Signature TransJakarta & BNI Palette */
+      --brand: #FF5500;
+      --brand-hover: #E04B00;
+      --brand-light: #FFF7ED;
+      --brand-subtle: #FFEDD5;
+      --brand-border: #FED7AA;
+      --brand-blue: #002D62;
+
+      /* Transport Category Tokens */
+      --cat-brt: #DC2626;
+      --cat-brt-bg: #FEF2F2;
+      --cat-metro: #2563EB;
+      --cat-metro-bg: #EFF6FF;
+      --cat-mikro: #16A34A;
+      --cat-mikro-bg: #F0FDF4;
+      --cat-royal: #9333EA;
+      --cat-royal-bg: #FAF5FF;
+      --cat-jabodetabek: #EA580C;
+      --cat-jabodetabek-bg: #FFF7ED;
+      --cat-wisata: #D97706;
+      --cat-wisata-bg: #FFFBEB;
+
+      --radius: 14px;
+      --radius-sm: 8px;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 16px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
+      --shadow-lg: 0 12px 32px -4px rgba(15, 23, 42, 0.08), 0 4px 12px rgba(15, 23, 42, 0.04);
     }
-    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-    body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden}
-    .topbar{background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:1000}
-    .topbar-stripe{height:3px;background:linear-gradient(90deg,#FF5500,#FF8800,#002D62)}
-    .topbar-content{max-width:100%;margin:0 auto;padding:8px 14px;display:flex;align-items:center;justify-content:space-between;gap:8px}
-    .topbar-left{display:flex;align-items:center;gap:10px}
-    .topbar-left h2{font-size:15px;font-weight:800;letter-spacing:-0.3px;white-space:nowrap}
-    .topbar-left .sub{font-size:10px;color:var(--t3);display:none}
-    @media(min-width:480px){.topbar-left .sub{display:inline}}
-    .topbar-tabs{display:flex;gap:2px;background:#F1F5F9;border-radius:10px;padding:3px}
-    .tab-btn{padding:7px 14px;border-radius:8px;border:none;background:transparent;font-size:12px;font-weight:700;font-family:var(--font);color:var(--t2);cursor:pointer;transition:all 0.15s;white-space:nowrap}
-    .tab-btn.active{background:#FFF;color:var(--brand);box-shadow:0 1px 3px rgba(0,0,0,0.08)}
-    .tab-btn:active{transform:scale(0.96)}
-    .topbar-actions{display:flex;gap:4px}
-    .top-btn{padding:5px 10px;border-radius:16px;border:1px solid var(--border);background:#FFF;font-size:10px;font-weight:700;color:var(--t2);text-decoration:none;display:inline-flex;align-items:center;gap:4px;transition:all 0.15s}
-    .top-btn:hover{background:var(--brand-light);border-color:var(--brand-border);color:var(--brand)}
 
-    /* ─── MAIN LAYOUT ─── */
-    .app-shell{flex:1;display:flex;overflow:hidden}
-    /* EXPLORER tab: sidebar + map */
-    #explorer-panel{display:flex;width:100%;height:100%}
-    #explorer-panel.hidden{display:none}
-    /* PLANNER tab: centered card */
-    #planner-panel{display:none;width:100%;height:100%;overflow-y:auto;padding:16px}
-    #planner-panel.show{display:block}
-
-    /* ─── EXPLORER: SIDEBAR ─── */
-    #explorer-sidebar{width:360px;min-width:300px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:5}
-    .ex-header{padding:10px 14px;border-bottom:1px solid var(--border);flex-shrink:0}
-    .ex-stats{display:flex;flex-wrap:wrap;gap:4px 8px;padding:4px 14px 4px;font-size:10px;font-weight:600;color:var(--t2);border-bottom:1px solid var(--border-light);flex-shrink:0;overflow-x:auto}
-    .ex-stat-dot{width:7px;height:7px;border-radius:2px;display:inline-block;margin-right:3px}
-    .ex-search{padding:6px 14px;border-bottom:1px solid var(--border);flex-shrink:0;position:relative}
-    .ex-search input{width:100%;padding:7px 10px 7px 30px;border:1px solid var(--border);border-radius:8px;font-size:12px;font-family:var(--font);outline:none;background:var(--bg)}
-    .ex-search input:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(255,85,0,.1)}
-    .ex-search svg{position:absolute;left:22px;top:50%;transform:translateY(-50%);color:var(--t3);width:14px;height:14px}
-    #ex-route-list{flex:1;overflow-y:auto}
-    #ex-route-list::-webkit-scrollbar{width:4px}
-    #ex-route-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
-    .ex-route-row{display:flex;align-items:center;padding:8px 14px;gap:8px;cursor:pointer;border-bottom:1px solid var(--border-light);font-size:12px;transition:background 0.1s}
-    .ex-route-row:hover{background:#f8fafc}
-    .ex-route-row.active{background:var(--brand-light);border-left:3px solid var(--brand);padding-left:11px}
-    .ex-route-row .rid{font-weight:700;font-size:13px;min-width:36px}
-    .ex-route-row .rname{flex:1;font-size:11px;color:var(--t2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .ex-route-row .rcat{font-size:9px;font-weight:700;padding:1px 6px;border-radius:4px;white-space:nowrap}
-    .rcat.BRT{background:var(--cat-brt-bg);color:var(--cat-brt)}.rcat.Metrotrans{background:var(--cat-metro-bg);color:var(--cat-metro)}
-    .rcat.Mikrotrans{background:var(--cat-mikro-bg);color:var(--cat-mikro)}.rcat.Royaltrans{background:var(--cat-royal-bg);color:var(--cat-royal)}
-    .rcat.Transjabodetabek{background:var(--cat-jabodetabek-bg);color:var(--cat-jabodetabek)}.rcat.Bus-Wisata{background:var(--cat-wisata-bg);color:var(--cat-wisata)}
-    .ex-route-empty{padding:24px;text-align:center;color:var(--t3);font-size:12px}
-
-    /* ─── EXPLORER: MAP + DETAIL ─── */
-    #explorer-map-area{flex:1;position:relative;min-width:0}
-    #explorer-map{width:100%;height:100%}
-    #ex-detail{position:absolute;bottom:14px;left:14px;right:14px;max-height:40vh;background:var(--surface);border-radius:var(--radius);box-shadow:0 8px 32px rgba(0,0,0,.15);border:1px solid var(--border);overflow:hidden;display:none;z-index:100}
-    #ex-detail.show{display:flex;flex-direction:column}
-    .dt-header{padding:10px 14px;background:linear-gradient(135deg,#FF5500,#002D62);color:#fff;display:flex;align-items:center;justify-content:space-between}
-    .dt-header h3{font-size:16px;font-weight:800}.dt-header .dcat{font-size:10px;opacity:.8;margin-left:6px}.dt-header .dname{font-size:11px;opacity:.65;margin-top:1px}
-    .dt-close{background:rgba(255,255,255,.15);border:none;color:#fff;width:26px;height:26px;border-radius:6px;cursor:pointer;font-size:14px;font-family:var(--font)}
-    .dt-body{display:flex;overflow-x:auto;flex:1}
-    .dt-dir{min-width:240px;flex:1;padding:8px 10px;border-right:1px solid var(--border);overflow-y:auto;max-height:28vh}
-    .dt-dir:last-child{border-right:none}
-    .dt-dir-title{font-size:10px;font-weight:700;color:var(--brand);margin-bottom:4px}
-    .dt-stop{display:flex;align-items:flex-start;padding:2px 0;cursor:pointer;font-size:10px}
-    .dt-stop:hover{opacity:.7}
-    .dt-stop-seq{width:16px;height:16px;border-radius:50%;color:#fff;font-size:8px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-right:6px}
-    .dt-stop-seq.first{background:#16a34a}.dt-stop-seq.last{background:var(--brand)}.dt-stop-seq.mid{background:var(--t3)}
-    .dt-stop-conn{width:1px;height:8px;background:var(--border);margin-left:8px}
-
-    /* ─── PLANNER ─── */
-    .planner-wrap{max-width:560px;margin:0 auto}
-    .planner-hero{text-align:center;padding:16px 0 12px}
-    .planner-hero .badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;background:var(--brand-light);border:1px solid var(--brand-border);color:var(--brand);border-radius:16px;font-size:10px;font-weight:800;text-transform:uppercase;margin-bottom:6px}
-    .planner-hero h1{font-size:22px;font-weight:800}
-    .planner-hero p{font-size:11px;color:var(--t2);margin-top:3px}
-
-    .search-card{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow-lg);overflow:hidden}
-    .search-card::before{content:'';display:block;height:3px;background:linear-gradient(90deg,#FF5500,#FF8800)}
-    .inputs-wrap{padding:12px 14px;display:flex;flex-direction:column;gap:6px;position:relative}
-    .connector-line{position:absolute;left:28px;top:36px;bottom:34px;width:1.5px;background:repeating-linear-gradient(to bottom,#CBD5E1 0 3px,transparent 3px 6px);z-index:0;pointer-events:none}
-    .input-group{display:flex;align-items:center;background:#F8FAFC;border:1.5px solid var(--border);border-radius:10px;min-height:44px;position:relative;z-index:1;transition:all .15s}
-    .input-group:focus-within{background:#FFF;border-color:var(--brand);box-shadow:0 0 0 3px rgba(255,85,0,.1)}
-    .inp-dot{width:36px;display:flex;align-items:center;justify-content:center}
-    .inp-dot div{width:10px;height:10px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.15)}
-    .inp-dot .from{background:#16a34a}.inp-dot .to{background:var(--brand)}
-    .input-group input{flex:1;border:none;padding:10px 0;font-size:14px;font-family:var(--font);background:transparent;color:var(--text);outline:none;min-width:0}
-    .input-group input::placeholder{color:var(--t3);font-size:12px}
-    .swap-wrap{display:flex;justify-content:flex-end;padding-right:10px;position:relative;z-index:2}
-    .swap-btn{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--border);background:#FFF;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--t2);box-shadow:0 2px 6px rgba(0,0,0,.08);transition:all .2s}
-    .swap-btn:hover{background:var(--brand-light);border-color:var(--brand-border);color:var(--brand)}
-    .swap-btn:active{transform:rotate(180deg) scale(.9)}
-
-    .quick-chips{padding:2px 14px 10px;display:flex;gap:5px;overflow-x:auto;scrollbar-width:none}
-    .quick-chips::-webkit-scrollbar{display:none}
-    .quick-chips .lbl{font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;white-space:nowrap;margin-right:2px}
-    .chip{padding:5px 10px;border-radius:16px;border:1px solid var(--border);background:#F8FAFC;font-size:10px;font-weight:600;color:var(--t2);cursor:pointer;white-space:nowrap;transition:all .1s;flex-shrink:0}
-    .chip:hover{background:var(--brand-light);border-color:var(--brand-border);color:var(--brand)}
-    .chip:active{transform:scale(.94)}
-
-    .action-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 14px;border-top:1px solid var(--border);background:#FAFBFD}
-    .time-group{display:flex;align-items:center;gap:5px}
-    .time-group .tlbl{font-size:11px;font-weight:600;color:var(--t2);display:flex;align-items:center;gap:3px;white-space:nowrap}
-    .time-wrap{display:flex;align-items:center;background:#FFF;border:1px solid var(--border);border-radius:7px;padding:2px 4px}
-    .time-wrap select{border:none;outline:none;font-family:var(--font);font-size:12px;font-weight:700;background:transparent;cursor:pointer}
-    .now-btn{padding:3px 7px;border-radius:6px;border:1px solid var(--border);background:#FFF;font-size:10px;font-weight:700;cursor:pointer;color:var(--t2)}
-    .search-btn{padding:9px 18px;background:var(--brand);color:#fff;border:none;border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:5px;box-shadow:0 2px 8px rgba(255,85,0,.2);white-space:nowrap}
-    .search-btn:hover{background:var(--brand-hover)}.search-btn:active{transform:scale(.96)}
-    .search-btn:disabled{opacity:.5;cursor:not-allowed}
-
-    .suggestions{position:absolute;top:calc(100% + 3px);left:0;right:0;background:#FFF;border:1px solid var(--border);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.12);z-index:300;max-height:200px;overflow-y:auto;display:none}
-    .suggestions.show{display:block}
-    .sug-item{padding:9px 12px;cursor:pointer;font-size:12px;border-bottom:1px solid var(--border-light);display:flex;align-items:flex-start;gap:8px}
-    .sug-item:hover{background:var(--brand-light)}.sug-item .name{font-weight:700;color:var(--text)}.sug-item .addr{font-size:10px;color:var(--t3);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-
-    /* Journey results */
-    .planner-results{margin-top:14px;display:none}.planner-results.show{display:block}
-    .res-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;font-size:12px;font-weight:700;color:var(--t2)}
-    .j-card{background:var(--surface);border-radius:var(--radius);border:1.5px solid var(--border);box-shadow:var(--shadow);margin-bottom:8px;overflow:hidden;cursor:pointer}
-    .j-card:hover{border-color:var(--brand-border)}.j-card.active{border-color:var(--brand);box-shadow:0 0 0 1px var(--brand),var(--shadow)}
-    .jc-sum{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;gap:8px;flex-wrap:wrap}
-    .jc-times{display:flex;align-items:center;gap:6px}
-    .jc-times span{font-size:16px;font-weight:800}.jc-arrow{color:var(--brand);font-weight:700}.jc-dur{font-size:10px;font-weight:700;color:var(--brand);background:var(--brand-light);padding:2px 6px;border-radius:4px}
-    .jc-meta{display:flex;gap:6px;font-size:10px;color:var(--t2)}.jc-badge{font-size:9px;font-weight:800;padding:2px 6px;border-radius:4px;text-transform:uppercase}
-    .jc-badge.fast{background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0}
-    .jc-detail{display:none;padding:0 14px 12px;border-top:1px solid var(--border-light);background:#FAFAFC}
-    .jc-detail.show{display:block}
-    .leg{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:1px solid var(--border-light)}
-    .leg:last-child{border-bottom:none}
-    .leg-icon{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
-    .leg-icon.walk{background:#f1f5f9;border:1px solid var(--border)}.leg-icon.bus{background:var(--brand-light);border:1px solid var(--brand-border)}
-    .leg-icon.transfer{background:#fef3c7;border:1px solid #fde68a}
-    .leg-body{min-width:0}.leg-desc{font-size:12px;font-weight:700}.leg-sub{font-size:10px;color:var(--t2);margin-top:1px}
-
-    .loading-box,.empty-box{display:none;text-align:center;padding:28px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-top:14px;font-size:12px;color:var(--t2)}
-    .loading-box.show,.empty-box.show{display:block}
-    .spinner{width:28px;height:28px;border:3px solid var(--border);border-top-color:var(--brand);border-radius:50%;animation:spin .6s linear infinite;margin:0 auto 8px}
-    @keyframes spin{to{transform:rotate(360deg)}}
-
-    /* Map card in planner */
-    #planner-map-box{display:none;margin-top:12px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
-    #planner-map{width:100%;height:260px}
-
-    .footer-bar{text-align:center;padding:12px;font-size:10px;color:var(--t3);border-top:1px solid var(--border);background:#FFF;margin-top:auto}
-
-    @media(max-width:768px){
-      #explorer-sidebar{width:100%;min-width:0;max-height:40vh}
-      #explorer-panel{flex-direction:column}.app-shell{flex-direction:column}
-      #planner-panel{padding:10px}
-      .planner-hero h1{font-size:18px}
-      #explorer-map-area{height:50vh}#explorer-map{height:100%}
-      #ex-detail{bottom:8px;left:8px;right:8px;max-height:45vh}
-      .dt-body{flex-direction:column}.dt-dir{max-height:none}
-      .action-row{flex-direction:column;align-items:stretch}.search-btn{width:100%;justify-content:center}
-      .topbar-left h2{font-size:13px}
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      width: 100%;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
     }
-    @media(prefers-color-scheme:dark){
-      :root{--bg:#0F172A;--surface:#1E293B;--text:#F1F5F9;--t2:#94A3B8;--t3:#64748B;--border:#334155;--border-light:#1E293B}
-      .topbar{background:rgba(15,23,42,.96)}.input-group{background:#1a2332}.ex-route-row:hover{background:#1a2332}
-      .ex-route-row.active{background:rgba(255,85,0,.1)}.action-row{background:#1a2332}
+
+    /* ─── TOPBAR BRANDING & TABS ─── */
+    .topbar {
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      z-index: 1000;
+      flex-shrink: 0;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+    }
+    .topbar-stripe {
+      height: 3.5px;
+      background: linear-gradient(90deg, #FF5500 0%, #FF8800 50%, #002D62 100%);
+    }
+    .topbar-content {
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    .logos-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .logos-group img {
+      display: block;
+      height: 22px;
+      width: auto;
+    }
+    .logo-divider {
+      width: 1px;
+      height: 18px;
+      background: var(--border);
+    }
+
+    /* Segmented Navigation Tabs */
+    .topbar-tabs {
+      display: flex;
+      gap: 3px;
+      background: #F1F5F9;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 3px;
+    }
+    .tab-btn {
+      padding: 6px 14px;
+      border-radius: 9px;
+      border: none;
+      background: transparent;
+      font-size: 12px;
+      font-weight: 700;
+      font-family: var(--font);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .tab-btn.active {
+      background: #FFFFFF;
+      color: var(--brand);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+    }
+    .tab-btn:active {
+      transform: scale(0.97);
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .top-action-btn {
+      padding: 5px 11px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: #FFFFFF;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      box-shadow: var(--shadow-sm);
+      white-space: nowrap;
+    }
+    .top-action-btn:hover {
+      background: var(--brand-light);
+      border-color: var(--brand-border);
+      color: var(--brand);
+      transform: translateY(-1px);
+    }
+    .top-action-btn.bni {
+      background: #FFF7ED;
+      color: #FF5500;
+      border-color: #FED7AA;
+    }
+
+    /* ─── APP MAIN SHELL ─── */
+    .app-shell {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* ════════════════════════════════════════════════
+       TAB 1: EXPLORER VIEW (Sidebar + Map)
+       ════════════════════════════════════════════════ */
+    #explorer-panel {
+      display: flex;
+      width: 100%;
+      height: 100%;
+    }
+    #explorer-panel.hidden { display: none; }
+
+    #explorer-sidebar {
+      width: 380px;
+      min-width: 320px;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      z-index: 10;
+      box-shadow: 2px 0 12px rgba(15, 23, 42, 0.04);
+    }
+
+    .ex-header {
+      padding: 12px 16px 8px;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .ex-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .ex-badge {
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 6px;
+      background: var(--brand-light);
+      color: var(--brand);
+      border: 1px solid var(--brand-border);
+    }
+
+    /* Category Filter Chips */
+    .ex-stats-bar {
+      display: flex;
+      gap: 5px;
+      padding: 8px 14px;
+      border-bottom: 1px solid var(--border);
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      flex-shrink: 0;
+    }
+    .ex-stats-bar::-webkit-scrollbar { display: none; }
+    .ex-chip {
+      padding: 4px 10px;
+      border-radius: 16px;
+      background: #F8FAFC;
+      border: 1px solid var(--border);
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      cursor: pointer;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.12s ease;
+    }
+    .ex-chip:hover {
+      background: var(--brand-light);
+      border-color: var(--brand-border);
+      color: var(--brand);
+    }
+    .ex-chip.active {
+      background: var(--brand-light);
+      border-color: var(--brand);
+      color: var(--brand);
+    }
+    .ex-chip .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+    }
+
+    /* Search Box */
+    .ex-search-box {
+      padding: 8px 14px;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      flex-shrink: 0;
+      background: #FFFFFF;
+    }
+    .ex-search-box input {
+      width: 100%;
+      padding: 8px 30px 8px 32px;
+      border: 1.5px solid var(--border);
+      border-radius: 9px;
+      font-size: 13px;
+      font-family: var(--font);
+      background: #F8FAFC;
+      color: var(--text);
+      outline: none;
+      transition: all 0.15s ease;
+    }
+    .ex-search-box input:focus {
+      background: #FFFFFF;
+      border-color: var(--brand);
+      box-shadow: 0 0 0 3px rgba(255, 85, 0, 0.1);
+    }
+    .ex-search-icon {
+      position: absolute;
+      left: 24px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      width: 14px;
+      height: 14px;
+      pointer-events: none;
+    }
+    .ex-clear-icon {
+      position: absolute;
+      right: 24px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 13px;
+      display: none;
+    }
+
+    /* Route List */
+    #ex-route-list {
+      flex: 1;
+      overflow-y: auto;
+      background: #FFFFFF;
+    }
+    #ex-route-list::-webkit-scrollbar { width: 5px; }
+    #ex-route-list::-webkit-scrollbar-thumb { background: #E2E8F0; border-radius: 4px; }
+
+    .ex-route-row {
+      display: flex;
+      align-items: center;
+      padding: 9px 14px;
+      gap: 10px;
+      cursor: pointer;
+      border-bottom: 1px solid var(--border-light);
+      transition: background 0.12s ease;
+    }
+    .ex-route-row:hover {
+      background: #F8FAFC;
+    }
+    .ex-route-row.active {
+      background: var(--brand-light);
+      border-left: 3.5px solid var(--brand);
+      padding-left: 10.5px;
+    }
+    .ex-route-rid {
+      font-size: 12.5px;
+      font-weight: 800;
+      color: var(--text);
+      min-width: 40px;
+      text-align: center;
+      background: #F1F5F9;
+      padding: 3px 6px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .ex-route-row.active .ex-route-rid {
+      background: var(--brand);
+      color: #FFFFFF;
+      border-color: var(--brand);
+    }
+    .ex-route-info {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+    .ex-route-name {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .ex-route-badge {
+      font-size: 9px;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 4px;
+      width: fit-content;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    /* Map Area */
+    #explorer-map-area {
+      flex: 1;
+      position: relative;
+      height: 100%;
+      min-width: 0;
+    }
+    #explorer-map {
+      width: 100%;
+      height: 100%;
+      background: #F1F5F9;
+    }
+
+    /* Floating Map Action Controls (GPS & Menara BNI) */
+    .map-floating-controls {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      z-index: 800;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .map-btn-pill {
+      background: #FFFFFF;
+      padding: 7px 12px;
+      border-radius: 24px;
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.12);
+      border: 1px solid var(--border);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      touch-action: manipulation;
+    }
+    .map-btn-pill:hover {
+      background: var(--brand-light);
+      border-color: var(--brand-border);
+      color: var(--brand);
+      transform: translateY(-1px);
+    }
+    .map-btn-pill:active { transform: scale(0.97); }
+    .map-btn-pill.gps-active {
+      background: #EFF6FF;
+      border-color: #3B82F6;
+      color: #1D4ED8;
+    }
+
+    /* Floating GPS FAB Button (Bottom Right) */
+    .gps-lock-fab {
+      position: absolute;
+      bottom: 24px;
+      right: 18px;
+      z-index: 800;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: #FFFFFF;
+      border: 1.5px solid var(--border);
+      color: var(--text-secondary);
+      box-shadow: 0 4px 16px rgba(15, 23, 42, 0.15);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      touch-action: manipulation;
+    }
+    .gps-lock-fab:hover {
+      background: var(--brand-light);
+      border-color: var(--brand-border);
+      color: var(--brand);
+      transform: scale(1.06);
+    }
+    .gps-lock-fab:active { transform: scale(0.94); }
+    .gps-lock-fab.active {
+      background: #2563EB;
+      color: #FFFFFF;
+      border-color: #1D4ED8;
+      box-shadow: 0 4px 18px rgba(37, 99, 235, 0.4);
+    }
+
+    /* Route Detail Bottom Sheet */
+    #ex-detail {
+      position: absolute;
+      bottom: 16px;
+      left: 16px;
+      right: 16px;
+      max-height: 46vh;
+      background: #FFFFFF;
+      border-radius: var(--radius);
+      box-shadow: 0 10px 32px rgba(15, 23, 42, 0.18);
+      border: 1.5px solid var(--border);
+      overflow: hidden;
+      display: none;
+      z-index: 900;
+      animation: slideUp 0.2s ease-out;
+    }
+    @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    #ex-detail.show { display: flex; flex-direction: column; }
+
+    .dt-header {
+      padding: 12px 16px;
+      background: #FFFFFF;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .dt-header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+    .dt-rid {
+      background: var(--brand);
+      color: #FFFFFF;
+      font-size: 15px;
+      font-weight: 800;
+      padding: 4px 9px;
+      border-radius: 7px;
+      box-shadow: 0 2px 6px rgba(255, 85, 0, 0.25);
+    }
+    .dt-titles h3 {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .dt-titles .dname {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 1px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .dt-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .start-ride-btn {
+      padding: 6px 12px;
+      background: #16A34A;
+      color: #FFFFFF;
+      border: none;
+      border-radius: 20px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.15s ease;
+      box-shadow: 0 2px 6px rgba(22, 163, 74, 0.3);
+    }
+    .start-ride-btn:hover { background: #15803D; }
+    .start-ride-btn:active { transform: scale(0.96); }
+
+    .dt-close {
+      background: #F1F5F9;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .dt-close:hover { background: #E2E8F0; color: var(--text); }
+
+    .dt-dirs-bar {
+      display: flex;
+      padding: 8px 16px;
+      gap: 6px;
+      background: #F8FAFC;
+      border-bottom: 1px solid var(--border);
+      overflow-x: auto;
+    }
+    .dir-pill {
+      padding: 4px 10px;
+      border-radius: 14px;
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .dir-pill.active {
+      background: var(--brand);
+      border-color: var(--brand);
+      color: #FFFFFF;
+    }
+
+    .dt-body {
+      display: flex;
+      overflow-x: auto;
+      flex: 1;
+      background: #FFFFFF;
+    }
+    .dt-dir-col {
+      min-width: 280px;
+      flex: 1;
+      padding: 10px 16px;
+      border-right: 1px solid var(--border);
+      overflow-y: auto;
+      max-height: 28vh;
+    }
+    .dt-dir-col:last-child { border-right: none; }
+    .dt-dir-col.hidden { display: none; }
+
+    .dt-stop-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 6px 0;
+      cursor: pointer;
+      transition: background 0.1s ease;
+    }
+    .dt-stop-item:hover { color: var(--brand); }
+    .dt-seq {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #F1F5F9;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 9.5px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .dt-seq.first { background: #DCFCE7; color: #16A34A; border-color: #86EFAC; }
+    .dt-seq.last { background: #FEE2E2; color: #DC2626; border-color: #FCA5A5; }
+    .dt-sname {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    /* ════════════════════════════════════════════════
+       LIVE TRANSIT RIDE HUD (Saat Pengguna Naik Bus)
+       ════════════════════════════════════════════════ */
+    #live-ride-hud {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      right: 20px;
+      max-width: 520px;
+      margin: 0 auto;
+      background: #FFFFFF;
+      border: 2px solid var(--brand);
+      border-radius: 16px;
+      box-shadow: 0 12px 36px rgba(255, 85, 0, 0.25), 0 4px 12px rgba(0, 0, 0, 0.1);
+      padding: 14px 16px;
+      z-index: 950;
+      display: none;
+      animation: bounceIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    @keyframes bounceIn { from { transform: translateY(40px) scale(0.95); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
+    #live-ride-hud.active { display: block; }
+    #live-ride-hud.alert-arrival {
+      border-color: #DC2626;
+      background: #FEF2F2;
+      animation: alertPulse 1.2s infinite;
+    }
+    @keyframes alertPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
+      50% { box-shadow: 0 0 0 12px rgba(220, 38, 38, 0); }
+    }
+
+    .hud-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .hud-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 9px;
+      border-radius: 14px;
+      background: #DCFCE7;
+      color: #16A34A;
+      font-size: 10.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .hud-status-badge.alert { background: #FEE2E2; color: #DC2626; }
+    .hud-pulse {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+      box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.25);
+    }
+
+    .hud-finish-btn {
+      padding: 4px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: #FFFFFF;
+      color: #DC2626;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .hud-finish-btn:hover { background: #FEF2F2; }
+
+    .hud-main-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .hud-route-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .hud-next-stop {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: var(--brand);
+      line-height: 1.3;
+    }
+    .hud-sub-metric {
+      font-size: 11px;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 2px;
+    }
+
+    /* ════════════════════════════════════════════════
+       TAB 2: JOURNEY PLANNER VIEW
+       ════════════════════════════════════════════════ */
+    #planner-panel {
+      display: none;
+      width: 100%;
+      height: 100%;
+      overflow-y: auto;
+      padding: 20px 16px 80px;
+    }
+    #planner-panel.show { display: block; }
+    .planner-wrap {
+      max-width: 620px;
+      margin: 0 auto;
+    }
+
+    .planner-hero {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .planner-hero .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3.5px 12px;
+      background: var(--brand-light);
+      border: 1px solid var(--brand-border);
+      color: var(--brand);
+      border-radius: 18px;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .planner-hero h1 {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.4px;
+    }
+    .planner-hero p {
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    .search-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-lg);
+      overflow: visible;
+      position: relative;
+    }
+    .search-card::before {
+      content: '';
+      display: block;
+      height: 3.5px;
+      background: linear-gradient(90deg, #FF5500, #FF8800);
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
+    .inputs-wrap {
+      padding: 16px 16px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      position: relative;
+    }
+    .connector-line {
+      position: absolute;
+      left: 31px;
+      top: 40px;
+      bottom: 38px;
+      width: 2px;
+      background: repeating-linear-gradient(to bottom, #CBD5E1 0 4px, transparent 4px 8px);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .input-group {
+      display: flex;
+      align-items: center;
+      background: #F8FAFC;
+      border: 1.5px solid var(--border);
+      border-radius: 11px;
+      min-height: 48px;
+      position: relative;
+      z-index: 2;
+      transition: all 0.15s ease;
+    }
+    .input-group:focus-within {
+      background: #FFFFFF;
+      border-color: var(--brand);
+      box-shadow: 0 0 0 3px rgba(255, 85, 0, 0.12);
+    }
+    .inp-dot {
+      width: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .inp-dot div {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 2.5px solid #FFFFFF;
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15);
+    }
+    .inp-dot .from { background: #16A34A; }
+    .inp-dot .to { background: var(--brand); }
+    .input-group input {
+      flex: 1;
+      border: none;
+      padding: 12px 34px 12px 0;
+      font-size: 15px;
+      font-family: var(--font);
+      background: transparent;
+      color: var(--text);
+      outline: none;
+      min-width: 0;
+    }
+
+    .use-gps-chip-btn {
+      position: absolute;
+      right: 8px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: #EFF6FF;
+      border: 1px solid #BFDBFE;
+      color: #2563EB;
+      font-size: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+    .use-gps-chip-btn:hover { background: #DBEAFE; }
+
+    .swap-wrap {
+      display: flex;
+      justify-content: flex-end;
+      padding-right: 14px;
+      height: 0;
+      position: relative;
+      z-index: 5;
+    }
+    .swap-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border);
+      background: #FFFFFF;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.1);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .swap-btn:hover { background: var(--brand-light); color: var(--brand); }
+    .swap-btn:active { transform: rotate(180deg) scale(0.92); }
+
+    .quick-chips {
+      padding: 2px 16px 14px;
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    .quick-chips::-webkit-scrollbar { display: none; }
+    .quick-chips .lbl {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      white-space: nowrap;
+      margin-right: 2px;
+      flex-shrink: 0;
+    }
+    .chip {
+      padding: 5px 11px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: #F8FAFC;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.12s ease;
+      flex-shrink: 0;
+    }
+    .chip:hover { background: var(--brand-light); border-color: var(--brand-border); color: var(--brand); }
+    .chip:active { transform: scale(0.95); }
+
+    .action-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px 16px;
+      border-top: 1px solid var(--border);
+      background: #FAFBFD;
+      border-radius: 0 0 var(--radius) var(--radius);
+    }
+    .time-group { display: flex; align-items: center; gap: 6px; }
+    .time-group .tlbl { font-size: 11.5px; font-weight: 600; color: var(--text-secondary); display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+    .time-wrap { display: flex; align-items: center; background: #FFFFFF; border: 1.5px solid var(--border); border-radius: 8px; padding: 3px 6px; }
+    .time-wrap select { border: none; outline: none; font-family: var(--font); font-size: 13px; font-weight: 700; background: transparent; cursor: pointer; }
+    .now-btn { padding: 5px 9px; border-radius: 7px; border: 1px solid var(--border); background: #FFFFFF; font-size: 10.5px; font-weight: 700; cursor: pointer; color: var(--text-secondary); }
+    .search-btn {
+      padding: 10px 22px;
+      background: var(--brand);
+      color: #FFFFFF;
+      border: none;
+      border-radius: 10px;
+      font-size: 13.5px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: var(--font);
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      box-shadow: 0 2px 8px rgba(255, 85, 0, 0.25);
+    }
+    .search-btn:hover { background: var(--brand-hover); }
+    .search-btn:active { transform: scale(0.97); }
+
+    .suggestions {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.14);
+      z-index: 300;
+      max-height: 220px;
+      overflow-y: auto;
+      display: none;
+    }
+    .suggestions.show { display: block; }
+    .sug-item { padding: 11px 14px; cursor: pointer; font-size: 13px; border-bottom: 1px solid var(--border-light); display: flex; align-items: flex-start; gap: 8px; }
+    .sug-item:hover { background: var(--brand-light); }
+    .sug-item .name { font-weight: 700; color: var(--text); }
+    .sug-item .addr { font-size: 11px; color: var(--text-secondary); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    /* Journey Results */
+    .planner-results { margin-top: 20px; display: none; }
+    .planner-results.show { display: block; }
+    .res-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; font-size: 13px; font-weight: 800; color: var(--text); }
+    .j-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      border: 1.5px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .j-card:hover { border-color: var(--brand-border); box-shadow: var(--shadow-md); }
+    .j-card.active { border-color: var(--brand); box-shadow: 0 0 0 1.5px var(--brand), var(--shadow-md); }
+
+    .jc-sum { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; gap: 10px; flex-wrap: wrap; }
+    .jc-times { display: flex; align-items: center; gap: 8px; }
+    .jc-times span { font-size: 17px; font-weight: 800; color: var(--text); }
+    .jc-arrow { color: var(--brand); font-weight: 700; }
+    .jc-dur { font-size: 11.5px; font-weight: 700; color: var(--brand); background: var(--brand-light); border: 1px solid var(--brand-border); padding: 2.5px 7px; border-radius: 6px; }
+    .jc-meta { display: flex; gap: 6px; font-size: 11px; color: var(--text-secondary); align-items: center; }
+    .jc-badge { font-size: 9.5px; font-weight: 800; padding: 3px 7px; border-radius: 6px; text-transform: uppercase; }
+    .jc-badge.fast { background: #F0FDF4; color: #16A34A; border: 1px solid #BBF7D0; }
+
+    .jc-detail { display: none; padding: 12px 16px 16px; border-top: 1px solid var(--border-light); background: #FAFAFC; }
+    .jc-detail.show { display: block; }
+    .leg { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; }
+    .leg-icon { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; background: #FFFFFF; border: 1.5px solid var(--border); box-shadow: var(--shadow-sm); }
+    .leg-icon.bus { background: var(--brand-light); border-color: var(--brand-border); color: var(--brand); }
+    .leg-icon.transfer { background: #FEF3C7; border-color: #FDE68A; color: #D97706; }
+    .leg-body { min-width: 0; flex: 1; }
+    .leg-desc { font-size: 12.5px; font-weight: 700; color: var(--text); }
+    .leg-sub { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+
+    #planner-map-box { display: none; margin-top: 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-md); }
+    #planner-map { width: 100%; height: 280px; }
+
+    .footer-bar {
+      text-align: center;
+      padding: 10px;
+      font-size: 10.5px;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border);
+      background: #FFFFFF;
+      flex-shrink: 0;
+    }
+
+    /* ─── MOBILE RESPONSIVENESS (<= 768px) ─── */
+    @media (max-width: 768px) {
+      .app-shell { flex-direction: column; }
+      #explorer-panel { flex-direction: column; }
+      #explorer-sidebar { width: 100%; min-width: 0; max-height: 44vh; border-right: none; border-bottom: 2px solid var(--border); }
+      #explorer-map-area { height: 56vh; }
+      #ex-detail { bottom: 10px; left: 10px; right: 10px; max-height: 50vh; }
+      .dt-body { flex-direction: column; }
+      .dt-dir-col { max-height: none; border-right: none; border-bottom: 1px solid var(--border); }
+      .action-row { flex-direction: column; align-items: stretch; gap: 12px; }
+      .time-group { justify-content: space-between; width: 100%; }
+      .search-btn { width: 100%; justify-content: center; }
+      .topbar-content { padding: 6px 10px; }
+      .logos-group img { height: 20px; }
+      .tab-btn { padding: 5px 10px; font-size: 11px; }
+      .top-action-btn { padding: 4px 8px; font-size: 10px; }
+      .map-floating-controls { top: 10px; left: 10px; }
     }
   </style>
 </head>
 <body>
-<div class="topbar"><div class="topbar-stripe"></div>
+
+<!-- Unified Clean Topbar with Real Logos -->
+<header class="topbar">
+  <div class="topbar-stripe"></div>
   <div class="topbar-content">
     <div class="topbar-left">
-      <h2>TransJakarta</h2>
-      <span class="sub">· GTFS PPID · CC BY 4.0</span>
+      <div class="logos-group">
+        <img src="transjakarta-logo.svg" alt="TransJakarta">
+        <div class="logo-divider"></div>
+        <img src="jaklingko-logo.svg" alt="JakLingko">
+      </div>
     </div>
+
+    <!-- Center Navigation Tabs -->
     <div class="topbar-tabs">
-      <button class="tab-btn active" id="tab-explorer" onclick="switchTab('explorer')">Explorer</button>
-      <button class="tab-btn" id="tab-planner" onclick="switchTab('planner')">Journey Planner</button>
+      <button type="button" class="tab-btn active" id="tab-explorer" onclick="switchTab('explorer')">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+        <span>Peta Explorer</span>
+      </button>
+      <button type="button" class="tab-btn" id="tab-planner" onclick="switchTab('planner')">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span>Journey Planner</span>
+      </button>
     </div>
+
+    <!-- Quick Shortcuts -->
     <div class="topbar-actions">
-      <button class="top-btn" onclick="focusMenaraBNI()" title="Pusatkan peta ke Menara BNI Pejompongan" style="cursor:pointer;background:#FFF7ED;color:#FF5500;border-color:#FED7AA;font-weight:700;">🏢 Menara BNI</button>
-      <a href="index.html" class="top-btn" title="MagangHub Dashboard">🏠 MagangHub</a>
+      <button type="button" class="top-action-btn bni" onclick="focusMenaraBNI()" title="Pusatkan peta ke Menara BNI Pejompongan">
+        🏢 Menara BNI
+      </button>
+      <a href="index.html" class="top-action-btn" title="Kembali ke Asisten Magang BNI">
+        <img src="bni-logo.svg" alt="BNI" height="11" style="display:block;width:auto;">
+        <span>MagangHub</span>
+      </a>
     </div>
   </div>
-</div>
+</header>
 
 <div class="app-shell">
-  <!-- EXPLORER TAB -->
+  <!-- ══════════ EXPLORER PANEL ══════════ -->
   <div id="explorer-panel">
     <aside id="explorer-sidebar">
-      <div class="ex-header" style="font-size:12px;font-weight:700;color:var(--t2);">Rute TransJakarta</div>
-      <div class="ex-stats" id="ex-stats"></div>
-      <div class="ex-search">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="text" id="ex-search-input" placeholder="Cari rute..." oninput="filterExplorerRoutes(this.value)">
+      <div class="ex-header">
+        <div class="ex-title">
+          <span style="color:var(--brand)">●</span> Rute TransJakarta
+        </div>
+        <span class="ex-badge" id="route-count-badge">240 Rute</span>
       </div>
-      <div id="ex-route-list"><div class="ex-route-empty">Memuat...</div></div>
+
+      <!-- Category Filter Tabs -->
+      <div class="ex-stats-bar" id="ex-stats"></div>
+
+      <!-- Route Search Input -->
+      <div class="ex-search-box">
+        <svg class="ex-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="ex-search-input" placeholder="Cari nomor rute atau tujuan (contoh: 1, 9, Palmerah)..." oninput="filterExplorerRoutes(this.value)">
+        <button type="button" class="ex-clear-icon" id="ex-clear-btn" onclick="clearExSearch()">✕</button>
+      </div>
+
+      <!-- Route List -->
+      <div id="ex-route-list">
+        <div style="padding:28px 16px;text-align:center;color:var(--text-muted);font-size:12px;">Menyiapkan daftar rute TransJakarta...</div>
+      </div>
     </aside>
+
     <div id="explorer-map-area">
+      <!-- Floating Map Buttons -->
+      <div class="map-floating-controls">
+        <button type="button" class="map-btn-pill" id="live-gps-btn" onclick="toggleGPSLock()" title="Kunci GPS ke lokasi saya saat ini">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg>
+          <span id="gps-btn-label">Kunci GPS Saya</span>
+        </button>
+        <button type="button" class="map-btn-pill" onclick="resetMapJakarta()" title="Reset tampilan peta ke pusat Jakarta">
+          🧭 Pusat Jakarta
+        </button>
+      </div>
+
+      <!-- Main Leaflet Map -->
       <div id="explorer-map"></div>
+
+      <!-- GPS FAB Target Button (Bottom Right) -->
+      <button type="button" class="gps-lock-fab" id="gps-fab" onclick="toggleGPSLock()" title="Temukan dan Kunci Posisi Saya" aria-label="Kunci Lokasi Saya">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/></svg>
+      </button>
+
+      <!-- Route Detail Drawer (Halte Stops) -->
       <div id="ex-detail"></div>
+
+      <!-- Live Transum Ride HUD -->
+      <div id="live-ride-hud">
+        <div class="hud-top">
+          <div class="hud-status-badge" id="hud-status-badge">
+            <span class="hud-pulse"></span>
+            <span id="hud-status-text">Live Ride Mode</span>
+          </div>
+          <button type="button" class="hud-finish-btn" onclick="stopLiveRide()">⏹️ Akhiri</button>
+        </div>
+        <div class="hud-main-info">
+          <div class="hud-route-title" id="hud-route-title">Rute Aktif</div>
+          <div class="hud-next-stop" id="hud-next-stop">Mendeteksi halte terdekat...</div>
+          <div class="hud-sub-metric" id="hud-metric">
+            <span>📍 Akurasi GPS: ±<strong id="hud-acc">--</strong>m</span>
+            <span>·</span>
+            <span id="hud-dist-to-stop">Mencari posisi halte...</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- PLANNER TAB -->
+  <!-- ══════════ JOURNEY PLANNER PANEL ══════════ -->
   <div id="planner-panel">
     <div class="planner-wrap">
       <div class="planner-hero">
-        <div class="badge"><span style="width:5px;height:5px;border-radius:50%;background:var(--brand);box-shadow:0 0 0 2px rgba(255,85,0,.2)"></span>Journey Planner</div>
-        <h1>Rencanakan Rute Jakarta</h1>
-        <p>BRT, Mikrotrans & Metrotrans — data GTFS resmi PPID TransJakarta</p>
+        <div class="badge">
+          <span style="width:6px;height:6px;border-radius:50%;background:var(--brand);"></span>
+          TransJakarta Journey Planner
+        </div>
+        <h1>Rencanakan Perjalanan Publik</h1>
+        <p>Kalkulasi transit terintegrasi BRT, Mikrotrans & Metrotrans dengan data GTFS resmi.</p>
       </div>
+
       <div class="search-card">
         <div class="inputs-wrap">
           <div class="connector-line"></div>
-          <div class="input-group" style="position:relative;">
+
+          <!-- Origin -->
+          <div class="input-group">
             <div class="inp-dot"><div class="from"></div></div>
-            <input type="text" id="from-input" placeholder="Dari (alamat, tempat, halte)..." autocomplete="off">
+            <input type="text" id="from-input" placeholder="Titik keberangkatan (alamat, halte)..." autocomplete="off">
+            <button type="button" class="use-gps-chip-btn" onclick="useCurrentLocationForOrigin()" title="Gunakan GPS saya">
+              📍 GPS Saya
+            </button>
             <div class="suggestions" id="from-sug"></div>
           </div>
-          <div class="swap-wrap"><button class="swap-btn" onclick="swapLocations()" title="Tukar">⇅</button></div>
-          <div class="input-group" style="position:relative;">
+
+          <!-- Swap Button -->
+          <div class="swap-wrap">
+            <button type="button" class="swap-btn" onclick="swapLocations()" title="Tukar Asal & Tujuan">⇅</button>
+          </div>
+
+          <!-- Destination -->
+          <div class="input-group">
             <div class="inp-dot"><div class="to"></div></div>
-            <input type="text" id="to-input" placeholder="Ke tujuan..." autocomplete="off">
+            <input type="text" id="to-input" placeholder="Tujuan perjalanan..." autocomplete="off">
             <div class="suggestions" id="to-sug"></div>
           </div>
         </div>
+
+        <!-- Popular Presets (Including verified Menara BNI Pejompongan) -->
         <div class="quick-chips">
           <span class="lbl">Populer:</span>
-          <button class="chip" onclick="applyPreset('Menara BNI Pejompongan',-6.20385,106.80245)">🏢 Menara BNI</button>
-          <button class="chip" onclick="applyPreset('Stasiun Palmerah',-6.207,106.798)">🚉 Palmerah</button>
-          <button class="chip" onclick="applyPreset('Monas',-6.175,106.827)">🏛️ Monas</button>
-          <button class="chip" onclick="applyPreset('Blok M',-6.244,106.798)">🏬 Blok M</button>
-          <button class="chip" onclick="applyPreset('Bundaran HI',-6.195,106.823)">🛍️ Bundaran HI</button>
-          <button class="chip" onclick="applyPreset('GBK',-6.219,106.802)">🏟️ GBK</button>
+          <button type="button" class="chip" onclick="applyPreset('Menara BNI Pejompongan', -6.20385, 106.80245)">🏢 Menara BNI</button>
+          <button type="button" class="chip" onclick="applyPreset('Stasiun Palmerah', -6.2071, 106.7975)">🚉 St. Palmerah</button>
+          <button type="button" class="chip" onclick="applyPreset('Halte CSW / ASEAN', -6.2403, 106.7989)">🚏 CSW / ASEAN</button>
+          <button type="button" class="chip" onclick="applyPreset('Monumen Nasional (Monas)', -6.1754, 106.8272)">🏛️ Monas</button>
+          <button type="button" class="chip" onclick="applyPreset('Bundaran HI', -6.1951, 106.8230)">🛍️ Bundaran HI</button>
+          <button type="button" class="chip" onclick="applyPreset('Blok M Plaza', -6.2443, 106.7982)">🏬 Blok M</button>
         </div>
+
+        <!-- Time & Search Controls -->
         <div class="action-row">
           <div class="time-group">
-            <span class="tlbl"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Berangkat:</span>
-            <div class="time-wrap"><select id="dep-hour"></select><span style="font-weight:800;margin:0 1px">:</span><select id="dep-minute"></select></div>
-            <button class="now-btn" onclick="setNowTime()">Sekarang</button>
+            <span class="tlbl">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              Berangkat:
+            </span>
+            <div class="time-wrap">
+              <select id="dep-hour" aria-label="Jam keberangkatan"></select>
+              <span style="font-weight:800;color:var(--text-secondary);margin:0 2px;">:</span>
+              <select id="dep-minute" aria-label="Menit keberangkatan"></select>
+            </div>
+            <button type="button" class="now-btn" onclick="setNowTime()">Sekarang</button>
           </div>
-          <button class="search-btn" id="plan-search-btn" onclick="planJourney()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> Cari Rute</button>
+
+          <button type="button" class="search-btn" id="plan-search-btn" onclick="planJourney()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <span>Cari Rute</span>
+          </button>
         </div>
       </div>
-      <div class="loading-box" id="plan-loading"><div class="spinner"></div>Mencari rute...</div>
-      <div class="empty-box" id="plan-empty">🗺️ <b>Tidak ditemukan rute</b><br><span style="font-size:10px;">Coba ubah lokasi atau waktu keberangkatan.</span></div>
+
+      <!-- Results & Map in Planner -->
       <div class="planner-results" id="plan-results"></div>
       <div id="planner-map-box"><div id="planner-map"></div></div>
     </div>
   </div>
 </div>
 
-<footer class="footer-bar">Data GTFS PT Transportasi Jakarta via PPID · CC BY 4.0 · 240 rute · 8.091 halte</footer>
+<footer class="footer-bar">
+  Data resmi GTFS PT Transportasi Jakarta via PPID · Lisensi CC BY 4.0 · 240 Rute &amp; 8.091 Halte
+</footer>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script>
-// ─── SHARED STATE ───
-var API = 'http://localhost:8765';
-var activeTab = 'explorer';
-var explorerMap = null, explorerActiveLayer = null, explorerPopupMarker = null;
-var plannerMap = null, plannerActiveLayer = null;
-var routesData = [], routeDetailsData = [], geoData = {};
-var fromCoord = null, toCoord = null, fromName = '', toName = '';
-var CAT_COLORS = {BRT:'#DC2626',Metrotrans:'#2563EB',Mikrotrans:'#16A34A',Royaltrans:'#9333EA',Transjabodetabek:'#EA580C','Bus Wisata':'#D97706'};
+(function() {
+  var API = 'http://localhost:8765';
+  var activeTab = 'explorer';
+  var explorerMap = null, explorerActiveLayer = null, explorerPopupMarker = null;
+  var plannerMap = null, plannerActiveLayer = null;
+  var routesData = [], routeDetailsData = [], geoData = {};
+  var currentCategory = 'ALL';
+  var fromCoord = null, toCoord = null, fromName = '', toName = '';
 
-// ─── TAB SWITCHING ───
-window.switchTab = function(tab) {
-  activeTab = tab;
-  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.toggle('active', b.id === 'tab-'+tab)});
-  document.getElementById('explorer-panel').classList.toggle('hidden', tab !== 'explorer');
-  document.getElementById('planner-panel').classList.toggle('show', tab === 'planner');
-  if (tab === 'explorer' && !routesData.length) initExplorer();
-  else if (tab === 'explorer') setTimeout(function(){explorerMap.invalidateSize()},200);
-  if (tab === 'planner' && !document.getElementById('dep-hour').options.length) initPlannerTimes();
-};
+  // GPS State
+  var watchId = null;
+  var userGPS = null;
+  var gpsAccuracy = null;
+  var userMarker = null;
+  var accuracyCircle = null;
 
-// ─── EXPLORER ───
-function initExplorer() {
-  Promise.all([
-    fetch('data/routes.json').then(function(r){return r.json()}),
-    fetch('data/route_details.json').then(function(r){return r.json()}),
-    fetch('data/route_geometries.json').then(function(r){return r.json()})
-  ]).then(function(d) {
-    routesData = d[0]; routeDetailsData = d[1]; geoData = d[2];
-    renderExplorerStats();
-    renderExplorerRoutes();
-    initExplorerMap();
-  }).catch(function(e) {
-    document.getElementById('ex-route-list').innerHTML = '<div class="ex-route-empty">Gagal memuat data. Pastikan file JSON di folder data/.</div>';
-  });
-}
+  // Live Ride Tracker State
+  var isRideActive = false;
+  var activeRideRoute = null;
+  var activeRideStops = [];
+  var hasAlertedArrival = false;
 
-function renderExplorerStats() {
-  var cats = {};
-  routesData.forEach(function(r){var c=r.route_category||'Other';cats[c]=(cats[c]||0)+1});
-  var keys = ['BRT','Metrotrans','Mikrotrans','Royaltrans','Transjabodetabek','Bus Wisata'];
-  var h = '';
-  keys.forEach(function(k){if(cats[k])h+='<span><span class="ex-stat-dot" style="background:'+(CAT_COLORS[k]||'#94a3b8')+'"></span>'+k+' <b>'+cats[k]+'</b></span>'});
-  document.getElementById('ex-stats').innerHTML = h;
-}
+  var CAT_COLORS = {
+    BRT: '#DC2626',
+    Metrotrans: '#2563EB',
+    Mikrotrans: '#16A34A',
+    Royaltrans: '#9333EA',
+    Transjabodetabek: '#EA580C',
+    'Bus Wisata': '#D97706'
+  };
 
-function renderExplorerRoutes(filter) {
-  var q = (filter||'').toLowerCase();
-  var filtered = routesData.filter(function(r){
-    if(!q) return true;
-    return (r.route_id||'').toLowerCase().indexOf(q)>=0||(r.route_long_name||'').toLowerCase().indexOf(q)>=0||(r.route_desc||'').toLowerCase().indexOf(q)>=0||(r.route_category||'').toLowerCase().indexOf(q)>=0;
-  }).sort(function(a,b){return (a.route_id||'').localeCompare(b.route_id||'')});
-  var list = document.getElementById('ex-route-list');
-  if(!filtered.length){list.innerHTML='<div class="ex-route-empty">Tidak ditemukan</div>';return}
-  list.innerHTML = filtered.map(function(r){
-    var cat = r.route_category||'Other';
-    return '<div class="ex-route-row" data-rid="'+r.route_id+'" onclick="explorerSelectRoute(\''+r.route_id+'\')">'+
-      '<span class="rid">'+r.route_id+'</span>'+
-      '<span class="rname">'+(r.route_long_name&&r.route_long_name!==r.route_id?r.route_long_name:(r.route_desc||''))+'</span>'+
-      '<span class="rcat '+cat.replace(/\s/g,'-')+'">'+cat+'</span></div>';
-  }).join('');
-  if(window._exActiveRid){var ae=list.querySelector('[data-rid="'+window._exActiveRid+'"]');if(ae)ae.classList.add('active')}
-}
+  // Web Audio Context for Arrival Bell / Chime
+  var audioCtx = null;
+  function playArrivalDingDong() {
+    try {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
 
-window.filterExplorerRoutes = function(q){renderExplorerRoutes(q)};
+      var osc1 = audioCtx.createOscillator();
+      var gain1 = audioCtx.createGain();
+      osc1.frequency.setValueAtTime(784, audioCtx.currentTime); // G5
+      gain1.gain.setValueAtTime(0.3, audioCtx.currentTime);
+      gain1.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+      osc1.connect(gain1);
+      gain1.connect(audioCtx.destination);
+      osc1.start();
+      osc1.stop(audioCtx.currentTime + 0.4);
 
-function initExplorerMap() {
-  explorerMap = L.map('explorer-map',{zoomControl:true}).setView([-6.208,106.845],12);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'OSM | PPID TransJakarta CC BY 4.0',maxZoom:19}).addTo(explorerMap);
-  setTimeout(function(){explorerMap.invalidateSize()},300);
-}
+      var osc2 = audioCtx.createOscillator();
+      var gain2 = audioCtx.createGain();
+      osc2.frequency.setValueAtTime(659, audioCtx.currentTime + 0.25); // E5
+      gain2.gain.setValueAtTime(0.3, audioCtx.currentTime + 0.25);
+      gain2.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.7);
+      osc2.connect(gain2);
+      gain2.connect(audioCtx.destination);
+      osc2.start(audioCtx.currentTime + 0.25);
+      osc2.stop(audioCtx.currentTime + 0.7);
+    } catch(e) {}
+  }
 
-window.explorerSelectRoute = function(rid) {
-  window._exActiveRid = rid;
-  document.querySelectorAll('.ex-route-row').forEach(function(e){e.classList.remove('active')});
-  var el = document.querySelector('.ex-route-row[data-rid="'+rid+'"]');if(el)el.classList.add('active');
-  if(explorerActiveLayer){explorerMap.removeLayer(explorerActiveLayer);explorerActiveLayer=null}
-  if(explorerPopupMarker){explorerMap.removeLayer(explorerPopupMarker);explorerPopupMarker=null}
-  var fs = geoData[rid];
-  if(fs&&fs.length){
-    var rm = routesData.find(function(r){return r.route_id===rid})||{};
-    var color = CAT_COLORS[rm.route_category]||'#FF5500';
-    var group = L.featureGroup();
-    fs.forEach(function(f){
-      var ll = f.geometry.coordinates.map(function(c){return[c[1],c[0]]});
-      if(ll.length>=2) L.polyline(ll,{color:color,weight:4,opacity:.9}).addTo(group);
+  // ─── TAB SWITCHING ───
+  window.switchTab = function(tab) {
+    activeTab = tab;
+    document.querySelectorAll('.tab-btn').forEach(function(b) {
+      b.classList.toggle('active', b.id === 'tab-' + tab);
     });
-    group.addTo(explorerMap);explorerActiveLayer=group;
-    try{explorerMap.fitBounds(group.getBounds().pad(.08))}catch(e){}
-  }
-  showExplorerDetail(rid);
-};
+    document.getElementById('explorer-panel').classList.toggle('hidden', tab !== 'explorer');
+    document.getElementById('planner-panel').classList.toggle('show', tab === 'planner');
 
-function showExplorerDetail(rid) {
-  var rd = routeDetailsData.find(function(d){return d.route_id===rid});
-  var rm = routesData.find(function(r){return r.route_id===rid})||{};
-  var panel = document.getElementById('ex-detail');
-  if(!rd){panel.classList.remove('show');return}
-  var stopsHTML = rd.directions.map(function(d){
-    var stops = d.stops.map(function(s,i){
-      var cls = i===0?'first':(i===d.stops.length-1?'last':'mid');
-      return '<div class="dt-stop" onclick="explorerFlyStop('+s.lat+','+s.lon+',\''+(s.name||'').replace(/'/g,"\\'")+'\')">'+
-        '<div style="display:flex;flex-direction:column;align-items:center;margin-right:6px">'+
-          '<div class="dt-stop-seq '+cls+'">'+(i+1)+'</div>'+(i<d.stops.length-1?'<div class="dt-stop-conn"></div>':'')+
-        '</div>'+
-        '<div><div style="font-weight:600">'+s.name+'</div><div style="font-size:9px;color:var(--t3)">'+s.stop_id+'</div></div></div>';
+    if (tab === 'explorer' && explorerMap) {
+      setTimeout(function() { explorerMap.invalidateSize(); }, 200);
+    }
+    if (tab === 'planner') {
+      initPlannerTimes();
+      if (plannerMap) setTimeout(function() { plannerMap.invalidateSize(); }, 200);
+    }
+  };
+
+  // ─── EXPLORER INIT & MAP ───
+  function initExplorer() {
+    initExplorerMap();
+    Promise.all([
+      fetch('data/routes.json').then(function(r) { return r.json(); }),
+      fetch('data/route_details.json').then(function(r) { return r.json(); }),
+      fetch('data/route_geometries.json').then(function(r) { return r.json(); })
+    ]).then(function(data) {
+      routesData = data[0] || [];
+      routeDetailsData = data[1] || [];
+      geoData = data[2] || {};
+
+      // Normalize any 'Unknown' categories to Feeder / Metrotrans
+      routesData.forEach(function(r) {
+        if (!r.route_category || r.route_category === 'Unknown') {
+          r.route_category = 'Metrotrans';
+        }
+      });
+
+      renderStats();
+      renderRoutes();
+    }).catch(function(err) {
+      document.getElementById('ex-route-list').innerHTML = '<div style="padding:24px;text-align:center;color:#DC2626;font-size:12px;">Gagal memuat basis data rute.</div>';
+    });
+  }
+
+  function initExplorerMap() {
+    if (explorerMap) return;
+    explorerMap = L.map('explorer-map', { zoomControl: true }).setView([-6.2088, 106.845], 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap · PT Transportasi Jakarta PPID',
+      maxZoom: 19
+    }).addTo(explorerMap);
+    setTimeout(function() { explorerMap.invalidateSize(); }, 300);
+  }
+
+  function renderStats() {
+    var counts = { ALL: routesData.length };
+    routesData.forEach(function(r) {
+      var c = r.route_category || 'Other';
+      counts[c] = (counts[c] || 0) + 1;
+    });
+
+    var keys = [
+      { id: 'ALL', name: 'Semua' },
+      { id: 'BRT', name: 'BRT', color: '#DC2626' },
+      { id: 'Metrotrans', name: 'Metrotrans', color: '#2563EB' },
+      { id: 'Mikrotrans', name: 'Mikrotrans', color: '#16A34A' },
+      { id: 'Royaltrans', name: 'Royaltrans', color: '#9333EA' },
+      { id: 'Transjabodetabek', name: 'Transjabodetabek', color: '#EA580C' },
+      { id: 'Bus Wisata', name: 'Bus Wisata', color: '#D97706' }
+    ];
+
+    var html = keys.map(function(k) {
+      if (!counts[k.id] && k.id !== 'ALL') return '';
+      var activeCls = currentCategory === k.id ? 'active' : '';
+      var dotStyle = k.color ? 'background:'+k.color+';' : 'background:#FF5500;';
+      return '<button type="button" class="ex-chip '+activeCls+'" onclick="filterCategory(\''+k.id+'\')">' +
+        '<span class="dot" style="'+dotStyle+'"></span>' +
+        '<span>'+k.name+'</span>' +
+        '<span style="opacity:0.75;font-weight:600;">('+counts[k.id]+')</span>' +
+      '</button>';
     }).join('');
-    return '<div class="dt-dir"><div class="dt-dir-title">Arah '+(d.direction_id===0?'A':'B')+' — '+d.headsign+' ('+d.stop_count+')</div>'+stops+'</div>';
-  }).join('');
-  panel.innerHTML = '<div class="dt-header"><div><h3>'+rid+'</h3><span class="dcat">'+((rm.route_category||''))+'</span><div class="dname">'+(rm.route_long_name&&rm.route_long_name!==rid?rm.route_long_name:(rm.route_desc||''))+'</div></div><button class="dt-close" onclick="document.getElementById(\'ex-detail\').classList.remove(\'show\')">✕</button></div><div class="dt-body">'+stopsHTML+'</div>';
-  panel.classList.add('show');
-}
 
-window.explorerFlyStop = function(lat,lon,name) {
-  if(!explorerMap) return;
-  if(explorerPopupMarker) explorerMap.removeLayer(explorerPopupMarker);
-  var m = L.marker([lat,lon],{icon:L.divIcon({html:'<div style="width:14px;height:14px;border-radius:50%;background:#FF5500;border:3px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3)"></div>',iconSize:[14,14],iconAnchor:[7,7]})}).addTo(explorerMap).bindPopup('<b>'+name+'</b>',{closeButton:true}).openPopup();
-  explorerPopupMarker = m;
-  explorerMap.setView([lat,lon],Math.max(explorerMap.getZoom(),15),{animate:true,duration:.5});
-};
-
-// ─── PLANNER ───
-function initPlannerTimes() {
-  var h = document.getElementById('dep-hour'), m = document.getElementById('dep-minute');
-  var now = new Date();
-  for(var i=0;i<24;i++) h.innerHTML+='<option value="'+i+'"'+(i===now.getHours()?' selected':'')+'>'+String(i).padStart(2,'0')+'</option>';
-  for(var i=0;i<60;i+=5) m.innerHTML+='<option value="'+i+'"'+(i===Math.floor(now.getMinutes()/5)*5?' selected':'')+'>'+String(i).padStart(2,'0')+'</option>';
-}
-initPlannerTimes();
-
-window.setNowTime = function() {
-  var now = new Date();
-  document.getElementById('dep-hour').value = now.getHours();
-  document.getElementById('dep-minute').value = Math.floor(now.getMinutes()/5)*5;
-};
-
-var debounceTimer;
-function setupAutocomplete(inpId, sugId, isOrigin) {
-  var inp = document.getElementById(inpId), sug = document.getElementById(sugId);
-  inp.addEventListener('input',function(){
-    clearTimeout(debounceTimer);
-    var q = inp.value.trim();
-    if(q.length<2){sug.classList.remove('show');return}
-    debounceTimer = setTimeout(function(){
-      fetch('https://nominatim.openstreetmap.org/search?q='+encodeURIComponent(q)+'&format=json&limit=5&countrycodes=id&bounded=1&viewbox=106.6,-6.5,107.0,-5.9',{headers:{'Accept-Language':'id'}})
-      .then(function(r){return r.json()})
-      .then(function(d){
-        if(!d||!d.length){sug.classList.remove('show');return}
-        sug.innerHTML = d.map(function(r){
-          var sn = r.display_name.split(',')[0];
-          return '<div class="sug-item" data-lat="'+r.lat+'" data-lon="'+r.lon+'" data-name="'+sn.replace(/"/g,'&quot;')+'"><span>📍</span><div style="min-width:0;flex:1"><div class="name">'+sn+'</div><div class="addr">'+r.display_name+'</div></div></div>';
-        }).join('');
-        sug.classList.add('show');
-      }).catch(function(){});
-    }, 300);
-  });
-  inp.addEventListener('blur',function(){setTimeout(function(){sug.classList.remove('show')},200)});
-  sug.addEventListener('click',function(e){
-    var item = e.target.closest('.sug-item');if(!item)return;
-    inp.value = item.dataset.name;
-    if(isOrigin){fromCoord=[parseFloat(item.dataset.lat),parseFloat(item.dataset.lon)];fromName=item.dataset.name}
-    else{toCoord=[parseFloat(item.dataset.lat),parseFloat(item.dataset.lon)];toName=item.dataset.name}
-    sug.classList.remove('show');
-  });
-}
-setupAutocomplete('from-input','from-sug',true);
-setupAutocomplete('to-input','to-sug',false);
-
-window.applyPreset = function(name,lat,lon) {
-  if(!fromCoord&&!document.getElementById('from-input').value.trim()){
-    document.getElementById('from-input').value=name;fromCoord=[lat,lon];fromName=name
-  }else{
-    document.getElementById('to-input').value=name;toCoord=[lat,lon];toName=name
+    document.getElementById('ex-stats').innerHTML = html;
   }
-};
 
-window.swapLocations = function() {
-  var fi=document.getElementById('from-input'),ti=document.getElementById('to-input');
-  var tmp=fi.value;fi.value=ti.value;ti.value=tmp;
-  var tc=fromCoord;fromCoord=toCoord;toCoord=tc;
-  var tn=fromName;fromName=toName;toName=tn;
-};
+  window.filterCategory = function(cat) {
+    currentCategory = cat;
+    renderStats();
+    renderRoutes();
+  };
 
-function initPlannerMap() {
-  if(plannerMap) return;
-  document.getElementById('planner-map-box').style.display='block';
-  plannerMap = L.map('planner-map',{zoomControl:true}).setView([-6.208,106.845],13);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'OSM | PPID TransJakarta',maxZoom:19}).addTo(plannerMap);
-  setTimeout(function(){plannerMap.invalidateSize()},200);
-}
+  function renderRoutes(searchVal) {
+    var q = (searchVal || document.getElementById('ex-search-input').value || '').trim().toLowerCase();
+    var filtered = routesData.filter(function(r) {
+      var matchCat = currentCategory === 'ALL' || r.route_category === currentCategory;
+      if (!matchCat) return false;
+      if (!q) return true;
+      var rid = (r.route_id || '').toLowerCase();
+      var rlong = (r.route_long_name || '').toLowerCase();
+      var rdesc = (r.route_desc || '').toLowerCase();
+      return rid.includes(q) || rlong.includes(q) || rdesc.includes(q);
+    }).sort(function(a, b) {
+      return (a.route_id || '').localeCompare(b.route_id || '', undefined, { numeric: true });
+    });
 
-window.planJourney = function() {
-  if(!fromCoord||!toCoord){alert('Pilih lokasi asal dan tujuan terlebih dahulu.');return}
-  var h = String(document.getElementById('dep-hour').value).padStart(2,'0');
-  var m = String(document.getElementById('dep-minute').value).padStart(2,'0');
-  document.getElementById('plan-results').classList.remove('show');
-  document.getElementById('plan-empty').classList.remove('show');
-  document.getElementById('plan-loading').classList.add('show');
-  document.getElementById('planner-map-box').style.display='none';
-  if(plannerMap){plannerMap.remove();plannerMap=null}
-  if(plannerActiveLayer){plannerActiveLayer=null}
+    document.getElementById('route-count-badge').textContent = filtered.length + ' Rute';
 
-  fetch(API+'/api/v1/journeys/search',{method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({origin:{latitude:fromCoord[0],longitude:fromCoord[1]},destination:{latitude:toCoord[0],longitude:toCoord[1]},departure_time:h+':'+m+':00',max_transfers:2})})
-  .then(function(r){return r.json()})
-  .then(function(d){
-    document.getElementById('plan-loading').classList.remove('show');
-    var jj = d.journeys||[];
-    if(!jj.length){document.getElementById('plan-empty').classList.add('show');return}
-    renderPlannerResults(jj);
-  }).catch(function(){
-    document.getElementById('plan-loading').classList.remove('show');
-    document.getElementById('plan-empty').classList.add('show');
-  });
-};
+    var listEl = document.getElementById('ex-route-list');
+    if (!filtered.length) {
+      listEl.innerHTML = '<div style="padding:28px 16px;text-align:center;color:var(--text-muted);font-size:12px;">Tidak ada rute yang cocok.</div>';
+      return;
+    }
 
-function renderPlannerResults(journeys) {
-  var c = document.getElementById('plan-results');
-  var html = '<div class="res-head"><span>● '+journeys.length+' Rute</span><span style="font-size:10px;color:var(--t3)">Pilih kartu untuk detail</span></div>';
-  journeys.forEach(function(j,idx){
-    var dur = Math.round(j.duration_seconds/60), walks = Math.round(j.walking_distance), tx = j.transfer_count;
-    var badge = idx===0?'Tercepat':(tx===0?'Langsung':tx+' Transit');
-    html += '<div class="j-card '+(idx===0?'active':'')+'" id="jc-'+idx+'" onclick="togglePlannerJourney('+idx+')">'+
-      '<div class="jc-sum"><div class="jc-times"><span>'+j.departure_time+'</span><span class="jc-arrow">→</span><span>'+j.arrival_time+'</span><span class="jc-dur">'+dur+' mnt</span></div>'+
-      '<div class="jc-meta"><span>🚶 '+walks+'m</span><span class="jc-badge fast">'+badge+'</span></div></div>'+
-      '<div class="jc-detail '+(idx===0?'show':'')+'" id="jd-'+idx+'">'+
-        j.legs.map(function(l){
-          var icon = l.type==='WALK'?'🚶':(l.type==='BUS'?'🚌':'🔄');
-          var cls = l.type==='WALK'?'walk':(l.type==='BUS'?'bus':'transfer');
-          var rb = l.route_id?'<span style="background:#FF5500;color:#fff;padding:1px 5px;border-radius:3px;font-size:9px;font-weight:800;margin-right:4px">'+l.route_id+'</span>':'';
-          return '<div class="leg"><div class="leg-icon '+cls+'">'+icon+'</div><div class="leg-body"><div class="leg-desc">'+rb+l.description+'</div><div class="leg-sub">'+
-            (l.type==='WALK'?l.distance_m+' meter':l.type==='BUS'?'Halte <b>'+l.from_stop_name+'</b> → <b>'+l.to_stop_name+'</b> ('+l.stop_count+' stops)':'Tunggu ~'+Math.round(l.waiting_seconds/60)+' menit')+
-          '</div></div></div>';
-        }).join('')+
-      '</div></div>';
-  });
-  c.innerHTML = html; c.classList.add('show');
-  initPlannerMap();
-  showPlannerMap(journeys[0]);
-}
-
-window.togglePlannerJourney = function(idx) {
-  var d = document.getElementById('jd-'+idx), c = document.getElementById('jc-'+idx);
-  var show = !d.classList.contains('show');
-  document.querySelectorAll('.jc-detail').forEach(function(e){e.classList.remove('show')});
-  document.querySelectorAll('.j-card').forEach(function(e){e.classList.remove('active')});
-  if(show){d.classList.add('show');c.classList.add('active')}
-};
-
-function showPlannerMap(journey) {
-  if(!plannerMap) initPlannerMap();
-  if(plannerActiveLayer) plannerMap.removeLayer(plannerActiveLayer);
-  var group = L.featureGroup(), bounds = [];
-  if(fromCoord){
-    L.marker(fromCoord,{icon:L.divIcon({html:'<div style="width:16px;height:16px;border-radius:50%;background:#16A34A;border:3px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3)"></div>',iconSize:[16,16],iconAnchor:[8,8]})}).addTo(group).bindPopup('<b>Asal:</b> '+fromName);
-    bounds.push(fromCoord);
+    listEl.innerHTML = filtered.map(function(r) {
+      var cat = r.route_category || 'Metrotrans';
+      var color = CAT_COLORS[cat] || '#2563EB';
+      var dname = r.route_long_name && r.route_long_name !== r.route_id ? r.route_long_name : (r.route_desc || '');
+      return '<div class="ex-route-row" data-rid="'+r.route_id+'" onclick="selectRoute(\''+r.route_id+'\')">' +
+        '<span class="ex-route-rid">'+r.route_id+'</span>' +
+        '<div class="ex-route-info">' +
+          '<span class="ex-route-name">'+dname+'</span>' +
+          '<span class="ex-route-badge" style="background:'+color+'18;color:'+color+';border:1px solid '+color+'35;">'+cat+'</span>' +
+        '</div>' +
+        '<span style="color:#CBD5E1;font-size:16px;">›</span>' +
+      '</div>';
+    }).join('');
   }
-  if(toCoord){
-    L.marker(toCoord,{icon:L.divIcon({html:'<div style="width:16px;height:16px;border-radius:50%;background:#FF5500;border:3px solid #fff;box-shadow:0 2px 8px rgba(255,85,0,.4)"></div>',iconSize:[16,16],iconAnchor:[8,8]})}).addTo(group).bindPopup('<b>Tujuan:</b> '+toName);
-    bounds.push(toCoord);
+
+  window.filterExplorerRoutes = function(v) {
+    document.getElementById('ex-clear-btn').style.display = v ? 'block' : 'none';
+    renderRoutes(v);
+  };
+
+  window.clearExSearch = function() {
+    var inp = document.getElementById('ex-search-input');
+    inp.value = '';
+    document.getElementById('ex-clear-btn').style.display = 'none';
+    renderRoutes('');
+  };
+
+  window.selectRoute = function(rid) {
+    document.querySelectorAll('.ex-route-row').forEach(function(row) {
+      row.classList.toggle('active', row.getAttribute('data-rid') === rid);
+    });
+
+    if (explorerActiveLayer) {
+      explorerMap.removeLayer(explorerActiveLayer);
+      explorerActiveLayer = null;
+    }
+    if (explorerPopupMarker) {
+      explorerMap.removeLayer(explorerPopupMarker);
+      explorerPopupMarker = null;
+    }
+
+    var features = geoData[rid];
+    var routeMeta = routesData.find(function(r) { return r.route_id === rid; }) || {};
+    var color = CAT_COLORS[routeMeta.route_category] || '#FF5500';
+
+    if (features && features.length) {
+      var group = L.featureGroup();
+      features.forEach(function(f) {
+        var coords = f.geometry.coordinates.map(function(c) { return [c[1], c[0]]; });
+        if (coords.length >= 2) {
+          L.polyline(coords, { color: color, weight: 5, opacity: 0.88 }).addTo(group);
+        }
+      });
+      group.addTo(explorerMap);
+      explorerActiveLayer = group;
+      try { explorerMap.fitBounds(group.getBounds().pad(0.1)); } catch(e) {}
+    }
+
+    showRouteDetail(rid);
+  };
+
+  function showRouteDetail(rid) {
+    var rd = routeDetailsData.find(function(d) { return d.route_id === rid; });
+    var rm = routesData.find(function(r) { return r.route_id === rid; }) || {};
+    var panel = document.getElementById('ex-detail');
+    if (!rd) { panel.classList.remove('show'); return; }
+
+    var dname = rm.route_long_name && rm.route_long_name !== rid ? rm.route_long_name : (rm.route_desc || '');
+
+    var dirTabs = rd.directions.map(function(d, idx) {
+      return '<button type="button" class="dir-pill '+(idx===0?'active':'')+'" onclick="switchDirection('+idx+')">' +
+        'Arah '+(idx===0?'A':'B')+': '+d.headsign+' ('+d.stop_count+' Halte)' +
+      '</button>';
+    }).join('');
+
+    var colsHTML = rd.directions.map(function(d, idx) {
+      var stopsHTML = d.stops.map(function(s, i) {
+        var cls = i === 0 ? 'first' : (i === d.stops.length - 1 ? 'last' : 'mid');
+        return '<div class="dt-stop-item" onclick="flyToStop('+s.lat+','+s.lon+',\''+(s.name||'').replace(/'/g,"\\'")+'\')">' +
+          '<span class="dt-seq '+cls+'">'+(i+1)+'</span>' +
+          '<span class="dt-sname">'+s.name+'</span>' +
+        '</div>';
+      }).join('');
+      return '<div class="dt-dir-col '+(idx===0?'':'hidden')+'" id="dir-col-'+idx+'">' + stopsHTML + '</div>';
+    }).join('');
+
+    panel.innerHTML = '<div class="dt-header">' +
+      '<div class="dt-header-left">' +
+        '<span class="dt-rid">'+rid+'</span>' +
+        '<div class="dt-titles">' +
+          '<h3>'+(rm.route_category||'Rute')+' '+rid+'</h3>' +
+          '<div class="dname">'+dname+'</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="dt-actions">' +
+        '<button type="button" class="start-ride-btn" onclick="startLiveRide(\''+rid+'\')">' +
+          '<span style="width:7px;height:7px;border-radius:50%;background:#FFF;"></span>' +
+          '<span>Mulai Naik Transum</span>' +
+        '</button>' +
+        '<button type="button" class="dt-close" onclick="closeRouteDetail()">✕</button>' +
+      '</div>' +
+    '</div>' +
+    '<div class="dt-dirs-bar">'+dirTabs+'</div>' +
+    '<div class="dt-body">'+colsHTML+'</div>';
+
+    panel.classList.add('show');
   }
-  journey.legs.forEach(function(l){
-    if(l.type==='BUS'&&l.geometry&&l.geometry.length>=2){
-      var latlngs = l.geometry.map(function(c){return[c[1],c[0]]});
-      var uniq = [];latlngs.forEach(function(ll){if(!uniq.length||ll[0]!==uniq[uniq.length-1][0]||ll[1]!==uniq[uniq.length-1][1])uniq.push(ll)});
-      if(uniq.length>=2){
-        var color = CAT_COLORS[l.route_category]||'#FF5500';
-        L.polyline(uniq,{color:color,weight:5,opacity:.88}).addTo(group);
+
+  window.switchDirection = function(idx) {
+    document.querySelectorAll('.dir-pill').forEach(function(p, i) { p.classList.toggle('active', i === idx); });
+    document.querySelectorAll('.dt-dir-col').forEach(function(c, i) { c.classList.toggle('hidden', i !== idx); });
+  };
+
+  window.closeRouteDetail = function() {
+    document.getElementById('ex-detail').classList.remove('show');
+  };
+
+  window.flyToStop = function(lat, lon, name) {
+    if (!explorerMap) return;
+    if (explorerPopupMarker) explorerMap.removeLayer(explorerPopupMarker);
+    explorerPopupMarker = L.marker([lat, lon], {
+      icon: L.divIcon({
+        html: '<div style="width:16px;height:16px;border-radius:50%;background:#FF5500;border:3px solid #FFF;box-shadow:0 2px 8px rgba(255,85,0,0.5);"></div>',
+        iconSize:[16,16], iconAnchor:[8,8]
+      })
+    }).addTo(explorerMap).bindPopup('<b>'+name+'</b><br><span style="font-size:10px;color:#64748B;">'+lat.toFixed(5)+', '+lon.toFixed(5)+'</span>').openPopup();
+    explorerMap.setView([lat, lon], 16, { animate: true, duration: 0.5 });
+  };
+
+  // ─── GPS LOCK FEATURE ───
+  window.toggleGPSLock = function() {
+    if (watchId !== null) {
+      stopGPS();
+      return;
+    }
+    startGPS();
+  };
+
+  function startGPS() {
+    if (!navigator.geolocation) {
+      alert('Browser Anda tidak mendukung Geolocation GPS.');
+      return;
+    }
+
+    var btn = document.getElementById('live-gps-btn');
+    var fab = document.getElementById('gps-fab');
+    var label = document.getElementById('gps-btn-label');
+
+    label.textContent = 'Mencari GPS...';
+    btn.classList.add('gps-active');
+    fab.classList.add('active');
+
+    watchId = navigator.geolocation.watchPosition(
+      function(pos) {
+        var lat = pos.coords.latitude;
+        var lon = pos.coords.longitude;
+        var acc = Math.round(pos.coords.accuracy);
+
+        userGPS = [lat, lon];
+        gpsAccuracy = acc;
+
+        label.textContent = 'GPS Terkunci (±' + acc + 'm)';
+
+        updateUserMarker(lat, lon, acc);
+
+        // If inside Ride Mode, update next stop distances
+        if (isRideActive) {
+          updateRideTracking(lat, lon, acc);
+        }
+      },
+      function(err) {
+        console.warn('GPS Error:', err);
+        label.textContent = 'Gagal Mengunci GPS';
+        setTimeout(function() { stopGPS(); }, 3000);
+      },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+    );
+  }
+
+  function stopGPS() {
+    if (watchId !== null) {
+      navigator.geolocation.clearWatch(watchId);
+      watchId = null;
+    }
+    var btn = document.getElementById('live-gps-btn');
+    var fab = document.getElementById('gps-fab');
+    var label = document.getElementById('gps-btn-label');
+
+    btn.classList.remove('gps-active');
+    fab.classList.remove('active');
+    label.textContent = 'Kunci GPS Saya';
+
+    if (userMarker && explorerMap) {
+      explorerMap.removeLayer(userMarker);
+      userMarker = null;
+    }
+    if (accuracyCircle && explorerMap) {
+      explorerMap.removeLayer(accuracyCircle);
+      accuracyCircle = null;
+    }
+  }
+
+  function updateUserMarker(lat, lon, acc) {
+    if (!explorerMap) return;
+
+    if (!userMarker) {
+      userMarker = L.marker([lat, lon], {
+        icon: L.divIcon({
+          html: '<div style="position:relative;width:20px;height:20px;">' +
+            '<div style="position:absolute;left:-4px;top:-4px;width:28px;height:28px;border-radius:50%;background:rgba(37,99,235,0.25);animation:pulseGlow 2s infinite;"></div>' +
+            '<div style="width:20px;height:20px;border-radius:50%;background:#2563EB;border:3px solid #FFFFFF;box-shadow:0 2px 8px rgba(0,0,0,0.35);"></div>' +
+          '</div>',
+          iconSize:[20,20], iconAnchor:[10,10]
+        })
+      }).addTo(explorerMap).bindPopup('<b>Lokasi Anda Saat Ini</b><br><span style="font-size:11px;color:#64748B;">Akurasi GPS: ±' + acc + ' meter</span>');
+
+      accuracyCircle = L.circle([lat, lon], { radius: acc, color: '#3B82F6', fillColor: '#93C5FD', fillOpacity: 0.15, weight: 1 }).addTo(explorerMap);
+      explorerMap.setView([lat, lon], 16, { animate: true, duration: 0.5 });
+    } else {
+      userMarker.setLatLng([lat, lon]);
+      accuracyCircle.setLatLng([lat, lon]);
+      accuracyCircle.setRadius(acc);
+      if (isRideActive) {
+        explorerMap.panTo([lat, lon], { animate: true, duration: 0.5 });
       }
     }
-    if(l.type==='BUS'&&l.from_lat){bounds.push([l.from_lat,l.from_lon]);L.circleMarker([l.from_lat,l.from_lon],{radius:4,color:'#FF5500',fillOpacity:.8,weight:2}).addTo(group).bindTooltip(l.from_stop_name,{direction:'top'})}
-    if(l.type==='BUS'&&l.to_lat){bounds.push([l.to_lat,l.to_lon])}
-  });
-  group.addTo(plannerMap);plannerActiveLayer=group;
-  if(bounds.length) try{plannerMap.fitBounds(L.latLngBounds(bounds).pad(.15))}catch(e){}
-}
+  }
 
+  // ─── START LIVE RIDE (NAIK TRANSUM MODE) ───
+  window.startLiveRide = function(rid) {
+    var rd = routeDetailsData.find(function(d) { return d.route_id === rid; });
+    var rm = routesData.find(function(r) { return r.route_id === rid; }) || {};
+
+    if (!rd || !rd.directions || !rd.directions[0]) {
+      alert('Data halte rute ini tidak tersedia.');
+      return;
+    }
+
+    isRideActive = true;
+    hasAlertedArrival = false;
+    activeRideRoute = rid;
+    activeRideStops = rd.directions[0].stops || [];
+
+    closeRouteDetail();
+
+    var hud = document.getElementById('live-ride-hud');
+    hud.classList.remove('alert-arrival');
+    document.getElementById('hud-status-badge').classList.remove('alert');
+    document.getElementById('hud-status-text').textContent = 'Live Ride Tracking';
+    document.getElementById('hud-route-title').innerHTML = '<span style="background:var(--brand);color:#FFF;padding:1px 6px;border-radius:4px;font-size:11px;">'+rid+'</span> ' + (rm.route_long_name || rm.route_desc || '');
+    document.getElementById('hud-next-stop').textContent = 'Mendeteksi posisi bus via GPS...';
+    document.getElementById('hud-dist-to-stop').textContent = 'Menghitung halte terdekat...';
+    hud.classList.add('active');
+
+    if (!watchId) {
+      startGPS();
+    } else if (userGPS) {
+      updateRideTracking(userGPS[0], userGPS[1], gpsAccuracy || 15);
+    }
+  };
+
+  window.stopLiveRide = function() {
+    isRideActive = false;
+    activeRideRoute = null;
+    activeRideStops = [];
+    var hud = document.getElementById('live-ride-hud');
+    hud.classList.remove('active', 'alert-arrival');
+  };
+
+  function updateRideTracking(uLat, uLon, acc) {
+    document.getElementById('hud-acc').textContent = acc;
+    if (!activeRideStops.length) return;
+
+    // Find nearest stop ahead
+    var nearestStop = null;
+    var minDist = 999999;
+
+    activeRideStops.forEach(function(s) {
+      var d = calculateDistanceMeters(uLat, uLon, s.lat, s.lon);
+      if (d < minDist) {
+        minDist = d;
+        nearestStop = s;
+      }
+    });
+
+    if (nearestStop) {
+      var nextStopEl = document.getElementById('hud-next-stop');
+      var distEl = document.getElementById('hud-dist-to-stop');
+
+      if (minDist < 250) {
+        nextStopEl.textContent = '📍 ' + nearestStop.name;
+        distEl.textContent = 'Tiba di halte! (~' + Math.round(minDist) + 'm)';
+
+        // Trigger arrival chime and alert
+        if (!hasAlertedArrival && minDist < 150) {
+          hasAlertedArrival = true;
+          playArrivalDingDong();
+          if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+          var hud = document.getElementById('live-ride-hud');
+          hud.classList.add('alert-arrival');
+          document.getElementById('hud-status-badge').classList.add('alert');
+          document.getElementById('hud-status-text').textContent = '⚠️ SIAP-SIAP TURUN';
+        }
+      } else {
+        nextStopEl.textContent = '➡️ Menuju Halte: ' + nearestStop.name;
+        distEl.textContent = 'Sisa jarak: ~' + (minDist > 1000 ? (minDist/1000).toFixed(1) + ' km' : Math.round(minDist) + ' m');
+      }
+    }
+  }
+
+  function calculateDistanceMeters(lat1, lon1, lat2, lon2) {
+    var R = 6371e3; // Earth radius in meters
+    var φ1 = lat1 * Math.PI / 180;
+    var φ2 = lat2 * Math.PI / 180;
+    var Δφ = (lat2 - lat1) * Math.PI / 180;
+    var Δλ = (lon2 - lon1) * Math.PI / 180;
+
+    var a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+            Math.cos(φ1) * Math.cos(φ2) *
+            Math.sin(Δλ/2) * Math.sin(Δλ/2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c;
+  }
+
+  // ─── FOCUS MENARA BNI PEJOMPONGAN (EXACT: -6.20385, 106.80245) ───
   window.focusMenaraBNI = function() {
     var bniLat = -6.20385;
     var bniLon = 106.80245;
-    var targetMap = (window._currentTab === 'planner' && plannerMap) ? plannerMap : explorerMap;
+
+    var targetMap = (activeTab === 'planner' && plannerMap) ? plannerMap : explorerMap;
     if (!targetMap) return;
 
     if (window._bniMarker) {
       try { targetMap.removeLayer(window._bniMarker); } catch(e){}
     }
+
     window._bniMarker = L.marker([bniLat, bniLon], {
       icon: L.divIcon({
         className: '',
         html: '<div style="background:#FF5500;color:#FFF;padding:5px 12px;border-radius:20px;font-weight:800;font-size:11px;border:2.5px solid #FFF;box-shadow:0 4px 14px rgba(255,85,0,0.45);white-space:nowrap;display:flex;align-items:center;gap:4px;">🏢 Menara BNI</div>',
         iconSize: [110, 26], iconAnchor: [55, 13]
       })
-    }).addTo(targetMap).bindPopup('<div style="font-family:Plus Jakarta Sans,sans-serif;padding:4px;"><div style="font-size:10px;font-weight:800;color:#FF5500;">KANTOR PENUGASAN MAGANG</div><div style="font-size:13px;font-weight:800;color:#0F172A;margin-top:2px;">Gedung Menara BNI Pejompongan</div><div style="font-size:11px;color:#64748B;margin-top:3px;">Jl. Pejompongan Raya No. 7, Jakarta Pusat<br>📍 Halte terdekat: <b>Menara Pejompongan</b> (50m) &amp; <b>Dipo Tower</b></div></div>').openPopup();
+    }).addTo(targetMap).bindPopup('<div style="font-family:Plus Jakarta Sans,sans-serif;padding:4px;"><div style="font-size:10px;font-weight:800;color:#FF5500;">KANTOR PENUGASAN MAGANG</div><div style="font-size:13px;font-weight:800;color:#0F172A;margin-top:2px;">Gedung Menara BNI Pejompongan</div><div style="font-size:11px;color:#64748B;margin-top:3px;">Jl. Pejompongan Raya No. 7, Jakarta Pusat<br>📍 Halte: <b>Menara Pejompongan</b> (50m) &amp; <b>Dipo Tower</b></div></div>').openPopup();
 
     targetMap.setView([bniLat, bniLon], 16, { animate: true, duration: 0.6 });
   };
 
-// Boot
-document.addEventListener('DOMContentLoaded',function(){initExplorer()});
+  window.resetMapJakarta = function() {
+    var targetMap = (activeTab === 'planner' && plannerMap) ? plannerMap : explorerMap;
+    if (!targetMap) return;
+    targetMap.setView([-6.2088, 106.845], 13, { animate: true, duration: 0.5 });
+  };
+
+  // ─── JOURNEY PLANNER ROUTINES ───
+  function initPlannerTimes() {
+    var h = document.getElementById('dep-hour'), m = document.getElementById('dep-minute');
+    if (!h || h.options.length) return;
+    var now = new Date();
+    for (var i = 0; i < 24; i++) {
+      h.innerHTML += '<option value="'+i+'"'+(i === now.getHours() ? ' selected':'')+'>'+String(i).padStart(2,'0')+'</option>';
+    }
+    for (var i = 0; i < 60; i += 5) {
+      m.innerHTML += '<option value="'+i+'"'+(i === Math.floor(now.getMinutes()/5)*5 ? ' selected':'')+'>'+String(i).padStart(2,'0')+'</option>';
+    }
+  }
+
+  window.setNowTime = function() {
+    var now = new Date();
+    document.getElementById('dep-hour').value = now.getHours();
+    document.getElementById('dep-minute').value = Math.floor(now.getMinutes()/5)*5;
+  };
+
+  window.useCurrentLocationForOrigin = function() {
+    if (!navigator.geolocation) {
+      alert('Geolocation tidak didukung oleh browser ini.');
+      return;
+    }
+    var fromInput = document.getElementById('from-input');
+    fromInput.value = 'Mendapatkan GPS...';
+
+    navigator.geolocation.getCurrentPosition(function(pos) {
+      fromCoord = [pos.coords.latitude, pos.coords.longitude];
+      fromName = 'Lokasi Saya Saat Ini (GPS)';
+      fromInput.value = '📍 Lokasi Saya Saat Ini';
+    }, function(err) {
+      fromInput.value = '';
+      alert('Gagal mendeteksi lokasi GPS. Pastikan izin lokasi diaktifkan.');
+    }, { enableHighAccuracy: true });
+  };
+
+  window.applyPreset = function(name, lat, lon) {
+    var fi = document.getElementById('from-input');
+    var ti = document.getElementById('to-input');
+
+    if (!fromCoord && !fi.value.trim()) {
+      fi.value = name;
+      fromCoord = [lat, lon];
+      fromName = name;
+    } else {
+      ti.value = name;
+      toCoord = [lat, lon];
+      toName = name;
+    }
+  };
+
+  window.swapLocations = function() {
+    var fi = document.getElementById('from-input');
+    var ti = document.getElementById('to-input');
+    var tv = fi.value; fi.value = ti.value; ti.value = tv;
+    var tc = fromCoord; fromCoord = toCoord; toCoord = tc;
+    var tn = fromName; fromName = toName; toName = tn;
+  };
+
+  // Autocomplete setup
+  var debounceTimer;
+  function setupAutocomplete(inputId, sugId, isOrigin) {
+    var inp = document.getElementById(inputId);
+    var sug = document.getElementById(sugId);
+
+    inp.addEventListener('input', function() {
+      clearTimeout(debounceTimer);
+      var q = inp.value.trim();
+      if (q.length < 2) { sug.classList.remove('show'); return; }
+
+      debounceTimer = setTimeout(function() {
+        fetch('https://nominatim.openstreetmap.org/search?q='+encodeURIComponent(q)+'&format=json&limit=5&countrycodes=id&bounded=1&viewbox=106.6,-6.5,107.0,-5.9', {
+          headers: { 'Accept-Language': 'id' }
+        })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          if (!data || !data.length) { sug.classList.remove('show'); return; }
+          sug.innerHTML = data.map(function(d) {
+            var shortName = d.display_name.split(',')[0];
+            return '<div class="sug-item" data-lat="'+d.lat+'" data-lon="'+d.lon+'" data-name="'+shortName.replace(/"/g,'&quot;')+'">' +
+              '<span>📍</span>' +
+              '<div style="min-width:0;flex:1;">' +
+                '<div class="name">'+shortName+'</div>' +
+                '<div class="addr">'+d.display_name+'</div>' +
+              '</div>' +
+            '</div>';
+          }).join('');
+          sug.classList.add('show');
+        }).catch(function() {});
+      }, 300);
+    });
+
+    inp.addEventListener('blur', function() {
+      setTimeout(function() { sug.classList.remove('show'); }, 250);
+    });
+
+    sug.addEventListener('click', function(e) {
+      var item = e.target.closest('.sug-item');
+      if (!item) return;
+      inp.value = item.dataset.name;
+      if (isOrigin) {
+        fromCoord = [parseFloat(item.dataset.lat), parseFloat(item.dataset.lon)];
+        fromName = item.dataset.name;
+      } else {
+        toCoord = [parseFloat(item.dataset.lat), parseFloat(item.dataset.lon)];
+        toName = item.dataset.name;
+      }
+      sug.classList.remove('show');
+    });
+  }
+
+  setupAutocomplete('from-input', 'from-sug', true);
+  setupAutocomplete('to-input', 'to-sug', false);
+
+  window.planJourney = function() {
+    if (!fromCoord || !toCoord) {
+      alert('Silakan tentukan titik keberangkatan dan tujuan perjalanan terlebih dahulu.');
+      return;
+    }
+
+    var h = document.getElementById('dep-hour').value;
+    var m = document.getElementById('dep-minute').value;
+    var depTime = String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0') + ':00';
+
+    document.getElementById('plan-results').classList.remove('show');
+    document.getElementById('plan-empty').classList.remove('show');
+    document.getElementById('plan-loading').classList.add('show');
+    document.getElementById('planner-map-box').style.display = 'none';
+
+    fetch(API + '/api/v1/journeys/search', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        origin: { latitude: fromCoord[0], longitude: fromCoord[1] },
+        destination: { latitude: toCoord[0], longitude: toCoord[1] },
+        departure_time: depTime,
+        max_transfers: 2
+      })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      document.getElementById('plan-loading').classList.remove('show');
+      var journeys = data.journeys || [];
+      if (!journeys.length) {
+        document.getElementById('plan-empty').classList.add('show');
+        return;
+      }
+      renderPlannerResults(journeys);
+    })
+    .catch(function() {
+      document.getElementById('plan-loading').classList.remove('show');
+      document.getElementById('plan-empty').innerHTML = '⚠️ <b>Gagal Terhubung ke Backend</b><br><span style="font-size:11px;">Jalankan <code>python server.py</code> pada folder proyek (port 8765).</span>';
+      document.getElementById('plan-empty').classList.add('show');
+    });
+  };
+
+  function renderPlannerResults(journeys) {
+    var c = document.getElementById('plan-results');
+    var html = '<div class="res-head">' +
+      '<span>● ' + journeys.length + ' Rute Perjalanan Ditemukan</span>' +
+      '<span style="font-size:11px;color:var(--text-secondary);font-weight:500;">Pilih kartu untuk rute rinci</span>' +
+    '</div>';
+
+    journeys.forEach(function(j, idx) {
+      var dep = j.departure_time;
+      var arr = j.arrival_time;
+      var dur = Math.round(j.duration_seconds / 60);
+      var walks = Math.round(j.walking_distance);
+      var tx = j.transfer_count;
+      var badgeText = idx === 0 ? 'Tercepat' : (tx === 0 ? 'Langsung' : tx + ' Transit');
+
+      html += '<div class="j-card '+(idx===0?'active':'')+'" id="jc-'+idx+'" onclick="togglePlannerJourney('+idx+')">' +
+        '<div class="jc-sum">' +
+          '<div class="jc-times">' +
+            '<span>'+dep+'</span><span class="jc-arrow">→</span><span>'+arr+'</span>' +
+            '<span class="jc-dur">⏱️ '+dur+' mnt</span>' +
+          '</div>' +
+          '<div class="jc-meta">' +
+            '<span>🚶 '+walks+'m</span>' +
+            '<span class="jc-badge fast">'+badgeText+'</span>' +
+          '</div>' +
+        '</div>' +
+        '<div class="jc-detail '+(idx===0?'show':'')+'" id="jd-'+idx+'">' +
+          j.legs.map(function(l) {
+            var icon = l.type==='WALK'?'🚶':(l.type==='BUS'?'🚌':'🔄');
+            var cls = l.type==='WALK'?'walk':(l.type==='BUS'?'bus':'transfer');
+            var rb = l.route_id ? '<span style="background:var(--brand);color:#fff;padding:1px 6px;border-radius:4px;font-size:10px;font-weight:800;margin-right:5px;">'+l.route_id+'</span>' : '';
+            return '<div class="leg">' +
+              '<div class="leg-icon '+cls+'">'+icon+'</div>' +
+              '<div class="leg-body">' +
+                '<div class="leg-desc">'+rb+l.description+'</div>' +
+                '<div class="leg-sub">' +
+                  (l.type==='WALK' ? 'Jalan kaki sejauh '+l.distance_m+' meter' :
+                   l.type==='BUS' ? 'Naik dari Halte <b>'+l.from_stop_name+'</b> turun di <b>'+l.to_stop_name+'</b> ('+l.stop_count+' halte)' :
+                   'Transit armada berikutnya (~'+Math.round(l.waiting_seconds/60)+' menit)') +
+                '</div>' +
+              '</div>' +
+            '</div>';
+          }).join('') +
+        '</div>' +
+      '</div>';
+    });
+
+    c.innerHTML = html;
+    c.classList.add('show');
+    initPlannerMap();
+    showPlannerMap(journeys[0]);
+  }
+
+  window.togglePlannerJourney = function(idx) {
+    var d = document.getElementById('jd-'+idx), card = document.getElementById('jc-'+idx);
+    var isExpanded = d.classList.contains('show');
+    document.querySelectorAll('.jc-detail').forEach(function(e) { e.classList.remove('show'); });
+    document.querySelectorAll('.j-card').forEach(function(e) { e.classList.remove('active'); });
+    if (!isExpanded) {
+      d.classList.add('show');
+      card.classList.add('active');
+    }
+  };
+
+  function initPlannerMap() {
+    if (plannerMap) return;
+    document.getElementById('planner-map-box').style.display = 'block';
+    plannerMap = L.map('planner-map', { zoomControl: true }).setView([-6.2088, 106.845], 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap · PT Transportasi Jakarta',
+      maxZoom: 19
+    }).addTo(plannerMap);
+    setTimeout(function() { plannerMap.invalidateSize(); }, 200);
+  }
+
+  function showPlannerMap(journey) {
+    if (!plannerMap) initPlannerMap();
+    if (plannerActiveLayer) plannerMap.removeLayer(plannerActiveLayer);
+
+    var group = L.featureGroup(), bounds = [];
+
+    if (fromCoord) {
+      L.marker(fromCoord, {
+        icon: L.divIcon({ html: '<div style="width:18px;height:18px;border-radius:50%;background:#16A34A;border:3px solid #FFF;box-shadow:0 2px 6px rgba(0,0,0,.35);"></div>', iconSize:[18,18], iconAnchor:[9,9] })
+      }).addTo(group).bindPopup('<b>Asal:</b> ' + fromName);
+      bounds.push(fromCoord);
+    }
+    if (toCoord) {
+      L.marker(toCoord, {
+        icon: L.divIcon({ html: '<div style="width:18px;height:18px;border-radius:50%;background:#FF5500;border:3px solid #FFF;box-shadow:0 2px 8px rgba(255,85,0,.45);"></div>', iconSize:[18,18], iconAnchor:[9,9] })
+      }).addTo(group).bindPopup('<b>Tujuan:</b> ' + toName);
+      bounds.push(toCoord);
+    }
+
+    journey.legs.forEach(function(l) {
+      if (l.type === 'BUS' && l.geometry && l.geometry.length >= 2) {
+        var latlngs = l.geometry.map(function(c) { return [c[1], c[0]]; });
+        var uniq = [];
+        latlngs.forEach(function(ll) {
+          if (!uniq.length || ll[0] !== uniq[uniq.length-1][0] || ll[1] !== uniq[uniq.length-1][1]) uniq.push(ll);
+        });
+        if (uniq.length >= 2) {
+          var color = CAT_COLORS[l.route_category] || '#FF5500';
+          L.polyline(uniq, { color: color, weight: 5, opacity: 0.88 }).addTo(group);
+        }
+      }
+      if (l.type === 'BUS' && l.from_lat) {
+        bounds.push([l.from_lat, l.from_lon]);
+        L.circleMarker([l.from_lat, l.from_lon], { radius: 5, color: '#FF5500', fillOpacity: 0.9, fillColor: '#FFF', weight: 2.5 }).addTo(group).bindTooltip(l.from_stop_name, { direction: 'top' });
+      }
+      if (l.type === 'BUS' && l.to_lat) bounds.push([l.to_lat, l.to_lon]);
+    });
+
+    group.addTo(plannerMap);
+    plannerActiveLayer = group;
+    if (bounds.length) {
+      try { plannerMap.fitBounds(L.latLngBounds(bounds).pad(0.15)); } catch(e) {}
+    }
+  }
+
+  // ─── STARTUP ───
+  document.addEventListener('DOMContentLoaded', function() {
+    initExplorer();
+  });
+})();
 </script>
 </body>
 </html>
