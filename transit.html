@@ -40,29 +40,116 @@
     .loader-dots span:nth-child(3) { animation-delay: .4s; }
     @keyframes dotPulse { 0%,80%,100% { opacity: .3; transform: scale(.8); } 40% { opacity: 1; transform: scale(1.3); } }
 
-    /* =========== WELCOME MODAL =========== */
-    #welcome-overlay{position:fixed;inset:0;z-index:999998;background:rgba(15,23,42,.52);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:16px;opacity:1;transition:opacity .3s}
-    #welcome-overlay.hidden{opacity:0;pointer-events:none}
-    .welcome-card{background:#FFF;border-radius:20px;box-shadow:0 24px 64px rgba(0,0,0,.15);max-width:400px;width:100%;overflow:hidden;animation:welPop .4s cubic-bezier(.16,1,.3,1) both}
-    @keyframes welPop{0%{opacity:0;transform:scale(.9) translateY(12px)}100%{opacity:1;transform:scale(1) translateY(0)}}
-    .welcome-stripe{height:4px;background:linear-gradient(90deg,#FF5A1F,#FF8800,#005BAC)}
-    .welcome-body{padding:24px 20px 20px;text-align:center}
-    .welcome-body h2{font-size:18px;font-weight:800;color:#172033;margin-bottom:6px;letter-spacing:-.3px}
-    .welcome-body .wel-sub{font-size:12.5px;color:#667085;line-height:1.55;margin-bottom:16px}
-    .wel-badge{display:inline-flex;align-items:center;gap:6px;background:#FFF4EF;border:1px solid #FED7AA;color:#EA580C;border-radius:20px;padding:5px 12px;font-size:10.5px;font-weight:700;margin-bottom:12px}
-    .wel-badge .wel-dot{width:6px;height:6px;border-radius:50%;background:#EA580C;animation:pulse2 1.5s infinite}
-    @keyframes pulse2{0%,100%{opacity:.4}50%{opacity:1}}
-    .wel-actions{display:flex;flex-direction:column;gap:8px}
-    .wel-btn{display:flex;align-items:center;gap:10px;padding:12px 16px;border-radius:12px;border:1.5px solid #E7EAF0;background:#F8FAFC;font-size:13px;font-weight:700;font-family:var(--font);cursor:pointer;color:#172033;text-decoration:none;transition:all .12s;text-align:left}
-    .wel-btn:hover{background:#EEF5FF;border-color:#005BAC}
-    .wel-btn.primary{background:#005BAC;color:#FFF;border-color:#005BAC;font-weight:800}
-    .wel-btn.primary:hover{background:#004B8C}
-    .wel-btn-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-    .wel-btn-icon.explore{background:#EEF5FF;color:#005BAC}
-    .wel-btn-icon.plan{background:#FFF4EF;color:#FF5A1F}
-    .wel-btn-icon.report{background:#F0FDF4;color:#16A34A}
-    .wel-footer{margin-top:12px;font-size:10px;color:#98A2B3}
-    .wel-footer a{color:#667085;text-decoration:underline;cursor:pointer}
+        /* ═══════════ WELCOME ENTERPRISE BLADE / MODAL ═══════════ */
+    #welcome-overlay {
+      position: fixed; inset: 0; z-index: 999998;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 16px; opacity: 1; transition: opacity .35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    #welcome-overlay.hidden { opacity: 0; pointer-events: none; }
+    .welcome-card {
+      background: #FFFFFF; border-radius: 24px;
+      box-shadow: 0 32px 80px rgba(15, 23, 42, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+      max-width: 440px; width: 100%; overflow: hidden;
+      animation: welPop .45s cubic-bezier(0.16, 1, 0.3, 1) both;
+      position: relative;
+    }
+    @keyframes welPop { 0% { opacity:0; transform:scale(.88) translateY(18px); } 100% { opacity:1; transform:scale(1) translateY(0); } }
+    .welcome-stripe {
+      height: 5px;
+      background: linear-gradient(90deg, #FF5A1F 0%, #FF8800 35%, #005BAC 70%, #16A34A 100%);
+    }
+    .welcome-close-btn {
+      position: absolute; top: 14px; right: 14px;
+      width: 32px; height: 32px; border-radius: 50%;
+      background: #F1F5F9; border: 1px solid var(--border);
+      color: #64748B; font-size: 16px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all .15s ease; z-index: 10;
+    }
+    .welcome-close-btn:hover { background: #E2E8F0; color: #0F172A; }
+    .welcome-hero {
+      padding: 26px 22px 14px;
+      text-align: center;
+    }
+    .welcome-logos-group {
+      display: inline-flex; align-items: center; gap: 10px;
+      margin-bottom: 12px;
+    }
+    .welcome-logos-group img { height: 26px; width: auto; display: block; }
+    .welcome-hero h2 {
+      font-size: 19px; font-weight: 800; color: #172033;
+      letter-spacing: -0.4px; line-height: 1.3; margin-bottom: 6px;
+    }
+    .welcome-hero .wel-tagline {
+      font-size: 12.5px; color: #64748B; line-height: 1.5; margin-bottom: 12px;
+    }
+    .welcome-notice-card {
+      background: linear-gradient(135deg, #FFF7ED 0%, #FEF3C7 100%);
+      border: 1px solid #FED7AA;
+      border-radius: 12px;
+      padding: 10px 12px;
+      text-align: left;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+    }
+    .welcome-notice-icon {
+      color: #EA580C; font-size: 16px; flex-shrink: 0; margin-top: 1px;
+    }
+    .welcome-notice-text {
+      font-size: 11px; color: #9A3412; line-height: 1.45;
+    }
+    .welcome-notice-text strong {
+      font-weight: 700; color: #7C2D12; display: block; margin-bottom: 2px;
+    }
+    .wel-actions {
+      padding: 0 20px 4px;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .wel-btn {
+      display: flex; align-items: center; gap: 12px; padding: 12px 14px;
+      border-radius: 14px; border: 1.5px solid #E2E8F0; background: #F8FAFC;
+      font-size: 13px; font-weight: 700; font-family: var(--font); cursor: pointer;
+      color: #172033; text-decoration: none; transition: all .15s ease; text-align: left;
+    }
+    .wel-btn:hover {
+      background: #EEF5FF; border-color: #005BAC; transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 91, 172, 0.1);
+    }
+    .wel-btn.primary {
+      background: linear-gradient(135deg, #005BAC, #004B8C); color: #FFFFFF;
+      border-color: #005BAC; font-weight: 800; box-shadow: 0 4px 14px rgba(0, 91, 172, 0.3);
+    }
+    .wel-btn.primary:hover {
+      background: linear-gradient(135deg, #004B8C, #003B6F);
+      box-shadow: 0 6px 18px rgba(0, 91, 172, 0.4);
+    }
+    .wel-btn.report-wa {
+      background: #F0FDF4; border-color: #BBF7D0; color: #166534;
+    }
+    .wel-btn.report-wa:hover {
+      background: #DCFCE7; border-color: #86EFAC;
+    }
+    .wel-btn-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .wel-btn-icon.explore { background: #EEF5FF; color: #005BAC; }
+    .wel-btn-icon.plan { background: #FFF4EF; color: #FF5A1F; }
+    .wel-btn-icon.report { background: #DCFCE7; color: #16A34A; }
+    .wel-btn-label { flex: 1; min-width: 0; }
+    .wel-btn-label .wel-title { font-size: 13px; font-weight: 700; line-height: 1.25; }
+    .wel-btn-label .wel-desc { font-size: 11px; opacity: 0.8; margin-top: 2px; font-weight: 500; }
+    .wel-footer {
+      padding: 12px 20px 18px; text-align: center;
+      font-size: 10.5px; color: #94A3B8;
+    }
+    .wel-footer a { color: #64748B; text-decoration: underline; cursor: pointer; font-weight: 600; }
+    .wel-footer a:hover { color: #005BAC; }
 
     /* ═══════════ BANNER PEMBERITAHUAN ═══════════ */
     .system-notice-bar {
@@ -505,39 +592,48 @@
     /* Autocomplete Suggestions Dropdown */
     .autocomplete-dropdown {
       position: absolute;
-      top: calc(100% + 6px);
+      top: calc(100% + 4px);
       left: 0;
       right: 0;
-      background: var(--surface);
-      border: 1px solid var(--border);
+      background: #FFFFFF !important;
+      border: 1.5px solid var(--border);
       border-radius: var(--radius-md);
-      box-shadow: var(--shadow-lg);
-      max-height: 240px;
+      box-shadow: 0 16px 36px rgba(15, 23, 42, 0.22), 0 4px 12px rgba(0, 0, 0, 0.08);
+      max-height: 250px;
       overflow-y: auto;
-      z-index: 100;
+      -webkit-overflow-scrolling: touch;
+      z-index: 99999 !important;
       display: none;
     }
-    .autocomplete-dropdown.show { display: block; }
+    .autocomplete-dropdown.show { display: block !important; }
     .autocomplete-item {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 10px;
-      padding: 10px 14px;
+      padding: 11px 14px;
       cursor: pointer;
       border-bottom: 1px solid var(--border-light);
       font-size: 13px;
-      transition: background 0.1s ease;
+      background: #FFFFFF;
+      transition: background 0.12s ease;
     }
     .autocomplete-item:last-child { border-bottom: none; }
     .autocomplete-item:hover { background: var(--primary-subtle); }
     .autocomplete-item .sug-type-icon {
       font-size: 14px;
-      width: 22px;
+      width: 20px;
+      margin-top: 2px;
       text-align: center;
       flex-shrink: 0;
     }
-    .autocomplete-item .sug-name { font-weight: 700; color: var(--text-primary); }
-    .autocomplete-item .sug-desc { font-size: 11px; color: var(--text-secondary); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .autocomplete-item .sug-name { font-weight: 700; color: var(--text-primary); line-height: 1.35; }
+    .autocomplete-item .sug-desc { font-size: 11px; color: var(--text-secondary); margin-top: 2px; line-height: 1.35; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    /* Stacking Context Fix for Origin vs Destination Rows */
+    .location-row.origin-row { z-index: 30; }
+    .location-row.dest-row { z-index: 15; }
+    .location-row:focus-within { z-index: 50; }
+    .location-row.has-dropdown { z-index: 100 !important; }
 
     /* Popular Destinations Section */
     .popular-dest-section {
@@ -1698,6 +1794,11 @@
 
     <!-- Right: Context Shortcuts -->
     <div class="header-actions">
+      <button type="button" class="header-bookmark-btn" onclick="openWelcomeModal()" title="Panduan & Info Perantau">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+        <span class="bookmark-label-full">Panduan</span>
+        <span class="bookmark-label-short">Info</span>
+      </button>
       <button type="button" class="header-bookmark-btn" onclick="quickSelectMenaraBNI()" title="Pusatkan peta dan atur tujuan ke Menara BNI Pejompongan">
         <span style="color:var(--accent);">★</span>
         <span class="bookmark-label-full">Menara BNI</span>
@@ -1710,6 +1811,67 @@
     </div>
   </div>
 </header>
+
+<!-- ═══════════ WELCOME ENTERPRISE BLADE / MODAL ═══════════ -->
+<div id="welcome-overlay">
+  <div class="welcome-card">
+    <div class="welcome-stripe"></div>
+    <button type="button" class="welcome-close-btn" onclick="dismissWelcome()" title="Tutup panduan">&times;</button>
+    <div class="welcome-hero">
+      <div class="welcome-logos-group">
+        <img src="transjakarta-logo.svg" alt="TransJakarta" height="26">
+        <div style="width:1px;height:18px;background:var(--border);"></div>
+        <img src="jaklingko-logo.svg" alt="JakLingko" height="20">
+      </div>
+      <h2>TransJakarta Explorer &amp; Journey Planner</h2>
+      <p class="wel-tagline">Panduan navigasi rute BRT, Mikrotrans &amp; Metrotrans Jakarta. Dibuat untuk memudahkan perantau &amp; warga memahami alur transportasi publik.</p>
+      
+      <div class="welcome-notice-card">
+        <span class="welcome-notice-icon">⚠️</span>
+        <div class="welcome-notice-text">
+          <strong>Sistem Baru — Tahap Pengembangan</strong>
+          Rute &amp; estimasi waktu diolah dari data resmi GTFS PPID TransJakarta dan terus disempurnakan. Jika ada rute yang tidak sesuai, silakan lapor kepada tim.
+        </div>
+      </div>
+    </div>
+
+    <div class="wel-actions">
+      <button type="button" class="wel-btn primary" onclick="welcomeAction('plan')">
+        <span class="wel-btn-icon plan">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </span>
+        <span class="wel-btn-label">
+          <div class="wel-title">Rencanakan Perjalanan</div>
+          <div class="wel-desc">Cari rute A ke B, halte transit, &amp; estimasi waktu</div>
+        </span>
+      </button>
+
+      <button type="button" class="wel-btn" onclick="welcomeAction('explore')">
+        <span class="wel-btn-icon explore">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+        </span>
+        <span class="wel-btn-label">
+          <div class="wel-title">Jelajahi 240 Rute di Peta</div>
+          <div class="wel-desc">Lihat jalur koridor BRT, Mikrotrans Rp0, &amp; halte</div>
+        </span>
+      </button>
+
+      <a href="https://wa.me/6285725265355?text=Halo%2C%20saya%20pengguna%20TransJakarta%20Explorer%2C%20mau%20lapor%20bug%20%2F%20beri%20masukan%3A" target="_blank" rel="noopener" class="wel-btn report-wa" onclick="welcomeAction('report')">
+        <span class="wel-btn-icon report">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        </span>
+        <span class="wel-btn-label">
+          <div class="wel-title">💬 Lapor Bug / Ide (WA: 085725265355)</div>
+          <div class="wel-desc">Kirim masukan langsung ke tim pengembang</div>
+        </span>
+      </a>
+    </div>
+
+    <div class="wel-footer">
+      GTFS resmi PT Transportasi Jakarta via PPID · <a href="#" onclick="dismissWelcome()">Mulai Menjelajah &rarr;</a>
+    </div>
+  </div>
+</div>
 
 <!-- ══════════════════════════════════════════════════════════════
      MAIN WORKSPACE: CONTROL PANEL (LEFT) + MAP (RIGHT)
@@ -1735,7 +1897,7 @@
           <div class="vertical-route-line"></div>
 
           <!-- Origin Row -->
-          <div class="location-row">
+          <div class="location-row origin-row">
             <div class="location-dot">
               <div class="dot-inner origin"></div>
             </div>
@@ -1756,7 +1918,7 @@
           </div>
 
           <!-- Destination Row (Now with GPS selector too!) -->
-          <div class="location-row">
+          <div class="location-row dest-row">
             <div class="location-dot">
               <div class="dot-inner destination"></div>
             </div>
@@ -2058,9 +2220,12 @@
       routeDetailsData = datasets[1] || [];
       geoData = datasets[2] || {};
 
-      // Normalize 'Unknown' categories to Metrotrans
+      // Normalize categories and route names to ensure no 'undefined'
       routesData.forEach(function(r) {
         if (!r.route_category || r.route_category === 'Unknown') r.route_category = 'Metrotrans';
+        var name = (r.route_long_name && r.route_long_name !== r.route_id) ? r.route_long_name : (r.route_desc || r.route_short_name || ('Rute ' + r.route_id));
+        r.route_name = name;
+        r.route_long_name = name;
       });
 
       renderCategoryChips();
@@ -2342,7 +2507,7 @@
     navigator.geolocation.getCurrentPosition(function(pos) {
       planFromCoord = [pos.coords.latitude, pos.coords.longitude];
       planFromName = 'Lokasi Saya Saat Ini (GPS)';
-      inp.value = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:middle;margin-right:2px;"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg> Lokasi Saya Saat Ini';
+      inp.value = 'Lokasi Saya Saat Ini';
       if (lbl) lbl.innerHTML = '<span class="gps-text-full">Lokasi Saya ✓</span><span class="gps-text-short">✓</span>';
       if (btn) btn.classList.add('active');
       document.getElementById('p-from-clear').style.display = 'inline-block';
@@ -2369,7 +2534,7 @@
     navigator.geolocation.getCurrentPosition(function(pos) {
       planToCoord = [pos.coords.latitude, pos.coords.longitude];
       planToName = 'Lokasi Saya Saat Ini (GPS)';
-      inp.value = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:middle;margin-right:2px;"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg> Lokasi Saya (Tujuan GPS)';
+      inp.value = 'Lokasi Saya (Tujuan GPS)';
       if (lbl) lbl.innerHTML = '<span class="gps-text-full">Tujuan GPS ✓</span><span class="gps-text-short">✓</span>';
       if (btn) btn.classList.add('active');
       document.getElementById('p-to-clear').style.display = 'inline-block';
@@ -2467,12 +2632,18 @@
             '</div>';
           }).join('');
           drop.classList.add('show');
+          var row = inp.closest('.location-row');
+          if (row) row.classList.add('has-dropdown');
         }).catch(function() {});
       }, 250);
     });
 
     inp.addEventListener('blur', function() {
-      setTimeout(function() { drop.classList.remove('show'); }, 250);
+      setTimeout(function() {
+        drop.classList.remove('show');
+        var row = inp.closest('.location-row');
+        if (row) row.classList.remove('has-dropdown');
+      }, 250);
     });
 
     drop.addEventListener('click', function(e) {
@@ -2916,8 +3087,9 @@
     var filtered = routesData.filter(function(r) {
       if (activeCategory !== 'all' && r.route_category !== activeCategory) return false;
       if (!q) return true;
+      var name = (r.route_name || r.route_long_name || '').toLowerCase();
       return (r.route_id && r.route_id.toLowerCase().includes(q)) ||
-             (r.route_long_name || r.route_id || 'Rute' && r.route_long_name || r.route_id || 'Rute'.toLowerCase().includes(q)) ||
+             name.includes(q) ||
              (r.route_category && r.route_category.toLowerCase().includes(q));
     });
 
@@ -2938,11 +3110,12 @@
       else if (cat === 'Bus Wisata') badgeCls = 'wisata';
 
       var isActive = r.route_id === selectedRouteId ? 'active' : '';
+      var title = r.route_name || r.route_long_name || ('Rute ' + r.route_id);
 
       return '<div class="route-item-row '+isActive+'" id="r-row-'+r.route_id+'" onclick="openRouteDetail(\''+r.route_id+'\')">' +
         '<div class="route-pill-badge '+badgeCls+'">'+r.route_id+'</div>' +
         '<div class="route-item-info">' +
-          '<div class="route-item-title">'+r.route_long_name || r.route_id || 'Rute'+'</div>' +
+          '<div class="route-item-title">' + title + '</div>' +
           '<div class="route-item-meta">' +
             '<span>' + cat + '</span>' +
           '</div>' +
@@ -3314,29 +3487,24 @@
   });
 })();
 
-  // --- WELCOME MODAL HANDLERS ---
+    // --- WELCOME MODAL HANDLERS ---
+  window.openWelcomeModal = function() {
+    var overlay = document.getElementById('welcome-overlay');
+    if (overlay) overlay.classList.remove('hidden');
+  };
   window.welcomeAction = function(action) {
     var overlay = document.getElementById('welcome-overlay');
-    if (overlay) { overlay.classList.add('hidden'); }
+    if (overlay) overlay.classList.add('hidden');
     if (action === 'explore') {
       setAppMode('explorer');
     } else if (action === 'plan') {
       setAppMode('planner');
     }
-    localStorage.setItem('tj_welcome_seen', '1');
   };
   window.dismissWelcome = function() {
     var overlay = document.getElementById('welcome-overlay');
-    if (overlay) { overlay.classList.add('hidden'); }
-    localStorage.setItem('tj_welcome_seen', '1');
+    if (overlay) overlay.classList.add('hidden');
   };
-  setTimeout(function() {
-    if (!localStorage.getItem('tj_welcome_seen')) {
-      var overlay = document.getElementById('welcome-overlay');
-      if (overlay) { overlay.classList.add('hidden'); }
-      localStorage.setItem('tj_welcome_seen', '1');
-    }
-  }, 15000);
 </script>
 </body>
 </html>
