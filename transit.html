@@ -194,6 +194,7 @@
       <button class="tab-btn" id="tab-planner" onclick="switchTab('planner')">Journey Planner</button>
     </div>
     <div class="topbar-actions">
+      <button class="top-btn" onclick="focusMenaraBNI()" title="Pusatkan peta ke Menara BNI Pejompongan" style="cursor:pointer;background:#FFF7ED;color:#FF5500;border-color:#FED7AA;font-weight:700;">🏢 Menara BNI</button>
       <a href="index.html" class="top-btn" title="MagangHub Dashboard">🏠 MagangHub</a>
     </div>
   </div>
@@ -242,7 +243,7 @@
         </div>
         <div class="quick-chips">
           <span class="lbl">Populer:</span>
-          <button class="chip" onclick="applyPreset('Menara BNI',-6.209,106.804)">🏢 Menara BNI</button>
+          <button class="chip" onclick="applyPreset('Menara BNI Pejompongan',-6.20385,106.80245)">🏢 Menara BNI</button>
           <button class="chip" onclick="applyPreset('Stasiun Palmerah',-6.207,106.798)">🚉 Palmerah</button>
           <button class="chip" onclick="applyPreset('Monas',-6.175,106.827)">🏛️ Monas</button>
           <button class="chip" onclick="applyPreset('Blok M',-6.244,106.798)">🏬 Blok M</button>
@@ -545,6 +546,26 @@ function showPlannerMap(journey) {
   group.addTo(plannerMap);plannerActiveLayer=group;
   if(bounds.length) try{plannerMap.fitBounds(L.latLngBounds(bounds).pad(.15))}catch(e){}
 }
+
+  window.focusMenaraBNI = function() {
+    var bniLat = -6.20385;
+    var bniLon = 106.80245;
+    var targetMap = (window._currentTab === 'planner' && plannerMap) ? plannerMap : explorerMap;
+    if (!targetMap) return;
+
+    if (window._bniMarker) {
+      try { targetMap.removeLayer(window._bniMarker); } catch(e){}
+    }
+    window._bniMarker = L.marker([bniLat, bniLon], {
+      icon: L.divIcon({
+        className: '',
+        html: '<div style="background:#FF5500;color:#FFF;padding:5px 12px;border-radius:20px;font-weight:800;font-size:11px;border:2.5px solid #FFF;box-shadow:0 4px 14px rgba(255,85,0,0.45);white-space:nowrap;display:flex;align-items:center;gap:4px;">🏢 Menara BNI</div>',
+        iconSize: [110, 26], iconAnchor: [55, 13]
+      })
+    }).addTo(targetMap).bindPopup('<div style="font-family:Plus Jakarta Sans,sans-serif;padding:4px;"><div style="font-size:10px;font-weight:800;color:#FF5500;">KANTOR PENUGASAN MAGANG</div><div style="font-size:13px;font-weight:800;color:#0F172A;margin-top:2px;">Gedung Menara BNI Pejompongan</div><div style="font-size:11px;color:#64748B;margin-top:3px;">Jl. Pejompongan Raya No. 7, Jakarta Pusat<br>📍 Halte terdekat: <b>Menara Pejompongan</b> (50m) &amp; <b>Dipo Tower</b></div></div>').openPopup();
+
+    targetMap.setView([bniLat, bniLon], 16, { animate: true, duration: 0.6 });
+  };
 
 // Boot
 document.addEventListener('DOMContentLoaded',function(){initExplorer()});
