@@ -40,6 +40,30 @@
     .loader-dots span:nth-child(3) { animation-delay: .4s; }
     @keyframes dotPulse { 0%,80%,100% { opacity: .3; transform: scale(.8); } 40% { opacity: 1; transform: scale(1.3); } }
 
+    /* ═══════════ WELCOME MODAL ═══════════ */
+    #welcome-overlay{position:fixed;inset:0;z-index:999998;background:rgba(15,23,42,.52);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:16px;opacity:1;transition:opacity .3s}
+    #welcome-overlay.hidden{opacity:0;pointer-events:none}
+    .welcome-card{background:#FFF;border-radius:20px;box-shadow:0 24px 64px rgba(0,0,0,.15);max-width:400px;width:100%;overflow:hidden;animation:welPop .4s cubic-bezier(.16,1,.3,1) both}
+    @keyframes welPop{0%{opacity:0;transform:scale(.9) translateY(12px)}100%{opacity:1;transform:scale(1) translateY(0)}}
+    .welcome-stripe{height:4px;background:linear-gradient(90deg,#FF5A1F,#FF8800,#005BAC)}
+    .welcome-body{padding:24px 20px 20px;text-align:center}
+    .welcome-body h2{font-size:18px;font-weight:800;color:#172033;margin-bottom:6px;letter-spacing:-.3px}
+    .welcome-body .wel-sub{font-size:12.5px;color:#667085;line-height:1.55;margin-bottom:16px}
+    .wel-badge{display:inline-flex;align-items:center;gap:6px;background:#FFF4EF;border:1px solid #FED7AA;color:#EA580C;border-radius:20px;padding:5px 12px;font-size:10.5px;font-weight:700;margin-bottom:12px}
+    .wel-badge .wel-dot{width:6px;height:6px;border-radius:50%;background:#EA580C;animation:pulse2 1.5s infinite}
+    @keyframes pulse2{0%,100%{opacity:.4}50%{opacity:1}}
+    .wel-actions{display:flex;flex-direction:column;gap:8px}
+    .wel-btn{display:flex;align-items:center;gap:10px;padding:12px 16px;border-radius:12px;border:1.5px solid #E7EAF0;background:#F8FAFC;font-size:13px;font-weight:700;font-family:var(--font);cursor:pointer;color:#172033;text-decoration:none;transition:all .12s;text-align:left}
+    .wel-btn:hover{background:#EEF5FF;border-color:#005BAC}
+    .wel-btn.primary{background:#005BAC;color:#FFF;border-color:#005BAC;font-weight:800}
+    .wel-btn.primary:hover{background:#004B8C}
+    .wel-btn-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .wel-btn-icon.explore{background:#EEF5FF;color:#005BAC}
+    .wel-btn-icon.plan{background:#FFF4EF;color:#FF5A1F}
+    .wel-btn-icon.report{background:#F0FDF4;color:#16A34A}
+    .wel-footer{margin-top:12px;font-size:10px;color:#98A2B3}
+    .wel-footer a{color:#667085;text-decoration:underline;cursor:pointer}
+
     /* ═══════════ BANNER PEMBERITAHUAN ═══════════ */
     .system-notice-bar {
       background: linear-gradient(135deg, #FFF4EF, #FEF3C7);
@@ -823,7 +847,7 @@
       border: 1px solid var(--primary-border);
     }
 
-    /* Leg Sequence Badges (e.g. <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="5" width="22" height="13" rx="3"/><path d="M4 5V3a1 1 0 011-1h3a1 1 0 011 1v2"/><path d="M15 5V3a1 1 0 011-1h3a1 1 0 011 1v2"/><rect x="3" y="8" width="3.5" height="5" rx="1"/><rect x="8" y="8" width="3.5" height="5" rx="1"/><rect x="12.5" y="8" width="3.5" height="5" rx="1"/><rect x="17" y="8" width="3.5" height="5" rx="1"/><circle cx="6" cy="21" r="2"/><circle cx="18" cy="21" r="2"/></svg> 1B → <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:inline-block;vertical-align:middle;margin-right:2px;"><circle cx="12" cy="5" r="2"/><path d="M10 22l-1-7-3 2"/><path d="M14 22l1-7 3 2"/></svg> 150m → <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="5" width="22" height="13" rx="3"/><path d="M4 5V3a1 1 0 011-1h3a1 1 0 011 1v2"/><path d="M15 5V3a1 1 0 011-1h3a1 1 0 011 1v2"/><rect x="3" y="8" width="3.5" height="5" rx="1"/><rect x="8" y="8" width="3.5" height="5" rx="1"/><rect x="12.5" y="8" width="3.5" height="5" rx="1"/><rect x="17" y="8" width="3.5" height="5" rx="1"/><circle cx="6" cy="21" r="2"/><circle cx="18" cy="21" r="2"/></svg> 9) */
+    /* Leg Sequence Badges (e.g. <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:inline-block;vertical-align:middle;margin-right:2px;"><rect x="2" y="4" width="20" height="14" rx="3"/><line x1="2" y1="18" x2="22" y2="18"/><circle cx="7" cy="21" r="2"/><circle cx="17" cy="21" r="2"/></svg> 1B → <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:inline-block;vertical-align:middle;margin-right:2px;"><circle cx="12" cy="5" r="2"/><path d="M10 22l-1-7-3 2"/><path d="M14 22l1-7 3 2"/></svg> 150m → <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:inline-block;vertical-align:middle;margin-right:2px;"><rect x="2" y="4" width="20" height="14" rx="3"/><line x1="2" y1="18" x2="22" y2="18"/><circle cx="7" cy="21" r="2"/><circle cx="17" cy="21" r="2"/></svg> 9) */
     .j-card-sequence {
       display: flex;
       align-items: center;
@@ -1642,6 +1666,33 @@
   <button class="notice-dismiss" onclick="document.getElementById('system-notice').style.display='none'" title="Tutup">&times;</button>
 </div>
 
+<!-- ═══════════ WELCOME MODAL ═══════════ -->
+<div id="welcome-overlay">
+  <div class="welcome-card">
+    <div class="welcome-stripe"></div>
+    <div class="welcome-body">
+      <div class="wel-badge"><span class="wel-dot"></span> Sistem Baru — Tahap Pengembangan</div>
+      <h2>Selamat Datang di TransJakarta Explorer</h2>
+      <p class="wel-sub">Navigasi rute BRT, Mikrotrans &amp; Metrotrans Jakarta. Rute &amp; jadwal dapat berubah sewaktu-waktu. Aplikasi ini dibuat untuk membantu perantau dan warga Jakarta memahami alur transportasi umum.</p>
+      <div class="wel-actions">
+        <button class="wel-btn primary" onclick="welcomeAction('explore')">
+          <span class="wel-btn-icon explore"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg></span>
+          Jelajahi Peta Rute
+        </button>
+        <button class="wel-btn" onclick="welcomeAction('plan')">
+          <span class="wel-btn-icon plan"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+          Cari Rute Perjalanan
+        </button>
+        <a href="https://wa.me/6285725265355?text=Halo%2C%20saya%20mau%20lapor%20bug%20%2F%20ide%20untuk%20TransJakarta%20Explorer%3A" target="_blank" rel="noopener" class="wel-btn" onclick="welcomeAction('report')">
+          <span class="wel-btn-icon report"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></span>
+          Laporkan Bug / Ide
+        </a>
+      </div>
+      <div class="wel-footer">Dibuat untuk membantu perantau memahami TransJakarta · <a href="#" onclick="dismissWelcome()">Lewati</a></div>
+    </div>
+  </div>
+</div>
+
 <!-- ══════════════════════════════════════════════════════════════
      APP HEADER (TransJakarta Brand + Segmented Tabs + Shortcuts)
      ══════════════════════════════════════════════════════════════ -->
@@ -1751,22 +1802,22 @@
           <span class="section-label">Tujuan populer</span>
           <div class="popular-chips-scroll">
             <button type="button" class="popular-chip featured" onclick="applyPlanPreset('Menara BNI Pejompongan', -6.20385, 106.80245)">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="9" width="7" height="11" rx="1.5"/><rect x="14" y="7" width="7" height="13" rx="1.5"/><line x1="6.5" y1="6" x2="6.5" y2="9"/><line x1="17.5" y1="4" x2="17.5" y2="7"/></svg> Menara BNI
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="7" width="7" height="10" rx="1"/><rect x="14" y="5" width="7" height="12" rx="1"/><line x1="6.5" y1="7" x2="6.5" y2="17"/><line x1="17.5" y1="5" x2="17.5" y2="17"/></svg> Menara BNI
             </button>
             <button type="button" class="popular-chip" onclick="applyPlanPreset('Stasiun Palmerah', -6.2071, 106.7975)">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h12a2 2 0 012 2v16a2 2 0 01-2 2H6a2 2 0 01-2-2V4a2 2 0 012-2z"/><path d="M6 2v4l2 2-2 2v4l2 2-2 2v2"/></svg> St. Palmerah
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="3" width="16" height="18" rx="3"/><line x1="4" y1="11" x2="20" y2="11"/><line x1="12" y1="3" x2="12" y2="21"/></svg> St. Palmerah
             </button>
             <button type="button" class="popular-chip" onclick="applyPlanPreset('Halte CSW / ASEAN', -6.2403, 106.7989)">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18M5 9V7a2 2 0 012-2h10a2 2 0 012 2v2"/><path d="M5 9v4a2 2 0 002 2h10a2 2 0 002-2V9"/><line x1="8" y1="15" x2="8" y2="19"/><line x1="16" y1="15" x2="16" y2="19"/><path d="M6 19h12"/></svg> CSW / ASEAN
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="5" width="16" height="12" rx="3"/><line x1="4" y1="17" x2="20" y2="17"/></svg> CSW / ASEAN
             </button>
             <button type="button" class="popular-chip" onclick="applyPlanPreset('Blok M Plaza', -6.2443, 106.7982)">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="16" rx="2"/><line x1="2" y1="15" x2="22" y2="15"/><line x1="9" y1="15" x2="9" y2="22"/><line x1="15" y1="15" x2="15" y2="22"/></svg> Blok M
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M3 10h18M5 3l7 18 7-18"/></svg> Blok M
             </button>
             <button type="button" class="popular-chip" onclick="applyPlanPreset('Monumen Nasional (Monas)', -6.1754, 106.8272)">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3L2 21h20L12 3z"/><rect x="10" y="13" width="4" height="8" rx="1"/></svg> Monas
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 22 22 2 22"/><rect x="10" y="10" width="4" height="12"/></svg> Monas
             </button>
             <button type="button" class="popular-chip" onclick="applyPlanPreset('Bundaran HI', -6.1951, 106.8230)">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="12" x2="12" y2="2"/><line x1="12" y1="12" x2="22" y2="12"/><circle cx="12" cy="12" r="3"/></svg> Bundaran HI
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="12 2 12 12 22 12"/></svg> Bundaran HI
             </button>
           </div>
         </div>
@@ -2061,9 +2112,10 @@
     }).setView([-6.2088, 106.845], 13);
 
     // CartoDB Voyager: Crisp city streets, road networks, building footprints & typography
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-      maxZoom: 19
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; <a href="https://carto.com/">CARTO</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      subdomains: 'abcd',
+      maxZoom: 20
     }).addTo(map);
 
     // Interactive Tap on Map to select Origin or Destination
@@ -2217,7 +2269,7 @@
         html: '<div style="background:#FF5A1F;color:#FFF;padding:5px 12px;border-radius:20px;font-weight:800;font-size:11px;border:2.5px solid #FFF;box-shadow:0 4px 14px rgba(255,90,31,0.45);white-space:nowrap;display:flex;align-items:center;gap:4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="7" width="7" height="10" rx="1"/><rect x="14" y="5" width="7" height="12" rx="1"/></svg> Menara BNI</div>',
         iconSize: [110, 26], iconAnchor: [55, 13]
       })
-    }).addTo(map).bindPopup('<div style="font-family:Plus Jakarta Sans,sans-serif;padding:4px;"><div style="font-size:10px;font-weight:800;color:#FF5A1F;">KANTOR PENUGASAN MAGANG</div><div style="font-size:13px;font-weight:800;color:#172033;margin-top:2px;">Gedung Menara BNI Pejompongan</div><div style="font-size:11px;color:#667085;margin-top:3px;">Jl. Pejompongan Raya No. 7, Jakarta Pusat<br><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:middle;margin-right:2px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> Halte terdekat: <b>Menara Pejompongan</b> (50m)</div></div>').openPopup();
+    }).addTo(map).bindPopup('<div style="font-family:Plus Jakarta Sans,sans-serif;padding:4px;"><div style="font-size:10px;font-weight:800;color:#FF5A1F;">KANTOR PENUGASAN MAGANG</div><div style="font-size:13px;font-weight:800;color:#172033;margin-top:2px;">Gedung Menara BNI Pejompongan</div><div style="font-size:11px;color:#667085;margin-top:3px;">Jl. Pejompongan Raya No. 7, Jakarta Pusat<br>📍 Halte terdekat: <b>Menara Pejompongan</b> (50m)</div></div>').openPopup();
 
     map.setView([bniLat, bniLon], 16, { animate: true, duration: 0.6 });
 
@@ -2711,7 +2763,7 @@
       // Sequence summary badges
       var seqHtml = j.legs.map(function(l) {
         if (l.type === 'BUS') {
-          return '<span class="step-chip bus"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="5" width="22" height="13" rx="3"/><path d="M4 5V3a1 1 0 011-1h3a1 1 0 011 1v2"/><path d="M15 5V3a1 1 0 011-1h3a1 1 0 011 1v2"/><rect x="3" y="8" width="3.5" height="5" rx="1"/><rect x="8" y="8" width="3.5" height="5" rx="1"/><rect x="12.5" y="8" width="3.5" height="5" rx="1"/><rect x="17" y="8" width="3.5" height="5" rx="1"/><circle cx="6" cy="21" r="2"/><circle cx="18" cy="21" r="2"/></svg> ' + (l.route_id || 'Bus') + '</span>';
+          return '<span class="step-chip bus"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:inline-block;vertical-align:middle;margin-right:2px;"><rect x="2" y="4" width="20" height="14" rx="3"/><line x1="2" y1="18" x2="22" y2="18"/><circle cx="7" cy="21" r="2"/><circle cx="17" cy="21" r="2"/></svg> ' + (l.route_id || 'Bus') + '</span>';
         } else if (l.type === 'WALK') {
           return '<span class="step-chip walk"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:inline-block;vertical-align:middle;margin-right:2px;"><circle cx="12" cy="5" r="2"/><path d="M10 22l-1-7-3 2"/><path d="M14 22l1-7 3 2"/></svg> ' + l.distance_m + 'm</span>';
         } else {
@@ -2736,7 +2788,7 @@
         '<div class="j-card-timeline '+(idx === 0 ? 'show' : '')+'" id="jtl-'+idx+'">' +
           j.legs.map(function(leg) {
             var isBus = leg.type === 'BUS';
-            var icon = isBus ? '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="5" width="22" height="13" rx="3"/><path d="M4 5V3a1 1 0 011-1h3a1 1 0 011 1v2"/><path d="M15 5V3a1 1 0 011-1h3a1 1 0 011 1v2"/><rect x="3" y="8" width="3.5" height="5" rx="1"/><rect x="8" y="8" width="3.5" height="5" rx="1"/><rect x="12.5" y="8" width="3.5" height="5" rx="1"/><rect x="17" y="8" width="3.5" height="5" rx="1"/><circle cx="6" cy="21" r="2"/><circle cx="18" cy="21" r="2"/></svg>' : (leg.type === 'WALK' ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:inline-block;vertical-align:middle;margin-right:2px;"><circle cx="12" cy="5" r="2"/><path d="M10 22l-1-7-3 2"/><path d="M14 22l1-7 3 2"/></svg>' : '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:inline-block;vertical-align:middle;margin-right:2px;"><polyline points="1 4 1 10 7 10"/><path d="M3.5 17A9 9 0 102 12"/></svg>');
+            var icon = isBus ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:inline-block;vertical-align:middle;margin-right:2px;"><rect x="2" y="4" width="20" height="14" rx="3"/><line x1="2" y1="18" x2="22" y2="18"/><circle cx="7" cy="21" r="2"/><circle cx="17" cy="21" r="2"/></svg>' : (leg.type === 'WALK' ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:inline-block;vertical-align:middle;margin-right:2px;"><circle cx="12" cy="5" r="2"/><path d="M10 22l-1-7-3 2"/><path d="M14 22l1-7 3 2"/></svg>' : '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:inline-block;vertical-align:middle;margin-right:2px;"><polyline points="1 4 1 10 7 10"/><path d="M3.5 17A9 9 0 102 12"/></svg>');
             var cls = isBus ? 'bus' : 'walk';
 
             var rideBtn = '';
@@ -3289,6 +3341,32 @@
     initApp();
   });
 })();
+
+  // ─── WELCOME MODAL ───
+  window.welcomeAction = function(action) {
+    var overlay = document.getElementById('welcome-overlay');
+    if (overlay) { overlay.classList.add('hidden'); }
+    if (action === 'explore') {
+      setAppMode('explorer');
+    } else if (action === 'plan') {
+      setAppMode('planner');
+    }
+    localStorage.setItem('tj_welcome_seen', '1');
+  };
+  window.dismissWelcome = function() {
+    var overlay = document.getElementById('welcome-overlay');
+    if (overlay) { overlay.classList.add('hidden'); }
+    localStorage.setItem('tj_welcome_seen', '1');
+  };
+  // Auto-dismiss after 15s if no interaction
+  setTimeout(function() {
+    var seen = localStorage.getItem('tj_welcome_seen');
+    if (!seen) {
+      var overlay = document.getElementById('welcome-overlay');
+      if (overlay) { overlay.classList.add('hidden'); }
+      localStorage.setItem('tj_welcome_seen', '1');
+    }
+  }, 15000);
 </script>
 </body>
 </html>
