@@ -1868,6 +1868,7 @@
 
       renderCategoryChips();
       renderRoutesList();
+      initBRTNetworkLayer();
     }).catch(function() {
       var list = document.getElementById('routes-list-scroll');
       if (list) list.innerHTML = '<div class="state-message-card" style="color:var(--danger);">Gagal memuat dataset rute GTFS.</div>';
@@ -1880,12 +1881,77 @@
       zoomControl: false // Using our clean styled controls
     }).setView([-6.2088, 106.845], 13);
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap',
-      maxZoom: 19
+    // CartoDB Voyager: Crisp city streets, road networks, building footprints & typography
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; <a href="https://carto.com/">CARTO</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      subdomains: 'abcd',
+      maxZoom: 20
     }).addTo(map);
 
     setTimeout(function() { map.invalidateSize(); }, 300);
+  }
+
+  // ─── EXTRACT STREET LINE COORDINATES FROM GEOJSON DATA ───
+  function extractCoordinatesFromGeo(routeId) {
+    var data = geoData[routeId];
+    if (!data) return [];
+    var lines = [];
+
+    if (Array.isArray(data)) {
+      data.forEach(function(feat) {
+        if (feat && feat.geometry && feat.geometry.coordinates) {
+          if (feat.geometry.type === 'LineString') {
+            lines.push(feat.geometry.coordinates);
+          } else if (feat.geometry.type === 'MultiLineString') {
+            feat.geometry.coordinates.forEach(function(c) { lines.push(c); });
+          }
+        }
+      });
+    } else if (data.geometry && data.geometry.coordinates) {
+      if (data.geometry.type === 'LineString') {
+        lines.push(data.geometry.coordinates);
+      } else if (data.geometry.type === 'MultiLineString') {
+        data.geometry.coordinates.forEach(function(c) { lines.push(c); });
+      }
+    } else if (data.coordinates) {
+      lines.push(data.coordinates);
+    }
+    return lines;
+  }
+
+  // ─── INITIALIZE BASE BRT STREET NETWORK LAYER ───
+  var brtNetworkLayer = null;
+  function initBRTNetworkLayer() {
+    if (brtNetworkLayer || !map) return;
+    brtNetworkLayer = L.featureGroup();
+    var trunkCorridors = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13'];
+
+    trunkCorridors.forEach(function(cId) {
+      var lines = extractCoordinatesFromGeo(cId);
+      lines.forEach(function(coords) {
+        if (coords && coords.length >= 2) {
+          var latlngs = coords.map(function(c) { return [c[1], c[0]]; });
+          // Background transit street network (subtle casing + line)
+          L.polyline(latlngs, {
+            color: '#FFFFFF',
+            weight: 5,
+            opacity: 0.6,
+            lineJoin: 'round',
+            lineCap: 'round'
+          }).addTo(brtNetworkLayer);
+
+          L.polyline(latlngs, {
+            color: '#DC2626',
+            weight: 3,
+            opacity: 0.55,
+            lineJoin: 'round',
+            lineCap: 'round'
+          }).addTo(brtNetworkLayer);
+        }
+      });
+    });
+
+    brtNetworkLayer.addTo(map);
   }
 
   // Map Controls
@@ -2248,8 +2314,11 @@
               var totalMins = Math.round((walk1 + walk2) / 75 + busMins);
 
               var geomPoints = [];
-              if (geoData[r.route_id] && geoData[r.route_id].coordinates) {
-                geomPoints = geoData[r.route_id].coordinates;
+              var lineArrays = extractCoordinatesFromGeo(r.route_id);
+              if (lineArrays.length) {
+                geomPoints = lineArrays[0];
+              } else {
+                geomPoints = stops.slice(om.idx, dm.idx + 1).map(function(s) { return [s.lon, s.lat]; });
               }
 
               journeys.push({
@@ -2431,6 +2500,9 @@
     // Polylines & Stops
     journey.legs.forEach(function(leg) {
       if (leg.type === 'BUS') {
+        var color = CAT_COLORS[leg.route_category] || '#005BAC';
+        var lineDrawn = false;
+
         if (leg.geometry && leg.geometry.length >= 2) {
           var latlngs = leg.geometry.map(function(c) { return [c[1], c[0]]; });
           var uniq = [];
@@ -2438,9 +2510,18 @@
             if (!uniq.length || ll[0] !== uniq[uniq.length-1][0] || ll[1] !== uniq[uniq.length-1][1]) uniq.push(ll);
           });
           if (uniq.length >= 2) {
-            var color = CAT_COLORS[leg.route_category] || '#005BAC';
-            L.polyline(uniq, { color: color, weight: 6, opacity: 0.9, lineJoin: 'round' }).addTo(journeyLayerGroup);
+            // White halo casing for contrast against street map
+            L.polyline(uniq, { color: '#FFFFFF', weight: 8, opacity: 0.95, lineJoin: 'round', lineCap: 'round' }).addTo(journeyLayerGroup);
+            // Vibrant transit street line
+            L.polyline(uniq, { color: color, weight: 5, opacity: 0.95, lineJoin: 'round', lineCap: 'round' }).addTo(journeyLayerGroup);
+            lineDrawn = true;
           }
+        }
+
+        if (!lineDrawn && leg.from_lat && leg.to_lat) {
+          var direct = [[leg.from_lat, leg.from_lon], [leg.to_lat, leg.to_lon]];
+          L.polyline(direct, { color: '#FFFFFF', weight: 8, opacity: 0.95, lineJoin: 'round' }).addTo(journeyLayerGroup);
+          L.polyline(direct, { color: color, weight: 5, opacity: 0.95, lineJoin: 'round' }).addTo(journeyLayerGroup);
         }
 
         if (leg.from_lat && leg.from_lon) {
@@ -2669,19 +2750,64 @@
     var cat = routeMeta ? routeMeta.route_category : 'BRT';
     var color = CAT_COLORS[cat] || '#005BAC';
 
-    var geom = geoData[routeId];
-    if (geom && geom.coordinates && geom.coordinates.length) {
-      var latlngs = geom.coordinates.map(function(c) { return [c[1], c[0]]; });
-      currentRouteLayer = L.polyline(latlngs, {
-        color: color,
-        weight: 6,
-        opacity: 0.9,
-        lineJoin: 'round',
-        lineCap: 'round'
-      }).addTo(map);
+    var layerGroup = L.featureGroup();
+    var lineArrays = extractCoordinatesFromGeo(routeId);
 
-      map.fitBounds(currentRouteLayer.getBounds(), { padding: [50, 50], maxZoom: 16 });
+    if (lineArrays.length) {
+      lineArrays.forEach(function(coords) {
+        if (coords && coords.length >= 2) {
+          var latlngs = coords.map(function(c) { return [c[1], c[0]]; });
+          // Outer white halo casing for crisp contrast against street map
+          L.polyline(latlngs, {
+            color: '#FFFFFF',
+            weight: 8,
+            opacity: 0.95,
+            lineJoin: 'round',
+            lineCap: 'round'
+          }).addTo(layerGroup);
+
+          // Inner vibrant transit street line
+          L.polyline(latlngs, {
+            color: color,
+            weight: 5,
+            opacity: 0.95,
+            lineJoin: 'round',
+            lineCap: 'round'
+          }).addTo(layerGroup);
+        }
+      });
     }
+
+    // Fallback: If no geometry lines found, draw polyline connecting the route's stops
+    var detail = routeDetailsData.find(function(d) { return d.route_id === routeId; });
+    if (!lineArrays.length && detail && detail.directions && detail.directions[currentDetailDirectionIdx]) {
+      var stops = detail.directions[currentDetailDirectionIdx].stops || [];
+      if (stops.length >= 2) {
+        var stopLatLngs = stops.map(function(s) { return [s.lat, s.lon]; });
+        L.polyline(stopLatLngs, {
+          color: '#FFFFFF',
+          weight: 8,
+          opacity: 0.95,
+          lineJoin: 'round'
+        }).addTo(layerGroup);
+        L.polyline(stopLatLngs, {
+          color: color,
+          weight: 5,
+          opacity: 0.95,
+          lineJoin: 'round'
+        }).addTo(layerGroup);
+      }
+    }
+
+    layerGroup.addTo(map);
+    currentRouteLayer = layerGroup;
+
+    try {
+      var bounds = layerGroup.getBounds();
+      if (bounds.isValid()) {
+        map.fitBounds(bounds, { padding: [50, 50], maxZoom: 16 });
+      }
+    } catch(e) {}
   }
 
   // ─── GPS LOCK & TRACKING ───
