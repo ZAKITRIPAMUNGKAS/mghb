@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jakarta Journey Planner — Transportasi Publik</title>
+  <meta name="description" content="Cari rute transportasi publik Jakarta. TransJakarta, Mikrotrans, Metrotrans, Royaltrans. Data resmi PPID GTFS.">
+  <link rel="icon" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <style>
+    :root {
+      --font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --bg: #f0f2f5; --surface: #fff; --text: #1e293b; --t2: #64748b; --t3: #94a3b8;
+      --brand: #007C89; --brand-l: #e0f2f4; --border: #e2e8f0; --red: #dc2626;
+      --green: #16a34a; --orange: #ea580c; --radius: 16px;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; }
+    .container { max-width: 560px; margin: 0 auto; padding: 24px 16px 80px; }
+
+    .hero { text-align: center; padding: 32px 0 16px; }
+    .hero h1 { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; }
+    .hero p { font-size: 13px; color: var(--t2); margin-top: 6px; }
+
+    .search-card {
+      background: var(--surface); border-radius: var(--radius);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+      border: 1px solid var(--border); overflow: hidden;
+    }
+    .search-row {
+      display: flex; align-items: center; padding: 0 16px; position: relative;
+      border-bottom: 1px solid var(--border);
+    }
+    .search-row:last-of-type { border-bottom: none; }
+    .search-row .dot {
+      width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; margin-right: 12px;
+    }
+    .dot.from { background: var(--green); }
+    .dot.to { background: var(--red); }
+    .search-row .line { width: 1.5px; height: 20px; background: var(--border); position: absolute; left: 20px; top: 36px; }
+    .search-row input {
+      flex: 1; border: none; padding: 16px 0; font-size: 15px; font-family: var(--font);
+      outline: none; background: transparent; color: var(--text);
+    }
+    .search-row input::placeholder { color: var(--t3); }
+    .swap-btn {
+      position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
+      width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--border);
+      background: var(--surface); cursor: pointer; display: flex; align-items: center;
+      justify-content: center; z-index: 2; color: var(--t2); transition: all 0.15s;
+    }
+    .swap-btn:hover { background: var(--brand-l); color: var(--brand); border-color: var(--brand); }
+
+    .time-row {
+      display: flex; align-items: center; gap: 8px; padding: 12px 16px;
+      border-top: 1px solid var(--border); background: #f8fafc;
+    }
+    .time-row select {
+      padding: 6px 10px; border: 1px solid var(--border); border-radius: 8px;
+      font-size: 12px; font-family: var(--font); background: var(--surface); color: var(--text); cursor: pointer;
+    }
+    .time-row select:last-child { width: 56px; }
+    .search-btn {
+      margin-left: auto; padding: 10px 24px; background: var(--brand); color: #fff;
+      border: none; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer;
+      font-family: var(--font); transition: background 0.15s; display: flex; align-items: center; gap: 6px;
+    }
+    .search-btn:hover { background: #006a75; }
+    .search-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .suggestions {
+      position: absolute; top: 100%; left: 0; right: 0; background: var(--surface);
+      border: 1px solid var(--border); border-radius: 0 0 12px 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+      z-index: 100; max-height: 220px; overflow-y: auto; display: none;
+    }
+    .suggestions.show { display: block; }
+    .suggestion-item {
+      padding: 10px 16px; cursor: pointer; font-size: 13px; border-bottom: 1px solid #f1f5f9;
+    }
+    .suggestion-item:hover { background: var(--brand-l); }
+    .suggestion-item .name { font-weight: 600; }
+    .suggestion-item .addr { font-size: 11px; color: var(--t3); margin-top: 1px; }
+
+    /* Journey Results */
+    .results { margin-top: 20px; display: none; }
+    .results.show { display: block; }
+    .result-header { font-size: 14px; font-weight: 700; color: var(--t2); margin-bottom: 10px; }
+    .journey-card {
+      background: var(--surface); border-radius: var(--radius);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06); border: 1px solid var(--border);
+      margin-bottom: 10px; overflow: hidden; cursor: pointer; transition: box-shadow 0.15s;
+    }
+    .journey-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+    .journey-card.active { border-color: var(--brand); }
+    .jc-summary {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 16px;
+    }
+    .jc-times { display: flex; align-items: center; gap: 10px; }
+    .jc-time { font-size: 20px; font-weight: 800; }
+    .jc-arrow { color: var(--t3); font-size: 14px; }
+    .jc-duration { font-size: 12px; color: var(--t2); font-weight: 600; }
+    .jc-meta { display: flex; gap: 12px; font-size: 11px; color: var(--t2); }
+    .jc-meta span { display: flex; align-items: center; gap: 3px; }
+    .jc-badge {
+      font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 6px;
+    }
+    .jc-badge.fastest { background: #f0fdf4; color: var(--green); }
+    .jc-badge.min-transfer { background: #eff6ff; color: #2563eb; }
+
+    .jc-detail { display: none; padding: 0 16px 16px; border-top: 1px solid var(--border); }
+    .jc-detail.show { display: block; }
+    .leg-item {
+      display: flex; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid #f1f5f9;
+    }
+    .leg-item:last-child { border-bottom: none; }
+    .leg-icon {
+      width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center;
+      justify-content: center; flex-shrink: 0; margin-right: 12px; font-size: 14px;
+    }
+    .leg-icon.walk { background: #f1f5f9; }
+    .leg-icon.bus { background: var(--brand-l); }
+    .leg-icon.transfer { background: #fef3c7; }
+    .leg-desc { font-size: 13px; font-weight: 600; }
+    .leg-sub { font-size: 11px; color: var(--t2); margin-top: 1px; }
+    .leg-connector { width: 1.5px; height: 14px; background: var(--border); margin-left: 16px; }
+
+    #map { width: 100%; height: 300px; border-radius: var(--radius); margin-top: 16px; border: 1px solid var(--border); display: none; }
+
+    .status-bar {
+      text-align: center; padding: 8px; font-size: 11px; color: var(--t3);
+      background: var(--surface); border-top: 1px solid var(--border); margin-top: 20px;
+    }
+
+    .loading-state { text-align: center; padding: 32px; color: var(--t2); display: none; }
+    .loading-state.show { display: block; }
+    .spinner { width: 28px; height: 28px; border: 3px solid var(--border); border-top-color: var(--brand); border-radius: 50%; animation: spin 0.7s linear infinite; margin: 0 auto 10px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .empty-state { text-align: center; padding: 32px; color: var(--t3); font-size: 13px; display: none; }
+    .empty-state.show { display: block; }
+
+    @media (max-width: 480px) {
+      .hero h1 { font-size: 22px; }
+      .search-row input { font-size: 14px; }
+      .jc-time { font-size: 17px; }
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root { --bg: #0f172a; --surface: #1e293b; --text: #f1f5f9; --t2: #94a3b8; --t3: #64748b; --border: #334155; --brand-l: rgba(0,124,137,0.15); }
+      .time-row { background: #1a2332; }
+      .leg-icon.walk { background: #334155; }
+      .suggestion-item { border-bottom-color: #1e293b; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="hero">
+    <h1>Jakarta Journey Planner</h1>
+    <p>Transportasi publik Jakarta — data resmi GTFS PT Transportasi Jakarta</p>
+  </div>
+
+  <div class="search-card">
+    <div class="search-row" style="position:relative;">
+      <div class="dot from"></div>
+      <input type="text" id="from-input" placeholder="Dari (alamat, tempat, halte)..." autocomplete="off">
+      <div class="suggestions" id="from-suggestions"></div>
+    </div>
+    <div class="search-row" style="position:relative;">
+      <div class="dot to"></div>
+      <input type="text" id="to-input" placeholder="Ke tujuan..." autocomplete="off">
+      <button class="swap-btn" onclick="swapLocations()" title="Tukar lokasi">⇅</button>
+      <div class="suggestions" id="to-suggestions"></div>
+    </div>
+    <div class="time-row">
+      <span style="font-size:12px;color:var(--t2);">Berangkat</span>
+      <select id="dep-hour"></select>
+      <span style="font-size:12px;color:var(--t2);">:</span>
+      <select id="dep-minute"></select>
+      <button class="search-btn" id="search-btn" onclick="searchJourney()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Cari Rute
+      </button>
+    </div>
+  </div>
+
+  <div class="loading-state" id="loading">
+    <div class="spinner"></div>
+    Mencari rute terbaik...
+  </div>
+
+  <div class="empty-state" id="empty">
+    <div style="font-size:40px;margin-bottom:8px;">🔍</div>
+    <p>Belum ditemukan rute transportasi publik untuk perjalanan ini.</p>
+    <p style="margin-top:4px;">Coba perluas pencarian atau ubah waktu keberangkatan.</p>
+  </div>
+
+  <div class="results" id="results"></div>
+  <div id="map"></div>
+
+  <div class="status-bar">
+    Data: GTFS PT Transportasi Jakarta (PPID) · CC BY 4.0 · Status: ESTIMATED (frequency-based)
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script>
+(function() {
+  var API = 'http://localhost:8765';
+  var fromCoord = null, toCoord = null;
+  var fromName = '', toName = '';
+  var map = null;
+  var activeLayer = null;
+
+  // Init time selectors
+  function initTimes() {
+    var h = document.getElementById('dep-hour');
+    var m = document.getElementById('dep-minute');
+    for (var i = 0; i < 24; i++) {
+      h.innerHTML += '<option value="'+i+'"'+(i===7?' selected':'')+'>'+String(i).padStart(2,'0')+'</option>';
+    }
+    for (var i = 0; i < 60; i += 5) {
+      m.innerHTML += '<option value="'+i+'"'+(i===0?' selected':'')+'>'+String(i).padStart(2,'0')+'</option>';
+    }
+  }
+  initTimes();
+
+  // Geocoding autocomplete via Nominatim
+  var debounceTimer;
+  function setupAutocomplete(inputId, suggestionsId, coordVar) {
+    var input = document.getElementById(inputId);
+    var sug = document.getElementById(suggestionsId);
+    input.addEventListener('input', function() {
+      clearTimeout(debounceTimer);
+      var q = input.value.trim();
+      if (q.length < 2) { sug.classList.remove('show'); return; }
+      debounceTimer = setTimeout(function() {
+        fetch('https://nominatim.openstreetmap.org/search?q='+encodeURIComponent(q)+'&format=json&limit=5&countrycodes=id&bounded=1&viewbox=106.6,-6.5,107.0,-5.9', {
+          headers: { 'Accept-Language': 'id' }
+        })
+        .then(function(r){ return r.json(); })
+        .then(function(data){
+          if (!data.length) { sug.classList.remove('show'); return; }
+          sug.innerHTML = data.map(function(d){
+            return '<div class="suggestion-item" data-lat="'+d.lat+'" data-lon="'+d.lon+'" data-name="'+d.display_name.replace(/"/g,'&quot;')+'">' +
+              '<div class="name">'+d.display_name.split(',')[0]+'</div>' +
+              '<div class="addr">'+d.display_name+'</div>' +
+            '</div>';
+          }).join('');
+          sug.classList.add('show');
+        }).catch(function(){});
+      }, 350);
+    });
+    input.addEventListener('blur', function() {
+      setTimeout(function(){ sug.classList.remove('show'); }, 200);
+    });
+    sug.addEventListener('click', function(e) {
+      var item = e.target.closest('.suggestion-item');
+      if (!item) return;
+      input.value = item.dataset.name.split(',')[0];
+      if (inputId === 'from-input') {
+        fromCoord = [parseFloat(item.dataset.lat), parseFloat(item.dataset.lon)];
+        fromName = item.dataset.name.split(',')[0];
+      } else {
+        toCoord = [parseFloat(item.dataset.lat), parseFloat(item.dataset.lon)];
+        toName = item.dataset.name.split(',')[0];
+      }
+      sug.classList.remove('show');
+    });
+
+    // Also handle enter key
+    input.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        var first = sug.querySelector('.suggestion-item');
+        if (first && sug.classList.contains('show')) {
+          first.click();
+          e.preventDefault();
+        } else {
+          sug.classList.remove('show');
+        }
+      }
+    });
+  }
+
+  setupAutocomplete('from-input', 'from-suggestions', 'fromCoord');
+  setupAutocomplete('to-input', 'to-suggestions', 'toCoord');
+
+  window.swapLocations = function() {
+    var fi = document.getElementById('from-input');
+    var ti = document.getElementById('to-input');
+    var tmp = fi.value; fi.value = ti.value; ti.value = tmp;
+    var ctmp = fromCoord; fromCoord = toCoord; toCoord = ctmp;
+    var ntmp = fromName; fromName = toName; toName = ntmp;
+  };
+
+  // Map init (lazy)
+  function initMap() {
+    if (map) return;
+    map = L.map('map', { zoomControl: true }).setView([-6.208, 106.845], 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: 'OSM | Data: PPID TransJakarta CC BY 4.0', maxZoom: 19
+    }).addTo(map);
+    document.getElementById('map').style.display = 'block';
+    setTimeout(function(){ map.invalidateSize(); }, 200);
+  }
+
+  window.searchJourney = function() {
+    if (!fromCoord || !toCoord) {
+      alert('Silakan pilih lokasi asal dan tujuan dari daftar saran terlebih dahulu.');
+      return;
+    }
+
+    var h = document.getElementById('dep-hour').value;
+    var m = document.getElementById('dep-minute').value;
+    var depTime = String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0') + ':00';
+
+    document.getElementById('results').classList.remove('show');
+    document.getElementById('empty').classList.remove('show');
+    document.getElementById('loading').classList.add('show');
+    document.getElementById('map').style.display = 'none';
+    if (map) { map.remove(); map = null; }
+    if (activeLayer) { activeLayer = null; }
+
+    fetch(API+'/api/v1/journeys/search', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        origin: { latitude: fromCoord[0], longitude: fromCoord[1] },
+        destination: { latitude: toCoord[0], longitude: toCoord[1] },
+        departure_time: depTime,
+        max_transfers: 2
+      })
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      document.getElementById('loading').classList.remove('show');
+      var journeys = data.journeys || [];
+      if (!journeys.length) {
+        document.getElementById('empty').classList.add('show');
+        return;
+      }
+      renderResults(journeys);
+    })
+    .catch(function(e){
+      document.getElementById('loading').classList.remove('show');
+      document.getElementById('empty').classList.add('show');
+      document.getElementById('empty').querySelector('p').textContent = 'Gagal terhubung ke server. Pastikan backend berjalan di port 8765.';
+    });
+  };
+
+  function renderResults(journeys) {
+    var container = document.getElementById('results');
+    var labels = ['TERCEPAT', 'ALTERNATIF 2', 'ALTERNATIF 3'];
+    var html = '<div class="result-header">'+journeys.length+' rute ditemukan</div>';
+
+    journeys.forEach(function(j, idx) {
+      var dep = j.departure_time;
+      var arr = j.arrival_time;
+      var dur = Math.round(j.duration_seconds / 60);
+      var walks = Math.round(j.walking_distance);
+      var tx = j.transfer_count;
+      var badgeClass = idx === 0 ? 'fastest' : 'min-transfer';
+      var badgeText = idx === 0 ? 'Tercepat' : (tx === 0 ? 'Langsung' : tx + ' transit');
+
+      html += '<div class="journey-card" id="jc-'+idx+'" onclick="toggleJourney('+idx+')">' +
+        '<div class="jc-summary">' +
+          '<div class="jc-times">' +
+            '<span class="jc-time">'+dep+'</span>' +
+            '<span class="jc-arrow">→</span>' +
+            '<span class="jc-time">'+arr+'</span>' +
+            '<span class="jc-duration">'+dur+' mnt</span>' +
+          '</div>' +
+          '<div class="jc-meta">' +
+            '<span>🚶 '+walks+'m</span>' +
+            '<span class="jc-badge '+badgeClass+'">'+badgeText+'</span>' +
+          '</div>' +
+        '</div>' +
+        '<div class="jc-detail" id="jd-'+idx+'">' +
+          j.legs.map(function(leg) {
+            var icon = leg.type === 'WALK' ? '🚶' : (leg.type === 'BUS' ? '🚌' : '🔄');
+            var cls = leg.type === 'WALK' ? 'walk' : (leg.type === 'BUS' ? 'bus' : 'transfer');
+            return '<div class="leg-item">' +
+              '<div class="leg-icon '+cls+'">'+icon+'</div>' +
+              '<div>' +
+                '<div class="leg-desc">'+leg.description+'</div>' +
+                '<div class="leg-sub">'+
+                  (leg.type === 'WALK' ? leg.distance_m+'m' :
+                   leg.type === 'BUS' ? 'Halte '+leg.from_stop_name+' → '+leg.to_stop_name+' ('+leg.stop_count+' stops, '+leg.status+')' :
+                   'Tunggu '+Math.round(leg.waiting_seconds/60)+' menit')+
+                '</div>' +
+              '</div>' +
+            '</div>';
+          }).join('') +
+        '</div>' +
+      '</div>';
+    });
+
+    container.innerHTML = html;
+    container.classList.add('show');
+
+    // Show on map
+    initMap();
+    showJourneyOnMap(journeys[0]);
+
+    document.getElementById('map').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  window.toggleJourney = function(idx) {
+    var detail = document.getElementById('jd-'+idx);
+    var card = document.getElementById('jc-'+idx);
+    var show = !detail.classList.contains('show');
+    document.querySelectorAll('.jc-detail').forEach(function(d){ d.classList.remove('show'); });
+    document.querySelectorAll('.journey-card').forEach(function(c){ c.classList.remove('active'); });
+    if (show) {
+      detail.classList.add('show');
+      card.classList.add('active');
+    }
+  };
+
+  function showJourneyOnMap(journey) {
+    if (!map) initMap();
+    if (activeLayer) map.removeLayer(activeLayer);
+
+    var group = L.featureGroup();
+    var bounds = [];
+
+    // Origin marker
+    if (fromCoord) {
+      L.marker(fromCoord, {
+        icon: L.divIcon({ html: '<div style="width:16px;height:16px;border-radius:50%;background:#16a34a;border:3px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3);"></div>', iconSize:[16,16], iconAnchor:[8,8] })
+      }).addTo(group).bindPopup('<b>Asal:</b> '+fromName);
+      bounds.push(fromCoord);
+    }
+
+    // Destination marker
+    if (toCoord) {
+      L.marker(toCoord, {
+        icon: L.divIcon({ html: '<div style="width:16px;height:16px;border-radius:50%;background:#dc2626;border:3px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3);"></div>', iconSize:[16,16], iconAnchor:[8,8] })
+      }).addTo(group).bindPopup('<b>Tujuan:</b> '+toName);
+      bounds.push(toCoord);
+    }
+
+    // Bus legs geometry
+    journey.legs.forEach(function(leg) {
+      if (leg.type === 'BUS' && leg.geometry && leg.geometry.length >= 2) {
+        // Check if geometry is actually valid (not just 2 identical points)
+        var latlngs = leg.geometry.map(function(c) { return [c[1], c[0]]; });
+        var uniqueLatLngs = [];
+        latlngs.forEach(function(ll) {
+          if (uniqueLatLngs.length === 0 || ll[0] !== uniqueLatLngs[uniqueLatLngs.length-1][0] || ll[1] !== uniqueLatLngs[uniqueLatLngs.length-1][1]) {
+            uniqueLatLngs.push(ll);
+          }
+        });
+        if (uniqueLatLngs.length >= 2) {
+          var color = '#007C89';
+          if (leg.route_id) {
+            var firstNum = leg.route_id.match(/\d+/);
+            if (leg.route_category === 'BRT') color = '#dc2626';
+            else if (leg.route_category === 'Mikrotrans') color = '#16a34a';
+            else if (leg.route_category === 'Royaltrans') color = '#9333ea';
+            else if (leg.route_category === 'Transjabodetabek') color = '#ea580c';
+          }
+          L.polyline(uniqueLatLngs, { color: color, weight: 4, opacity: 0.85, dashArray: null }).addTo(group);
+        }
+      }
+      // Stop markers
+      if (leg.type === 'BUS') {
+        if (leg.from_lat && leg.from_lon) {
+          bounds.push([leg.from_lat, leg.from_lon]);
+          L.circleMarker([leg.from_lat, leg.from_lon], { radius: 4, color: '#007C89', fillOpacity: 0.8, weight: 2 }).addTo(group).bindTooltip(leg.from_stop_name, {direction:'top'});
+        }
+        if (leg.to_lat && leg.to_lon) {
+          bounds.push([leg.to_lat, leg.to_lon]);
+        }
+      }
+    });
+
+    group.addTo(map);
+    activeLayer = group;
+    if (bounds.length) {
+      try { map.fitBounds(L.latLngBounds(bounds).pad(0.15)); } catch(e) {}
+    }
+  }
+})();
+</script>
+</body>
+</html>
