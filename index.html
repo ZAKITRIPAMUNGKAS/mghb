@@ -11774,13 +11774,21 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
         '<div style="display:flex;flex-direction:column;height:calc(100vh - 180px);min-height:520px;">' +
           '<div style="display:flex;gap:12px;flex:1;min-height:0;flex-wrap:wrap;">' +
             '<div style="flex:0 0 360px;display:flex;flex-direction:column;min-height:0;max-width:100%;">' +
-              '<div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:12px 14px;margin-bottom:10px;flex-shrink:0;">' +
-                '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:4px;">' +
-                  '<div><span style="font-weight:800;font-size:15px;color:var(--text);">TransJakarta Explorer</span><span style="margin-left:6px;font-size:10px;color:var(--muted);">GTFS PPID · CC BY 4.0</span></div>' +
-                  '<span style="font-size:11px;font-weight:700;color:var(--brand);background:var(--brand-bg,#e6f4f5);padding:2px 8px;border-radius:6px;">'+routesRes.length+' Rute · 8.091 Halte</span>' +
+              '<div style="background:#FFFFFF;border:1px solid #E2E8F0;border-top:3.5px solid #FF5500;border-radius:14px;padding:12px 14px;margin-bottom:10px;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,0.04);">' +
+                '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">' +
+                  '<div style="display:flex;align-items:center;gap:6px;">' +
+                    '<span style="background:#FF5500;color:#FFF;font-weight:900;font-size:10px;padding:2px 6px;border-radius:5px;letter-spacing:0.5px;">TJ</span>' +
+                    '<span style="font-weight:800;font-size:14.5px;color:#0F172A;">TransJakarta</span>' +
+                    '<span style="background:#FFF7ED;color:#EA580C;border:1px solid #FED7AA;font-size:9.5px;font-weight:700;padding:1px 6px;border-radius:4px;">JakLingko</span>' +
+                  '</div>' +
+                  '<a href="transit.html" target="_blank" style="font-size:10.5px;font-weight:700;color:#FF5500;text-decoration:none;display:flex;align-items:center;gap:3px;background:#FFF7ED;padding:3px 8px;border-radius:6px;border:1px solid #FED7AA;">Layar Penuh ↗</a>' +
                 '</div>' +
-                '<div style="margin-top:6px;display:flex;flex-wrap:wrap;gap:2px;">'+categoryChips+'</div>' +
-                '<div style="margin-top:8px;"><input id="transit-search" type="text" placeholder="Cari rute... " style="width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:8px;font-size:12px;font-family:inherit;background:var(--bg);color:var(--text);" oninput="filterTransitRoutes(this.value)"></div>' +
+                '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:4px;">' +
+                  '<div><span style="font-size:11px;color:#64748B;font-weight:500;">Peta Terintegrasi Busway & Angkot</span></div>' +
+                  '<span style="font-size:11px;font-weight:700;color:#FF5500;background:#FFF7ED;border:1px solid #FED7AA;padding:2px 8px;border-radius:6px;">'+routesRes.length+' Rute · 8.091 Halte</span>' +
+                '</div>' +
+                '<div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:4px;">'+categoryChips+'</div>' +
+                '<div style="margin-top:8px;"><input id="transit-search" type="text" placeholder="Cari kode rute / tujuan... " style="width:100%;padding:8px 12px;border:1px solid #CBD5E1;border-radius:8px;font-size:12px;font-family:inherit;background:#F8FAFC;color:#0F172A;outline:none;" oninput="filterTransitRoutes(this.value)"></div>' +
               '</div>' +
               '<div class="transit-legend" style="display:flex;flex-wrap:wrap;gap:4px 10px;padding:6px 10px;margin-bottom:6px;font-size:10px;color:var(--muted);flex-shrink:0;">' +
                 Object.entries(CAT_COLORS).map(([k,v]) => '<span style="display:inline-flex;align-items:center;gap:3px;"><span style="width:8px;height:8px;border-radius:2px;background:'+v+';"></span>'+k+'</span>').join('') +
