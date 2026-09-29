@@ -12,6 +12,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     if (typeof window !== 'undefined' && !window.supabase) {
@@ -5057,7 +5059,12 @@
       </div>
 
       <div class="form-group">
-        <label class="form-label">Catatan Aktivitas / Poin Kasar</label>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <label class="form-label" style="margin-bottom: 0;">Catatan Aktivitas / Poin Kasar</label>
+          <span id="lb-draft-indicator" style="font-size: 0.7rem; color: var(--text-tertiary); display: none; align-items: center; gap: 4px;">
+            <svg class="ic ic-14" aria-hidden="true" style="color: var(--success);"><use href="#i-check-circle"/></svg> Draft tersimpan
+          </span>
+        </div>
         <textarea class="form-control" id="lb-rough-notes" placeholder="Format waktu bebas, satu baris satu kegiatan:&#10;08:00 Briefing pagi bareng Pak Guruh soal target sales Area Jakarta&#10;10:15 Rekap data DPK &amp; CASA cabang, perbaiki 2 anomali format&#10;14:30 Bikin diagram achievement rate di Excel"></textarea>
       </div>
 
@@ -7061,6 +7068,7 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
   const STORAGE_KEY = 'mghb_state_clean_v2';
   const THEME_KEY = 'mghb_theme_mode';
   const LOGBOOK_STORAGE_KEY = 'mghb_logbook_records_v1';
+  const LOGBOOK_DRAFT_KEY = 'mghb_logbook_draft_v1';
 
   // --- Storage & State Management ---
   function getStoredState() {
@@ -8557,6 +8565,58 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
     hint.style.display = (val && isWeekendDate(val)) ? 'block' : 'none';
   }
 
+  // --- Auto-Save & Restore Draft Catatan Kasar Logbook ---
+  let draftSaveTimer = null;
+  function saveLogbookDraft() {
+    clearTimeout(draftSaveTimer);
+    draftSaveTimer = setTimeout(() => {
+      try {
+        const rough = document.getElementById('lb-rough-notes')?.value || '';
+        const obstacle = document.getElementById('lb-obstacle')?.value || '';
+        const date = document.getElementById('lb-date')?.value || '';
+        const draft = { rough, obstacle, date, savedAt: Date.now() };
+        localStorage.setItem(LOGBOOK_DRAFT_KEY, JSON.stringify(draft));
+        const ind = document.getElementById('lb-draft-indicator');
+        if (ind && (rough.trim() || obstacle.trim())) {
+          ind.style.display = 'inline-flex';
+          ind.innerHTML = '<svg class="ic ic-14" aria-hidden="true" style="color: var(--success);"><use href="#i-check-circle"/></svg> Draft tersimpan';
+        } else if (ind && !rough.trim() && !obstacle.trim()) {
+          ind.style.display = 'none';
+        }
+      } catch (e) {
+        console.warn('saveLogbookDraft error:', e);
+      }
+    }, 250);
+  }
+
+  function restoreLogbookDraft() {
+    try {
+      const raw = localStorage.getItem(LOGBOOK_DRAFT_KEY);
+      if (!raw) return;
+      const draft = JSON.parse(raw);
+      const roughEl = document.getElementById('lb-rough-notes');
+      const obsEl = document.getElementById('lb-obstacle');
+      const dateEl = document.getElementById('lb-date');
+      if (roughEl && !roughEl.value && draft.rough) {
+        roughEl.value = draft.rough;
+      }
+      if (obsEl && !obsEl.value && draft.obstacle) {
+        obsEl.value = draft.obstacle;
+      }
+      if (dateEl && draft.date) {
+        dateEl.value = draft.date;
+        updateWeekendHint();
+      }
+      const ind = document.getElementById('lb-draft-indicator');
+      if (ind && (draft.rough || draft.obstacle)) {
+        ind.style.display = 'inline-flex';
+        ind.innerHTML = '<svg class="ic ic-14" aria-hidden="true" style="color: var(--success);"><use href="#i-check-circle"/></svg> Draft tersimpan';
+      }
+    } catch (e) {
+      console.warn('restoreLogbookDraft error:', e);
+    }
+  }
+
   // --- Helper: sisipkan jam sekarang ke catatan (format "HH:MM ") ---
   function insertTimeStamp() {
     const roughEl = document.getElementById('lb-rough-notes');
@@ -8576,6 +8636,7 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
     roughEl.value = prefix + insert + v.slice(end);
     roughEl.focus();
     roughEl.selectionStart = roughEl.selectionEnd = (prefix + insert).length;
+    saveLogbookDraft();
   }
 
   // --- Tampilkan 3 bagian logbook ke UI + badge karakter ---
@@ -11535,14 +11596,27 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
 
     const state = getStoredState();
 
-    // Default today date for logbook
+    // Default today date for logbook & Auto-save / Restore draft
     const today = new Date().toISOString().slice(0, 10);
     const dateInput = document.getElementById('lb-date');
     if (dateInput) {
       dateInput.value = today;
-      dateInput.addEventListener('change', updateWeekendHint);
+      dateInput.addEventListener('change', () => {
+        updateWeekendHint();
+        saveLogbookDraft();
+      });
       try { updateWeekendHint(); } catch {}
     }
+
+    const roughInput = document.getElementById('lb-rough-notes');
+    const obsInput = document.getElementById('lb-obstacle');
+    if (roughInput) {
+      roughInput.addEventListener('input', saveLogbookDraft);
+    }
+    if (obsInput) {
+      obsInput.addEventListener('input', saveLogbookDraft);
+    }
+    try { restoreLogbookDraft(); } catch (e) { console.warn('restoreLogbookDraft error:', e); }
 
     // Attach row events (dukung .inv-row dan legacy .task-row)
     document.querySelectorAll('.inv-row, .task-row').forEach(row => {
@@ -11623,85 +11697,133 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     root.innerHTML = '<div style="padding:48px 24px;text-align:center;"><div style="width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--brand);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 12px;"></div><p style="font-size:13px;color:var(--muted);">Memuat data TransJakarta...</p></div>';
 
     try {
-      const [routesRes, routeDetailsRes] = await Promise.all([
+      const [routesRes, routeDetailsRes, geoRes] = await Promise.all([
         fetch('/data/routes.json').then(r => r.json()),
         fetch('/data/route_details.json').then(r => r.json()),
+        fetch('/data/route_geometries.json').then(r => r.json()),
       ]);
       transitDataLoaded = true;
 
       const categories = {};
-      routesRes.forEach(r => {
-        const c = r.route_category || 'Unknown';
-        categories[c] = (categories[c] || 0) + 1;
-      });
+      routesRes.forEach(r => { const c = r.route_category || 'Unknown'; categories[c] = (categories[c] || 0) + 1; });
 
-      const categoryChips = Object.entries(categories).map(([cat, cnt]) =>
-        '<span style="display:inline-block;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:4px 10px;font-size:11px;font-weight:600;color:var(--text);margin:3px;">'+cat+' <b style="color:var(--brand);">'+cnt+'</b></span>'
+      const categoryChips = Object.entries(categories).sort(([,a],[,b]) => b-a).map(([cat, cnt]) =>
+        '<span style="display:inline-block;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:4px 10px;font-size:11px;font-weight:600;color:var(--text);margin:3px;cursor:pointer;" data-cat="'+cat+'" onclick="filterByCategory(this)">'+cat+' <b style="color:var(--brand);">'+cnt+'</b></span>'
       ).join('');
 
+      const CAT_COLORS = { BRT:'#dc2626',Metrotrans:'#2563eb',Mikrotrans:'#16a34a',Royaltrans:'#9333ea',Transjabodetabek:'#ea580c','Bus Wisata':'#d97706' };
+
       const routeListHTML = routesRes.sort((a,b) => a.route_id.localeCompare(b.route_id)).map(r => {
-        const catColors = {
-          BRT: 'color:#dc2626;', Metrotrans: 'color:#2563eb;', Mikrotrans: 'color:#16a34a;',
-          Royaltrans: 'color:#9333ea;', Transjabodetabek: 'color:#ea580c;', 'Bus Wisata': 'color:#d97706;'
-        };
-        const cStyle = catColors[r.route_category] || 'color:var(--text);';
+        const cStyle = 'color:'+(CAT_COLORS[r.route_category]||'var(--text)')+';';
         const isBRT = r.route_category === 'BRT' ? 'border-left:3px solid #dc2626;' : '';
-        return '<div class="transit-route-row" data-rid="'+r.route_id+'" style="'+isBRT+'padding:10px 14px;border-bottom:1px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:background .15s;">' +
-          '<div style="min-width:0;flex:1;">' +
-            '<span style="font-weight:700;font-size:13px;color:var(--text);">'+r.route_id+'</span>' +
-            '<span style="margin-left:8px;font-size:12px;color:var(--muted);">'+((r.route_long_name && r.route_long_name !== r.route_id) ? r.route_long_name : (r.route_desc || ''))+'</span>' +
+        return '<div class="transit-route-row" data-rid="'+r.route_id+'" data-cat="'+r.route_category+'" style="'+isBRT+'padding:9px 12px;border-bottom:1px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:background .12s;font-size:12px;">' +
+          '<div style="min-width:0;flex:1;display:flex;align-items:center;gap:8px;">' +
+            '<span style="font-weight:700;color:var(--text);white-space:nowrap;">'+r.route_id+'</span>' +
+            '<span style="color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:11px;">'+((r.route_long_name && r.route_long_name !== r.route_id) ? r.route_long_name : (r.route_desc || ''))+'</span>' +
           '</div>' +
-          '<span style="font-size:10px;font-weight:600;white-space:nowrap;margin-left:8px;'+cStyle+'">'+r.route_category+'</span>' +
+          '<span style="font-size:10px;font-weight:600;white-space:nowrap;margin-left:6px;'+cStyle+'">'+r.route_category+'</span>' +
         '</div>';
       }).join('');
 
       root.innerHTML = '' +
-        '<div style="max-width:720px;margin:0 auto;">' +
-          '<div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px 18px;margin-bottom:12px;">' +
-            '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;">' +
-              '<div><span style="font-weight:800;font-size:16px;color:var(--text);">TransJakarta Explorer</span><span style="margin-left:8px;font-size:11px;color:var(--muted);">GTFS PPID · CC BY 4.0</span></div>' +
-              '<span style="font-size:12px;font-weight:700;color:var(--brand);background:var(--brand-bg, #e6f4f5);padding:3px 10px;border-radius:8px;">'+routesRes.length+' Rute · 8.091 Halte</span>' +
+        '<div style="display:flex;flex-direction:column;height:calc(100vh - 180px);min-height:520px;">' +
+          '<div style="display:flex;gap:12px;flex:1;min-height:0;flex-wrap:wrap;">' +
+            '<div style="flex:0 0 360px;display:flex;flex-direction:column;min-height:0;max-width:100%;">' +
+              '<div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:12px 14px;margin-bottom:10px;flex-shrink:0;">' +
+                '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:4px;">' +
+                  '<div><span style="font-weight:800;font-size:15px;color:var(--text);">TransJakarta Explorer</span><span style="margin-left:6px;font-size:10px;color:var(--muted);">GTFS PPID · CC BY 4.0</span></div>' +
+                  '<span style="font-size:11px;font-weight:700;color:var(--brand);background:var(--brand-bg,#e6f4f5);padding:2px 8px;border-radius:6px;">'+routesRes.length+' Rute · 8.091 Halte</span>' +
+                '</div>' +
+                '<div style="margin-top:6px;display:flex;flex-wrap:wrap;gap:2px;">'+categoryChips+'</div>' +
+                '<div style="margin-top:8px;"><input id="transit-search" type="text" placeholder="Cari rute... " style="width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:8px;font-size:12px;font-family:inherit;background:var(--bg);color:var(--text);" oninput="filterTransitRoutes(this.value)"></div>' +
+              '</div>' +
+              '<div class="transit-legend" style="display:flex;flex-wrap:wrap;gap:4px 10px;padding:6px 10px;margin-bottom:6px;font-size:10px;color:var(--muted);flex-shrink:0;">' +
+                Object.entries(CAT_COLORS).map(([k,v]) => '<span style="display:inline-flex;align-items:center;gap:3px;"><span style="width:8px;height:8px;border-radius:2px;background:'+v+';"></span>'+k+'</span>').join('') +
+              '</div>' +
+              '<div id="transit-list-container" style="flex:1;overflow-y:auto;background:var(--surface);border:1px solid var(--border);border-radius:14px;">' +
+                routeListHTML +
+              '</div>' +
             '</div>' +
-            '<div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:4px;">'+categoryChips+'</div>' +
-            '<div style="margin-top:10px;"><input id="transit-search" type="text" placeholder="Cari rute (nama/kode)... " style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:10px;font-size:13px;font-family:inherit;background:var(--bg);color:var(--text);" oninput="filterTransitRoutes(this.value)"></div>' +
+            '<div id="transit-map" style="flex:1;min-width:300px;min-height:350px;border-radius:14px;border:1px solid var(--border);overflow:hidden;background:#e8e4df;"></div>' +
           '</div>' +
-          '<div id="transit-list-container" style="background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;max-height:380px;overflow-y:auto;">' +
-            routeListHTML +
+          '<div style="display:flex;gap:12px;margin-top:10px;flex-wrap:wrap;">' +
+            '<div id="transit-detail" style="flex:1;min-width:300px;display:none;background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;max-height:260px;overflow-y:auto;"></div>' +
           '</div>' +
-          '<div id="transit-detail" style="margin-top:12px;display:none;background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;"></div>' +
-          '<div style="margin-top:12px;padding:12px 16px;background:linear-gradient(135deg,rgba(0,124,137,.06),rgba(10,37,64,.06));border:1px solid rgba(0,124,137,.15);border-radius:12px;font-size:11px;color:var(--muted);text-align:center;">' +
-            'Data resmi PT Transportasi Jakarta · Lisensi CC BY 4.0 · 700 shapes geometri tersedia' +
+          '<div style="margin-top:10px;padding:8px 12px;background:linear-gradient(135deg,rgba(0,124,137,.06),rgba(10,37,64,.06));border:1px solid rgba(0,124,137,.15);border-radius:10px;font-size:10px;color:var(--muted);text-align:center;">' +
+            'Data resmi PT Transportasi Jakarta · Lisensi CC BY 4.0 · 700 shape geometri · 240 rute aktif' +
           '</div>' +
         '</div>';
 
-      // Route click handler
+      // Init Leaflet map
+      const map = L.map('transit-map', { zoomControl: false, attributionControl: false }).setView([-6.208, 106.845], 12);
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',
+        maxZoom: 18
+      }).addTo(map);
+      L.control.zoom({ position: 'bottomright' }).addTo(map);
+      L.control.attribution({ position: 'bottomleft', prefix: false }).addTo(map);
+
+      // Store map + geo data globally
+      window._transitMap = map;
+      window._transitGeo = geoRes;
+      window._transitRoutes = routesRes;
+      window._transitDetails = routeDetailsRes;
+      window._transitActiveLayer = null;
+
+      // Route list click → highlight on map
       document.querySelectorAll('.transit-route-row').forEach(row => {
         row.addEventListener('click', function() {
           const rid = this.dataset.rid;
-          document.querySelectorAll('.transit-route-row').forEach(r => r.style.background = '');
+          document.querySelectorAll('.transit-route-row').forEach(r => { r.style.background = ''; r.style.borderLeft = r.dataset.cat === 'BRT' ? '3px solid #dc2626' : ''; });
           this.style.background = 'var(--brand-bg, #e6f4f5)';
-          showTransitDetail(rid, routeDetailsRes);
+          highlightRouteOnMap(rid, geoRes);
+          showTransitDetailDynamic(rid, routeDetailsRes);
         });
       });
 
-      window._transitRoutes = routesRes;
-      window._transitDetails = routeDetailsRes;
+      // Map resize fix
+      setTimeout(function(){ map.invalidateSize(); }, 250);
     } catch (e) {
-      root.innerHTML = '<div style="padding:32px;text-align:center;color:#dc2626;font-size:13px;">Gagal memuat data transit. Pastikan file JSON tersedia di folder /data/.</div>';
+      root.innerHTML = '<div style="padding:32px;text-align:center;color:#dc2626;font-size:13px;">Gagal memuat data transit. Pastikan file JSON di /data/ tersedia.</div>';
       console.error('Transit init error:', e);
     }
   }
 
-  function filterTransitRoutes(query) {
-    const q = (query || '').toLowerCase();
-    document.querySelectorAll('.transit-route-row').forEach(row => {
-      const rid = (row.dataset.rid || '').toLowerCase();
-      const text = (row.textContent || '').toLowerCase();
-      row.style.display = (!q || rid.includes(q) || text.includes(q)) ? '' : 'none';
+  function highlightRouteOnMap(rid, geoData) {
+    const map = window._transitMap;
+    if (!map) return;
+    if (window._transitActiveLayer) { map.removeLayer(window._transitActiveLayer); window._transitActiveLayer = null; }
+    if (window._transitActiveMarkers) { window._transitActiveMarkers.forEach(m => map.removeLayer(m)); window._transitActiveMarkers = []; }
+
+    const features = geoData[rid];
+    if (!features || !features.length) {
+      const dt = document.getElementById('transit-detail');
+      if (dt) { dt.style.display = 'block'; dt.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-size:12px;">Geometri rute tidak tersedia dari GTFS.</div>'; }
+      return;
+    }
+
+    const routeMeta = (window._transitRoutes || []).find(r => r.route_id === rid) || {};
+    const CAT_COLORS = { BRT:'#dc2626',Metrotrans:'#2563eb',Mikrotrans:'#16a34a',Royaltrans:'#9333ea',Transjabodetabek:'#ea580c','Bus Wisata':'#d97706' };
+    const color = CAT_COLORS[routeMeta.route_category] || '#007C89';
+
+    const allCoords = [];
+    features.forEach(f => { allCoords.push(...f.geometry.coordinates); });
+    if (!allCoords.length) return;
+
+    // Apply Douglas-Peucker for rendering (already simplified, but keep safe)
+    const group = L.featureGroup();
+    features.forEach(f => {
+      const latlngs = f.geometry.coordinates.map(c => [c[1], c[0]]);
+      if (latlngs.length >= 2) {
+        L.polyline(latlngs, { color: color, weight: 3.5, opacity: 0.85, lineCap: 'round', lineJoin: 'round' }).addTo(group);
+      }
     });
+    group.addTo(map);
+    window._transitActiveLayer = group;
+    map.fitBounds(group.getBounds().pad(0.1));
   }
 
-  function showTransitDetail(rid, details) {
+  function showTransitDetailDynamic(rid, details) {
     const container = document.getElementById('transit-detail');
     const rd = details.find(d => d.route_id === rid);
     if (!rd) { container.style.display = 'none'; return; }
@@ -11710,39 +11832,73 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       const stopsHTML = d.stops.map((s, i) => {
         const isFirst = i === 0, isLast = i === d.stops.length - 1;
         const dotColor = isFirst ? '#16a34a' : isLast ? '#dc2626' : 'var(--brand)';
-        return '<div style="display:flex;align-items:flex-start;padding:6px 0;">' +
-          '<div style="display:flex;flex-direction:column;align-items:center;margin-right:10px;flex-shrink:0;">' +
-            '<div style="width:20px;height:20px;border-radius:50%;background:'+dotColor+';color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;">'+(i+1)+'</div>' +
-            (i < d.stops.length-1 ? '<div style="width:1.5px;height:14px;background:var(--border);"></div>' : '') +
+        return '<div style="display:flex;align-items:flex-start;padding:4px 0;cursor:pointer;" onclick="flyToStop('+s.lat+','+s.lon+',\''+(s.name||'').replace(/'/g,"\\'")+'\')">' +
+          '<div style="display:flex;flex-direction:column;align-items:center;margin-right:8px;flex-shrink:0;">' +
+            '<div style="width:18px;height:18px;border-radius:50%;background:'+dotColor+';color:#fff;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;">'+(i+1)+'</div>' +
+            (i < d.stops.length-1 ? '<div style="width:1.5px;height:10px;background:var(--border);"></div>' : '') +
           '</div>' +
           '<div style="min-width:0;">' +
-            '<div style="font-size:12px;font-weight:600;color:var(--text);">'+s.name+'</div>' +
-            '<div style="font-size:10px;color:var(--muted);">'+s.stop_id+' · '+s.lat.toFixed(4)+', '+s.lon.toFixed(4)+'</div>' +
+            '<div style="font-size:11px;font-weight:600;color:var(--text);">'+s.name+'</div>' +
+            '<div style="font-size:9px;color:var(--muted);">'+s.stop_id+'</div>' +
           '</div>' +
         '</div>';
       }).join('');
-      return '<div style="padding:12px 14px;border-bottom:1px solid var(--border);">' +
-        '<div style="font-size:11px;font-weight:700;color:var(--brand);margin-bottom:6px;">Arah '+(d.direction_id===0?'A':'B')+' — '+d.headsign+' ('+d.stop_count+' halte)</div>' +
-        '<div style="max-height:300px;overflow-y:auto;">'+stopsHTML+'</div>' +
+      return '<div style="padding:8px 12px;border-bottom:1px solid var(--border);">' +
+        '<div style="font-size:10px;font-weight:700;color:var(--brand);margin-bottom:4px;">Arah '+(d.direction_id===0?'A':'B')+' — '+d.headsign+' ('+d.stop_count+' halte)</div>' +
+        stopsHTML +
       '</div>';
     }).join('');
 
     const routeMeta = (window._transitRoutes || []).find(r => r.route_id === rid) || {};
     container.innerHTML = '' +
-      '<div style="padding:14px 16px;background:linear-gradient(135deg,var(--brand),#0A2540);color:#fff;">' +
+      '<div style="padding:10px 14px;background:linear-gradient(135deg,var(--brand),#0A2540);color:#fff;">' +
         '<div style="display:flex;align-items:center;justify-content:space-between;">' +
-          '<div><span style="font-size:18px;font-weight:800;">'+rid+'</span><span style="margin-left:8px;font-size:11px;opacity:.8;">'+((routeMeta.route_category||''))+'</span></div>' +
-          '<span style="font-size:11px;opacity:.8;">'+rd.directions.length+' arah perjalanan</span>' +
+          '<div><span style="font-size:16px;font-weight:800;">'+rid+'</span><span style="margin-left:6px;font-size:10px;opacity:.8;">'+((routeMeta.route_category||''))+'</span></div>' +
+          '<button onclick="document.getElementById(\'transit-detail\').style.display=\'none\'" style="font-size:10px;color:#fff;opacity:.7;background:rgba(255,255,255,.15);border:none;border-radius:6px;padding:3px 8px;cursor:pointer;font-family:inherit;">Tutup</button>' +
         '</div>' +
-        '<div style="font-size:12px;opacity:.7;margin-top:2px;">'+((routeMeta.route_long_name && routeMeta.route_long_name !== rid) ? routeMeta.route_long_name : (routeMeta.route_desc || ''))+'</div>' +
+        '<div style="font-size:11px;opacity:.7;margin-top:1px;">'+((routeMeta.route_long_name && routeMeta.route_long_name !== rid) ? routeMeta.route_long_name : (routeMeta.route_desc || ''))+'</div>' +
       '</div>' +
-      directionsHTML +
-      '<div style="padding:8px 14px;text-align:center;"><button onclick="document.getElementById(\'transit-detail\').style.display=\'none\'" style="font-size:11px;color:var(--brand);background:none;border:none;cursor:pointer;font-family:inherit;font-weight:600;">Tutup Detail</button></div>';
+      '<div style="display:flex;overflow-x:auto;">'+directionsHTML+'</div>';
     container.style.display = 'block';
-    container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function flyToStop(lat, lon, name) {
+    const map = window._transitMap;
+    if (!map) return;
+    if (window._transitPopupMarker) map.removeLayer(window._transitPopupMarker);
+    const marker = L.marker([lat, lon], {
+      icon: L.divIcon({ className: 'transit-stop-icon', html: '<div style="width:14px;height:14px;border-radius:50%;background:#007C89;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3);"></div>', iconSize: [14,14], iconAnchor: [7,7] })
+    }).addTo(map).bindPopup('<b>'+name+'</b><br><span style="font-size:10px;">'+lat.toFixed(5)+', '+lon.toFixed(5)+'</span>', { closeButton: true }).openPopup();
+    window._transitPopupMarker = marker;
+    map.flyTo([lat, lon], Math.max(map.getZoom(), 15), { duration: 0.6 });
+  }
+
+  function filterByCategory(el) {
+    const cat = el.dataset.cat;
+    const active = el.classList.contains('cat-active');
+    document.querySelectorAll('[data-cat]').forEach(e => e.classList.remove('cat-active'));
+    if (!active) { el.classList.add('cat-active'); }
+    filterTransitRoutes(document.getElementById('transit-search')?.value || '', active ? null : cat);
+  }
+
+  function filterTransitRoutes(query, catFilter) {
+    const q = (query || '').toLowerCase();
+    const cf = catFilter || (document.querySelector('.cat-active')?.dataset.cat || null);
+    document.querySelectorAll('.transit-route-row').forEach(row => {
+      const rid = (row.dataset.rid || '').toLowerCase();
+      const text = (row.textContent || '').toLowerCase();
+      const matchCat = !cf || row.dataset.cat === cf;
+      const matchQ = !q || rid.includes(q) || text.includes(q);
+      row.style.display = (matchCat && matchQ) ? '' : 'none';
+    });
   }
 
   window.initTransitExplorer = initTransitExplorer;
+  window.highlightRouteOnMap = highlightRouteOnMap;
+  window.showTransitDetailDynamic = showTransitDetailDynamic;
+  window.flyToStop = flyToStop;
+  window.filterByCategory = filterByCategory;
+  window.filterTransitRoutes = filterTransitRoutes;
 </script>
 <!-- ===== Icon Sprite (Lucide-style, stroke-based, no external dependency) ===== -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
