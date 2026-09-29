@@ -24,10 +24,20 @@
     /* Early Security & Route Pre-hydration to eliminate flash */
     (function() {
       try {
-        var exp = localStorage.getItem('mghb_auth_session_v1');
-        var now = Date.now();
-        if (!exp || isNaN(parseInt(exp, 10)) || now > parseInt(exp, 10)) {
-          document.documentElement.classList.add('app-locked');
+        var hash = (window.location.hash || '').replace(/^#\/?/, '').toLowerCase().trim();
+        var p = (window.location.pathname || '').toLowerCase().replace(/\/+$/, '') || '/';
+        var isTransit = ['transit','transjakarta','busway'].indexOf(hash) !== -1 || ['/transit','/transjakarta'].indexOf(p) !== -1;
+
+        if (isTransit) {
+          document.documentElement.classList.add('transit-public');
+        }
+
+        if (!isTransit) {
+          var exp = localStorage.getItem('mghb_auth_session_v1');
+          var now = Date.now();
+          if (!exp || isNaN(parseInt(exp, 10)) || now > parseInt(exp, 10)) {
+            document.documentElement.classList.add('app-locked');
+          }
         }
 
         var hash = (window.location.hash || '').replace(/^#\/?/, '').toLowerCase().trim();
@@ -260,6 +270,21 @@
     html[data-initial-tab="transit"] #view-berita { display: none !important; }
     html[data-initial-tab="transit"] #view-transit { display: block !important; }
     html[data-initial-tab="transit"] #office-status-banner { display: none !important; }
+
+    /* Public transit mode: no PIN, no bottom nav, only transit view */
+    html.transit-public #app-lock-screen { display: none !important; }
+    html.transit-public body { overflow: auto !important; }
+    html.transit-public .bottom-nav-bar { display: none !important; }
+    html.transit-public .sticky-header { display: none !important; }
+    html.transit-public #office-status-banner { display: none !important; }
+    html.transit-public #view-berita, html.transit-public #view-packing,
+    html.transit-public #view-keuangan, html.transit-public #view-logbook,
+    html.transit-public #view-asisten { display: none !important; }
+    html.transit-public #view-transit { display: block !important; }
+    html.transit-public .app-shell { padding: 0 !important; }
+    html.transit-public .lock-badge-footer { display: none !important; }
+    html.transit-public #view-transit .transit-legend,
+    html.transit-public #view-transit .transit-footer-credit { font-size: 10px; }
 
     :root {
       --font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -11656,6 +11681,26 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   }
 
   window.addEventListener('DOMContentLoaded', initApp);
+
+  // Auto-load transit for public mode — skip PIN, skip initApp wait
+  document.addEventListener('DOMContentLoaded', () => {
+    if (document.documentElement.classList.contains('transit-public')) {
+      try {
+        selectTab('transit', false);
+        initTransitExplorer();
+      } catch (_) {}
+    }
+  });
+
+  // Auto-load transit for public mode — skip PIN, skip initApp wait
+  document.addEventListener('DOMContentLoaded', () => {
+    if (document.documentElement.classList.contains('transit-public')) {
+      try {
+        selectTab('transit', false);
+        initTransitExplorer();
+      } catch (_) {}
+    }
+  });
 
   // Inisialisasi Berita Independen — langsung render seketika tanpa menunggu proses lain
   document.addEventListener('DOMContentLoaded', () => {
