@@ -3,40 +3,56 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
-  <meta name="theme-color" content="#FFFFFF">
+  <meta name="theme-color" content="#005BAC">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <title>TransJakarta Explorer & Journey Planner — Rute & Navigasi Live</title>
-  <meta name="description" content="Peta rute interaktif TransJakarta & Journey Planner live navigasi transum GPS. 240 rute, 8.091 halte terintegrasi BRT, Metrotrans & Mikrotrans.">
+  <title>TransJakarta Journey Planner &amp; Peta Explorer — Rute Transportasi Jakarta</title>
+  <meta name="description" content="Aplikasi resmi Journey Planner &amp; Peta Explorer TransJakarta. Navigasi rute cepat BRT, Metrotrans, Mikrotrans, dan JakLingko dengan data GTFS resmi PPID.">
   <link rel="icon" href="favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
   <style>
+    /* ══════════════════════════════════════════════════════════════
+       DESIGN TOKENS — CLEAN JAKARTA TRANSIT DESIGN SYSTEM
+       ══════════════════════════════════════════════════════════════ */
     :root {
       --font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      --bg: #F8FAFC;
+
+      /* Primary Brand: Jakarta Transit Blue */
+      --primary: #005BAC;
+      --primary-hover: #004B8C;
+      --primary-subtle: #EEF5FF;
+      --primary-border: #C8E0FC;
+
+      /* Accent: TransJakarta Orange */
+      --accent: #FF5A1F;
+      --accent-hover: #E04B15;
+      --accent-subtle: #FFF4EF;
+      --accent-border: #FED7AA;
+
+      /* Status Colors */
+      --success: #16A34A;
+      --success-subtle: #DCFCE7;
+      --danger: #DC2626;
+      --danger-subtle: #FEE2E2;
+
+      /* Neutral Palette */
+      --text-primary: #172033;
+      --text-secondary: #667085;
+      --text-muted: #98A2B3;
+      --bg: #F7F8FA;
       --surface: #FFFFFF;
-      --text: #0F172A;
-      --text-secondary: #475569;
-      --text-muted: #94A3B8;
-      --border: #E2E8F0;
-      --border-light: #F1F5F9;
+      --border: #E7EAF0;
+      --border-light: #F2F4F7;
+      --border-subtle: #EAECF0;
 
-      /* Signature TransJakarta & BNI Palette */
-      --brand: #FF5500;
-      --brand-hover: #E04B00;
-      --brand-light: #FFF7ED;
-      --brand-subtle: #FFEDD5;
-      --brand-border: #FED7AA;
-      --brand-blue: #002D62;
-
-      /* Transport Category Tokens */
+      /* Transport Mode Colors */
       --cat-brt: #DC2626;
       --cat-brt-bg: #FEF2F2;
-      --cat-metro: #2563EB;
-      --cat-metro-bg: #EFF6FF;
+      --cat-metro: #005BAC;
+      --cat-metro-bg: #EEF5FF;
       --cat-mikro: #16A34A;
       --cat-mikro-bg: #F0FDF4;
       --cat-royal: #9333EA;
@@ -46,18 +62,26 @@
       --cat-wisata: #D97706;
       --cat-wisata-bg: #FFFBEB;
 
-      --radius: 14px;
+      /* Radii */
       --radius-sm: 8px;
-      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
-      --shadow-md: 0 4px 16px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
-      --shadow-lg: 0 12px 32px -4px rgba(15, 23, 42, 0.08), 0 4px 12px rgba(15, 23, 42, 0.04);
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-pill: 999px;
+
+      /* Shadows (Very Subtle) */
+      --shadow-xs: 0 1px 2px rgba(16, 24, 40, 0.04);
+      --shadow-sm: 0 1px 3px rgba(16, 24, 40, 0.08), 0 1px 2px rgba(16, 24, 40, 0.04);
+      --shadow-md: 0 4px 16px -2px rgba(16, 24, 40, 0.08), 0 2px 6px -1px rgba(16, 24, 40, 0.04);
+      --shadow-lg: 0 12px 32px -4px rgba(16, 24, 40, 0.12);
+
+      --header-height: 60px;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     html, body {
       font-family: var(--font);
       background: var(--bg);
-      color: var(--text);
+      color: var(--text-primary);
       height: 100vh;
       width: 100%;
       overflow: hidden;
@@ -65,542 +89,757 @@
       flex-direction: column;
     }
 
-    /* ─── TOPBAR BRANDING ─── */
-    .topbar {
-      background: rgba(255, 255, 255, 0.98);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+    /* ══════════════════════════════════════════════════════════════
+       COMPONENT: AppHeader (Height: 56–60px)
+       ══════════════════════════════════════════════════════════════ */
+    .app-header {
+      height: var(--header-height);
+      background: var(--surface);
       border-bottom: 1px solid var(--border);
       position: relative;
       z-index: 1000;
       flex-shrink: 0;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+      box-shadow: var(--shadow-xs);
     }
-    .topbar-stripe {
-      height: 3.5px;
-      background: linear-gradient(90deg, #FF5500 0%, #FF8800 50%, #002D62 100%);
-    }
-    .topbar-content {
-      padding: 8px 14px;
+    .header-content {
+      height: 100%;
+      padding: 0 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 10px;
+      gap: 12px;
+      max-width: 100%;
     }
-    .topbar-left {
+
+    /* Left: Logos with clear hierarchy */
+    .header-branding {
       display: flex;
       align-items: center;
       gap: 10px;
       flex-shrink: 0;
     }
-    .logos-group {
+    .brand-tj img {
+      height: 26px;
+      width: auto;
+      display: block;
+    }
+    .brand-divider {
+      width: 1px;
+      height: 16px;
+      background: var(--border);
+    }
+    .brand-jaklingko img {
+      height: 17px;
+      width: auto;
+      display: block;
+      opacity: 0.85;
+    }
+
+    /* Center: Segmented Navigation Tabs */
+    .header-nav {
+      display: flex;
+      align-items: center;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-pill);
+      padding: 3px;
+    }
+    .nav-tab-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 16px;
+      border-radius: var(--radius-pill);
+      border: none;
+      background: transparent;
+      font-size: 13px;
+      font-weight: 700;
+      font-family: var(--font);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .nav-tab-btn:hover {
+      color: var(--primary);
+    }
+    .nav-tab-btn.active {
+      background: var(--surface);
+      color: var(--primary);
+      box-shadow: 0 1px 3px rgba(16, 24, 40, 0.08);
+    }
+
+    /* Right: Subtle Actions */
+    .header-actions {
       display: flex;
       align-items: center;
       gap: 8px;
-    }
-    .logos-group img {
-      display: block;
-      height: 22px;
-      width: auto;
-    }
-    .logo-divider {
-      width: 1px;
-      height: 18px;
-      background: var(--border);
-    }
-
-    .topbar-actions {
-      display: flex;
-      align-items: center;
-      gap: 6px;
       flex-shrink: 0;
     }
-    .top-action-btn {
-      padding: 6px 12px;
-      border-radius: 20px;
-      border: 1px solid var(--border);
-      background: #FFFFFF;
-      font-size: 11.5px;
-      font-weight: 700;
-      color: var(--text-secondary);
-      text-decoration: none;
+    .header-bookmark-btn {
       display: inline-flex;
       align-items: center;
       gap: 5px;
+      padding: 6px 12px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-secondary);
       cursor: pointer;
       transition: all 0.15s ease;
-      box-shadow: var(--shadow-sm);
-      white-space: nowrap;
+      text-decoration: none;
+      box-shadow: var(--shadow-xs);
     }
-    .top-action-btn:hover {
-      background: var(--brand-light);
-      border-color: var(--brand-border);
-      color: var(--brand);
-      transform: translateY(-1px);
+    .header-bookmark-btn:hover {
+      background: var(--accent-subtle);
+      border-color: var(--accent-border);
+      color: var(--accent);
     }
-    .top-action-btn.bni {
-      background: #FFF7ED;
-      color: #FF5500;
-      border-color: #FED7AA;
+    .header-bookmark-btn.magang-link {
+      background: var(--bg);
+      border-color: var(--border-light);
     }
 
-    /* ─── APP MAIN SHELL ─── */
-    .app-shell {
+    /* ══════════════════════════════════════════════════════════════
+       LAYOUT: DESKTOP & TABLET TWO-COLUMN WORKSPACE
+       ══════════════════════════════════════════════════════════════ */
+    .app-main {
       flex: 1;
+      height: calc(100vh - var(--header-height));
       display: flex;
-      overflow: hidden;
       position: relative;
+      overflow: hidden;
+      background: var(--bg);
     }
 
-    /* ════════════════════════════════════════════════
-       SIDEBAR CONTAINER (WITH INTEGRATED JOURNEY PLANNER)
-       ════════════════════════════════════════════════ */
-    #explorer-sidebar {
+    /* Left Control Panel (Desktop: 390px–420px, Map: 60–65%) */
+    .control-panel {
       width: 410px;
-      min-width: 330px;
+      min-width: 360px;
+      max-width: 440px;
+      height: 100%;
       background: var(--surface);
       border-right: 1px solid var(--border);
       display: flex;
       flex-direction: column;
       z-index: 20;
-      box-shadow: 2px 0 16px rgba(15, 23, 42, 0.05);
+      box-shadow: 1px 0 12px rgba(16, 24, 40, 0.04);
       position: relative;
     }
 
-    /* Segmented Tabs at Top of Sidebar */
-    .sidebar-mode-toggle {
-      display: flex;
-      padding: 10px 14px 8px;
-      background: #FFFFFF;
-      border-bottom: 1px solid var(--border-light);
-      gap: 6px;
-      flex-shrink: 0;
-    }
-    .mode-tab-btn {
+    /* Interactive Map Workspace */
+    .map-workspace {
       flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 7px;
-      padding: 9px 12px;
-      border-radius: 10px;
-      border: 1.5px solid var(--border);
-      background: #F8FAFC;
-      font-size: 12px;
-      font-weight: 800;
-      font-family: var(--font);
-      color: var(--text-secondary);
-      cursor: pointer;
-      transition: all 0.15s ease;
-      white-space: nowrap;
+      height: 100%;
+      position: relative;
+      background: #E5E7EB;
+      overflow: hidden;
     }
-    .mode-tab-btn:hover {
-      background: var(--brand-light);
-      color: var(--brand);
-      border-color: var(--brand-border);
-    }
-    .mode-tab-btn.active {
-      background: var(--brand-light);
-      border-color: var(--brand);
-      color: var(--brand);
-      box-shadow: 0 2px 6px rgba(255, 85, 0, 0.15);
-    }
-    .mode-tab-btn:active {
-      transform: scale(0.97);
+    #transit-map {
+      width: 100%;
+      height: 100%;
+      z-index: 1;
     }
 
-    /* ════════════════════════════════════════════════
-       PANE 1: JOURNEY PLANNER VIEW
-       ════════════════════════════════════════════════ */
-    #sidebar-planner-view {
+    /* ══════════════════════════════════════════════════════════════
+       COMPONENT: Journey Planner Panel (Mode: planner)
+       ══════════════════════════════════════════════════════════════ */
+    #view-journey-planner {
       display: flex;
       flex-direction: column;
       flex: 1;
+      height: 100%;
       overflow-y: auto;
-      background: #FFFFFF;
+      background: var(--surface);
     }
-    #sidebar-planner-view.hidden { display: none; }
+    #view-journey-planner.hidden { display: none; }
 
-    .planner-card-inner {
-      padding: 14px 14px 10px;
-      border-bottom: 1px solid var(--border);
-      background: #FFFFFF;
-      position: relative;
+    .panel-header-block {
+      padding: 18px 20px 12px;
+      border-bottom: 1px solid var(--border-light);
+      background: var(--surface);
+      flex-shrink: 0;
+    }
+    .panel-title {
+      font-size: 19px;
+      font-weight: 800;
+      color: var(--text-primary);
+      letter-spacing: -0.3px;
+    }
+    .panel-subtitle {
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      margin-top: 3px;
+    }
+
+    /* Journey Form Card */
+    .journey-form-box {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-light);
+      background: var(--surface);
       flex-shrink: 0;
     }
 
-    .inputs-wrap {
+    /* Unified Journey Input Card */
+    .journey-input-card {
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 6px 12px;
+      position: relative;
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      position: relative;
-      margin-bottom: 10px;
+      gap: 4px;
+      transition: border-color 0.15s ease;
     }
-    .connector-line {
+    .journey-input-card:focus-within {
+      border-color: var(--primary);
+      background: var(--surface);
+      box-shadow: 0 0 0 3px rgba(0, 91, 172, 0.08);
+    }
+
+    /* Dotted Vertical Route Line */
+    .vertical-route-line {
       position: absolute;
-      left: 21px;
-      top: 34px;
-      bottom: 34px;
+      left: 20px;
+      top: 36px;
+      bottom: 36px;
       width: 2px;
-      background: repeating-linear-gradient(to bottom, #CBD5E1 0 4px, transparent 4px 8px);
+      background: repeating-linear-gradient(to bottom, #98A2B3 0 4px, transparent 4px 8px);
       z-index: 1;
       pointer-events: none;
     }
 
-    .input-row {
+    .location-row {
       display: flex;
       align-items: center;
-      background: #F8FAFC;
-      border: 1.5px solid var(--border);
-      border-radius: 11px;
-      min-height: 44px;
+      gap: 10px;
+      min-height: 48px;
       position: relative;
       z-index: 2;
-      transition: all 0.15s ease;
-      padding: 0 6px 0 10px;
     }
-    .input-row:focus-within {
-      background: #FFFFFF;
-      border-color: var(--brand);
-      box-shadow: 0 0 0 3px rgba(255, 85, 0, 0.12);
-    }
-    .inp-dot {
-      width: 22px;
+    .location-dot {
+      width: 18px;
+      height: 18px;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
     }
-    .inp-dot div {
+    .dot-inner {
       width: 10px;
       height: 10px;
       border-radius: 50%;
-      border: 2px solid #FFFFFF;
-      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2);
     }
-    .inp-dot .from { background: #16A34A; }
-    .inp-dot .to { background: var(--brand); }
-    .input-row input {
+    .dot-inner.origin {
+      background: var(--success);
+      box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.2);
+    }
+    .dot-inner.destination {
+      background: var(--accent);
+      box-shadow: 0 0 0 2px rgba(255, 90, 31, 0.2);
+    }
+
+    .location-input-field {
       flex: 1;
       border: none;
-      padding: 10px 8px;
-      font-size: 13px;
-      font-family: var(--font);
       background: transparent;
-      color: var(--text);
+      font-size: 13.5px;
+      font-weight: 600;
+      font-family: var(--font);
+      color: var(--text-primary);
       outline: none;
       min-width: 0;
+      padding: 10px 0;
+    }
+    .location-input-field::placeholder {
+      font-weight: 500;
+      color: var(--text-muted);
     }
 
-    .use-gps-btn {
-      padding: 4px 8px;
-      border-radius: 6px;
-      background: #EFF6FF;
-      border: 1px solid #BFDBFE;
-      color: #2563EB;
-      font-size: 10.5px;
-      font-weight: 700;
-      cursor: pointer;
+    /* GPS Button (Trailing Action in Origin Input) */
+    .gps-trailing-btn {
       display: inline-flex;
       align-items: center;
-      gap: 3px;
+      gap: 4px;
+      padding: 5px 9px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--primary-border);
+      background: var(--primary-subtle);
+      color: var(--primary);
+      font-size: 11px;
+      font-weight: 700;
+      font-family: var(--font);
+      cursor: pointer;
+      transition: all 0.15s ease;
       white-space: nowrap;
       flex-shrink: 0;
+      min-height: 32px;
     }
-    .use-gps-btn:hover { background: #DBEAFE; }
+    .gps-trailing-btn:hover {
+      background: #D9EBFF;
+    }
+    .gps-trailing-btn.active {
+      background: #DCFCE7;
+      border-color: #86EFAC;
+      color: #16A34A;
+    }
 
-    .clear-inp-btn {
+    /* Clear Button */
+    .input-clear-btn {
       background: none;
       border: none;
       color: var(--text-muted);
       cursor: pointer;
-      font-size: 12px;
-      padding: 4px;
+      font-size: 13px;
+      padding: 6px;
       display: none;
-      flex-shrink: 0;
-    }
-    .clear-inp-btn:hover { color: var(--text); }
-
-    .swap-row {
-      display: flex;
-      justify-content: flex-end;
-      padding-right: 14px;
-      height: 0;
-      position: relative;
-      z-index: 5;
-    }
-    .swap-btn {
-      width: 28px;
-      height: 28px;
       border-radius: 50%;
-      border: 1.5px solid var(--border);
-      background: #FFFFFF;
-      cursor: pointer;
+    }
+    .input-clear-btn:hover { color: var(--text-primary); }
+
+    /* Swap Locations Button (Centered on the right between inputs) */
+    .swap-divider-wrap {
+      position: relative;
+      height: 1px;
+      background: var(--border-light);
+      margin: 0 4px;
+    }
+    .swap-locations-btn {
+      position: absolute;
+      right: 4px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-secondary);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--text-secondary);
-      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.1);
+      cursor: pointer;
+      box-shadow: var(--shadow-xs);
+      z-index: 5;
       transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .swap-btn:hover { background: var(--brand-light); color: var(--brand); border-color: var(--brand-border); }
-    .swap-btn:active { transform: rotate(180deg) scale(0.92); }
+    .swap-locations-btn:hover {
+      background: var(--primary-subtle);
+      color: var(--primary);
+      border-color: var(--primary-border);
+    }
+    .swap-locations-btn:active {
+      transform: translateY(-50%) rotate(180deg) scale(0.92);
+    }
 
-    /* Autocomplete dropdown list */
-    .suggestions {
+    /* Autocomplete Suggestions Dropdown */
+    .autocomplete-dropdown {
       position: absolute;
-      top: calc(100% + 4px);
+      top: calc(100% + 6px);
       left: 0;
       right: 0;
-      background: #FFFFFF;
-      border: 1.5px solid var(--border);
-      border-radius: 10px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
       box-shadow: var(--shadow-lg);
-      max-height: 220px;
+      max-height: 240px;
       overflow-y: auto;
       z-index: 100;
       display: none;
     }
-    .suggestions.show { display: block; }
-    .sug-item {
+    .autocomplete-dropdown.show { display: block; }
+    .autocomplete-item {
       display: flex;
       align-items: center;
       gap: 10px;
-      padding: 9px 12px;
+      padding: 10px 14px;
       cursor: pointer;
       border-bottom: 1px solid var(--border-light);
-      font-size: 12px;
+      font-size: 13px;
       transition: background 0.1s ease;
     }
-    .sug-item:last-child { border-bottom: none; }
-    .sug-item:hover { background: var(--brand-light); }
-    .sug-item .name { font-weight: 700; color: var(--text); }
-    .sug-item .addr { font-size: 10.5px; color: var(--text-secondary); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-    /* Preset Chips */
-    .quick-chips-wrap {
-      display: flex;
-      gap: 5px;
-      overflow-x: auto;
-      scrollbar-width: none;
-      -webkit-overflow-scrolling: touch;
-      padding-bottom: 6px;
-      margin-bottom: 8px;
+    .autocomplete-item:last-child { border-bottom: none; }
+    .autocomplete-item:hover { background: var(--primary-subtle); }
+    .autocomplete-item .sug-type-icon {
+      font-size: 14px;
+      width: 22px;
+      text-align: center;
+      flex-shrink: 0;
     }
-    .quick-chips-wrap::-webkit-scrollbar { display: none; }
-    .quick-chips-wrap .lbl {
-      font-size: 10px;
+    .autocomplete-item .sug-name { font-weight: 700; color: var(--text-primary); }
+    .autocomplete-item .sug-desc { font-size: 11px; color: var(--text-secondary); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    /* Popular Destinations Section */
+    .popular-dest-section {
+      margin-top: 14px;
+    }
+    .section-label {
+      font-size: 11px;
       font-weight: 800;
       color: var(--text-muted);
       text-transform: uppercase;
-      white-space: nowrap;
-      margin-top: 5px;
-      margin-right: 2px;
-      flex-shrink: 0;
+      letter-spacing: 0.4px;
+      margin-bottom: 8px;
+      display: block;
     }
-    .chip-item {
-      padding: 4px 10px;
-      border-radius: 16px;
+    .popular-chips-scroll {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 2px;
+    }
+    .popular-chips-scroll::-webkit-scrollbar { display: none; }
+
+    .popular-chip {
+      height: 34px;
+      padding: 0 12px;
+      border-radius: var(--radius-pill);
       border: 1px solid var(--border);
-      background: #F8FAFC;
-      font-size: 11px;
+      background: var(--surface);
+      font-size: 12px;
       font-weight: 700;
+      font-family: var(--font);
       color: var(--text-secondary);
       cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
       white-space: nowrap;
       transition: all 0.12s ease;
       flex-shrink: 0;
     }
-    .chip-item:hover { background: var(--brand-light); border-color: var(--brand-border); color: var(--brand); }
-    .chip-item:active { transform: scale(0.95); }
-    .chip-item.bni-chip {
-      background: #FFF7ED;
-      border-color: #FED7AA;
-      color: #EA580C;
+    .popular-chip:hover {
+      background: var(--primary-subtle);
+      border-color: var(--primary-border);
+      color: var(--primary);
+    }
+    .popular-chip.featured {
+      background: var(--accent-subtle);
+      border-color: var(--accent-border);
+      color: var(--accent);
     }
 
-    /* Departure Time & Action */
-    .planner-actions {
+    /* Departure Time Selector & Search Action */
+    .departure-control-box {
+      margin-top: 12px;
       display: flex;
       align-items: center;
       gap: 8px;
-      margin-top: 4px;
     }
-    .time-selector-row {
+    .time-picker-trigger {
+      flex: 1;
+      height: 48px;
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0 12px;
       display: flex;
       align-items: center;
-      gap: 4px;
-      background: #F8FAFC;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 4px 8px;
-      font-size: 11.5px;
-      font-weight: 700;
-      color: var(--text-secondary);
-    }
-    .time-selector-row select {
-      border: none;
-      background: transparent;
-      font-weight: 700;
-      color: var(--text);
+      justify-content: space-between;
+      cursor: pointer;
       font-family: var(--font);
-      font-size: 12px;
-      outline: none;
-      cursor: pointer;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-primary);
+      transition: all 0.15s ease;
     }
-    .now-chip-btn {
-      background: none;
-      border: none;
-      color: var(--brand);
-      font-size: 10.5px;
-      font-weight: 800;
-      cursor: pointer;
-      padding: 2px 4px;
-      border-radius: 4px;
+    .time-picker-trigger:hover {
+      border-color: var(--primary);
+      background: var(--surface);
     }
-    .now-chip-btn:hover { background: var(--brand-light); }
+    .time-picker-trigger .time-label-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
 
-    .btn-find-journey {
-      flex: 1;
-      padding: 10px 14px;
-      background: var(--brand);
+    /* Main CTA: Cari Rute */
+    .search-route-cta {
+      width: 100%;
+      height: 50px;
+      margin-top: 10px;
+      background: var(--accent);
       color: #FFFFFF;
       border: none;
-      border-radius: 9px;
-      font-size: 13px;
-      font-weight: 800;
+      border-radius: var(--radius-md);
       font-family: var(--font);
+      font-size: 14.5px;
+      font-weight: 800;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
+      gap: 8px;
       transition: all 0.15s ease;
-      box-shadow: 0 2px 8px rgba(255, 85, 0, 0.25);
+      box-shadow: 0 2px 8px rgba(255, 90, 31, 0.25);
     }
-    .btn-find-journey:hover { background: var(--brand-hover); }
-    .btn-find-journey:active { transform: scale(0.98); }
+    .search-route-cta:hover {
+      background: var(--accent-hover);
+      box-shadow: 0 4px 14px rgba(255, 90, 31, 0.35);
+    }
+    .search-route-cta:active {
+      transform: scale(0.98);
+    }
+    .search-route-cta:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+    }
 
-    /* Journey Results Container */
-    #planner-results-list {
+    /* Modal / Popover Waktu Keberangkatan */
+    .time-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.4);
+      backdrop-filter: blur(2px);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .time-modal-overlay.open { display: flex; }
+    .time-modal-card {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 320px;
+      padding: 18px 20px;
+      box-shadow: var(--shadow-lg);
+    }
+    .time-modal-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+    }
+    .time-option-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 0;
+      cursor: pointer;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .time-select-inputs {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin: 8px 0 16px;
+      padding: 8px 12px;
+      background: var(--bg);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+    }
+    .time-select-inputs select {
+      border: none;
+      background: transparent;
+      font-size: 14px;
+      font-weight: 800;
+      font-family: var(--font);
+      color: var(--text-primary);
+      outline: none;
+    }
+    .time-modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+    .time-modal-btn {
+      padding: 7px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 12.5px;
+      font-weight: 700;
+      font-family: var(--font);
+      cursor: pointer;
+      border: none;
+    }
+    .time-modal-btn.cancel { background: var(--bg); color: var(--text-secondary); }
+    .time-modal-btn.apply { background: var(--primary); color: #FFFFFF; }
+
+    /* Results List Container in Journey Planner */
+    #journey-results-container {
       flex: 1;
       overflow-y: auto;
-      padding: 12px 14px;
-      background: #F8FAFC;
+      padding: 16px 20px;
+      background: var(--bg);
     }
-    #planner-results-list::-webkit-scrollbar { width: 5px; }
-    #planner-results-list::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 4px; }
+    #journey-results-container::-webkit-scrollbar { width: 5px; }
+    #journey-results-container::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 4px; }
 
-    .planner-status-msg {
+    /* State Components: Empty, Loading, Error */
+    .state-message-card {
       text-align: center;
-      padding: 30px 16px;
+      padding: 36px 16px;
       color: var(--text-secondary);
-      font-size: 12px;
+      font-size: 13px;
     }
-    .p-spinner {
-      width: 28px;
-      height: 28px;
-      border: 3px solid var(--brand-border);
-      border-top-color: var(--brand);
+    .state-message-card .icon-lead {
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+    .state-message-card .title-lead {
+      font-weight: 800;
+      font-size: 14px;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    .loading-transit-spinner {
+      width: 32px;
+      height: 32px;
+      border: 3.5px solid var(--primary-border);
+      border-top-color: var(--primary);
       border-radius: 50%;
       animation: spin 0.7s linear infinite;
-      margin: 0 auto 10px;
+      margin: 0 auto 12px;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    .res-header-info {
+    /* Results Header */
+    .results-heading-bar {
       display: flex;
       align-items: baseline;
       justify-content: space-between;
-      margin-bottom: 10px;
-      padding: 0 2px;
+      margin-bottom: 12px;
     }
-    .res-header-title {
-      font-size: 12.5px;
+    .results-count-title {
+      font-size: 13.5px;
       font-weight: 800;
-      color: var(--text);
-      display: flex;
-      align-items: center;
-      gap: 5px;
+      color: var(--text-primary);
+    }
+    .results-tip {
+      font-size: 11px;
+      color: var(--text-secondary);
+      font-weight: 600;
     }
 
-    .journey-card {
-      background: #FFFFFF;
-      border-radius: 12px;
+    /* Journey Result Card */
+    .journey-result-card {
+      background: var(--surface);
+      border-radius: var(--radius-md);
       border: 1.5px solid var(--border);
       margin-bottom: 10px;
-      box-shadow: var(--shadow-sm);
+      box-shadow: var(--shadow-xs);
       overflow: hidden;
       cursor: pointer;
       transition: all 0.15s ease;
     }
-    .journey-card:hover {
-      border-color: var(--brand-border);
-      box-shadow: var(--shadow-md);
+    .journey-result-card:hover {
+      border-color: var(--primary-border);
+      box-shadow: var(--shadow-sm);
     }
-    .journey-card.active {
-      border-color: var(--brand);
-      box-shadow: 0 0 0 1.5px var(--brand), var(--shadow-md);
+    .journey-result-card.active {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 1.5px var(--primary), var(--shadow-sm);
+      background: var(--surface);
     }
-    .jc-sum {
+
+    .j-card-summary {
       padding: 12px 14px;
+    }
+    .j-card-top-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 8px;
+      margin-bottom: 6px;
     }
-    .jc-times {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 15px;
+    .j-card-duration {
+      font-size: 16px;
       font-weight: 800;
-      color: var(--text);
+      color: var(--text-primary);
+      letter-spacing: -0.2px;
     }
-    .jc-arrow { color: var(--brand); font-size: 12px; }
-    .jc-dur {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--brand);
-      background: var(--brand-light);
-      border: 1px solid var(--brand-border);
-      padding: 2px 7px;
-      border-radius: 6px;
-    }
-    .jc-meta {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 10.5px;
+    .j-card-times {
+      font-size: 12px;
+      font-weight: 600;
       color: var(--text-secondary);
     }
-    .jc-badge {
-      font-size: 9.5px;
+    .j-card-badge {
+      font-size: 10px;
       font-weight: 800;
-      padding: 2.5px 6px;
-      border-radius: 5px;
+      padding: 2.5px 7px;
+      border-radius: var(--radius-pill);
       text-transform: uppercase;
       letter-spacing: 0.3px;
     }
-    .jc-badge.fast { background: #DCFCE7; color: #16A34A; border: 1px solid #86EFAC; }
-    .jc-badge.transfer { background: #EFF6FF; color: #2563EB; border: 1px solid #BFDBFE; }
-
-    .jc-detail {
-      display: none;
-      padding: 10px 14px 14px;
-      border-top: 1px solid var(--border-light);
-      background: #FAFAFC;
+    .j-card-badge.practical {
+      background: var(--success-subtle);
+      color: var(--success);
+      border: 1px solid #BBF7D0;
     }
-    .jc-detail.show { display: block; }
+    .j-card-badge.transfer {
+      background: var(--primary-subtle);
+      color: var(--primary);
+      border: 1px solid var(--primary-border);
+    }
 
-    .leg-row {
+    /* Leg Sequence Badges (e.g. 🚌 1B → 🚶 150m → 🚌 9) */
+    .j-card-sequence {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin: 8px 0 6px;
+    }
+    .step-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 7px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 800;
+    }
+    .step-chip.bus {
+      background: var(--primary);
+      color: #FFFFFF;
+    }
+    .step-chip.walk {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+    .step-arrow {
+      color: var(--text-muted);
+      font-size: 11px;
+    }
+
+    .j-card-meta-line {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      border-top: 1px solid var(--border-light);
+      padding-top: 6px;
+      margin-top: 6px;
+    }
+
+    /* Expandable Timeline Steps */
+    .j-card-timeline {
+      display: none;
+      padding: 12px 14px;
+      background: #FAFAFC;
+      border-top: 1px solid var(--border-light);
+    }
+    .j-card-timeline.show { display: block; }
+
+    .timeline-step-row {
       display: flex;
       align-items: flex-start;
       gap: 10px;
-      padding: 7px 0;
+      padding: 6px 0;
       position: relative;
     }
-    .leg-icon-box {
+    .timeline-icon-node {
       width: 26px;
       height: 26px;
       border-radius: 50%;
@@ -609,98 +848,147 @@
       justify-content: center;
       font-size: 12px;
       flex-shrink: 0;
-      z-index: 2;
-      background: #FFFFFF;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      color: var(--text-secondary);
+      box-shadow: var(--shadow-xs);
     }
-    .leg-icon-box.walk { border: 1.5px solid var(--border); color: #64748B; }
-    .leg-icon-box.bus { background: var(--brand-light); border: 1.5px solid var(--brand-border); color: var(--brand); }
-    .leg-icon-box.transfer { background: #FEF3C7; border: 1.5px solid #FDE68A; color: #D97706; }
+    .timeline-icon-node.bus {
+      background: var(--primary-subtle);
+      border-color: var(--primary-border);
+      color: var(--primary);
+    }
+    .timeline-body { flex: 1; min-width: 0; }
+    .timeline-title { font-size: 12.5px; font-weight: 700; color: var(--text-primary); line-height: 1.35; }
+    .timeline-sub { font-size: 11px; color: var(--text-secondary); margin-top: 2px; line-height: 1.35; }
 
-    .leg-content { flex: 1; min-width: 0; }
-    .leg-title { font-size: 12px; font-weight: 700; color: var(--text); line-height: 1.35; }
-    .leg-subtitle { font-size: 10.5px; color: var(--text-secondary); margin-top: 2px; line-height: 1.35; }
-
-    .leg-action-bar {
-      margin-top: 6px;
+    .timeline-action-row {
+      margin-top: 8px;
       display: flex;
-      align-items: center;
       gap: 6px;
     }
-    .btn-ride-this {
+    .btn-ride-shortcut {
       display: inline-flex;
       align-items: center;
       gap: 4px;
-      padding: 3.5px 8px;
-      border-radius: 6px;
-      background: #16A34A;
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
+      background: var(--success);
       color: #FFFFFF;
-      font-size: 10.5px;
+      font-size: 11px;
       font-weight: 800;
       border: none;
       cursor: pointer;
       transition: all 0.12s ease;
     }
-    .btn-ride-this:hover { background: #15803D; }
+    .btn-ride-shortcut:hover { background: #15803D; }
 
-    /* ════════════════════════════════════════════════
-       PANE 2: ROUTE EXPLORER VIEW (240 ROUTES)
-       ════════════════════════════════════════════════ */
-    #sidebar-routes-view {
+    /* ══════════════════════════════════════════════════════════════
+       COMPONENT: Route Explorer Panel (Mode: routes / 240 Rute)
+       ══════════════════════════════════════════════════════════════ */
+    #view-route-explorer {
       display: flex;
       flex-direction: column;
       flex: 1;
+      height: 100%;
       overflow-y: auto;
-      background: #FFFFFF;
+      background: var(--surface);
     }
-    #sidebar-routes-view.hidden { display: none; }
+    #view-route-explorer.hidden { display: none; }
 
-    .ex-header {
-      padding: 10px 14px 6px;
+    /* Clean Integrated Header */
+    .routes-header-block {
+      padding: 16px 20px 8px;
+      background: var(--surface);
       border-bottom: 1px solid var(--border-light);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
       flex-shrink: 0;
     }
-    .ex-title {
-      font-size: 12.5px;
-      font-weight: 800;
-      color: var(--text);
+    .routes-title-wrap {
       display: flex;
-      align-items: center;
-      gap: 6px;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 10px;
     }
-    .ex-badge {
-      font-size: 10.5px;
+    .routes-main-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+    .routes-counter-label {
+      font-size: 12px;
       font-weight: 700;
-      padding: 2px 7px;
-      border-radius: 6px;
-      background: var(--brand-light);
-      color: var(--brand);
-      border: 1px solid var(--brand-border);
+      color: var(--primary);
     }
 
-    /* Category Filter Chips */
-    .ex-stats-bar {
+    /* Search Box */
+    .routes-search-wrap {
+      position: relative;
+      margin-bottom: 8px;
+    }
+    .routes-search-input {
+      width: 100%;
+      height: 44px;
+      padding: 0 34px 0 36px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text-primary);
+      outline: none;
+      transition: all 0.15s ease;
+    }
+    .routes-search-input:focus {
+      background: var(--surface);
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(0, 91, 172, 0.08);
+    }
+    .routes-search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      width: 15px;
+      height: 15px;
+      pointer-events: none;
+    }
+    .routes-clear-btn {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 14px;
+      display: none;
+    }
+
+    /* Lightweight Category Filter Chips */
+    .category-filter-scroll {
       display: flex;
       gap: 5px;
-      padding: 8px 12px;
-      border-bottom: 1px solid var(--border);
       overflow-x: auto;
       scrollbar-width: none;
       -webkit-overflow-scrolling: touch;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border-light);
+      padding: 0 20px 10px;
       flex-shrink: 0;
-      background: #FFFFFF;
     }
-    .ex-stats-bar::-webkit-scrollbar { display: none; }
-    .ex-chip {
-      padding: 3.5px 9px;
-      border-radius: 14px;
-      background: #F8FAFC;
-      border: 1px solid var(--border);
-      font-size: 10.5px;
+    .category-filter-scroll::-webkit-scrollbar { display: none; }
+
+    .cat-chip-btn {
+      height: 30px;
+      padding: 0 10px;
+      border-radius: var(--radius-pill);
+      border: 1px solid transparent;
+      background: var(--bg);
+      font-size: 11px;
       font-weight: 700;
+      font-family: var(--font);
       color: var(--text-secondary);
       cursor: pointer;
       white-space: nowrap;
@@ -708,422 +996,332 @@
       align-items: center;
       gap: 4px;
       transition: all 0.12s ease;
-    }
-    .ex-chip:hover {
-      background: var(--brand-light);
-      border-color: var(--brand-border);
-      color: var(--brand);
-    }
-    .ex-chip.active {
-      background: var(--brand-light);
-      border-color: var(--brand);
-      color: var(--brand);
-    }
-    .ex-chip .dot {
-      width: 6.5px;
-      height: 6.5px;
-      border-radius: 50%;
-    }
-
-    /* Search Box */
-    .ex-search-box {
-      padding: 8px 12px;
-      border-bottom: 1px solid var(--border);
-      position: relative;
       flex-shrink: 0;
-      background: #FFFFFF;
     }
-    .ex-search-box input {
-      width: 100%;
-      padding: 7px 28px 7px 30px;
-      border: 1.5px solid var(--border);
-      border-radius: 8px;
-      font-size: 12.5px;
-      font-family: var(--font);
-      background: #F8FAFC;
-      color: var(--text);
-      outline: none;
-      transition: all 0.15s ease;
+    .cat-chip-btn:hover {
+      background: var(--primary-subtle);
+      color: var(--primary);
     }
-    .ex-search-box input:focus {
-      background: #FFFFFF;
-      border-color: var(--brand);
-      box-shadow: 0 0 0 3px rgba(255, 85, 0, 0.1);
-    }
-    .ex-search-icon {
-      position: absolute;
-      left: 21px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--text-muted);
-      width: 13px;
-      height: 13px;
-      pointer-events: none;
-    }
-    .ex-clear-icon {
-      position: absolute;
-      right: 21px;
-      top: 50%;
-      transform: translateY(-50%);
-      background: none;
-      border: none;
-      color: var(--text-muted);
-      cursor: pointer;
-      font-size: 12px;
-      display: none;
+    .cat-chip-btn.active {
+      background: var(--primary-subtle);
+      color: var(--primary);
+      border-color: var(--primary-border);
     }
 
-    /* Route List */
-    #ex-route-list {
+    /* Route List Rows */
+    #routes-list-scroll {
       flex: 1;
       overflow-y: auto;
-      background: #FFFFFF;
+      background: var(--surface);
     }
-    #ex-route-list::-webkit-scrollbar { width: 5px; }
-    #ex-route-list::-webkit-scrollbar-thumb { background: #E2E8F0; border-radius: 4px; }
+    #routes-list-scroll::-webkit-scrollbar { width: 5px; }
+    #routes-list-scroll::-webkit-scrollbar-thumb { background: #E2E8F0; border-radius: 4px; }
 
-    .ex-route-row {
+    .route-item-row {
       display: flex;
       align-items: center;
-      padding: 8px 12px;
-      gap: 9px;
+      padding: 10px 20px;
+      gap: 12px;
       cursor: pointer;
       border-bottom: 1px solid var(--border-light);
       transition: background 0.12s ease;
+      min-height: 54px;
     }
-    .ex-route-row:hover { background: #F8FAFC; }
-    .ex-route-row.active {
-      background: var(--brand-light);
-      border-left: 3.5px solid var(--brand);
+    .route-item-row:hover { background: var(--bg); }
+    .route-item-row.active {
+      background: var(--primary-subtle);
+      border-left: 4px solid var(--primary);
     }
 
-    .r-badge {
+    .route-pill-badge {
       min-width: 44px;
-      height: 25px;
-      padding: 0 7px;
+      height: 26px;
+      padding: 0 8px;
       border-radius: 6px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 11px;
+      font-size: 11.5px;
       font-weight: 800;
       color: #FFFFFF;
       flex-shrink: 0;
       letter-spacing: -0.2px;
     }
-    .r-badge.brt { background: var(--cat-brt); }
-    .r-badge.metro { background: var(--cat-metro); }
-    .r-badge.mikro { background: var(--cat-mikro); }
-    .r-badge.royal { background: var(--cat-royal); }
-    .r-badge.jabodetabek { background: var(--cat-jabodetabek); }
-    .r-badge.wisata { background: var(--cat-wisata); }
+    .route-pill-badge.brt { background: var(--cat-brt); }
+    .route-pill-badge.metro { background: var(--cat-metro); }
+    .route-pill-badge.mikro { background: var(--cat-mikro); }
+    .route-pill-badge.royal { background: var(--cat-royal); }
+    .route-pill-badge.jabodetabek { background: var(--cat-jabodetabek); }
+    .route-pill-badge.wisata { background: var(--cat-wisata); }
 
-    .r-info { flex: 1; min-width: 0; }
-    .r-name {
-      font-size: 12px;
+    .route-item-info { flex: 1; min-width: 0; }
+    .route-item-title {
+      font-size: 13px;
       font-weight: 700;
-      color: var(--text);
+      color: var(--text-primary);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    .r-sub {
-      font-size: 9.5px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.3px;
-      margin-top: 1px;
+    .route-item-meta {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
-    .r-arrow {
+    .route-item-arrow {
       color: var(--text-muted);
-      font-size: 13px;
+      font-size: 15px;
       flex-shrink: 0;
     }
 
-    /* ════════════════════════════════════════════════
-       RIGHT MAP AREA & CONTROLS
-       ════════════════════════════════════════════════ */
-    #explorer-map-area {
-      flex: 1;
-      height: 100%;
-      position: relative;
-      background: #E2E8F0;
-    }
-    #explorer-map {
-      width: 100%;
-      height: 100%;
-    }
-
-    /* Floating Quick Controls on Map */
-    .map-floating-controls {
-      position: absolute;
-      top: 14px;
-      left: 14px;
-      z-index: 500;
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-    .map-btn-pill {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      border: 1px solid var(--border);
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--text);
-      box-shadow: var(--shadow-md);
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      transition: all 0.15s ease;
-    }
-    .map-btn-pill:hover {
-      background: var(--brand-light);
-      border-color: var(--brand-border);
-      color: var(--brand);
-      transform: translateY(-1px);
-    }
-    .map-btn-pill.active {
-      background: #2563EB;
-      color: #FFFFFF;
-      border-color: #1D4ED8;
-    }
-
-    /* Floating GPS Target FAB */
-    .gps-lock-fab {
-      position: absolute;
-      bottom: 24px;
-      right: 24px;
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      background: #FFFFFF;
-      border: 2px solid var(--border);
-      color: #0F172A;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 500;
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .gps-lock-fab:hover {
-      border-color: var(--brand);
-      color: var(--brand);
-      transform: scale(1.06);
-    }
-    .gps-lock-fab:active {
-      transform: scale(0.94);
-    }
-    .gps-lock-fab.tracking {
-      background: #2563EB;
-      color: #FFFFFF;
-      border-color: #1D4ED8;
-      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.25), 0 4px 16px rgba(0, 0, 0, 0.18);
-    }
-
-    /* Route Detail Halte Drawer */
-    #ex-detail {
-      position: absolute;
-      bottom: 16px;
-      left: 16px;
-      right: 16px;
-      max-height: 42vh;
-      background: #FFFFFF;
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow-lg);
-      z-index: 600;
+    /* ══════════════════════════════════════════════════════════════
+       COMPONENT: Route Detail Sub-Panel (Vertical Timeline)
+       ══════════════════════════════════════════════════════════════ */
+    #view-route-detail {
       display: none;
       flex-direction: column;
-      overflow: hidden;
-      animation: slideUp 0.2s ease-out;
-    }
-    @keyframes slideUp {
-      from { transform: translateY(20px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-    #ex-detail.open { display: flex; }
-
-    .dt-header {
-      padding: 10px 14px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: #FFFFFF;
-      gap: 10px;
-    }
-    .dt-header-left {
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      min-width: 0;
-    }
-    .dt-title {
-      font-size: 13px;
-      font-weight: 800;
-      color: var(--text);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .dt-actions {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex-shrink: 0;
-    }
-    .start-ride-btn {
-      background: #16A34A;
-      color: #FFFFFF;
-      border: none;
-      padding: 6px 11px;
-      border-radius: 8px;
-      font-size: 11px;
-      font-weight: 800;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      transition: all 0.15s ease;
-      box-shadow: 0 2px 6px rgba(22, 163, 74, 0.3);
-    }
-    .start-ride-btn:hover { background: #15803D; }
-
-    .dt-close {
-      background: #F1F5F9;
-      border: 1px solid var(--border);
-      color: var(--text-secondary);
-      width: 26px;
-      height: 26px;
-      border-radius: 50%;
-      cursor: pointer;
-      font-size: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .dt-close:hover { background: #E2E8F0; }
-
-    .dt-dirs-bar {
-      display: flex;
-      padding: 6px 14px;
-      gap: 6px;
-      background: #F8FAFC;
-      border-bottom: 1px solid var(--border);
-      overflow-x: auto;
-    }
-    .dir-pill {
-      padding: 3.5px 9px;
-      border-radius: 12px;
-      background: #FFFFFF;
-      border: 1px solid var(--border);
-      font-size: 10.5px;
-      font-weight: 700;
-      color: var(--text-secondary);
-      cursor: pointer;
-      white-space: nowrap;
-    }
-    .dir-pill.active {
-      background: var(--brand);
-      border-color: var(--brand);
-      color: #FFFFFF;
-    }
-
-    .dt-body {
-      display: flex;
-      overflow-x: auto;
       flex: 1;
-      background: #FFFFFF;
-    }
-    .dt-dir-col {
-      min-width: 260px;
-      flex: 1;
-      padding: 8px 14px;
-      border-right: 1px solid var(--border);
+      height: 100%;
+      background: var(--surface);
       overflow-y: auto;
-      max-height: 28vh;
     }
-    .dt-dir-col:last-child { border-right: none; }
-    .dt-dir-col.hidden { display: none; }
+    #view-route-detail.show { display: flex; }
 
-    .dt-stop-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 9px;
-      padding: 5px 0;
-      cursor: pointer;
-      transition: color 0.1s ease;
-    }
-    .dt-stop-item:hover { color: var(--brand); }
-    .dt-seq {
-      width: 19px;
-      height: 19px;
-      border-radius: 50%;
-      background: #F1F5F9;
-      border: 1px solid var(--border);
-      color: var(--text-secondary);
-      font-size: 9px;
-      font-weight: 700;
+    .detail-nav-back {
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--border-light);
       display: flex;
       align-items: center;
-      justify-content: center;
+      gap: 6px;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--primary);
+      cursor: pointer;
+      background: var(--surface);
       flex-shrink: 0;
     }
-    .dt-seq.first { background: #DCFCE7; color: #16A34A; border-color: #86EFAC; }
-    .dt-seq.last { background: #FEE2E2; color: #DC2626; border-color: #FCA5A5; }
-    .dt-sname { font-size: 11.5px; font-weight: 600; color: var(--text); }
+    .detail-nav-back:hover { background: var(--primary-subtle); }
 
-    /* ════════════════════════════════════════════════
-       LIVE TRANSIT RIDE HUD (Saat Pengguna Naik Transum)
-       ════════════════════════════════════════════════ */
-    #live-ride-hud {
-      position: absolute;
-      bottom: 20px;
-      left: 20px;
-      right: 20px;
-      max-width: 500px;
-      margin: 0 auto;
-      background: #FFFFFF;
-      border: 2px solid var(--brand);
-      border-radius: 16px;
-      box-shadow: 0 12px 36px rgba(255, 85, 0, 0.25), 0 4px 12px rgba(0, 0, 0, 0.1);
-      padding: 12px 14px;
-      z-index: 950;
-      display: none;
-      animation: bounceIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    .detail-header-card {
+      padding: 16px 20px 12px;
+      border-bottom: 1px solid var(--border-light);
+      background: var(--surface);
+      flex-shrink: 0;
     }
-    @keyframes bounceIn { from { transform: translateY(40px) scale(0.95); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
-    #live-ride-hud.active { display: block; }
-    #live-ride-hud.alert-arrival {
-      border-color: #DC2626;
-      background: #FEF2F2;
-      animation: alertPulse 1.2s infinite;
-    }
-    @keyframes alertPulse {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
-      50% { box-shadow: 0 0 0 12px rgba(220, 38, 38, 0); }
-    }
-
-    .hud-top {
+    .detail-badge-row {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 10px;
+      gap: 8px;
       margin-bottom: 6px;
     }
-    .hud-status-badge {
+    .detail-route-name {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text-primary);
+      line-height: 1.3;
+    }
+
+    /* Direction Selector Dropdown */
+    .direction-select-box {
+      margin-top: 10px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 6px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .direction-select-box select {
+      width: 100%;
+      border: none;
+      background: transparent;
+      font-size: 12.5px;
+      font-weight: 700;
+      font-family: var(--font);
+      color: var(--text-primary);
+      outline: none;
+      cursor: pointer;
+    }
+
+    /* Vertical Halte Stop Timeline */
+    .vertical-stop-timeline {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 20px;
+      position: relative;
+    }
+    .vertical-stop-timeline::-webkit-scrollbar { width: 5px; }
+    .vertical-stop-timeline::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 4px; }
+
+    .v-stop-node {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      position: relative;
+      padding-bottom: 14px;
+      cursor: pointer;
+    }
+    .v-stop-node:hover .v-stop-name { color: var(--primary); }
+    .v-stop-node::before {
+      content: '';
+      position: absolute;
+      left: 7px;
+      top: 14px;
+      bottom: 0;
+      width: 2px;
+      background: var(--border);
+    }
+    .v-stop-node:last-child::before { display: none; }
+
+    .v-stop-dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--surface);
+      border: 3px solid var(--primary);
+      box-shadow: var(--shadow-xs);
+      z-index: 2;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .v-stop-dot.first { border-color: var(--success); background: #DCFCE7; }
+    .v-stop-dot.last { border-color: var(--danger); background: #FEE2E2; }
+
+    .v-stop-info { flex: 1; min-width: 0; }
+    .v-stop-name {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.35;
+      transition: color 0.1s ease;
+    }
+    .v-stop-sub {
+      font-size: 10.5px;
+      color: var(--text-secondary);
+      margin-top: 1px;
+    }
+
+    .detail-footer-summary {
+      padding: 12px 20px;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .detail-metrics {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    /* ══════════════════════════════════════════════════════════════
+       COMPONENT: Map Controls (Right Side Floating)
+       ══════════════════════════════════════════════════════════════ */
+    .map-controls-group {
+      position: absolute;
+      right: 18px;
+      bottom: 24px;
+      z-index: 500;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .map-ctrl-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius-md);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      box-shadow: 0 2px 8px rgba(16, 24, 40, 0.12);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+    }
+    .map-ctrl-btn:hover {
+      background: var(--primary-subtle);
+      border-color: var(--primary-border);
+      color: var(--primary);
+    }
+    .map-ctrl-btn:active {
+      transform: scale(0.95);
+    }
+    .map-ctrl-btn.active {
+      background: var(--primary);
+      color: #FFFFFF;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(0, 91, 172, 0.25);
+    }
+
+    /* Subtle Attribution Footer on Map */
+    .map-subtle-attribution {
+      position: absolute;
+      bottom: 6px;
+      left: 10px;
+      z-index: 400;
+      font-size: 10px;
+      color: rgba(15, 23, 42, 0.55);
+      background: rgba(255, 255, 255, 0.7);
+      padding: 2px 6px;
+      border-radius: 4px;
+      pointer-events: none;
+    }
+
+    /* ══════════════════════════════════════════════════════════════
+       COMPONENT: Live Ride HUD (Floating Navigation Card)
+       ══════════════════════════════════════════════════════════════ */
+    #live-ride-hud {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      right: 16px;
+      max-width: 480px;
+      margin: 0 auto;
+      background: var(--surface);
+      border: 2px solid var(--primary);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      padding: 12px 16px;
+      z-index: 900;
+      display: none;
+      animation: slideDownHUD 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes slideDownHUD {
+      from { transform: translateY(-20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    #live-ride-hud.active { display: block; }
+    #live-ride-hud.alert-arrival {
+      border-color: var(--danger);
+      background: #FEF2F2;
+      animation: pulseAlert 1.2s infinite;
+    }
+    @keyframes pulseAlert {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
+      50% { box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); }
+    }
+
+    .hud-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+    .hud-live-tag {
       display: inline-flex;
       align-items: center;
       gap: 6px;
       padding: 3px 8px;
-      border-radius: 12px;
+      border-radius: var(--radius-pill);
       background: #DCFCE7;
       color: #16A34A;
       font-size: 10px;
@@ -1131,310 +1329,462 @@
       text-transform: uppercase;
       letter-spacing: 0.3px;
     }
-    .hud-status-badge.alert { background: #FEE2E2; color: #DC2626; }
-    .hud-pulse {
+    .hud-live-tag.alert { background: #FEE2E2; color: #DC2626; }
+    .hud-pulse-dot {
       width: 6px;
       height: 6px;
       border-radius: 50%;
       background: currentColor;
-      box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.25);
     }
-
-    .hud-finish-btn {
-      padding: 3.5px 9px;
+    .hud-stop-btn {
+      padding: 4px 10px;
       border-radius: 6px;
       border: 1px solid var(--border);
-      background: #FFFFFF;
-      color: #DC2626;
-      font-size: 10.5px;
+      background: var(--surface);
+      color: var(--danger);
+      font-size: 11px;
       font-weight: 800;
       cursor: pointer;
     }
-    .hud-finish-btn:hover { background: #FEF2F2; }
+    .hud-stop-btn:hover { background: #FEF2F2; }
 
-    .hud-main-info {
+    .hud-body-info {
       display: flex;
       flex-direction: column;
-      gap: 3px;
+      gap: 2px;
     }
-    .hud-route-title {
+    .hud-route-tagline {
       font-size: 12px;
       font-weight: 800;
-      color: var(--text);
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      color: var(--text-primary);
     }
-    .hud-next-stop {
-      font-size: 13px;
+    .hud-next-stop-name {
+      font-size: 14px;
       font-weight: 800;
-      color: var(--brand);
+      color: var(--primary);
       line-height: 1.3;
     }
-    .hud-sub-metric {
-      font-size: 10.5px;
+    .hud-meta-text {
+      font-size: 11px;
       color: var(--text-secondary);
       display: flex;
       align-items: center;
       gap: 8px;
-      margin-top: 1px;
+      margin-top: 2px;
     }
 
-    /* ─── FOOTER ─── */
-    .footer-bar {
-      padding: 6px 14px;
-      background: #FFFFFF;
-      border-top: 1px solid var(--border);
-      font-size: 10.5px;
-      color: var(--text-muted);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-shrink: 0;
-    }
-    .footer-bar a {
-      color: var(--brand);
-      text-decoration: none;
-      font-weight: 700;
-    }
+    /* ══════════════════════════════════════════════════════════════
+       RESPONSIVE: MOBILE & TABLET BOTTOM SHEET ADAPTATION
+       ══════════════════════════════════════════════════════════════ */
+    .sheet-drag-handle { display: none; }
 
-    /* ─── MOBILE RESPONSIVENESS (<= 768px) ─── */
     @media (max-width: 768px) {
-      .app-shell { flex-direction: column; }
-      #explorer-sidebar {
-        width: 100%;
-        min-width: 0;
-        max-height: 48vh;
-        border-right: none;
-        border-bottom: 2px solid var(--border);
+      .app-header {
+        height: 52px;
       }
-      #explorer-map-area { height: 52vh; }
-      #ex-detail { bottom: 10px; left: 10px; right: 10px; max-height: 46vh; }
-      .dt-body { flex-direction: column; }
-      .dt-dir-col { max-height: none; border-right: none; border-bottom: 1px solid var(--border); }
-      .topbar-content { padding: 6px 10px; }
-      .logos-group img { height: 20px; }
-      .top-action-btn { padding: 4px 8px; font-size: 10px; }
-      .map-floating-controls { top: 10px; left: 10px; }
-      .gps-lock-fab { bottom: 16px; right: 16px; width: 44px; height: 44px; }
+      .header-content {
+        padding: 0 12px;
+      }
+      .brand-tj img { height: 22px; }
+      .brand-jaklingko img { height: 15px; }
+      .nav-tab-btn { padding: 5px 12px; font-size: 11.5px; }
+      .header-bookmark-btn { padding: 4px 8px; font-size: 11px; }
+
+      .app-main {
+        flex-direction: column;
+        height: calc(100vh - 52px);
+      }
+
+      /* On mobile, map is in background */
+      .map-workspace {
+        position: absolute;
+        inset: 0;
+        height: 100%;
+        z-index: 1;
+      }
+
+      /* Control panel transforms into modern 3-state Bottom Sheet */
+      .control-panel {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        max-width: none;
+        min-width: 0;
+        background: var(--surface);
+        border-radius: 20px 20px 0 0;
+        border-top: 1px solid var(--border);
+        border-right: none;
+        box-shadow: 0 -4px 20px rgba(16, 24, 40, 0.15);
+        z-index: 30;
+        transition: height 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      /* Drag handle on top of sheet */
+      .sheet-drag-handle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px 0 4px;
+        cursor: grab;
+        background: var(--surface);
+        border-radius: 20px 20px 0 0;
+        flex-shrink: 0;
+      }
+      .drag-bar {
+        width: 40px;
+        height: 4.5px;
+        border-radius: 3px;
+        background: #CBD5E1;
+      }
+
+      /* Bottom sheet states: collapsed, half, expanded */
+      .control-panel.state-collapsed {
+        height: 84px !important;
+        overflow: hidden;
+      }
+      .control-panel.state-half {
+        height: 48vh !important;
+      }
+      .control-panel.state-expanded {
+        height: 88vh !important;
+      }
+
+      /* Map controls moved higher to avoid bottom sheet collision */
+      .map-controls-group {
+        bottom: calc(48vh + 16px);
+        right: 14px;
+      }
+      .control-panel.state-collapsed ~ .map-workspace .map-controls-group {
+        bottom: 100px;
+      }
+      .control-panel.state-expanded ~ .map-workspace .map-controls-group {
+        bottom: calc(88vh + 16px);
+      }
+
+      .panel-header-block { padding: 10px 16px 6px; }
+      .journey-form-box { padding: 10px 16px; }
+      #journey-results-container { padding: 12px 16px; }
+      .routes-header-block { padding: 12px 16px 6px; }
+      .category-filter-scroll { padding: 0 16px 8px; }
+      .route-item-row { padding: 10px 16px; }
+      .detail-header-card { padding: 12px 16px; }
+      .vertical-stop-timeline { padding: 12px 16px; }
     }
   </style>
 </head>
 <body>
 
-<!-- Unified Clean Topbar with Real Logos -->
-<header class="topbar">
-  <div class="topbar-stripe"></div>
-  <div class="topbar-content">
-    <div class="topbar-left">
-      <div class="logos-group">
-        <a href="transit.html" title="TransJakarta Explorer &amp; Journey Planner">
-          <img src="transjakarta-logo.svg" alt="TransJakarta">
-        </a>
-        <div class="logo-divider"></div>
+<!-- ══════════════════════════════════════════════════════════════
+     APP HEADER (TransJakarta Brand + Segmented Tabs + Shortcuts)
+     ══════════════════════════════════════════════════════════════ -->
+<header class="app-header">
+  <div class="header-content">
+    <!-- Left: Official Logos -->
+    <div class="header-branding">
+      <a href="transit.html" class="brand-tj" title="TransJakarta Journey Planner">
+        <img src="transjakarta-logo.svg" alt="TransJakarta">
+      </a>
+      <div class="brand-divider"></div>
+      <div class="brand-jaklingko" title="JakLingko Integrasi Transportasi">
         <img src="jaklingko-logo.svg" alt="JakLingko">
       </div>
     </div>
 
-    <!-- Quick Shortcuts -->
-    <div class="topbar-actions">
-      <button type="button" class="top-action-btn bni" onclick="focusMenaraBNI()" title="Pusatkan peta ke Menara BNI Pejompongan">
-        🏢 Menara BNI
+    <!-- Center: Segmented Navigation -->
+    <nav class="header-nav" aria-label="Menu navigasi utama">
+      <button type="button" class="nav-tab-btn active" id="tab-nav-planner" onclick="setAppMode('planner')" title="Rencanakan rute A ke B">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span>Rencanakan Perjalanan</span>
       </button>
-      <a href="index.html" class="top-action-btn" title="Kembali ke Asisten Magang BNI">
-        <img src="bni-logo.svg" alt="BNI" height="11" style="display:block;width:auto;">
+      <button type="button" class="nav-tab-btn" id="tab-nav-routes" onclick="setAppMode('routes')" title="Lihat peta seluruh rute TransJakarta">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+        <span>Daftar Rute (240)</span>
+      </button>
+    </nav>
+
+    <!-- Right: Context Shortcuts -->
+    <div class="header-actions">
+      <button type="button" class="header-bookmark-btn" onclick="quickSelectMenaraBNI()" title="Pusatkan peta dan atur tujuan ke Menara BNI Pejompongan">
+        <span style="color:var(--accent);">★</span>
+        <span>Menara BNI</span>
+      </button>
+      <a href="index.html" class="header-bookmark-btn magang-link" title="Kembali ke Asisten Magang BNI">
+        <img src="bni-logo.svg" alt="BNI" height="11">
         <span>MagangHub</span>
       </a>
     </div>
   </div>
 </header>
 
-<div class="app-shell">
-  <!-- ══════════ SIDEBAR (JOURNEY PLANNER + 240 RUTE) ══════════ -->
-  <aside id="explorer-sidebar">
-    <!-- Top Segmented Mode Tabs -->
-    <div class="sidebar-mode-toggle">
-      <button type="button" class="mode-tab-btn active" id="tab-btn-planner" onclick="setSidebarTab('planner')">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        <span>Rencana Rute</span>
-      </button>
-      <button type="button" class="mode-tab-btn" id="tab-btn-routes" onclick="setSidebarTab('routes')">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
-        <span>Daftar Rute (240)</span>
-      </button>
+<!-- ══════════════════════════════════════════════════════════════
+     MAIN WORKSPACE: CONTROL PANEL (LEFT) + MAP (RIGHT)
+     ══════════════════════════════════════════════════════════════ -->
+<main class="app-main">
+  <!-- ─── LEFT CONTROL PANEL / MOBILE BOTTOM SHEET ─── -->
+  <aside class="control-panel state-half" id="main-control-panel">
+    <!-- Drag Handle for Mobile Bottom Sheet -->
+    <div class="sheet-drag-handle" onclick="cycleBottomSheetState()" title="Tarik atau ketuk untuk ubah ukuran panel">
+      <div class="drag-bar"></div>
     </div>
 
-    <!-- ─── PANE 1: JOURNEY PLANNER ─── -->
-    <div id="sidebar-planner-view">
-      <div class="planner-card-inner">
-        <div class="inputs-wrap">
-          <div class="connector-line"></div>
+    <!-- ══════════ VIEW 1: JOURNEY PLANNER ══════════ -->
+    <div id="view-journey-planner">
+      <div class="panel-header-block">
+        <h1 class="panel-title">Rencanakan Perjalanan</h1>
+        <p class="panel-subtitle">Navigasi transportasi terintegrasi TransJakarta &amp; JakLingko</p>
+      </div>
+
+      <!-- Single Unified Journey Input Card -->
+      <div class="journey-form-box">
+        <div class="journey-input-card">
+          <div class="vertical-route-line"></div>
 
           <!-- Origin Row -->
-          <div class="input-row">
-            <div class="inp-dot"><div class="from"></div></div>
-            <input type="text" id="p-from-input" placeholder="Titik asal (alamat, halte, stasiun)..." autocomplete="off" spellcheck="false">
-            <button type="button" class="use-gps-btn" onclick="useCurrentLocationForOrigin()" title="Gunakan GPS saya saat ini">
-              📍 GPS Saya
+          <div class="location-row">
+            <div class="location-dot">
+              <div class="dot-inner origin"></div>
+            </div>
+            <input type="text" id="p-from-input" class="location-input-field" placeholder="Titik awal: alamat, halte, atau stasiun" autocomplete="off" spellcheck="false">
+            <button type="button" class="gps-trailing-btn" id="btn-gps-origin" onclick="useCurrentLocationForOrigin()" title="Gunakan GPS saya saat ini">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg>
+              <span id="gps-origin-label">GPS Saya</span>
             </button>
-            <button type="button" class="clear-inp-btn" id="p-from-clear" onclick="clearPlanInput('from')">✕</button>
-            <div class="suggestions" id="p-from-sug"></div>
+            <button type="button" class="input-clear-btn" id="p-from-clear" onclick="clearPlanInput('from')">✕</button>
+            <div class="autocomplete-dropdown" id="p-from-dropdown"></div>
           </div>
 
-          <!-- Center Swap Button -->
-          <div class="swap-row">
-            <button type="button" class="swap-btn" onclick="swapPlanLocations()" title="Tukar Lokasi Asal &amp; Tujuan">⇅</button>
+          <!-- Swap Button Divider -->
+          <div class="swap-divider-wrap">
+            <button type="button" class="swap-locations-btn" onclick="swapPlanLocations()" title="Tukar lokasi awal dan tujuan" aria-label="Tukar lokasi">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="7 10 12 15 17 10"/><polyline points="17 14 12 9 7 14"/></svg>
+            </button>
           </div>
 
           <!-- Destination Row -->
-          <div class="input-row">
-            <div class="inp-dot"><div class="to"></div></div>
-            <input type="text" id="p-to-input" placeholder="Tujuan perjalanan..." autocomplete="off" spellcheck="false">
-            <button type="button" class="clear-inp-btn" id="p-to-clear" onclick="clearPlanInput('to')">✕</button>
-            <div class="suggestions" id="p-to-sug"></div>
+          <div class="location-row">
+            <div class="location-dot">
+              <div class="dot-inner destination"></div>
+            </div>
+            <input type="text" id="p-to-input" class="location-input-field" placeholder="Tujuan: alamat, halte, atau stasiun" autocomplete="off" spellcheck="false">
+            <button type="button" class="input-clear-btn" id="p-to-clear" onclick="clearPlanInput('to')">✕</button>
+            <div class="autocomplete-dropdown" id="p-to-dropdown"></div>
           </div>
         </div>
 
-        <!-- Presets Row -->
-        <div class="quick-chips-wrap">
-          <span class="lbl">Populer:</span>
-          <button type="button" class="chip-item bni-chip" onclick="applyPlanPreset('Menara BNI Pejompongan', -6.20385, 106.80245)">
-            🏢 Menara BNI
-          </button>
-          <button type="button" class="chip-item" onclick="applyPlanPreset('Stasiun Palmerah', -6.2071, 106.7975)">
-            🚉 St. Palmerah
-          </button>
-          <button type="button" class="chip-item" onclick="applyPlanPreset('Halte CSW / ASEAN', -6.2403, 106.7989)">
-            🚏 CSW / ASEAN
-          </button>
-          <button type="button" class="chip-item" onclick="applyPlanPreset('Monumen Nasional (Monas)', -6.1754, 106.8272)">
-            🏛️ Monas
-          </button>
-          <button type="button" class="chip-item" onclick="applyPlanPreset('Bundaran HI', -6.1951, 106.8230)">
-            🛍️ Bundaran HI
-          </button>
-          <button type="button" class="chip-item" onclick="applyPlanPreset('Blok M Plaza', -6.2443, 106.7982)">
-            🏬 Blok M
-          </button>
-        </div>
-
-        <!-- Time & Search Controls -->
-        <div class="planner-actions">
-          <div class="time-selector-row">
-            <span>Berangkat:</span>
-            <select id="p-dep-hour" aria-label="Jam keberangkatan"></select>
-            <span>:</span>
-            <select id="p-dep-minute" aria-label="Menit keberangkatan"></select>
-            <button type="button" class="now-chip-btn" onclick="setPlanNowTime()">Sekarang</button>
+        <!-- Popular Destinations Horizontal Chips -->
+        <div class="popular-dest-section">
+          <span class="section-label">Tujuan populer</span>
+          <div class="popular-chips-scroll">
+            <button type="button" class="popular-chip featured" onclick="applyPlanPreset('Menara BNI Pejompongan', -6.20385, 106.80245)">
+              🏢 Menara BNI
+            </button>
+            <button type="button" class="popular-chip" onclick="applyPlanPreset('Stasiun Palmerah', -6.2071, 106.7975)">
+              🚆 St. Palmerah
+            </button>
+            <button type="button" class="popular-chip" onclick="applyPlanPreset('Halte CSW / ASEAN', -6.2403, 106.7989)">
+              🚏 CSW / ASEAN
+            </button>
+            <button type="button" class="popular-chip" onclick="applyPlanPreset('Blok M Plaza', -6.2443, 106.7982)">
+              🏬 Blok M
+            </button>
+            <button type="button" class="popular-chip" onclick="applyPlanPreset('Monumen Nasional (Monas)', -6.1754, 106.8272)">
+              🏛️ Monas
+            </button>
+            <button type="button" class="popular-chip" onclick="applyPlanPreset('Bundaran HI', -6.1951, 106.8230)">
+              🛍️ Bundaran HI
+            </button>
           </div>
+        </div>
 
-          <button type="button" class="btn-find-journey" onclick="executePlanJourney()">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <span>Cari Rute</span>
+        <!-- Departure Time Selector -->
+        <div class="departure-control-box">
+          <button type="button" class="time-picker-trigger" onclick="openTimeModal()" title="Pilih waktu keberangkatan">
+            <div class="time-label-wrap">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <span>Berangkat:</span>
+              <strong id="display-time-label" style="color:var(--primary);margin-left:4px;">Sekarang</strong>
+            </div>
+            <span style="font-size:11px;color:var(--text-muted);">▾</span>
           </button>
         </div>
+
+        <!-- CTA Button -->
+        <button type="button" class="search-route-cta" id="btn-search-journey" onclick="executePlanJourney()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <span id="search-cta-label">Cari Rute</span>
+        </button>
       </div>
 
-      <!-- Results List in Sidebar -->
-      <div id="planner-results-list">
-        <div class="planner-status-msg" id="planner-initial-hint">
-          <div style="font-size:28px;margin-bottom:6px;">🧭</div>
-          <div style="font-weight:700;font-size:13px;color:var(--text);margin-bottom:4px;">Tentukan Rute Perjalanan</div>
-          <div>Pilih titik asal &amp; tujuan di atas, atau gunakan preset cepat seperti <b>Menara BNI</b> dan <b>Stasiun Palmerah</b>.</div>
+      <!-- Results List / State Messages -->
+      <div id="journey-results-container">
+        <div class="state-message-card" id="journey-initial-state">
+          <div class="icon-lead">🧭</div>
+          <div class="title-lead">Tentukan Lokasi Perjalanan</div>
+          <div>Masukkan lokasi awal dan tujuan untuk melihat pilihan rute transportasi umum terbaik.</div>
         </div>
       </div>
     </div>
 
-    <!-- ─── PANE 2: ROUTE EXPLORER (240 ROUTES) ─── -->
-    <div id="sidebar-routes-view" class="hidden">
-      <div class="ex-header">
-        <div class="ex-title">
-          <span style="color:var(--brand)">●</span> Rute TransJakarta
+    <!-- ══════════ VIEW 2: ROUTE EXPLORER (240 RUTE) ══════════ -->
+    <div id="view-route-explorer" class="hidden">
+      <div class="routes-header-block">
+        <div class="routes-title-wrap">
+          <h2 class="routes-main-title">Rute Transportasi</h2>
+          <span class="routes-counter-label" id="routes-counter-badge">240 rute tersedia</span>
         </div>
-        <span class="ex-badge" id="route-count-badge">240 Rute</span>
+
+        <div class="routes-search-wrap">
+          <svg class="routes-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="routes-search-input" class="routes-search-input" placeholder="Cari rute, nomor, atau halte tujuan..." oninput="onRouteSearchInput(this.value)">
+          <button type="button" class="routes-clear-btn" id="routes-clear-btn" onclick="clearRouteSearch()">✕</button>
+        </div>
       </div>
 
-      <!-- Category Filter Tabs -->
-      <div class="ex-stats-bar" id="ex-stats"></div>
-
-      <!-- Route Search Input -->
-      <div class="ex-search-box">
-        <svg class="ex-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="text" id="ex-search-input" placeholder="Cari nomor rute atau tujuan (contoh: 1, 9, Palmerah)..." oninput="filterExplorerRoutes(this.value)">
-        <button type="button" class="ex-clear-icon" id="ex-clear-btn" onclick="clearExSearch()">✕</button>
-      </div>
+      <!-- Category Filter Chips -->
+      <div class="category-filter-scroll" id="cat-filter-bar"></div>
 
       <!-- Route List -->
-      <div id="ex-route-list">
-        <div style="padding:28px 16px;text-align:center;color:var(--text-muted);font-size:12px;">Menyiapkan daftar rute TransJakarta...</div>
+      <div id="routes-list-scroll">
+        <div class="state-message-card">
+          <div class="loading-transit-spinner"></div>
+          <div>Memuat seluruh jaringan TransJakarta...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ VIEW 3: ROUTE DETAIL SUB-PANEL ══════════ -->
+    <div id="view-route-detail">
+      <div class="detail-nav-back" onclick="backToRouteList()">
+        <span>← Kembali ke Semua Rute</span>
+      </div>
+
+      <div class="detail-header-card">
+        <div class="detail-badge-row">
+          <div class="route-pill-badge" id="dt-badge">1</div>
+          <span style="font-size:11px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;" id="dt-category">BRT</span>
+        </div>
+        <h2 class="detail-route-name" id="dt-title">Blok M → Kota</h2>
+
+        <!-- Direction Dropdown -->
+        <div class="direction-select-box">
+          <select id="dt-direction-select" onchange="onDirectionChange(this.value)">
+            <!-- Options populated dynamically -->
+          </select>
+        </div>
+      </div>
+
+      <!-- Vertical Stop Timeline -->
+      <div class="vertical-stop-timeline" id="dt-stops-timeline">
+        <!-- Stop nodes populated dynamically -->
+      </div>
+
+      <div class="detail-footer-summary">
+        <div class="detail-metrics" id="dt-summary-metrics">23 halte · Estimasi ±62 menit</div>
+        <button type="button" class="btn-ride-shortcut" id="btn-start-ride-dt" onclick="startLiveRideFromDetail()">
+          <span>🚀 Mulai Naik</span>
+        </button>
       </div>
     </div>
   </aside>
 
-  <!-- ══════════ RIGHT INTERACTIVE MAP AREA ══════════ -->
-  <div id="explorer-map-area">
-    <!-- Floating Map Buttons -->
-    <div class="map-floating-controls">
-      <button type="button" class="map-btn-pill" id="live-gps-btn" onclick="toggleGPSLock()" title="Kunci GPS ke lokasi saya saat ini">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg>
-        <span id="gps-btn-label">Kunci GPS Saya</span>
+  <!-- ─── RIGHT INTERACTIVE MAP WORKSPACE ─── -->
+  <section class="map-workspace" aria-label="Peta Rute TransJakarta">
+    <!-- Clean Minimal Map Controls (Right Side) -->
+    <div class="map-controls-group">
+      <button type="button" class="map-ctrl-btn" id="btn-map-gps" onclick="toggleGPSLock()" title="Pusatkan dan kunci posisi GPS saya">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/></svg>
       </button>
-      <button type="button" class="map-btn-pill" onclick="resetMapJakarta()" title="Reset tampilan peta ke pusat Jakarta">
-        🧭 Pusat Jakarta
+      <button type="button" class="map-ctrl-btn" onclick="mapZoomIn()" title="Perbesar peta">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </button>
+      <button type="button" class="map-ctrl-btn" onclick="mapZoomOut()" title="Perkecil peta">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </button>
+      <button type="button" class="map-ctrl-btn" onclick="resetMapJakarta()" title="Reset tampilan ke pusat Jakarta">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
       </button>
     </div>
 
-    <!-- Main Leaflet Map -->
-    <div id="explorer-map"></div>
+    <!-- Leaflet Map Container -->
+    <div id="transit-map"></div>
 
-    <!-- GPS FAB Target Button (Bottom Right) -->
-    <button type="button" class="gps-lock-fab" id="gps-fab" onclick="toggleGPSLock()" title="Temukan dan Kunci Posisi Saya" aria-label="Kunci Lokasi Saya">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/></svg>
-    </button>
+    <!-- Subtle Data Attribution -->
+    <div class="map-subtle-attribution">
+      GTFS PT Transportasi Jakarta PPID · OpenStreetMap
+    </div>
 
-    <!-- Route Detail Drawer (Halte Stops) -->
-    <div id="ex-detail"></div>
-
-    <!-- Live Transum Ride HUD -->
+    <!-- Live Ride HUD (Floating Navigation Card) -->
     <div id="live-ride-hud">
-      <div class="hud-top">
-        <div class="hud-status-badge" id="hud-status-badge">
-          <span class="hud-pulse"></span>
-          <span id="hud-status-text">Live Ride Mode</span>
+      <div class="hud-header">
+        <div class="hud-live-tag" id="hud-live-tag">
+          <span class="hud-pulse-dot"></span>
+          <span id="hud-status-text">Perjalanan Aktif</span>
         </div>
-        <button type="button" class="hud-finish-btn" onclick="stopLiveRide()">⏹️ Akhiri</button>
+        <button type="button" class="hud-stop-btn" onclick="stopLiveRide()">⏹ Selesai</button>
       </div>
-      <div class="hud-main-info">
-        <div class="hud-route-title" id="hud-route-title">Rute Aktif</div>
-        <div class="hud-next-stop" id="hud-next-stop">Mendeteksi halte terdekat...</div>
-        <div class="hud-sub-metric" id="hud-metric">
-          <span>📍 Akurasi GPS: ±<strong id="hud-acc">--</strong>m</span>
+      <div class="hud-body-info">
+        <div class="hud-route-tagline" id="hud-route-tagline">Rute TransJakarta</div>
+        <div class="hud-next-stop-name" id="hud-next-stop">Mendeteksi halte terdekat...</div>
+        <div class="hud-meta-text">
+          <span>📍 Akurasi: ±<strong id="hud-acc-val">--</strong>m</span>
           <span>·</span>
-          <span id="hud-dist-to-stop">Mencari posisi halte...</span>
+          <span id="hud-dist-val">Mencari posisi...</span>
         </div>
       </div>
+    </div>
+  </section>
+</main>
+
+<!-- ══════════════════════════════════════════════════════════════
+     MODAL: WAKTU KEBERANGKATAN
+     ══════════════════════════════════════════════════════════════ -->
+<div class="time-modal-overlay" id="time-modal">
+  <div class="time-modal-card">
+    <div class="time-modal-title">Waktu Keberangkatan</div>
+    <label class="time-option-row">
+      <input type="radio" name="opt-time-mode" value="now" checked onchange="toggleTimeModeInputs(this.value)">
+      <span>Berangkat Sekarang</span>
+    </label>
+    <label class="time-option-row">
+      <input type="radio" name="opt-time-mode" value="custom" onchange="toggleTimeModeInputs(this.value)">
+      <span>Pilih Jam Keberangkatan</span>
+    </label>
+
+    <div class="time-select-inputs" id="time-custom-inputs" style="display:none;">
+      <span>Jam:</span>
+      <select id="modal-sel-hour"></select>
+      <span style="font-weight:800;">:</span>
+      <select id="modal-sel-minute"></select>
+    </div>
+
+    <div class="time-modal-actions">
+      <button type="button" class="time-modal-btn cancel" onclick="closeTimeModal()">Batal</button>
+      <button type="button" class="time-modal-btn apply" onclick="applyTimeSelection()">Terapkan</button>
     </div>
   </div>
 </div>
 
-<footer class="footer-bar">
-  <div>Data GTFS resmi PT Transportasi Jakarta via PPID · CC BY 4.0 · Terintegrasi Menara BNI Pejompongan</div>
-  <div><a href="index.html">Asisten Magang BNI</a></div>
-</footer>
-
+<!-- Leaflet Library -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
 <script>
 (function() {
+  'use strict';
+
   var API = 'http://localhost:8765';
 
-  // Global State
+  // ─── STATE MANAGEMENT ───
+  var currentAppMode = 'planner'; // 'planner' | 'routes'
   var routesData = [];
   var routeDetailsData = [];
   var geoData = {};
   var activeCategory = 'all';
   var selectedRouteId = null;
+  var currentDetailDirectionIdx = 0;
 
-  // Leaflet Map & Layer State
+  // Map & Visual Layers
   var map = null;
   var currentRouteLayer = null;
   var currentStopMarkers = [];
@@ -1442,33 +1792,36 @@
 
   // GPS Tracking State
   var gpsWatchId = null;
-  var isGPSLocked = false;
+  var isGPSActive = false;
   var userMarker = null;
   var accuracyCircle = null;
 
-  // Live Ride Tracker State
+  // Live Ride Tracking State
   var isRideActive = false;
   var activeRideRoute = null;
   var activeRideStops = [];
   var hasAlertedArrival = false;
 
-  // Journey Planner State
+  // Journey Planner Coordinates & State
   var planFromCoord = null, planToCoord = null;
   var planFromName = '', planToName = '';
   var currentJourneys = [];
+  var selectedTimeMode = 'now'; // 'now' | 'custom'
+  var selectedHour = null, selectedMinute = null;
 
+  // Transport Colors Map
   var CAT_COLORS = {
     BRT: '#DC2626',
-    Metrotrans: '#2563EB',
+    Metrotrans: '#005BAC',
     Mikrotrans: '#16A34A',
     Royaltrans: '#9333EA',
     Transjabodetabek: '#EA580C',
     'Bus Wisata': '#D97706'
   };
 
-  // Web Audio Context for Arrival Bell / Chime
+  // ─── AUDIO CHIME SYNTHESIS (Offline Web Audio Ding-Dong) ───
   var audioCtx = null;
-  function playArrivalDingDong() {
+  function playArrivalChime() {
     try {
       if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -1476,349 +1829,161 @@
       var osc1 = audioCtx.createOscillator();
       var gain1 = audioCtx.createGain();
       osc1.frequency.setValueAtTime(784, audioCtx.currentTime); // G5
-      gain1.gain.setValueAtTime(0.3, audioCtx.currentTime);
+      gain1.gain.setValueAtTime(0.28, audioCtx.currentTime);
       gain1.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
-      osc1.connect(gain1);
-      gain1.connect(audioCtx.destination);
-      osc1.start();
-      osc1.stop(audioCtx.currentTime + 0.4);
+      osc1.connect(gain1); gain1.connect(audioCtx.destination);
+      osc1.start(); osc1.stop(audioCtx.currentTime + 0.4);
 
       var osc2 = audioCtx.createOscillator();
       var gain2 = audioCtx.createGain();
-      osc2.frequency.setValueAtTime(659, audioCtx.currentTime + 0.25); // E5
-      gain2.gain.setValueAtTime(0.3, audioCtx.currentTime + 0.25);
+      osc2.frequency.setValueAtTime(659, audioCtx.currentTime + 0.22); // E5
+      gain2.gain.setValueAtTime(0.28, audioCtx.currentTime + 0.22);
       gain2.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.7);
-      osc2.connect(gain2);
-      gain2.connect(audioCtx.destination);
-      osc2.start(audioCtx.currentTime + 0.25);
-      osc2.stop(audioCtx.currentTime + 0.7);
+      osc2.connect(gain2); gain2.connect(audioCtx.destination);
+      osc2.start(audioCtx.currentTime + 0.22); osc2.stop(audioCtx.currentTime + 0.7);
     } catch(e) {}
   }
 
-  // ─── SIDEBAR TAB SWITCHING ───
-  window.setSidebarTab = function(tab) {
-    var plannerView = document.getElementById('sidebar-planner-view');
-    var routesView = document.getElementById('sidebar-routes-view');
-    var tabPlanner = document.getElementById('tab-btn-planner');
-    var tabRoutes = document.getElementById('tab-btn-routes');
-
-    if (tab === 'planner') {
-      plannerView.classList.remove('hidden');
-      routesView.classList.add('hidden');
-      tabPlanner.classList.add('active');
-      tabRoutes.classList.remove('active');
-    } else {
-      plannerView.classList.add('hidden');
-      routesView.classList.remove('hidden');
-      tabPlanner.classList.remove('active');
-      tabRoutes.classList.add('active');
-    }
-    if (map) setTimeout(function() { map.invalidateSize(); }, 150);
-  };
-
   // ─── INITIALIZATION ───
   function initApp() {
-    initMap();
-    initPlanTimes();
-    setupPlanAutocomplete('p-from-input', 'p-from-sug', 'p-from-clear', true);
-    setupPlanAutocomplete('p-to-input', 'p-to-sug', 'p-to-clear', false);
+    initLeafletMap();
+    initTimePickers();
+    setupAutocomplete('p-from-input', 'p-from-dropdown', 'p-from-clear', true);
+    setupAutocomplete('p-to-input', 'p-to-dropdown', 'p-to-clear', false);
 
     // Load GTFS datasets
     Promise.all([
       fetch('data/routes.json').then(function(r) { return r.json(); }),
       fetch('data/route_details.json').then(function(r) { return r.json(); }),
       fetch('data/route_geometries.json').then(function(r) { return r.json(); })
-    ]).then(function(data) {
-      routesData = data[0] || [];
-      routeDetailsData = data[1] || [];
-      geoData = data[2] || {};
+    ]).then(function(datasets) {
+      routesData = datasets[0] || [];
+      routeDetailsData = datasets[1] || [];
+      geoData = datasets[2] || {};
 
-      // Normalize any 'Unknown' categories to Feeder / Metrotrans
+      // Normalize 'Unknown' categories to Metrotrans
       routesData.forEach(function(r) {
-        if (!r.route_category || r.route_category === 'Unknown') {
-          r.route_category = 'Metrotrans';
-        }
+        if (!r.route_category || r.route_category === 'Unknown') r.route_category = 'Metrotrans';
       });
 
-      renderStats();
-      renderRoutes();
-    }).catch(function(err) {
-      document.getElementById('ex-route-list').innerHTML = '<div style="padding:24px;text-align:center;color:#DC2626;font-size:12px;">Gagal memuat basis data rute.</div>';
+      renderCategoryChips();
+      renderRoutesList();
+    }).catch(function() {
+      var list = document.getElementById('routes-list-scroll');
+      if (list) list.innerHTML = '<div class="state-message-card" style="color:var(--danger);">Gagal memuat dataset rute GTFS.</div>';
     });
   }
 
-  function initMap() {
+  function initLeafletMap() {
     if (map) return;
-    map = L.map('explorer-map', { zoomControl: true }).setView([-6.2088, 106.845], 13);
+    map = L.map('transit-map', {
+      zoomControl: false // Using our clean styled controls
+    }).setView([-6.2088, 106.845], 13);
+
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap · PT Transportasi Jakarta PPID',
+      attribution: '&copy; OpenStreetMap',
       maxZoom: 19
     }).addTo(map);
+
     setTimeout(function() { map.invalidateSize(); }, 300);
   }
 
-  // ─── ROUTE EXPLORER CODE ───
-  function renderStats() {
-    var counts = { all: routesData.length, BRT: 0, Metrotrans: 0, Mikrotrans: 0, Royaltrans: 0, Transjabodetabek: 0, 'Bus Wisata': 0 };
-    routesData.forEach(function(r) {
-      var cat = r.route_category;
-      if (counts[cat] !== undefined) counts[cat]++;
-    });
-
-    var cats = [
-      { id: 'all', label: 'Semua', count: counts.all, color: '#FF5500' },
-      { id: 'BRT', label: 'BRT', count: counts.BRT, color: CAT_COLORS.BRT },
-      { id: 'Metrotrans', label: 'Metrotrans', count: counts.Metrotrans, color: CAT_COLORS.Metrotrans },
-      { id: 'Mikrotrans', label: 'Mikrotrans', count: counts.Mikrotrans, color: CAT_COLORS.Mikrotrans },
-      { id: 'Royaltrans', label: 'Royaltrans', count: counts.Royaltrans, color: CAT_COLORS.Royaltrans },
-      { id: 'Transjabodetabek', label: 'Jabodetabek', count: counts.Transjabodetabek, color: CAT_COLORS.Transjabodetabek },
-      { id: 'Bus Wisata', label: 'Wisata', count: counts['Bus Wisata'], color: CAT_COLORS['Bus Wisata'] }
-    ];
-
-    var html = cats.map(function(c) {
-      return '<button class="ex-chip '+(activeCategory === c.id ? 'active' : '')+'" onclick="filterExplorerCategory(\''+c.id+'\')">' +
-        '<span class="dot" style="background:'+c.color+'"></span>' +
-        c.label + ' (' + c.count + ')' +
-      '</button>';
-    }).join('');
-
-    document.getElementById('ex-stats').innerHTML = html;
-  }
-
-  window.filterExplorerCategory = function(cat) {
-    activeCategory = cat;
-    renderStats();
-    filterExplorerRoutes(document.getElementById('ex-search-input').value);
+  // Map Controls
+  window.mapZoomIn = function() { if (map) map.zoomIn(); };
+  window.mapZoomOut = function() { if (map) map.zoomOut(); };
+  window.resetMapJakarta = function() {
+    if (!map) return;
+    map.setView([-6.2088, 106.845], 13, { animate: true, duration: 0.5 });
   };
 
-  function renderRoutes(filterText) {
-    var list = document.getElementById('ex-route-list');
-    var q = (filterText || '').toLowerCase().trim();
+  // ─── NAVIGATION MODE SWITCHER ───
+  window.setAppMode = function(mode) {
+    currentAppMode = mode;
+    var tabPlanner = document.getElementById('tab-nav-planner');
+    var tabRoutes = document.getElementById('tab-nav-routes');
+    var viewPlanner = document.getElementById('view-journey-planner');
+    var viewRoutes = document.getElementById('view-route-explorer');
+    var viewDetail = document.getElementById('view-route-detail');
 
-    var filtered = routesData.filter(function(r) {
-      if (activeCategory !== 'all' && r.route_category !== activeCategory) return false;
-      if (!q) return true;
-      return (r.route_id && r.route_id.toLowerCase().includes(q)) ||
-             (r.route_name && r.route_name.toLowerCase().includes(q)) ||
-             (r.route_category && r.route_category.toLowerCase().includes(q));
-    });
-
-    document.getElementById('route-count-badge').textContent = filtered.length + ' Rute';
-
-    if (!filtered.length) {
-      list.innerHTML = '<div style="padding:28px 16px;text-align:center;color:var(--text-secondary);font-size:12px;">Tidak ditemukan rute yang cocok.</div>';
-      return;
+    if (mode === 'planner') {
+      tabPlanner.classList.add('active');
+      tabRoutes.classList.remove('active');
+      viewPlanner.classList.remove('hidden');
+      viewRoutes.classList.add('hidden');
+      viewDetail.classList.remove('show');
+    } else {
+      tabPlanner.classList.remove('active');
+      tabRoutes.classList.add('active');
+      viewPlanner.classList.add('hidden');
+      viewRoutes.classList.remove('hidden');
+      viewDetail.classList.remove('show');
     }
 
-    var html = filtered.map(function(r) {
-      var badgeCls = 'metro';
-      var cat = r.route_category || '';
-      if (cat === 'BRT') badgeCls = 'brt';
-      else if (cat === 'Mikrotrans') badgeCls = 'mikro';
-      else if (cat === 'Royaltrans') badgeCls = 'royal';
-      else if (cat === 'Transjabodetabek') badgeCls = 'jabodetabek';
-      else if (cat === 'Bus Wisata') badgeCls = 'wisata';
-
-      var isActive = r.route_id === selectedRouteId ? 'active' : '';
-
-      return '<div class="ex-route-row '+isActive+'" id="r-row-'+r.route_id+'" onclick="selectExplorerRoute(\''+r.route_id+'\')">' +
-        '<div class="r-badge '+badgeCls+'">'+r.route_id+'</div>' +
-        '<div class="r-info">' +
-          '<div class="r-name">'+r.route_name+'</div>' +
-          '<div class="r-sub" style="color:'+(CAT_COLORS[cat]||'#64748B')+'">'+cat+'</div>' +
-        '</div>' +
-        '<div class="r-arrow">›</div>' +
-      '</div>';
-    }).join('');
-
-    list.innerHTML = html;
-  }
-
-  window.filterExplorerRoutes = function(val) {
-    document.getElementById('ex-clear-btn').style.display = val.length ? 'block' : 'none';
-    renderRoutes(val);
+    if (map) setTimeout(function() { map.invalidateSize(); }, 200);
   };
 
-  window.clearExSearch = function() {
-    var inp = document.getElementById('ex-search-input');
-    inp.value = '';
-    document.getElementById('ex-clear-btn').style.display = 'none';
-    renderRoutes('');
+  // ─── MOBILE BOTTOM SHEET CYCLING ───
+  window.cycleBottomSheetState = function() {
+    var panel = document.getElementById('main-control-panel');
+    if (!panel) return;
+
+    if (panel.classList.contains('state-collapsed')) {
+      panel.classList.remove('state-collapsed', 'state-expanded');
+      panel.classList.add('state-half');
+    } else if (panel.classList.contains('state-half')) {
+      panel.classList.remove('state-half');
+      panel.classList.add('state-expanded');
+    } else {
+      panel.classList.remove('state-expanded');
+      panel.classList.add('state-collapsed');
+    }
   };
 
-  window.selectExplorerRoute = function(routeId) {
-    selectedRouteId = routeId;
-    document.querySelectorAll('.ex-route-row').forEach(function(el) { el.classList.remove('active'); });
-    var targetRow = document.getElementById('r-row-' + routeId);
-    if (targetRow) targetRow.classList.add('active');
+  // ─── POPULAR PRESET / SHORTCUT MENARA BNI ───
+  window.quickSelectMenaraBNI = function() {
+    var bniLat = -6.20385, bniLon = 106.80245;
+    applyPlanPreset('Menara BNI Pejompongan', bniLat, bniLon);
 
-    // Clean up previous journey layer if active
-    if (journeyLayerGroup) {
-      map.removeLayer(journeyLayerGroup);
-      journeyLayerGroup = null;
+    if (window._bniMarker) {
+      try { map.removeLayer(window._bniMarker); } catch(e){}
     }
 
-    // Draw route geometry on map
-    drawRouteGeometry(routeId);
+    window._bniMarker = L.marker([bniLat, bniLon], {
+      icon: L.divIcon({
+        className: '',
+        html: '<div style="background:#FF5A1F;color:#FFF;padding:5px 12px;border-radius:20px;font-weight:800;font-size:11px;border:2.5px solid #FFF;box-shadow:0 4px 14px rgba(255,90,31,0.45);white-space:nowrap;display:flex;align-items:center;gap:4px;">🏢 Menara BNI</div>',
+        iconSize: [110, 26], iconAnchor: [55, 13]
+      })
+    }).addTo(map).bindPopup('<div style="font-family:Plus Jakarta Sans,sans-serif;padding:4px;"><div style="font-size:10px;font-weight:800;color:#FF5A1F;">KANTOR PENUGASAN MAGANG</div><div style="font-size:13px;font-weight:800;color:#172033;margin-top:2px;">Gedung Menara BNI Pejompongan</div><div style="font-size:11px;color:#667085;margin-top:3px;">Jl. Pejompongan Raya No. 7, Jakarta Pusat<br>📍 Halte terdekat: <b>Menara Pejompongan</b> (50m)</div></div>').openPopup();
 
-    // Show halte stops in bottom drawer
-    showRouteStops(routeId);
+    map.setView([bniLat, bniLon], 16, { animate: true, duration: 0.6 });
+
+    // Ensure we are in planner view
+    setAppMode('planner');
   };
 
-  function drawRouteGeometry(routeId) {
-    if (currentRouteLayer) {
-      map.removeLayer(currentRouteLayer);
-      currentRouteLayer = null;
+  // ─── JOURNEY PLANNER LOGIC ───
+  window.applyPlanPreset = function(name, lat, lon) {
+    var fi = document.getElementById('p-from-input'), ti = document.getElementById('p-to-input');
+    if (!planFromCoord && !fi.value.trim()) {
+      fi.value = name;
+      planFromCoord = [lat, lon];
+      planFromName = name;
+      document.getElementById('p-from-clear').style.display = 'inline-block';
+    } else {
+      ti.value = name;
+      planToCoord = [lat, lon];
+      planToName = name;
+      document.getElementById('p-to-clear').style.display = 'inline-block';
     }
-
-    var routeMeta = routesData.find(function(r) { return r.route_id === routeId; });
-    var cat = routeMeta ? routeMeta.route_category : 'BRT';
-    var color = CAT_COLORS[cat] || '#FF5500';
-
-    var geom = geoData[routeId];
-    if (geom && geom.coordinates && geom.coordinates.length) {
-      var latlngs = geom.coordinates.map(function(c) { return [c[1], c[0]]; });
-      currentRouteLayer = L.polyline(latlngs, {
-        color: color,
-        weight: 5,
-        opacity: 0.9,
-        lineJoin: 'round',
-        lineCap: 'round'
-      }).addTo(map);
-
-      map.fitBounds(currentRouteLayer.getBounds(), { padding: [40, 40], maxZoom: 16 });
-    }
-  }
-
-  function showRouteStops(routeId) {
-    var drawer = document.getElementById('ex-detail');
-    var detail = routeDetailsData.find(function(d) { return d.route_id === routeId; });
-    var routeMeta = routesData.find(function(r) { return r.route_id === routeId; }) || {};
-
-    if (!detail || !detail.directions || !detail.directions.length) {
-      drawer.classList.remove('open');
-      return;
-    }
-
-    currentStopMarkers.forEach(function(m) { map.removeLayer(m); });
-    currentStopMarkers = [];
-
-    var dirs = detail.directions;
-    var html = '<div class="dt-header">' +
-      '<div class="dt-header-left">' +
-        '<div class="r-badge '+(detail.category==='BRT'?'brt':'metro')+'">'+detail.short_name+'</div>' +
-        '<div class="dt-title">'+detail.long_name+'</div>' +
-      '</div>' +
-      '<div class="dt-actions">' +
-        '<button type="button" class="start-ride-btn" onclick="startLiveRideFromRoute(\''+routeId+'\')" title="Mulai mode perjalanan langsung dengan GPS">' +
-          '<span>🚀 Mulai Naik</span>' +
-        '</button>' +
-        '<button type="button" class="dt-close" onclick="closeRouteDetail()">✕</button>' +
-      '</div>' +
-    '</div>';
-
-    html += '<div class="dt-dirs-bar">';
-    dirs.forEach(function(d, idx) {
-      html += '<button class="dir-pill '+(idx === 0 ? 'active' : '')+'" id="dir-pill-'+idx+'" onclick="switchRouteDir('+idx+')">' +
-        'Arah ' + (idx + 1) + ': ' + (d.headsign || 'Rute Utama') + ' (' + d.stop_count + ' Halte)' +
-      '</button>';
-    });
-    html += '</div>';
-
-    html += '<div class="dt-body">';
-    dirs.forEach(function(d, idx) {
-      html += '<div class="dt-dir-col '+(idx === 0 ? '' : 'hidden')+'" id="dir-col-'+idx+'">';
-      var stops = d.stops || [];
-      stops.forEach(function(s, sIdx) {
-        var seqCls = sIdx === 0 ? 'first' : (sIdx === stops.length - 1 ? 'last' : '');
-        html += '<div class="dt-stop-item" onclick="focusHalteStop('+s.lat+', '+s.lon+', \''+s.name.replace(/'/g, "\\'")+'\')">' +
-          '<div class="dt-seq '+seqCls+'">'+(sIdx+1)+'</div>' +
-          '<div class="dt-sname">'+s.name+'</div>' +
-        '</div>';
-
-        // Add stop marker to map
-        if (s.lat && s.lon && idx === 0) {
-          var marker = L.circleMarker([s.lat, s.lon], {
-            radius: 4,
-            fillColor: '#FFFFFF',
-            color: CAT_COLORS[routeMeta.route_category] || '#FF5500',
-            weight: 2,
-            opacity: 0.9,
-            fillOpacity: 1
-          }).addTo(map).bindTooltip(s.name, { direction: 'top', offset: [0, -4] });
-          currentStopMarkers.push(marker);
-        }
-      });
-      html += '</div>';
-    });
-    html += '</div>';
-
-    drawer.innerHTML = html;
-    drawer.classList.add('open');
-  }
-
-  window.closeRouteDetail = function() {
-    document.getElementById('ex-detail').classList.remove('open');
-    currentStopMarkers.forEach(function(m) { map.removeLayer(m); });
-    currentStopMarkers = [];
-  };
-
-  window.switchRouteDir = function(dirIdx) {
-    document.querySelectorAll('.dir-pill').forEach(function(p, i) { p.classList.toggle('active', i === dirIdx); });
-    document.querySelectorAll('.dt-dir-col').forEach(function(c, i) { c.classList.toggle('hidden', i !== dirIdx); });
-  };
-
-  window.focusHalteStop = function(lat, lon, name) {
-    if (!lat || !lon) return;
-    map.setView([lat, lon], 17, { animate: true });
-    L.popup().setLatLng([lat, lon]).setContent('<b>Halte:</b><br>' + name).openOn(map);
-  };
-
-  // ─── JOURNEY PLANNER ROUTINES ───
-  function initPlanTimes() {
-    var h = document.getElementById('p-dep-hour'), m = document.getElementById('p-dep-minute');
-    if (!h || h.options.length) return;
-    var now = new Date();
-    for (var i = 0; i < 24; i++) {
-      h.innerHTML += '<option value="'+i+'"'+(i === now.getHours() ? ' selected':'')+'>'+String(i).padStart(2,'0')+'</option>';
-    }
-    for (var i = 0; i < 60; i += 5) {
-      m.innerHTML += '<option value="'+i+'"'+(i === Math.floor(now.getMinutes()/5)*5 ? ' selected':'')+'>'+String(i).padStart(2,'0')+'</option>';
-    }
-  }
-
-  window.setPlanNowTime = function() {
-    var now = new Date();
-    document.getElementById('p-dep-hour').value = now.getHours();
-    document.getElementById('p-dep-minute').value = Math.floor(now.getMinutes()/5)*5;
-  };
-
-  window.useCurrentLocationForOrigin = function() {
-    if (!navigator.geolocation) {
-      alert('Geolocation tidak didukung pada browser ini.');
-      return;
-    }
-    var inp = document.getElementById('p-from-input');
-    inp.value = 'Mencari GPS...';
-
-    navigator.geolocation.getCurrentPosition(function(pos) {
-      planFromCoord = [pos.coords.latitude, pos.coords.longitude];
-      planFromName = 'Lokasi Saya (GPS)';
-      inp.value = '📍 Lokasi Saya (GPS)';
-      document.getElementById('p-from-clear').style.display = 'inline-flex';
-
-      // Drop user pin on map
-      map.setView(planFromCoord, 15, { animate: true });
-    }, function() {
-      inp.value = '';
-      alert('Gagal mendeteksi lokasi GPS. Pastikan izin lokasi aktif.');
-    }, { enableHighAccuracy: true });
   };
 
   window.clearPlanInput = function(type) {
     if (type === 'from') {
       document.getElementById('p-from-input').value = '';
       document.getElementById('p-from-clear').style.display = 'none';
+      document.getElementById('gps-origin-label').textContent = 'GPS Saya';
+      document.getElementById('btn-gps-origin').classList.remove('active');
       planFromCoord = null;
       planFromName = '';
     } else {
@@ -1837,67 +2002,85 @@
     var tcCoord = planFromCoord; planFromCoord = planToCoord; planToCoord = tcCoord;
     var tn = planFromName; planFromName = planToName; planToName = tn;
 
-    fc.style.display = fi.value ? 'inline-flex' : 'none';
-    tc.style.display = ti.value ? 'inline-flex' : 'none';
+    fc.style.display = fi.value ? 'inline-block' : 'none';
+    tc.style.display = ti.value ? 'inline-block' : 'none';
   };
 
-  window.applyPlanPreset = function(name, lat, lon) {
-    var fi = document.getElementById('p-from-input'), ti = document.getElementById('p-to-input');
-    if (!planFromCoord && !fi.value.trim()) {
-      fi.value = name;
-      planFromCoord = [lat, lon];
-      planFromName = name;
-      document.getElementById('p-from-clear').style.display = 'inline-flex';
-    } else {
-      ti.value = name;
-      planToCoord = [lat, lon];
-      planToName = name;
-      document.getElementById('p-to-clear').style.display = 'inline-flex';
+  window.useCurrentLocationForOrigin = function() {
+    if (!navigator.geolocation) {
+      alert('Akses lokasi (Geolocation) tidak didukung pada browser ini.');
+      return;
     }
+
+    var inp = document.getElementById('p-from-input');
+    var btn = document.getElementById('btn-gps-origin');
+    var lbl = document.getElementById('gps-origin-label');
+
+    lbl.textContent = 'Mencari...';
+
+    navigator.geolocation.getCurrentPosition(function(pos) {
+      planFromCoord = [pos.coords.latitude, pos.coords.longitude];
+      planFromName = 'Lokasi Saya Saat Ini (GPS)';
+      inp.value = '📍 Lokasi Saya Saat Ini';
+      lbl.textContent = 'Lokasi Saya ✓';
+      btn.classList.add('active');
+      document.getElementById('p-from-clear').style.display = 'inline-block';
+
+      map.setView(planFromCoord, 15, { animate: true });
+    }, function() {
+      lbl.textContent = 'GPS Saya';
+      alert('Akses lokasi tidak diizinkan. Silakan ketik nama lokasi secara manual.');
+    }, { enableHighAccuracy: true, timeout: 8000 });
   };
 
-  var planDebounceTimer;
-  function setupPlanAutocomplete(inputId, sugId, clearBtnId, isOrigin) {
-    var inp = document.getElementById(inputId), sug = document.getElementById(sugId);
+  // Autocomplete Setup
+  var debounceTimer;
+  function setupAutocomplete(inputId, dropdownId, clearBtnId, isOrigin) {
+    var inp = document.getElementById(inputId), drop = document.getElementById(dropdownId);
     var clearBtn = document.getElementById(clearBtnId);
 
     inp.addEventListener('input', function() {
-      clearTimeout(planDebounceTimer);
+      clearTimeout(debounceTimer);
       var q = inp.value.trim();
-      clearBtn.style.display = q.length ? 'inline-flex' : 'none';
-      if (q.length < 2) { sug.classList.remove('show'); return; }
+      clearBtn.style.display = q.length ? 'inline-block' : 'none';
+      if (q.length < 2) { drop.classList.remove('show'); return; }
 
-      planDebounceTimer = setTimeout(function() {
+      debounceTimer = setTimeout(function() {
         fetch('https://nominatim.openstreetmap.org/search?q='+encodeURIComponent(q)+'&format=json&limit=5&countrycodes=id&bounded=1&viewbox=106.6,-6.5,107.0,-5.9', {
           headers: { 'Accept-Language': 'id' }
         })
         .then(function(r) { return r.json(); })
         .then(function(data) {
-          if (!data || !data.length) { sug.classList.remove('show'); return; }
-          sug.innerHTML = data.map(function(d) {
+          if (!data || !data.length) { drop.classList.remove('show'); return; }
+          drop.innerHTML = data.map(function(d) {
             var shortName = d.display_name.split(',')[0];
-            return '<div class="sug-item" data-lat="'+d.lat+'" data-lon="'+d.lon+'" data-name="'+shortName.replace(/"/g,'&quot;')+'">' +
-              '<span>📍</span>' +
+            var icon = '📍';
+            var lower = d.display_name.toLowerCase();
+            if (lower.includes('stasiun') || lower.includes('station')) icon = '🚆';
+            else if (lower.includes('halte') || lower.includes('bus')) icon = '🚏';
+
+            return '<div class="autocomplete-item" data-lat="'+d.lat+'" data-lon="'+d.lon+'" data-name="'+shortName.replace(/"/g,'&quot;')+'">' +
+              '<span class="sug-type-icon">'+icon+'</span>' +
               '<div style="min-width:0;flex:1;">' +
-                '<div class="name">'+shortName+'</div>' +
-                '<div class="addr">'+d.display_name+'</div>' +
+                '<div class="sug-name">'+shortName+'</div>' +
+                '<div class="sug-desc">'+d.display_name+'</div>' +
               '</div>' +
             '</div>';
           }).join('');
-          sug.classList.add('show');
+          drop.classList.add('show');
         }).catch(function() {});
-      }, 300);
+      }, 250);
     });
 
     inp.addEventListener('blur', function() {
-      setTimeout(function() { sug.classList.remove('show'); }, 250);
+      setTimeout(function() { drop.classList.remove('show'); }, 250);
     });
 
-    sug.addEventListener('click', function(e) {
-      var item = e.target.closest('.sug-item');
+    drop.addEventListener('click', function(e) {
+      var item = e.target.closest('.autocomplete-item');
       if (!item) return;
       inp.value = item.dataset.name;
-      clearBtn.style.display = 'inline-flex';
+      clearBtn.style.display = 'inline-block';
       if (isOrigin) {
         planFromCoord = [parseFloat(item.dataset.lat), parseFloat(item.dataset.lon)];
         planFromName = item.dataset.name;
@@ -1905,45 +2088,97 @@
         planToCoord = [parseFloat(item.dataset.lat), parseFloat(item.dataset.lon)];
         planToName = item.dataset.name;
       }
-      sug.classList.remove('show');
+      drop.classList.remove('show');
     });
   }
 
-  // ─── EXECUTE JOURNEY SEARCH (WITH CLIENT-SIDE GTFS ROUTING FALLBACK) ───
+  // Waktu Keberangkatan Modal
+  function initTimePickers() {
+    var h = document.getElementById('modal-sel-hour'), m = document.getElementById('modal-sel-minute');
+    if (!h) return;
+    var now = new Date();
+    for (var i = 0; i < 24; i++) {
+      h.innerHTML += '<option value="'+i+'"'+(i === now.getHours() ? ' selected':'')+'>'+String(i).padStart(2,'0')+'</option>';
+    }
+    for (var j = 0; j < 60; j += 5) {
+      m.innerHTML += '<option value="'+j+'"'+(j === Math.floor(now.getMinutes()/5)*5 ? ' selected':'')+'>'+String(j).padStart(2,'0')+'</option>';
+    }
+  }
+
+  window.openTimeModal = function() {
+    document.getElementById('time-modal').classList.add('open');
+  };
+  window.closeTimeModal = function() {
+    document.getElementById('time-modal').classList.remove('open');
+  };
+  window.toggleTimeModeInputs = function(val) {
+    document.getElementById('time-custom-inputs').style.display = val === 'custom' ? 'flex' : 'none';
+  };
+  window.applyTimeSelection = function() {
+    var radios = document.getElementsByName('opt-time-mode');
+    var isCustom = false;
+    for (var i = 0; i < radios.length; i++) {
+      if (radios[i].checked && radios[i].value === 'custom') isCustom = true;
+    }
+
+    if (isCustom) {
+      selectedTimeMode = 'custom';
+      selectedHour = document.getElementById('modal-sel-hour').value;
+      selectedMinute = document.getElementById('modal-sel-minute').value;
+      document.getElementById('display-time-label').textContent = 'Hari ini, ' + String(selectedHour).padStart(2,'0') + ':' + String(selectedMinute).padStart(2,'0');
+    } else {
+      selectedTimeMode = 'now';
+      document.getElementById('display-time-label').textContent = 'Sekarang';
+    }
+    closeTimeModal();
+  };
+
+  // ─── EXECUTE SEARCH JOURNEY ───
   window.executePlanJourney = function() {
     var fi = document.getElementById('p-from-input'), ti = document.getElementById('p-to-input');
     if (!fi.value.trim() || !ti.value.trim()) {
-      alert('Silakan tentukan titik keberangkatan dan tujuan perjalanan terlebih dahulu.');
+      alert('Silakan tentukan titik awal dan tujuan perjalanan.');
       return;
     }
 
-    var list = document.getElementById('planner-results-list');
-    list.innerHTML = '<div class="planner-status-msg">' +
-      '<div class="p-spinner"></div>' +
-      '<div style="font-weight:700;font-size:13px;color:var(--text);margin-bottom:3px;">Mencari rute terbaik...</div>' +
-      '<div>Menghubungkan jaringan TransJakarta, BRT &amp; Mikrotrans</div>' +
+    var list = document.getElementById('journey-results-container');
+    list.innerHTML = '<div class="state-message-card">' +
+      '<div class="loading-transit-spinner"></div>' +
+      '<div class="title-lead">Mencari Rute Terbaik...</div>' +
+      '<div>Menghubungkan koridor BRT, Metrotrans &amp; Mikrotrans</div>' +
     '</div>';
 
-    // Geocode if typed without clicking autocomplete
+    // Auto-expand mobile bottom sheet to half or full so results are visible
+    var panel = document.getElementById('main-control-panel');
+    if (panel && window.innerWidth <= 768 && panel.classList.contains('state-collapsed')) {
+      panel.classList.remove('state-collapsed');
+      panel.classList.add('state-half');
+    }
+
+    // Geocode if typed freely
     Promise.all([
-      planFromCoord ? Promise.resolve(planFromCoord) : geocodeText(fi.value),
-      planToCoord ? Promise.resolve(planToCoord) : geocodeText(ti.value)
+      planFromCoord ? Promise.resolve(planFromCoord) : geocodeQuery(fi.value),
+      planToCoord ? Promise.resolve(planToCoord) : geocodeQuery(ti.value)
     ]).then(function(coords) {
       planFromCoord = coords[0];
       planToCoord = coords[1];
 
       if (!planFromCoord || !planToCoord) {
-        list.innerHTML = '<div class="planner-status-msg" style="color:#DC2626;">Alamat atau lokasi tidak ditemukan. Coba gunakan nama tempat yang lebih spesifik.</div>';
+        list.innerHTML = '<div class="state-message-card" style="color:var(--danger);">' +
+          '<div class="title-lead">Lokasi Tidak Ditemukan</div>' +
+          '<div>Coba gunakan nama tempat atau halte yang lebih spesifik.</div>' +
+        '</div>';
         return;
       }
 
-      var h = document.getElementById('p-dep-hour').value;
-      var m = document.getElementById('p-dep-minute').value;
+      var now = new Date();
+      var h = selectedTimeMode === 'custom' && selectedHour !== null ? selectedHour : now.getHours();
+      var m = selectedTimeMode === 'custom' && selectedMinute !== null ? selectedMinute : now.getMinutes();
       var depTime = String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0') + ':00';
 
-      // 1. Try querying backend server with timeout
+      // Attempt backend API with timeout
       var controller = new AbortController();
-      var timeoutId = setTimeout(function() { controller.abort(); }, 1800);
+      var timer = setTimeout(function() { controller.abort(); }, 1800);
 
       fetch(API + '/api/v1/journeys/search', {
         method: 'POST',
@@ -1956,7 +2191,7 @@
         }),
         signal: controller.signal
       })
-      .then(function(r) { clearTimeout(timeoutId); return r.json(); })
+      .then(function(r) { clearTimeout(timer); return r.json(); })
       .then(function(data) {
         var journeys = data.journeys || [];
         if (journeys.length) {
@@ -1966,31 +2201,30 @@
         }
       })
       .catch(function() {
-        // Backend not running or timeout -> instant client-side GTFS routing!
+        // Fast client-side fallback
         fallbackClientRouting();
       });
     });
   };
 
-  function geocodeText(text) {
-    return fetch('https://nominatim.openstreetmap.org/search?q='+encodeURIComponent(text)+'&format=json&limit=1&countrycodes=id', {
+  function geocodeQuery(q) {
+    return fetch('https://nominatim.openstreetmap.org/search?q='+encodeURIComponent(q)+'&format=json&limit=1&countrycodes=id', {
       headers: { 'Accept-Language': 'id' }
     })
     .then(function(r) { return r.json(); })
-    .then(function(data) {
-      if (data && data.length) return [parseFloat(data[0].lat), parseFloat(data[0].lon)];
+    .then(function(d) {
+      if (d && d.length) return [parseFloat(d[0].lat), parseFloat(d[0].lon)];
       return null;
     }).catch(function() { return null; });
   }
 
-  // Smart Client-Side GTFS Router (100% Offline / Local Data)
+  // Client-Side GTFS Routing (Ultra-Fast & Offline)
   function fallbackClientRouting() {
     var fromLat = planFromCoord[0], fromLon = planFromCoord[1];
     var toLat = planToCoord[0], toLon = planToCoord[1];
 
     var journeys = [];
 
-    // Find direct connections
     routeDetailsData.forEach(function(r) {
       var cat = r.category || 'Metrotrans';
       (r.directions || []).forEach(function(d) {
@@ -1998,8 +2232,8 @@
         var origMatches = [], destMatches = [];
 
         stops.forEach(function(s, idx) {
-          var dFrom = calculateDistanceMeters(fromLat, fromLon, s.lat, s.lon);
-          var dTo = calculateDistanceMeters(toLat, toLon, s.lat, s.lon);
+          var dFrom = haversineMeters(fromLat, fromLon, s.lat, s.lon);
+          var dTo = haversineMeters(toLat, toLon, s.lat, s.lon);
           if (dFrom <= 850) origMatches.push({ stop: s, idx: idx, dist: dFrom });
           if (dTo <= 850) destMatches.push({ stop: s, idx: idx, dist: dTo });
         });
@@ -2007,13 +2241,12 @@
         origMatches.forEach(function(om) {
           destMatches.forEach(function(dm) {
             if (dm.idx > om.idx) {
-              var stopCount = dm.idx - om.idx;
+              var count = dm.idx - om.idx;
               var walk1 = Math.round(om.dist);
               var walk2 = Math.round(dm.dist);
-              var busMins = stopCount * 2.2 + 4;
-              var totalDurMins = Math.round((walk1 + walk2) / 75 + busMins);
+              var busMins = Math.round(count * 2.2 + 3);
+              var totalMins = Math.round((walk1 + walk2) / 75 + busMins);
 
-              // Route geometry slice
               var geomPoints = [];
               if (geoData[r.route_id] && geoData[r.route_id].coordinates) {
                 geomPoints = geoData[r.route_id].coordinates;
@@ -2021,8 +2254,8 @@
 
               journeys.push({
                 departure_time: '07:15',
-                arrival_time: '07:' + (15 + totalDurMins),
-                duration_seconds: totalDurMins * 60,
+                arrival_time: '07:' + (15 + totalMins),
+                duration_seconds: totalMins * 60,
                 walking_distance: walk1 + walk2,
                 transfer_count: 0,
                 legs: [
@@ -2038,7 +2271,7 @@
                     description: 'Naik ' + (r.short_name || r.route_id) + ' (' + r.long_name + ')',
                     from_stop_name: om.stop.name,
                     to_stop_name: dm.stop.name,
-                    stop_count: stopCount,
+                    stop_count: count,
                     from_lat: om.stop.lat,
                     from_lon: om.stop.lon,
                     to_lat: dm.stop.lat,
@@ -2048,7 +2281,7 @@
                   {
                     type: 'WALK',
                     distance_m: walk2,
-                    description: 'Jalan kaki ke tujuan akhir'
+                    description: 'Jalan kaki ke titik tujuan akhir'
                   }
                 ]
               });
@@ -2058,15 +2291,14 @@
       });
     });
 
-    // Deduplicate and sort by duration
     journeys.sort(function(a, b) { return a.duration_seconds - b.duration_seconds; });
 
     var uniqueJourneys = [];
-    var seenRoutes = {};
+    var seen = {};
     journeys.forEach(function(j) {
       var rId = j.legs[1].route_id;
-      if (!seenRoutes[rId] && uniqueJourneys.length < 5) {
-        seenRoutes[rId] = true;
+      if (!seen[rId] && uniqueJourneys.length < 4) {
+        seen[rId] = true;
         uniqueJourneys.push(j);
       }
     });
@@ -2074,66 +2306,78 @@
     if (uniqueJourneys.length) {
       renderJourneyResults(uniqueJourneys);
     } else {
-      document.getElementById('planner-results-list').innerHTML = '<div class="planner-status-msg">' +
-        '<div style="font-size:32px;margin-bottom:6px;">🗺️</div>' +
-        '<div style="font-weight:700;font-size:13px;color:var(--text);margin-bottom:4px;">Tidak Ditemukan Rute Langsung</div>' +
-        '<div>Coba geser titik asal/tujuan ke halte atau koridor utama terdekat.</div>' +
+      document.getElementById('journey-results-container').innerHTML = '<div class="state-message-card">' +
+        '<div class="icon-lead">🗺️</div>' +
+        '<div class="title-lead">Belum Ditemukan Rute Langsung</div>' +
+        '<div>Coba geser titik awal atau tujuan ke halte koridor utama terdekat.</div>' +
       '</div>';
     }
   }
 
   function renderJourneyResults(journeys) {
     currentJourneys = journeys;
-    var list = document.getElementById('planner-results-list');
+    var container = document.getElementById('journey-results-container');
 
-    var html = '<div class="res-header-info">' +
-      '<div class="res-header-title"><span style="color:var(--brand)">●</span> ' + journeys.length + ' Pilihan Rute</div>' +
-      '<div style="font-size:10.5px;color:var(--text-secondary);font-weight:700;">Klik kartu untuk rute rinci</div>' +
+    var html = '<div class="results-heading-bar">' +
+      '<div class="results-count-title">' + journeys.length + ' Pilihan Perjalanan</div>' +
+      '<div class="results-tip">Pilih rute untuk detail</div>' +
     '</div>';
 
     journeys.forEach(function(j, idx) {
       var dur = Math.round(j.duration_seconds / 60);
       var walks = Math.round(j.walking_distance);
       var tx = j.transfer_count;
-      var badgeCls = idx === 0 ? 'fast' : 'transfer';
-      var badgeText = idx === 0 ? 'Tercepat' : (tx === 0 ? 'Langsung' : tx + ' Transit');
+      var badgeCls = idx === 0 ? 'practical' : 'transfer';
+      var badgeText = idx === 0 ? 'Paling Praktis' : (tx === 0 ? 'Langsung' : tx + ' Transit');
 
-      html += '<div class="journey-card '+(idx === 0 ? 'active' : '')+'" id="pjc-'+idx+'" onclick="selectJourneyOption('+idx+')">' +
-        '<div class="jc-sum">' +
-          '<div class="jc-times">' +
-            '<span>'+j.departure_time+'</span>' +
-            '<span class="jc-arrow">→</span>' +
-            '<span>'+j.arrival_time+'</span>' +
-            '<span class="jc-dur">⏱️ '+dur+' mnt</span>' +
+      // Sequence summary badges
+      var seqHtml = j.legs.map(function(l) {
+        if (l.type === 'BUS') {
+          return '<span class="step-chip bus">🚌 ' + (l.route_id || 'Bus') + '</span>';
+        } else if (l.type === 'WALK') {
+          return '<span class="step-chip walk">🚶 ' + l.distance_m + 'm</span>';
+        } else {
+          return '<span class="step-chip walk">🔄 Transit</span>';
+        }
+      }).join('<span class="step-arrow">→</span>');
+
+      html += '<div class="journey-result-card '+(idx === 0 ? 'active' : '')+'" id="jcard-'+idx+'" onclick="selectJourneyCard('+idx+')">' +
+        '<div class="j-card-summary">' +
+          '<div class="j-card-top-row">' +
+            '<div class="j-card-duration">⏱️ ' + dur + ' menit</div>' +
+            '<span class="j-card-badge '+badgeCls+'">' + badgeText + '</span>' +
           '</div>' +
-          '<div class="jc-meta">' +
-            '<span>🚶 '+walks+'m</span>' +
-            '<span class="jc-badge '+badgeCls+'">'+badgeText+'</span>' +
+          '<div class="j-card-times">' + j.departure_time + ' → ' + j.arrival_time + '</div>' +
+          '<div class="j-card-sequence">' + seqHtml + '</div>' +
+          '<div class="j-card-meta-line">' +
+            '<span>🚶 Total jalan kaki: ' + walks + 'm</span>' +
+            '<span>·</span>' +
+            '<span>' + (tx === 0 ? 'Tanpa transit' : tx + 'x transit') + '</span>' +
           '</div>' +
         '</div>' +
-        '<div class="jc-detail '+(idx === 0 ? 'show' : '')+'" id="pjd-'+idx+'">' +
-          j.legs.map(function(l) {
-            var icon = l.type === 'WALK' ? '🚶' : (l.type === 'BUS' ? '🚌' : '🔄');
-            var cls = l.type === 'WALK' ? 'walk' : (l.type === 'BUS' ? 'bus' : 'transfer');
-            var rBadge = l.route_id ? '<span style="background:var(--brand);color:#fff;padding:1px 6px;border-radius:4px;font-size:10px;font-weight:800;margin-right:5px;">'+l.route_id+'</span>' : '';
+        '<div class="j-card-timeline '+(idx === 0 ? 'show' : '')+'" id="jtl-'+idx+'">' +
+          j.legs.map(function(leg) {
+            var isBus = leg.type === 'BUS';
+            var icon = isBus ? '🚌' : (leg.type === 'WALK' ? '🚶' : '🔄');
+            var cls = isBus ? 'bus' : 'walk';
 
             var rideBtn = '';
-            if (l.type === 'BUS' && l.route_id) {
-              rideBtn = '<div class="leg-action-bar">' +
-                '<button type="button" class="btn-ride-this" onclick="event.stopPropagation(); startLiveRideFromRoute(\''+l.route_id+'\')">' +
-                  '<span>🚀 Naik Rute '+l.route_id+'</span>' +
+            if (isBus && leg.route_id) {
+              rideBtn = '<div class="timeline-action-row">' +
+                '<button type="button" class="btn-ride-shortcut" onclick="event.stopPropagation(); startLiveRideFromRoute(\''+leg.route_id+'\')">' +
+                  '<span>🚀 Naik Rute ' + leg.route_id + '</span>' +
                 '</button>' +
               '</div>';
             }
 
-            return '<div class="leg-row">' +
-              '<div class="leg-icon-box '+cls+'">'+icon+'</div>' +
-              '<div class="leg-content">' +
-                '<div class="leg-title">'+rBadge+l.description+'</div>' +
-                '<div class="leg-subtitle">' +
-                  (l.type === 'WALK' ? 'Jalan kaki sejauh ' + l.distance_m + ' meter' :
-                   l.type === 'BUS' ? 'Naik dari <b>'+l.from_stop_name+'</b> turun di <b>'+l.to_stop_name+'</b> ('+l.stop_count+' halte)' :
-                   'Transit &amp; tunggu armada berikutnya') +
+            return '<div class="timeline-step-row">' +
+              '<div class="timeline-icon-node '+cls+'">'+icon+'</div>' +
+              '<div class="timeline-body">' +
+                '<div class="timeline-title">' + leg.description + '</div>' +
+                '<div class="timeline-sub">' +
+                  (leg.type === 'WALK' ? 'Jalan kaki sejauh ' + leg.distance_m + ' meter' :
+                   isBus ? 'Naik dari <b>' + leg.from_stop_name + '</b> turun di <b>' + leg.to_stop_name + '</b> (' + leg.stop_count + ' halte)' :
+                   'Transit armada berikutnya') +
                 '</div>' +
                 rideBtn +
               '</div>' +
@@ -2143,20 +2387,17 @@
       '</div>';
     });
 
-    list.innerHTML = html;
-
-    // Immediately display the top journey on the main map!
-    selectJourneyOption(0);
+    container.innerHTML = html;
+    selectJourneyCard(0);
   }
 
-  window.selectJourneyOption = function(idx) {
-    document.querySelectorAll('.jc-detail').forEach(function(d, i) { d.classList.toggle('show', i === idx); });
-    document.querySelectorAll('.journey-card').forEach(function(c, i) { c.classList.toggle('active', i === idx); });
+  window.selectJourneyCard = function(idx) {
+    document.querySelectorAll('.journey-result-card').forEach(function(c, i) { c.classList.toggle('active', i === idx); });
+    document.querySelectorAll('.j-card-timeline').forEach(function(t, i) { t.classList.toggle('show', i === idx); });
 
     var journey = currentJourneys[idx];
     if (!journey) return;
 
-    // Render journey layers on explorer map
     if (journeyLayerGroup) map.removeLayer(journeyLayerGroup);
     if (currentRouteLayer) { map.removeLayer(currentRouteLayer); currentRouteLayer = null; }
     currentStopMarkers.forEach(function(m) { map.removeLayer(m); });
@@ -2169,10 +2410,10 @@
     if (planFromCoord) {
       L.marker(planFromCoord, {
         icon: L.divIcon({
-          html: '<div style="width:16px;height:16px;border-radius:50%;background:#16A34A;border:3px solid #FFF;box-shadow:0 2px 8px rgba(0,0,0,.35);"></div>',
+          html: '<div style="width:16px;height:16px;border-radius:50%;background:#16A34A;border:2.5px solid #FFF;box-shadow:0 2px 6px rgba(0,0,0,.35);"></div>',
           iconSize: [16, 16], iconAnchor: [8, 8]
         })
-      }).addTo(journeyLayerGroup).bindPopup('<b>Titik Asal:</b><br>' + planFromName);
+      }).addTo(journeyLayerGroup).bindPopup('<b>Titik Awal:</b><br>' + planFromName);
       bounds.push(planFromCoord);
     }
 
@@ -2180,7 +2421,7 @@
     if (planToCoord) {
       L.marker(planToCoord, {
         icon: L.divIcon({
-          html: '<div style="width:16px;height:16px;border-radius:50%;background:#FF5500;border:3px solid #FFF;box-shadow:0 2px 8px rgba(255,85,0,.45);"></div>',
+          html: '<div style="width:16px;height:16px;border-radius:50%;background:#FF5A1F;border:2.5px solid #FFF;box-shadow:0 2px 6px rgba(255,90,31,.45);"></div>',
           iconSize: [16, 16], iconAnchor: [8, 8]
         })
       }).addTo(journeyLayerGroup).bindPopup('<b>Tujuan:</b><br>' + planToName);
@@ -2188,47 +2429,269 @@
     }
 
     // Polylines & Stops
-    journey.legs.forEach(function(l) {
-      if (l.type === 'BUS') {
-        if (l.geometry && l.geometry.length >= 2) {
-          var latlngs = l.geometry.map(function(c) { return [c[1], c[0]]; });
+    journey.legs.forEach(function(leg) {
+      if (leg.type === 'BUS') {
+        if (leg.geometry && leg.geometry.length >= 2) {
+          var latlngs = leg.geometry.map(function(c) { return [c[1], c[0]]; });
           var uniq = [];
           latlngs.forEach(function(ll) {
             if (!uniq.length || ll[0] !== uniq[uniq.length-1][0] || ll[1] !== uniq[uniq.length-1][1]) uniq.push(ll);
           });
           if (uniq.length >= 2) {
-            var color = CAT_COLORS[l.route_category] || '#FF5500';
-            L.polyline(uniq, { color: color, weight: 6, opacity: 0.88 }).addTo(journeyLayerGroup);
+            var color = CAT_COLORS[leg.route_category] || '#005BAC';
+            L.polyline(uniq, { color: color, weight: 6, opacity: 0.9, lineJoin: 'round' }).addTo(journeyLayerGroup);
           }
         }
 
-        if (l.from_lat && l.from_lon) {
-          bounds.push([l.from_lat, l.from_lon]);
-          L.circleMarker([l.from_lat, l.from_lon], { radius: 5, color: '#FF5500', fillOpacity: 0.9, fillColor: '#FFF', weight: 3 })
-            .addTo(journeyLayerGroup).bindTooltip(l.from_stop_name, { direction: 'top' });
+        if (leg.from_lat && leg.from_lon) {
+          bounds.push([leg.from_lat, leg.from_lon]);
+          L.circleMarker([leg.from_lat, leg.from_lon], { radius: 5, color: '#005BAC', fillOpacity: 1, fillColor: '#FFF', weight: 2.5 })
+            .addTo(journeyLayerGroup).bindTooltip(leg.from_stop_name, { direction: 'top' });
         }
-        if (l.to_lat && l.to_lon) {
-          bounds.push([l.to_lat, l.to_lon]);
-          L.circleMarker([l.to_lat, l.to_lon], { radius: 5, color: '#FF5500', fillOpacity: 0.9, fillColor: '#FFF', weight: 3 })
-            .addTo(journeyLayerGroup).bindTooltip(l.to_stop_name, { direction: 'top' });
+        if (leg.to_lat && leg.to_lon) {
+          bounds.push([leg.to_lat, leg.to_lon]);
+          L.circleMarker([leg.to_lat, leg.to_lon], { radius: 5, color: '#005BAC', fillOpacity: 1, fillColor: '#FFF', weight: 2.5 })
+            .addTo(journeyLayerGroup).bindTooltip(leg.to_stop_name, { direction: 'top' });
         }
       }
     });
 
     journeyLayerGroup.addTo(map);
     if (bounds.length) {
-      try { map.fitBounds(L.latLngBounds(bounds).pad(0.18)); } catch(e) {}
+      try { map.fitBounds(L.latLngBounds(bounds).pad(0.2)); } catch(e) {}
     }
   };
 
-  // ─── GPS LOCK FEATURE ───
-  window.toggleGPSLock = function() {
-    if (!navigator.geolocation) {
-      alert('Browser Anda tidak mendukung Geolocation.');
+  // ─── ROUTE EXPLORER (240 RUTE) ───
+  function renderCategoryChips() {
+    var counts = { all: routesData.length, BRT: 0, Metrotrans: 0, Mikrotrans: 0, Royaltrans: 0, Transjabodetabek: 0, 'Bus Wisata': 0 };
+    routesData.forEach(function(r) {
+      if (counts[r.route_category] !== undefined) counts[r.route_category]++;
+    });
+
+    var cats = [
+      { id: 'all', label: 'Semua', count: counts.all },
+      { id: 'BRT', label: 'BRT', count: counts.BRT },
+      { id: 'Metrotrans', label: 'Metrotrans', count: counts.Metrotrans },
+      { id: 'Mikrotrans', label: 'Mikrotrans', count: counts.Mikrotrans },
+      { id: 'Royaltrans', label: 'Royaltrans', count: counts.Royaltrans },
+      { id: 'Transjabodetabek', label: 'Jabodetabek', count: counts.Transjabodetabek },
+      { id: 'Bus Wisata', label: 'Wisata', count: counts['Bus Wisata'] }
+    ];
+
+    var html = cats.map(function(c) {
+      var isActive = activeCategory === c.id ? 'active' : '';
+      return '<button type="button" class="cat-chip-btn '+isActive+'" onclick="filterRoutesByCategory(\''+c.id+'\')">' +
+        c.label + ' (' + c.count + ')' +
+      '</button>';
+    }).join('');
+
+    document.getElementById('cat-filter-bar').innerHTML = html;
+  }
+
+  window.filterRoutesByCategory = function(cat) {
+    activeCategory = cat;
+    renderCategoryChips();
+    renderRoutesList(document.getElementById('routes-search-input').value);
+  };
+
+  function renderRoutesList(filterText) {
+    var list = document.getElementById('routes-list-scroll');
+    var q = (filterText || '').toLowerCase().trim();
+
+    var filtered = routesData.filter(function(r) {
+      if (activeCategory !== 'all' && r.route_category !== activeCategory) return false;
+      if (!q) return true;
+      return (r.route_id && r.route_id.toLowerCase().includes(q)) ||
+             (r.route_name && r.route_name.toLowerCase().includes(q)) ||
+             (r.route_category && r.route_category.toLowerCase().includes(q));
+    });
+
+    document.getElementById('routes-counter-badge').textContent = filtered.length + ' rute tersedia';
+
+    if (!filtered.length) {
+      list.innerHTML = '<div class="state-message-card">Tidak ditemukan rute yang cocok.</div>';
       return;
     }
 
-    if (isGPSLocked) {
+    var html = filtered.map(function(r) {
+      var badgeCls = 'metro';
+      var cat = r.route_category || '';
+      if (cat === 'BRT') badgeCls = 'brt';
+      else if (cat === 'Mikrotrans') badgeCls = 'mikro';
+      else if (cat === 'Royaltrans') badgeCls = 'royal';
+      else if (cat === 'Transjabodetabek') badgeCls = 'jabodetabek';
+      else if (cat === 'Bus Wisata') badgeCls = 'wisata';
+
+      var isActive = r.route_id === selectedRouteId ? 'active' : '';
+
+      return '<div class="route-item-row '+isActive+'" id="r-row-'+r.route_id+'" onclick="openRouteDetail(\''+r.route_id+'\')">' +
+        '<div class="route-pill-badge '+badgeCls+'">'+r.route_id+'</div>' +
+        '<div class="route-item-info">' +
+          '<div class="route-item-title">'+r.route_name+'</div>' +
+          '<div class="route-item-meta">' +
+            '<span>' + cat + '</span>' +
+          '</div>' +
+        '</div>' +
+        '<div class="route-item-arrow">›</div>' +
+      '</div>';
+    }).join('');
+
+    list.innerHTML = html;
+  }
+
+  window.onRouteSearchInput = function(val) {
+    document.getElementById('routes-clear-btn').style.display = val.length ? 'block' : 'none';
+    renderRoutesList(val);
+  };
+  window.clearRouteSearch = function() {
+    var inp = document.getElementById('routes-search-input');
+    inp.value = '';
+    document.getElementById('routes-clear-btn').style.display = 'none';
+    renderRoutesList('');
+  };
+
+  // ─── ROUTE DETAIL SUB-PANEL ───
+  window.openRouteDetail = function(routeId) {
+    selectedRouteId = routeId;
+    document.querySelectorAll('.route-item-row').forEach(function(el) { el.classList.remove('active'); });
+    var target = document.getElementById('r-row-' + routeId);
+    if (target) target.classList.add('active');
+
+    var routeMeta = routesData.find(function(r) { return r.route_id === routeId; }) || {};
+    var detail = routeDetailsData.find(function(d) { return d.route_id === routeId; });
+
+    // Show sub-panel
+    document.getElementById('view-route-explorer').classList.add('hidden');
+    document.getElementById('view-route-detail').classList.add('show');
+
+    // Populate header
+    var badge = document.getElementById('dt-badge');
+    badge.textContent = routeId;
+    badge.className = 'route-pill-badge ' + (routeMeta.route_category === 'BRT' ? 'brt' : (routeMeta.route_category === 'Mikrotrans' ? 'mikro' : 'metro'));
+    document.getElementById('dt-category').textContent = routeMeta.route_category || 'Metrotrans';
+    document.getElementById('dt-title').textContent = routeMeta.route_name || detail.long_name;
+
+    // Populate directions dropdown
+    var sel = document.getElementById('dt-direction-select');
+    sel.innerHTML = '';
+    var dirs = (detail && detail.directions) ? detail.directions : [];
+    dirs.forEach(function(d, i) {
+      sel.innerHTML += '<option value="'+i+'">Arah ' + (i+1) + ': ' + (d.headsign || 'Rute Utama') + ' (' + d.stop_count + ' Halte)</option>';
+    });
+
+    currentDetailDirectionIdx = 0;
+    renderDetailStops(detail, 0);
+
+    // Draw route geometry on map
+    drawRouteGeometry(routeId);
+  };
+
+  window.backToRouteList = function() {
+    document.getElementById('view-route-detail').classList.remove('show');
+    document.getElementById('view-route-explorer').classList.remove('hidden');
+    currentStopMarkers.forEach(function(m) { map.removeLayer(m); });
+    currentStopMarkers = [];
+  };
+
+  window.onDirectionChange = function(dirIdx) {
+    currentDetailDirectionIdx = parseInt(dirIdx, 10);
+    var detail = routeDetailsData.find(function(d) { return d.route_id === selectedRouteId; });
+    renderDetailStops(detail, currentDetailDirectionIdx);
+  };
+
+  function renderDetailStops(detail, dirIdx) {
+    var timeline = document.getElementById('dt-stops-timeline');
+    if (!detail || !detail.directions || !detail.directions[dirIdx]) {
+      timeline.innerHTML = '<div class="state-message-card">Data halte belum tersedia untuk arah ini.</div>';
+      return;
+    }
+
+    var dir = detail.directions[dirIdx];
+    var stops = dir.stops || [];
+
+    // Clear previous halte markers
+    currentStopMarkers.forEach(function(m) { map.removeLayer(m); });
+    currentStopMarkers = [];
+
+    var routeMeta = routesData.find(function(r) { return r.route_id === selectedRouteId; }) || {};
+    var color = CAT_COLORS[routeMeta.route_category] || '#005BAC';
+
+    var html = stops.map(function(s, idx) {
+      var isFirst = idx === 0, isLast = idx === stops.length - 1;
+      var dotCls = isFirst ? 'first' : (isLast ? 'last' : '');
+
+      // Add map markers for this direction
+      if (s.lat && s.lon) {
+        var m = L.circleMarker([s.lat, s.lon], {
+          radius: 4,
+          fillColor: '#FFFFFF',
+          color: color,
+          weight: 2,
+          fillOpacity: 1
+        }).addTo(map).bindTooltip(s.name, { direction: 'top', offset: [0, -4] });
+        currentStopMarkers.push(m);
+      }
+
+      return '<div class="v-stop-node" onclick="focusDetailStop('+s.lat+', '+s.lon+', \''+s.name.replace(/'/g, "\\'")+'\')">' +
+        '<div class="v-stop-dot '+dotCls+'"></div>' +
+        '<div class="v-stop-info">' +
+          '<div class="v-stop-name">'+s.name+'</div>' +
+          '<div class="v-stop-sub">Halte ' + (idx + 1) + (isFirst ? ' · Keberangkatan awal' : (isLast ? ' · Tujuan akhir' : '')) + '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+
+    timeline.innerHTML = html;
+
+    // Update summary metrics
+    var estTime = Math.round(stops.length * 2.5 + 4);
+    document.getElementById('dt-summary-metrics').textContent = stops.length + ' halte · Estimasi ±' + estTime + ' menit';
+  }
+
+  window.focusDetailStop = function(lat, lon, name) {
+    if (!lat || !lon) return;
+    map.setView([lat, lon], 17, { animate: true });
+    L.popup().setLatLng([lat, lon]).setContent('<b>Halte TransJakarta:</b><br>' + name).openOn(map);
+  };
+
+  function drawRouteGeometry(routeId) {
+    if (currentRouteLayer) {
+      map.removeLayer(currentRouteLayer);
+      currentRouteLayer = null;
+    }
+    if (journeyLayerGroup) {
+      map.removeLayer(journeyLayerGroup);
+      journeyLayerGroup = null;
+    }
+
+    var routeMeta = routesData.find(function(r) { return r.route_id === routeId; });
+    var cat = routeMeta ? routeMeta.route_category : 'BRT';
+    var color = CAT_COLORS[cat] || '#005BAC';
+
+    var geom = geoData[routeId];
+    if (geom && geom.coordinates && geom.coordinates.length) {
+      var latlngs = geom.coordinates.map(function(c) { return [c[1], c[0]]; });
+      currentRouteLayer = L.polyline(latlngs, {
+        color: color,
+        weight: 6,
+        opacity: 0.9,
+        lineJoin: 'round',
+        lineCap: 'round'
+      }).addTo(map);
+
+      map.fitBounds(currentRouteLayer.getBounds(), { padding: [50, 50], maxZoom: 16 });
+    }
+  }
+
+  // ─── GPS LOCK & TRACKING ───
+  window.toggleGPSLock = function() {
+    if (!navigator.geolocation) {
+      alert('Browser tidak mendukung Geolocation.');
+      return;
+    }
+
+    if (isGPSActive) {
       stopGPSLock();
     } else {
       startGPSLock();
@@ -2236,73 +2699,57 @@
   };
 
   function startGPSLock() {
-    isGPSLocked = true;
-    var fab = document.getElementById('gps-fab');
-    var topBtn = document.getElementById('live-gps-btn');
-    var topLabel = document.getElementById('gps-btn-label');
-
-    if (fab) fab.classList.add('tracking');
-    if (topBtn) topBtn.classList.add('active');
-    if (topLabel) topLabel.textContent = 'GPS Terkunci';
+    isGPSActive = true;
+    var btn = document.getElementById('btn-map-gps');
+    if (btn) btn.classList.add('active');
 
     gpsWatchId = navigator.geolocation.watchPosition(function(pos) {
       var lat = pos.coords.latitude;
       var lon = pos.coords.longitude;
       var acc = Math.round(pos.coords.accuracy);
 
-      updateUserMarker(lat, lon, acc);
+      updateUserGPSMarker(lat, lon, acc);
 
       if (isRideActive) {
-        updateRideTracking(lat, lon, acc);
+        updateRideHUD(lat, lon, acc);
       }
-    }, function(err) {
-      alert('Tidak dapat mendeteksi GPS. Mohon periksa izin lokasi Anda.');
+    }, function() {
+      alert('Tidak dapat mendeteksi lokasi GPS. Pastikan izin lokasi aktif.');
       stopGPSLock();
-    }, {
-      enableHighAccuracy: true,
-      maximumAge: 3000,
-      timeout: 10000
-    });
+    }, { enableHighAccuracy: true, maximumAge: 3000, timeout: 10000 });
   }
 
   function stopGPSLock() {
-    isGPSLocked = false;
+    isGPSActive = false;
     if (gpsWatchId !== null) {
       navigator.geolocation.clearWatch(gpsWatchId);
       gpsWatchId = null;
     }
-
-    var fab = document.getElementById('gps-fab');
-    var topBtn = document.getElementById('live-gps-btn');
-    var topLabel = document.getElementById('gps-btn-label');
-
-    if (fab) fab.classList.remove('tracking');
-    if (topBtn) topBtn.classList.remove('active');
-    if (topLabel) topLabel.textContent = 'Kunci GPS Saya';
+    var btn = document.getElementById('btn-map-gps');
+    if (btn) btn.classList.remove('active');
 
     if (userMarker) { map.removeLayer(userMarker); userMarker = null; }
     if (accuracyCircle) { map.removeLayer(accuracyCircle); accuracyCircle = null; }
   }
 
-  function updateUserMarker(lat, lon, acc) {
+  function updateUserGPSMarker(lat, lon, acc) {
     if (!userMarker) {
       var pulseIcon = L.divIcon({
-        className: 'user-gps-pulse-marker',
-        html: '<div style="position:relative;width:24px;height:24px;display:flex;align-items:center;justify-content:center;">' +
-                '<div style="position:absolute;width:24px;height:24px;border-radius:50%;background:rgba(37,99,235,0.25);animation:gpsRing 2s infinite ease-out;"></div>' +
-                '<div style="width:14px;height:14px;border-radius:50%;background:#2563EB;border:2.5px solid #FFFFFF;box-shadow:0 2px 6px rgba(0,0,0,0.35);"></div>' +
+        className: '',
+        html: '<div style="position:relative;width:22px;height:22px;display:flex;align-items:center;justify-content:center;">' +
+                '<div style="position:absolute;width:22px;height:22px;border-radius:50%;background:rgba(0,91,172,0.25);animation:gpsPulse 2s infinite ease-out;"></div>' +
+                '<div style="width:12px;height:12px;border-radius:50%;background:#005BAC;border:2.5px solid #FFFFFF;box-shadow:0 2px 6px rgba(0,0,0,0.35);"></div>' +
               '</div>',
-        iconSize: [24, 24],
-        iconAnchor: [12, 12]
+        iconSize: [22, 22], iconAnchor: [11, 11]
       });
 
       userMarker = L.marker([lat, lon], { icon: pulseIcon }).addTo(map);
       accuracyCircle = L.circle([lat, lon], {
         radius: acc,
-        color: '#2563EB',
+        color: '#005BAC',
         weight: 1,
-        fillColor: '#2563EB',
-        fillOpacity: 0.1
+        fillColor: '#005BAC',
+        fillOpacity: 0.08
       }).addTo(map);
 
       map.setView([lat, lon], 16, { animate: true });
@@ -2310,11 +2757,16 @@
       userMarker.setLatLng([lat, lon]);
       accuracyCircle.setLatLng([lat, lon]);
       accuracyCircle.setRadius(acc);
-      if (isGPSLocked) map.panTo([lat, lon], { animate: true, duration: 0.5 });
+      if (isGPSActive) map.panTo([lat, lon], { animate: true, duration: 0.5 });
     }
   }
 
-  // ─── LIVE RIDE MODE ───
+  // ─── LIVE RIDE TRACKING HUD ───
+  window.startLiveRideFromDetail = function() {
+    if (!selectedRouteId) return;
+    startLiveRideFromRoute(selectedRouteId);
+  };
+
   window.startLiveRideFromRoute = function(routeId) {
     var routeMeta = routesData.find(function(r) { return r.route_id === routeId; }) || {};
     var detail = routeDetailsData.find(function(d) { return d.route_id === routeId; });
@@ -2323,23 +2775,23 @@
     activeRideRoute = routeMeta;
     hasAlertedArrival = false;
 
-    if (detail && detail.directions && detail.directions.length) {
-      activeRideStops = detail.directions[0].stops || [];
+    if (detail && detail.directions && detail.directions[currentDetailDirectionIdx]) {
+      activeRideStops = detail.directions[currentDetailDirectionIdx].stops || [];
     } else {
       activeRideStops = [];
     }
 
-    if (!isGPSLocked) startGPSLock();
+    if (!isGPSActive) startGPSLock();
 
     var hud = document.getElementById('live-ride-hud');
     hud.classList.add('active');
     hud.classList.remove('alert-arrival');
 
-    document.getElementById('hud-status-badge').classList.remove('alert');
-    document.getElementById('hud-status-text').textContent = 'Live Ride Mode';
-    document.getElementById('hud-route-title').innerHTML = '<span style="background:var(--brand);color:#fff;padding:1px 6px;border-radius:4px;font-size:11px;">'+routeId+'</span> ' + (routeMeta.route_name || 'Rute Transum');
-    document.getElementById('hud-next-stop').textContent = 'Mendeteksi posisi & halte terdekat...';
-    document.getElementById('hud-dist-to-stop').textContent = 'Menghitung jarak GPS...';
+    document.getElementById('hud-live-tag').classList.remove('alert');
+    document.getElementById('hud-status-text').textContent = 'Perjalanan Aktif';
+    document.getElementById('hud-route-tagline').textContent = 'Rute ' + routeId + ' · ' + (routeMeta.route_name || '');
+    document.getElementById('hud-next-stop').textContent = 'Mendeteksi halte terdekat...';
+    document.getElementById('hud-dist-val').textContent = 'Menghitung jarak...';
   };
 
   window.stopLiveRide = function() {
@@ -2350,89 +2802,52 @@
     hud.classList.remove('active', 'alert-arrival');
   };
 
-  function updateRideTracking(uLat, uLon, acc) {
-    document.getElementById('hud-acc').textContent = acc;
+  function updateRideHUD(uLat, uLon, acc) {
+    document.getElementById('hud-acc-val').textContent = acc;
     if (!activeRideStops.length) return;
 
-    var nearestStop = null;
+    var nearest = null;
     var minDist = 999999;
 
     activeRideStops.forEach(function(s) {
-      var d = calculateDistanceMeters(uLat, uLon, s.lat, s.lon);
+      var d = haversineMeters(uLat, uLon, s.lat, s.lon);
       if (d < minDist) {
         minDist = d;
-        nearestStop = s;
+        nearest = s;
       }
     });
 
-    if (nearestStop) {
-      var nextStopEl = document.getElementById('hud-next-stop');
-      var distEl = document.getElementById('hud-dist-to-stop');
+    if (nearest) {
+      var nextEl = document.getElementById('hud-next-stop');
+      var distEl = document.getElementById('hud-dist-val');
 
       if (minDist < 250) {
-        nextStopEl.textContent = '📍 ' + nearestStop.name;
+        nextEl.textContent = '📍 ' + nearest.name;
         distEl.textContent = 'Tiba di halte! (~' + Math.round(minDist) + 'm)';
 
         if (!hasAlertedArrival && minDist < 150) {
           hasAlertedArrival = true;
-          playArrivalDingDong();
+          playArrivalChime();
           if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
           var hud = document.getElementById('live-ride-hud');
           hud.classList.add('alert-arrival');
-          document.getElementById('hud-status-badge').classList.add('alert');
-          document.getElementById('hud-status-text').textContent = '⚠️ SIAP-SIAP TURUN';
+          document.getElementById('hud-live-tag').classList.add('alert');
+          document.getElementById('hud-status-text').textContent = '⚠️ Siap-Siap Turun';
         }
       } else {
-        nextStopEl.textContent = '➡️ Menuju Halte: ' + nearestStop.name;
+        nextEl.textContent = '➡️ Halte Berikutnya: ' + nearest.name;
         distEl.textContent = 'Sisa jarak: ~' + (minDist > 1000 ? (minDist/1000).toFixed(1) + ' km' : Math.round(minDist) + ' m');
       }
     }
   }
 
-  function calculateDistanceMeters(lat1, lon1, lat2, lon2) {
+  function haversineMeters(lat1, lon1, lat2, lon2) {
     var R = 6371e3;
-    var φ1 = lat1 * Math.PI / 180;
-    var φ2 = lat2 * Math.PI / 180;
-    var Δφ = (lat2 - lat1) * Math.PI / 180;
-    var Δλ = (lon2 - lon1) * Math.PI / 180;
-
-    var a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
-            Math.cos(φ1) * Math.cos(φ2) *
-            Math.sin(Δλ/2) * Math.sin(Δλ/2);
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    return R * c;
+    var p1 = lat1 * Math.PI / 180, p2 = lat2 * Math.PI / 180;
+    var dp = (lat2 - lat1) * Math.PI / 180, dl = (lon2 - lon1) * Math.PI / 180;
+    var a = Math.sin(dp/2) * Math.sin(dp/2) + Math.cos(p1) * Math.cos(p2) * Math.sin(dl/2) * Math.sin(dl/2);
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
   }
-
-  // ─── FOCUS MENARA BNI PEJOMPONGAN (EXACT: -6.20385, 106.80245) ───
-  window.focusMenaraBNI = function() {
-    var bniLat = -6.20385;
-    var bniLon = 106.80245;
-
-    if (window._bniMarker) {
-      try { map.removeLayer(window._bniMarker); } catch(e){}
-    }
-
-    window._bniMarker = L.marker([bniLat, bniLon], {
-      icon: L.divIcon({
-        className: '',
-        html: '<div style="background:#FF5500;color:#FFF;padding:5px 12px;border-radius:20px;font-weight:800;font-size:11px;border:2.5px solid #FFF;box-shadow:0 4px 14px rgba(255,85,0,0.45);white-space:nowrap;display:flex;align-items:center;gap:4px;">🏢 Menara BNI</div>',
-        iconSize: [110, 26], iconAnchor: [55, 13]
-      })
-    }).addTo(map).bindPopup('<div style="font-family:Plus Jakarta Sans,sans-serif;padding:4px;"><div style="font-size:10px;font-weight:800;color:#FF5500;">KANTOR PENUGASAN MAGANG</div><div style="font-size:13px;font-weight:800;color:#0F172A;margin-top:2px;">Gedung Menara BNI Pejompongan</div><div style="font-size:11px;color:#64748B;margin-top:3px;">Jl. Pejompongan Raya No. 7, Jakarta Pusat<br>📍 Halte: <b>Menara Pejompongan</b> (50m) &amp; <b>Dipo Tower</b></div></div>').openPopup();
-
-    map.setView([bniLat, bniLon], 16, { animate: true, duration: 0.6 });
-
-    // Also populate destination in planner if empty
-    var ti = document.getElementById('p-to-input');
-    if (!planToCoord && (!ti.value.trim() || ti.value.includes('Menara BNI'))) {
-      applyPlanPreset('Menara BNI Pejompongan', bniLat, bniLon);
-    }
-  };
-
-  window.resetMapJakarta = function() {
-    if (!map) return;
-    map.setView([-6.2088, 106.845], 13, { animate: true, duration: 0.5 });
-  };
 
   // ─── STARTUP ───
   document.addEventListener('DOMContentLoaded', function() {
