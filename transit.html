@@ -14,6 +14,49 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
   <style>
+    /* ═══════════ LOADING SCREEN ═══════════ */
+    #app-loader {
+      position: fixed; inset: 0; z-index: 99999;
+      background: #fff; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      transition: opacity .35s ease, visibility .35s ease;
+    }
+    #app-loader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+    .loader-icon { position: relative; width: 64px; height: 64px; margin-bottom: 18px; }
+    .loader-bus {
+      position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 44px; height: 28px; background: #FF5A1F; border-radius: 8px 8px 4px 4px;
+      animation: busBounce .6s cubic-bezier(0.16,1,0.3,1) infinite alternate;
+    }
+    .loader-bus::before { content:''; position:absolute; top:-8px;left:6px;width:14px;height:8px;background:#FF5A1F;border-radius:4px 4px 0 0; }
+    .loader-bus::after { content:''; position:absolute; bottom:-4px;left:6px;width:8px;height:8px;background:#333;border-radius:50%;box-shadow:22px 0 0 #333; }
+    @keyframes busBounce { 0% { transform: translateX(-50%) translateY(0); } 100% { transform: translateX(-50%) translateY(-8px); } }
+    .loader-road { width: 60px; height: 3px; background: #E7EAF0; border-radius: 2px; position: absolute; bottom: 0; left: 2px; }
+    .loader-text { font-size: 15px; font-weight: 700; color: #172033; }
+    .loader-sub { font-size: 12px; color: #667085; margin-top: 4px; }
+    .loader-dots { display: flex; gap: 4px; margin-top: 10px; }
+    .loader-dots span { width: 6px; height: 6px; border-radius: 50%; background: #FF5A1F; animation: dotPulse 1s ease-in-out infinite; }
+    .loader-dots span:nth-child(2) { animation-delay: .2s; }
+    .loader-dots span:nth-child(3) { animation-delay: .4s; }
+    @keyframes dotPulse { 0%,80%,100% { opacity: .3; transform: scale(.8); } 40% { opacity: 1; transform: scale(1.3); } }
+
+    /* ═══════════ BANNER PEMBERITAHUAN ═══════════ */
+    .system-notice-bar {
+      background: linear-gradient(135deg, #FFF4EF, #FEF3C7);
+      border-bottom: 1px solid #FED7AA;
+      padding: 7px 16px; font-size: 11px; font-weight: 600;
+      color: #92400E; text-align: center;
+      display: flex; align-items: center; justify-content: center;
+      gap: 8px; flex-wrap: wrap;
+    }
+    .system-notice-bar .dot { width: 6px; height: 6px; border-radius: 50%; background: #EA580C; animation: pulse 1.5s infinite; flex-shrink: 0; }
+    @keyframes pulse { 0%,100% { opacity: .4; } 50% { opacity: 1; } }
+    .system-notice-bar a { color: #EA580C; font-weight: 700; text-decoration: underline; white-space: nowrap; }
+    .system-notice-bar a:hover { color: #C2410C; }
+    .notice-dismiss {
+      margin-left: auto; background: none; border: none; cursor: pointer;
+      font-size: 14px; color: #92400E; font-weight: 700; padding: 0 4px;
+    }
     /* ══════════════════════════════════════════════════════════════
        DESIGN TOKENS — CLEAN JAKARTA TRANSIT DESIGN SYSTEM
        ══════════════════════════════════════════════════════════════ */
@@ -1378,17 +1421,112 @@
        ══════════════════════════════════════════════════════════════ */
     .sheet-drag-handle { display: none; }
 
+    /* Trailing GPS button for destination */
+    .gps-trailing-btn.dest-gps {
+      background: var(--accent-subtle);
+      border-color: var(--accent-border);
+      color: var(--accent);
+    }
+    .gps-trailing-btn.dest-gps:hover {
+      background: #FFE4D6;
+    }
+    .gps-trailing-btn.dest-gps.active {
+      background: #DCFCE7;
+      border-color: #86EFAC;
+      color: #16A34A;
+    }
+
+    .tab-label-short, .bookmark-label-short { display: none; }
+    .tab-label-full, .bookmark-label-full { display: inline; }
+    .gps-text-short { display: none; }
+    .gps-text-full { display: inline; }
+
+    /* Map-Click Location Picker Popup Bubble */
+    .leaflet-popup-content-wrapper {
+      border-radius: var(--radius-md) !important;
+      box-shadow: 0 8px 24px rgba(16, 24, 40, 0.16) !important;
+      padding: 0 !important;
+    }
+    .leaflet-popup-content {
+      margin: 10px 14px !important;
+      line-height: 1.4 !important;
+    }
+    .map-pick-popup {
+      font-family: var(--font);
+      min-width: 190px;
+    }
+    .map-pick-title {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 2px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .map-pick-coords {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+    .map-pick-actions {
+      display: flex;
+      gap: 6px;
+    }
+    .map-pick-btn {
+      flex: 1;
+      padding: 6px 8px;
+      border-radius: var(--radius-sm);
+      font-size: 11px;
+      font-weight: 700;
+      font-family: var(--font);
+      cursor: pointer;
+      border: 1px solid transparent;
+      white-space: nowrap;
+      text-align: center;
+      transition: all 0.15s ease;
+    }
+    .map-pick-btn.origin-pick-btn {
+      background: #DCFCE7;
+      color: #15803D;
+      border-color: #86EFAC;
+    }
+    .map-pick-btn.origin-pick-btn:hover {
+      background: #BBF7D0;
+    }
+    .map-pick-btn.dest-pick-btn {
+      background: #FFE4D6;
+      color: var(--accent);
+      border-color: var(--accent-border);
+    }
+    .map-pick-btn.dest-pick-btn:hover {
+      background: #FFD2BC;
+    }
+
+    /* Responsive Header & Navigation Scale (Active from 1140px downwards to prevent clipping) */
+    @media (max-width: 1140px) {
+      .tab-label-full, .bookmark-label-full { display: none; }
+      .tab-label-short, .bookmark-label-short { display: inline; }
+      .brand-divider, .brand-jaklingko { display: none; }
+      .header-content { padding: 0 12px; gap: 8px; }
+      .nav-tab-btn { padding: 5px 12px; font-size: 12px; }
+      .header-bookmark-btn { padding: 5px 10px; font-size: 11.5px; }
+    }
+
     @media (max-width: 768px) {
       .app-header {
         height: 52px;
       }
       .header-content {
-        padding: 0 12px;
+        padding: 0 10px;
+        gap: 6px;
       }
-      .brand-tj img { height: 22px; }
-      .brand-jaklingko img { height: 15px; }
-      .nav-tab-btn { padding: 5px 12px; font-size: 11.5px; }
-      .header-bookmark-btn { padding: 4px 8px; font-size: 11px; }
+      .brand-tj img { height: 21px; }
+      .nav-tab-btn { padding: 4.5px 10px; font-size: 11.5px; gap: 4px; }
+      .header-bookmark-btn { padding: 4.5px 8px; font-size: 11px; }
+      .magang-link span { display: none; }
+      .gps-text-full { display: none; }
+      .gps-text-short { display: inline; }
 
       .app-main {
         flex-direction: column;
@@ -1472,9 +1610,37 @@
       .detail-header-card { padding: 12px 16px; }
       .vertical-stop-timeline { padding: 12px 16px; }
     }
+
+    @media (max-width: 440px) {
+      .app-header { height: 48px; }
+      .header-content { padding: 0 8px; gap: 4px; }
+      .brand-tj img { height: 18px; }
+      .nav-tab-btn { padding: 4px 7px; font-size: 10.5px; }
+      .header-bookmark-btn { padding: 4px 6px; font-size: 10px; }
+      .magang-link { display: none; }
+    }
   </style>
 </head>
 <body>
+
+<!-- ═══════════ LOADING SCREEN ═══════════ -->
+<div id="app-loader">
+  <div class="loader-icon">
+    <div class="loader-bus"></div>
+    <div class="loader-road"></div>
+  </div>
+  <div class="loader-text">Menyiapkan Rute Transportasi</div>
+  <div class="loader-sub">Memuat 240 rute · 8.091 halte · 700 jalur geometri</div>
+  <div class="loader-dots"><span></span><span></span><span></span></div>
+</div>
+
+<!-- ═══════════ SYSTEM NOTICE BAR ═══════════ -->
+<div class="system-notice-bar" id="system-notice">
+  <span class="dot"></span>
+  <span><b>Sistem baru</b> — masih dalam tahap pengembangan. Beberapa rute & jadwal dapat berubah.</span>
+  <a href="https://wa.me/6285725265355?text=Halo%2C%20saya%20mau%20lapor%20bug%20TransJakarta%20Explorer%3A%20" target="_blank" rel="noopener">💬 Lapor Bug / Ide</a>
+  <button class="notice-dismiss" onclick="document.getElementById('system-notice').style.display='none'" title="Tutup">&times;</button>
+</div>
 
 <!-- ══════════════════════════════════════════════════════════════
      APP HEADER (TransJakarta Brand + Segmented Tabs + Shortcuts)
@@ -1496,11 +1662,13 @@
     <nav class="header-nav" aria-label="Menu navigasi utama">
       <button type="button" class="nav-tab-btn active" id="tab-nav-planner" onclick="setAppMode('planner')" title="Rencanakan rute A ke B">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        <span>Rencanakan Perjalanan</span>
+        <span class="tab-label-full">Rencanakan Perjalanan</span>
+        <span class="tab-label-short">Rencana</span>
       </button>
       <button type="button" class="nav-tab-btn" id="tab-nav-routes" onclick="setAppMode('routes')" title="Lihat peta seluruh rute TransJakarta">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
-        <span>Daftar Rute (240)</span>
+        <span class="tab-label-full">Daftar Rute (240)</span>
+        <span class="tab-label-short">Rute (240)</span>
       </button>
     </nav>
 
@@ -1508,7 +1676,8 @@
     <div class="header-actions">
       <button type="button" class="header-bookmark-btn" onclick="quickSelectMenaraBNI()" title="Pusatkan peta dan atur tujuan ke Menara BNI Pejompongan">
         <span style="color:var(--accent);">★</span>
-        <span>Menara BNI</span>
+        <span class="bookmark-label-full">Menara BNI</span>
+        <span class="bookmark-label-short">BNI</span>
       </button>
       <a href="index.html" class="header-bookmark-btn magang-link" title="Kembali ke Asisten Magang BNI">
         <img src="bni-logo.svg" alt="BNI" height="11">
@@ -1547,9 +1716,9 @@
               <div class="dot-inner origin"></div>
             </div>
             <input type="text" id="p-from-input" class="location-input-field" placeholder="Titik awal: alamat, halte, atau stasiun" autocomplete="off" spellcheck="false">
-            <button type="button" class="gps-trailing-btn" id="btn-gps-origin" onclick="useCurrentLocationForOrigin()" title="Gunakan GPS saya saat ini">
+            <button type="button" class="gps-trailing-btn" id="btn-gps-origin" onclick="useCurrentLocationForOrigin()" title="Gunakan GPS saya saat ini sebagai titik awal">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg>
-              <span id="gps-origin-label">GPS Saya</span>
+              <span id="gps-origin-label"><span class="gps-text-full">GPS Saya</span><span class="gps-text-short">GPS</span></span>
             </button>
             <button type="button" class="input-clear-btn" id="p-from-clear" onclick="clearPlanInput('from')">✕</button>
             <div class="autocomplete-dropdown" id="p-from-dropdown"></div>
@@ -1562,12 +1731,16 @@
             </button>
           </div>
 
-          <!-- Destination Row -->
+          <!-- Destination Row (Now with GPS selector too!) -->
           <div class="location-row">
             <div class="location-dot">
               <div class="dot-inner destination"></div>
             </div>
             <input type="text" id="p-to-input" class="location-input-field" placeholder="Tujuan: alamat, halte, atau stasiun" autocomplete="off" spellcheck="false">
+            <button type="button" class="gps-trailing-btn dest-gps" id="btn-gps-dest" onclick="useCurrentLocationForDest()" title="Gunakan GPS saya sebagai tujuan">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg>
+              <span id="gps-dest-label"><span class="gps-text-full">GPS Tujuan</span><span class="gps-text-short">GPS</span></span>
+            </button>
             <button type="button" class="input-clear-btn" id="p-to-clear" onclick="clearPlanInput('to')">✕</button>
             <div class="autocomplete-dropdown" id="p-to-dropdown"></div>
           </div>
@@ -1578,7 +1751,7 @@
           <span class="section-label">Tujuan populer</span>
           <div class="popular-chips-scroll">
             <button type="button" class="popular-chip featured" onclick="applyPlanPreset('Menara BNI Pejompongan', -6.20385, 106.80245)">
-              🏢 Menara BNI
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="7" width="7" height="10" rx="1"/><rect x="14" y="5" width="7" height="12" rx="1"/><line x1="6.5" y1="7" x2="6.5" y2="17"/><line x1="17.5" y1="5" x2="17.5" y2="17"/></svg> Menara BNI
             </button>
             <button type="button" class="popular-chip" onclick="applyPlanPreset('Stasiun Palmerah', -6.2071, 106.7975)">
               🚆 St. Palmerah
@@ -1869,7 +2042,13 @@
       renderCategoryChips();
       renderRoutesList();
       initBRTNetworkLayer();
+
+      // Hide loading screen
+      var loader = document.getElementById('app-loader');
+      if (loader) { loader.classList.add('hidden'); setTimeout(function(){ loader.style.display = 'none'; }, 400); }
     }).catch(function() {
+      var loader = document.getElementById('app-loader');
+      if (loader) { loader.classList.add('hidden'); setTimeout(function(){ loader.style.display = 'none'; }, 400); }
       var list = document.getElementById('routes-list-scroll');
       if (list) list.innerHTML = '<div class="state-message-card" style="color:var(--danger);">Gagal memuat dataset rute GTFS.</div>';
     });
@@ -1887,6 +2066,25 @@
       subdomains: 'abcd',
       maxZoom: 20
     }).addTo(map);
+
+    // Interactive Tap on Map to select Origin or Destination
+    map.on('click', function(e) {
+      var lat = e.latlng.lat;
+      var lng = e.latlng.lng;
+      var popupContent = '<div class="map-pick-popup">' +
+        '<div class="map-pick-title"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#005BAC" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Titik Pilihan Anda</div>' +
+        '<div class="map-pick-coords">' + lat.toFixed(5) + ', ' + lng.toFixed(5) + '</div>' +
+        '<div class="map-pick-actions">' +
+          '<button type="button" class="map-pick-btn origin-pick-btn" onclick="setMapPointAs(\'from\',' + lat + ',' + lng + ')">Jadikan Titik Awal</button>' +
+          '<button type="button" class="map-pick-btn dest-pick-btn" onclick="setMapPointAs(\'to\',' + lat + ',' + lng + ')">Jadikan Tujuan</button>' +
+        '</div>' +
+      '</div>';
+
+      L.popup({ minWidth: 200, className: 'custom-map-pick-bubble' })
+        .setLatLng(e.latlng)
+        .setContent(popupContent)
+        .openOn(map);
+    });
 
     setTimeout(function() { map.invalidateSize(); }, 300);
   }
@@ -2048,13 +2246,19 @@
     if (type === 'from') {
       document.getElementById('p-from-input').value = '';
       document.getElementById('p-from-clear').style.display = 'none';
-      document.getElementById('gps-origin-label').textContent = 'GPS Saya';
-      document.getElementById('btn-gps-origin').classList.remove('active');
+      var lblOrig = document.getElementById('gps-origin-label');
+      if (lblOrig) lblOrig.innerHTML = '<span class="gps-text-full">GPS Saya</span><span class="gps-text-short">GPS</span>';
+      var btnOrig = document.getElementById('btn-gps-origin');
+      if (btnOrig) btnOrig.classList.remove('active');
       planFromCoord = null;
       planFromName = '';
     } else {
       document.getElementById('p-to-input').value = '';
       document.getElementById('p-to-clear').style.display = 'none';
+      var lblDest = document.getElementById('gps-dest-label');
+      if (lblDest) lblDest.innerHTML = '<span class="gps-text-full">GPS Tujuan</span><span class="gps-text-short">GPS</span>';
+      var btnDest = document.getElementById('btn-gps-dest');
+      if (btnDest) btnDest.classList.remove('active');
       planToCoord = null;
       planToName = '';
     }
@@ -2070,6 +2274,34 @@
 
     fc.style.display = fi.value ? 'inline-block' : 'none';
     tc.style.display = ti.value ? 'inline-block' : 'none';
+
+    // Update GPS button active states
+    var btnOrig = document.getElementById('btn-gps-origin');
+    var btnDest = document.getElementById('btn-gps-dest');
+    var lblOrig = document.getElementById('gps-origin-label');
+    var lblDest = document.getElementById('gps-dest-label');
+
+    var origIsGPS = fi.value.includes('GPS') || (planFromName && planFromName.includes('GPS'));
+    var destIsGPS = ti.value.includes('GPS') || (planToName && planToName.includes('GPS'));
+
+    if (btnOrig && lblOrig) {
+      if (origIsGPS) {
+        btnOrig.classList.add('active');
+        lblOrig.innerHTML = '<span class="gps-text-full">Lokasi Saya ✓</span><span class="gps-text-short">✓</span>';
+      } else {
+        btnOrig.classList.remove('active');
+        lblOrig.innerHTML = '<span class="gps-text-full">GPS Saya</span><span class="gps-text-short">GPS</span>';
+      }
+    }
+    if (btnDest && lblDest) {
+      if (destIsGPS) {
+        btnDest.classList.add('active');
+        lblDest.innerHTML = '<span class="gps-text-full">Tujuan GPS ✓</span><span class="gps-text-short">✓</span>';
+      } else {
+        btnDest.classList.remove('active');
+        lblDest.innerHTML = '<span class="gps-text-full">GPS Tujuan</span><span class="gps-text-short">GPS</span>';
+      }
+    }
   };
 
   window.useCurrentLocationForOrigin = function() {
@@ -2082,21 +2314,99 @@
     var btn = document.getElementById('btn-gps-origin');
     var lbl = document.getElementById('gps-origin-label');
 
-    lbl.textContent = 'Mencari...';
+    if (lbl) lbl.textContent = 'Mencari...';
 
     navigator.geolocation.getCurrentPosition(function(pos) {
       planFromCoord = [pos.coords.latitude, pos.coords.longitude];
       planFromName = 'Lokasi Saya Saat Ini (GPS)';
       inp.value = '📍 Lokasi Saya Saat Ini';
-      lbl.textContent = 'Lokasi Saya ✓';
-      btn.classList.add('active');
+      if (lbl) lbl.innerHTML = '<span class="gps-text-full">Lokasi Saya ✓</span><span class="gps-text-short">✓</span>';
+      if (btn) btn.classList.add('active');
       document.getElementById('p-from-clear').style.display = 'inline-block';
 
       map.setView(planFromCoord, 15, { animate: true });
     }, function() {
-      lbl.textContent = 'GPS Saya';
+      if (lbl) lbl.innerHTML = '<span class="gps-text-full">GPS Saya</span><span class="gps-text-short">GPS</span>';
       alert('Akses lokasi tidak diizinkan. Silakan ketik nama lokasi secara manual.');
     }, { enableHighAccuracy: true, timeout: 8000 });
+  };
+
+  window.useCurrentLocationForDest = function() {
+    if (!navigator.geolocation) {
+      alert('Akses lokasi (Geolocation) tidak didukung pada browser ini.');
+      return;
+    }
+
+    var inp = document.getElementById('p-to-input');
+    var btn = document.getElementById('btn-gps-dest');
+    var lbl = document.getElementById('gps-dest-label');
+
+    if (lbl) lbl.textContent = 'Mencari...';
+
+    navigator.geolocation.getCurrentPosition(function(pos) {
+      planToCoord = [pos.coords.latitude, pos.coords.longitude];
+      planToName = 'Lokasi Saya Saat Ini (GPS)';
+      inp.value = '📍 Lokasi Saya (Tujuan GPS)';
+      if (lbl) lbl.innerHTML = '<span class="gps-text-full">Tujuan GPS ✓</span><span class="gps-text-short">✓</span>';
+      if (btn) btn.classList.add('active');
+      document.getElementById('p-to-clear').style.display = 'inline-block';
+
+      map.setView(planToCoord, 15, { animate: true });
+    }, function() {
+      if (lbl) lbl.innerHTML = '<span class="gps-text-full">GPS Tujuan</span><span class="gps-text-short">GPS</span>';
+      alert('Akses lokasi tidak diizinkan atau GPS nonaktif. Silakan ketik tujuan secara manual.');
+    }, { enableHighAccuracy: true, timeout: 8000 });
+  };
+
+  window.setMapPointAs = function(type, lat, lon) {
+    var latNum = parseFloat(lat), lonNum = parseFloat(lon);
+    var coordStr = latNum.toFixed(4) + ', ' + lonNum.toFixed(4);
+    var placeName = 'Titik Peta (' + coordStr + ')';
+
+    if (type === 'from') {
+      planFromCoord = [latNum, lonNum];
+      planFromName = placeName;
+      var inp = document.getElementById('p-from-input');
+      inp.value = placeName;
+      document.getElementById('p-from-clear').style.display = 'inline-block';
+    } else {
+      planToCoord = [latNum, lonNum];
+      planToName = placeName;
+      var inp = document.getElementById('p-to-input');
+      inp.value = placeName;
+      document.getElementById('p-to-clear').style.display = 'inline-block';
+    }
+
+    // Attempt reverse geocoding asynchronously for clean human-readable name
+    fetch('https://nominatim.openstreetmap.org/reverse?lat=' + latNum + '&lon=' + lonNum + '&format=json', {
+      headers: { 'Accept-Language': 'id' }
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d && d.display_name) {
+        var cleanName = d.display_name.split(',')[0];
+        if (type === 'from') {
+          planFromName = cleanName;
+          document.getElementById('p-from-input').value = cleanName;
+        } else {
+          planToName = cleanName;
+          document.getElementById('p-to-input').value = cleanName;
+        }
+      }
+    }).catch(function(){});
+
+    // Close any open popup
+    if (map) map.closePopup();
+
+    // Switch to planner view if not already
+    setAppMode('planner');
+
+    // On mobile, expand bottom sheet to half so user sees form
+    var panel = document.getElementById('main-control-panel');
+    if (panel && window.innerWidth <= 768) {
+      panel.classList.remove('state-collapsed');
+      panel.classList.add('state-half');
+    }
   };
 
   // Autocomplete Setup
