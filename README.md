@@ -71,6 +71,17 @@ Pusat navigasi perjalanan dinas & milestone pemagangan Zaki di Divisi SSE BNI de
 
 ---
 
+## 📱 Dukungan Progressive Web App (PWA) & Install di HP
+
+Aplikasi MGHB kini berstatus **Full Progressive Web App (PWA)**:
+* **Web App Manifest (`manifest.json`)**: Konfigurasi nama, tema warna Deep Teal BNI (`#005E6A`), dan ikon multi-ukuran (192px, 512px, serta maskable icon).
+* **Service Worker (`sw.js`)**: Cache aset shell (HTML, stylesheet, data JSON berita, dan ikon) untuk performa instan dan fungsionalitas offline penuh.
+* **Tombol Install di HP**:
+  - *Android / Chrome / Edge*: Tombol **"Install di HP"** di header & utility bar, serta floating banner interaktif yang langsung memicu dialog install native.
+  - *iOS Safari*: Panduan otomatis untuk opsi *'Tambah ke Layar Utama' (Add to Home Screen)*.
+
+---
+
 ## 🗄️ Database Cloud & Offline-First
 
 * **Supabase PostgreSQL**: Sinkronisasi lintas perangkat (Laptop kantor dan HP) untuk tabel logbook, expenses, dan inventaris.
