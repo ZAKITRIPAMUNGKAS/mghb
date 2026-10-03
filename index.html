@@ -7929,6 +7929,12 @@
     if (dot) {
       dot.style.background = state === 'connected' ? '#10b981' : (state === 'connecting' ? '#eab308' : '#f97316');
     }
+    // Finance header database dot
+    const finDot = document.getElementById('fin-db-dot');
+    if (finDot) {
+      finDot.style.background = state === 'connected' ? '#10b981' : (state === 'connecting' ? '#eab308' : '#94a3b8');
+      finDot.title = 'Database: ' + text;
+    }
     if (button) {
       button.title = 'Database: ' + text;
       button.setAttribute('aria-label', 'Database: ' + text);
@@ -10187,22 +10193,22 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
 
   function saveFinanceBills(bills) {
     localStorage.setItem(FIN_BILLS_KEY, JSON.stringify(bills));
-  }
-
-  function syncBillsToSupabase() {
-    if (!supabaseClient) return;
-    const rows = getFinanceBills().map((b, idx) => ({
-      id: b.id,
-      name: b.name,
-      amount: Number(b.amount) || 0,
-      due_day: Number(b.dueDay) || 1,
-      paid: Boolean(b.paid),
-      icon: b.icon || '',
-      is_custom: Boolean(b.custom),
-      sort_order: idx + 1,
-      updated_at: new Date().toISOString()
-    }));
-    supabaseClient.from('mghb_bills').upsert(rows).then(() => {}, err => console.warn('Supabase bills sync error:', err));
+    // Background sync to Supabase
+    if (supabaseClient) {
+      const rows = (bills || []).map((b, idx) => ({
+        id: b.id,
+        name: b.name,
+        amount: Number(b.amount) || 0,
+        due_day: Number(b.dueDay) || 1,
+        paid: Boolean(b.paid),
+        icon: b.icon || '',
+        is_custom: Boolean(b.custom),
+        sort_order: idx + 1,
+        updated_at: new Date().toISOString()
+      }));
+      supabaseClient.from('mghb_bills').upsert(rows, { onConflict: 'id' })
+        .then(() => {}, err => console.warn('Supabase bills upsert error:', err));
+    }
   }
 
   function toggleBillPaid(id) {
@@ -10211,7 +10217,6 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     if (item) {
       item.paid = !item.paid;
       saveFinanceBills(bills);
-      syncBillsToSupabase();
       renderFinanceBills();
       updateFinanceCalculations();
       showToast(`${item.name}: status ${item.paid ? 'Lunas ' : 'Belum Bayar'}`);
@@ -10230,7 +10235,6 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       custom: true
     });
     saveFinanceBills(bills);
-    syncBillsToSupabase();
     renderFinanceBills();
     updateFinanceCalculations();
     showToast('Tagihan baru ditambahkan — klik untuk edit');
@@ -10248,7 +10252,6 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       item.dueDay = Math.min(Math.max(parseInt(value, 10) || 1, 1), 31);
     }
     saveFinanceBills(bills);
-    syncBillsToSupabase();
     if (field === 'amount' || field === 'dueDay') updateFinanceCalculations();
   }
 
@@ -10363,33 +10366,34 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
 
   function saveFinanceGoals(goals) {
     localStorage.setItem(FIN_GOALS_KEY, JSON.stringify(goals));
+    // Background sync to Supabase
+    if (supabaseClient) {
+      // 1. Snapshot via mghb_settings (guaranteed fallback)
+      supabaseClient.from('mghb_settings').upsert({
+        key: 'finance_goals',
+        value: goals || [],
+        updated_at: new Date().toISOString()
+      }).then(() => {}, err => console.warn('Supabase goals settings error:', err));
+
+      // 2. Row sync via mghb_goals
+      const rows = (goals || []).map((g, idx) => ({
+        id: g.id,
+        name: g.name,
+        target: Number(g.target) || 0,
+        saved: Number(g.saved) || 0,
+        deadline: g.deadline || null,
+        icon: g.icon || '',
+        color: g.color || '#10b981',
+        is_preset: false,
+        sort_order: idx + 1,
+        updated_at: new Date().toISOString()
+      }));
+      supabaseClient.from('mghb_goals').upsert(rows, { onConflict: 'id' })
+        .then(() => {}, err => console.warn('Supabase goals upsert error:', err));
+    }
   }
 
-  function syncGoalsToSupabase() {
-    if (!supabaseClient) return;
-    const goals = getFinanceGoals();
-    // 1. Sinkronisasi terjamin via mghb_settings (JSONB)
-    supabaseClient.from('mghb_settings').upsert({
-      key: 'finance_goals',
-      value: goals || [],
-      updated_at: new Date().toISOString()
-    }).then(() => {}, err => console.warn('Supabase goals settings sync error:', err));
-
-    // 2. Sinkronisasi ke tabel dedicated mghb_goals jika ada
-    const rows = (goals || []).map((g, idx) => ({
-      id: g.id,
-      name: g.name,
-      target: Number(g.target) || 0,
-      saved: Number(g.saved) || 0,
-      deadline: g.deadline || null,
-      icon: g.icon || '',
-      color: g.color || '#10b981',
-      is_preset: false,
-      sort_order: idx + 1,
-      updated_at: new Date().toISOString()
-    }));
-    supabaseClient.from('mghb_goals').upsert(rows).then(() => {}, () => {});
-  }
+  
 
   function promptAddGoal() {
     const name = prompt('Nama tujuan (mis. Laptop Baru, Bayar SKS):');
@@ -10399,7 +10403,6 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     const goals = getFinanceGoals();
     goals.push({ id: 'goal_' + Date.now(), name: name.trim(), target, saved: 0, deadline: '', icon: 'i-target', color: '#0284c7', custom: true });
     saveFinanceGoals(goals);
-    syncGoalsToSupabase();
     renderFinanceGoals();
     showToast('Tujuan baru dibuat — klik untuk sisihkan');
   }
@@ -10410,7 +10413,6 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     if (!g) return;
     g.saved = Math.max(0, Math.round((Number(g.saved) || 0) + amount));
     saveFinanceGoals(goals);
-    syncGoalsToSupabase();
     renderFinanceGoals();
     updateFinanceCalculations(false);
     showToast(`Sisihkan ${formatRupiah(amount)} ke "${g.name}"`);
@@ -10422,7 +10424,6 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     if (!g) return;
     g.saved = Math.max(0, parseMoney(value));
     saveFinanceGoals(goals);
-    syncGoalsToSupabase();
     renderFinanceGoals();
     updateFinanceCalculations(false);
   }
@@ -10434,7 +10435,6 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     if (confirm(`Hapus tujuan "${g.name}"?`)) {
       goals = goals.filter(x => x.id !== id);
       saveFinanceGoals(goals);
-      syncGoalsToSupabase();
       if (supabaseClient) supabaseClient.from('mghb_goals').delete().eq('id', id).then(() => {}, () => {});
       renderFinanceGoals();
       showToast('Tujuan dihapus');
@@ -10680,6 +10680,19 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
 
   function saveFinanceExpenses(expenses) {
     localStorage.setItem(FIN_EXPENSES_KEY, JSON.stringify(expenses));
+    // Background sync to Supabase (fire-and-forget)
+    if (supabaseClient) {
+      const rows = (expenses || []).map(e => ({
+        id: e.id,
+        tx_date: e.date || e.tx_date,
+        category: e.cat || e.category,
+        description: e.desc || e.description,
+        amount: Number(e.amount) || 0,
+        created_at: new Date().toISOString()
+      }));
+      supabaseClient.from('mghb_expenses').upsert(rows, { onConflict: 'id' })
+        .then(() => {}, err => console.warn('Supabase expense upsert error:', err));
+    }
   }
 
   function formatRupiah(num) {
@@ -10768,8 +10781,9 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     if (incomeInput) {
       incomeInput.value = localIncome.toLocaleString('id-ID');
     }
-    // Pull income dari cloud settings HANYA jika lokal belum pernah diubah user
+    // Pull income, expenses, bills, and goals from Supabase (cloud-first merge)
     if (supabaseClient) {
+      // Income
       supabaseClient.from('mghb_settings').select('value').eq('key', 'finance_income').maybeSingle().then(({ data }) => {
         if (data && data.value != null) {
           const cloud = Number(data.value) || parseInt(String(data.value), 10) || 0;
@@ -10779,6 +10793,61 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
             if (incomeInput) incomeInput.value = cloud.toLocaleString('id-ID');
             updateFinanceCalculations(true);
           }
+        }
+      });
+
+      // Expenses — merge supabase into local (newer wins by id)
+      supabaseClient.from('mghb_expenses').select('*').order('tx_date', { ascending: false }).then(({ data: cloudExp }) => {
+        if (cloudExp && cloudExp.length) {
+          const localMap = new Map(getFinanceExpenses().map(e => [e.id, e]));
+          cloudExp.forEach(ce => {
+            if (!localMap.has(ce.id)) {
+              localMap.set(ce.id, {
+                id: ce.id, cat: ce.category, desc: ce.description,
+                amount: Number(ce.amount) || 0, date: ce.tx_date
+              });
+            }
+          });
+          const merged = Array.from(localMap.values())
+            .sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+          saveFinanceExpenses(merged);
+          renderFinanceExpenses();
+        }
+      });
+
+      // Bills — merge supabase into local
+      supabaseClient.from('mghb_bills').select('*').order('sort_order', { ascending: true }).then(({ data: cloudBills }) => {
+        if (cloudBills && cloudBills.length) {
+          const localMap = new Map(getFinanceBills().map(b => [b.id, b]));
+          cloudBills.forEach(cb => {
+            localMap.set(cb.id, {
+              id: cb.id, name: cb.name, amount: Number(cb.amount) || 0,
+              dueDay: cb.due_day || 1, paid: Boolean(cb.paid),
+              icon: cb.icon || '', custom: Boolean(cb.is_custom)
+            });
+          });
+          const merged = Array.from(localMap.values());
+          saveFinanceBills(merged);
+          renderFinanceBills();
+          updateFinanceCalculations();
+        }
+      });
+
+      // Goals — merge supabase into local
+      supabaseClient.from('mghb_goals').select('*').order('sort_order', { ascending: true }).then(({ data: cloudGoals }) => {
+        if (cloudGoals && cloudGoals.length) {
+          const localMap = new Map(getFinanceGoals().map(g => [g.id, g]));
+          cloudGoals.forEach(cg => {
+            localMap.set(cg.id, {
+              id: cg.id, name: cg.name, target: Number(cg.target) || 0,
+              saved: Number(cg.saved) || 0, deadline: cg.deadline || '',
+              icon: cg.icon || '', color: cg.color || '#10b981', custom: !cg.is_preset
+            });
+          });
+          const merged = Array.from(localMap.values());
+          saveFinanceGoals(merged);
+          renderFinanceGoals();
+          updateFinanceCalculations();
         }
       });
     }
@@ -11128,20 +11197,6 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     renderFinanceExpenses();
     updateFinanceCalculations(false);
     showToast(`Pengeluaran ${formatRupiah(amount)} berhasil dicatat & disimpan!`);
-
-    // Background sync to Supabase if connected
-    if (supabaseClient) {
-      supabaseClient.from('mghb_expenses').upsert({
-        id: newTx.id,
-        tx_date: newTx.date,
-        category: newTx.cat,
-        description: newTx.desc,
-        amount: newTx.amount,
-        created_at: new Date().toISOString()
-      }).then(() => {
-        console.log('Expense synced to Supabase');
-      }).catch(err => console.warn('Supabase expense sync error:', err));
-    }
   }
 
   function quickFillExpense(cat, amount, desc) {
