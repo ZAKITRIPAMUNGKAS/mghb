@@ -1718,6 +1718,26 @@
       text-transform: uppercase; /* 7 day labels: S S R K J S M */
     }
 
+    /* ===== Finance Grid Layout (desktop 2-column) ===== */
+    .fin-grid {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: 1fr;
+    }
+    @media (min-width: 960px) {
+      .fin-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      /* Full-width cards */
+      .fin-grid > .finance-overview-card,
+      .fin-grid > #fin-health-section,
+      .fin-grid > #fin-sim-section,
+      .fin-grid > .guide-section-title,
+      .fin-grid > .guide-card {
+        grid-column: 1 / -1;
+      }
+    }
+
     /* ===== What-if simulator ===== */
     .fin-sim-row { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
     .fin-sim-head { display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--text-secondary); font-weight: 600; }
@@ -11458,6 +11478,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     if (descEl) descEl.value = '';
 
     renderFinanceExpenses();
+    renderFinanceHeatmap();
     updateFinanceCalculations(false);
     showToast(`Pengeluaran ${formatRupiah(amount)} berhasil dicatat & disimpan!`);
   }
@@ -11481,6 +11502,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     expenses = expenses.filter(item => item.id !== id);
     saveFinanceExpenses(expenses);
     renderFinanceExpenses();
+    renderFinanceHeatmap();
     updateFinanceCalculations(false);
     showToast('Transaksi pengeluaran dihapus');
 
@@ -11498,6 +11520,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
         supabaseClient.from('mghb_expenses').delete().in('id', ids).then(() => {}, err => console.warn('Supabase clear expense error:', err));
       }
       renderFinanceExpenses();
+      renderFinanceHeatmap();
       updateFinanceCalculations(false);
       showToast('Seluruh riwayat pengeluaran berhasil di-reset');
     }
