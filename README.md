@@ -53,32 +53,21 @@ MGHB WORKSPACE
 
 ---
 
-### 4. 🧭 Plan & Workflow Selama MGHB
-Pusat kendali dan panduan operasional pemagangan Zaki di Divisi SSE BNI:
-* **Roadmap 6 Bulan Pemagangan**:
+### 4. 🧭 Roadmap Magang (Roadmap Line dengan Jaring-Jaring BNI)
+Pusat navigasi perjalanan dinas & milestone pemagangan Zaki di Divisi SSE BNI dengan tampilan **Roadmap Line** berbalut motif **Jaring-Jaring (JARIN Network BNI)**:
+* **Roadmap Line & Checkpoint Spasial**:
+  - *Garis Rel Bertingkat*: Garis alur dinamis yang menghubungkan 6 fase perjalanan dinas dari awal onboarding hingga sertifikasi akhir.
+  - *Motif Jaring-Jaring BNI*: Latar belakang ambient bermotif geometris jaring-jaring (`jarin-pattern-light.svg` & `jarin-pattern.svg`) dengan simpul jaringan (*network nodes*).
+* **6 Fase Perjalanan Dinas & Milestone**:
   - *Bulan 1*: Onboarding, Budaya BNI HCS & Pemahaman Kerangka ABT-Cabang-BRAVE.
-  - *Bulan 2*: Olah Data CICO Leads, Cleansing Database Nasabah & Analisis Spasial.
+  - *Bulan 2 (Aktif Berjalan)*: Olah Data CICO Leads, Cleansing Database CIF & Analisis Spasial Transit.
   - *Bulan 3*: Pengembangan Sub-Sistem Pre-Sales BCS/GIS Area BNI.
   - *Bulan 4*: Monev Tengah Periode Kemnaker & Akselerasi Pipeline Prospek.
   - *Bulan 5*: Simulasi Threshold 20% TAP Serapan Produk Mandatory & Handover BAST.
   - *Bulan 6*: Penyusunan Laporan Akhir Magang & Uji Sertifikasi BNSP.
-  - *Target Milestone Checklist*: Checklist progresif interaktif yang tersimpan di `localStorage`.
-* **Daily Logbook Formulator & Scratchpad**:
-  - Scratchpad pencatat cepat aktivitas harian (auto-save).
-  - Formulator Laporan Harian Kemnaker 3 bagian: *Uraian Aktivitas*, *Hasil/Output*, *Kendala*.
-  - Generator AI (Claude via API) & Generator Template Offline.
-  - Ekspor Riwayat & Draf Laporan Bulanan Resmi.
-* **SOP & Jam Kerja Menara BNI**:
-  - Jam Operasional Kantor: 07.30 – 17.00 WIB.
-  - Presensi Ganda: Aplikasi internal **DigiHC BNI** + GPS Portal **MagangHub Kemnaker**.
-  - Standar Busana HCS (Senin-Selasa Formal, Rabu-Kamis Batik, Jumat Casual/Blazer).
-  - Kepatuhan Kerahasiaan Bank (Banking Secrecy / NDA).
-* **Template Chat WhatsApp Mentor**:
-  - Izin Wisuda UMS, Izin Sakit / Surat Dokter, Laporan Selesai Penugasan Harian, Pengajuan Approval Logbook Mingguan ke Mentor (Bapak Guruh Sri Handoyo).
-* **Kamus & Toolkit SSE**:
-  - Rumus Excel Olah Data Sales (VLOOKUP, INDEX-MATCH, SUMIFS, Pivot Table).
-  - Kamus Istilah Bisnis Perbankan (CASA, DPK, Pipeline, NPL, dll.).
-  - Panduan Gedung Menara BNI & Lingkungan Kuliner Pejompongan / Benhil.
+* **Fitur Interaktif Milestone**:
+  - Checklist interaktif target capaian per bulan yang tersimpan di `localStorage`.
+  - Progress bar real-time yang menghitung persentase capaian pemagangan.
 
 ---
 

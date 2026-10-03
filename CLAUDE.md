@@ -11,7 +11,7 @@ Sistem MGHB hanya memiliki 4 fungsi utama di navigasi sidebar dan bottom bar:
 1. `berita`: **Portal Berita** (Warta & Pengumuman MagangHub Kemnaker)
 2. `packing`: **Inventaris** (Barang Kost, Perlengkapan BNI, Dokumen PKM)
 3. `keuangan`: **Keuangan** (Budgeting Harian Rantau Jakarta, Quick Expense 1-Klik)
-4. `workflow`: **Plan & Workflow** (Roadmap 6 Bulan, Logbook Formulator, SOP BNI, Chat Mentor, Toolkit)
+4. `workflow`: **Roadmap Magang** (Roadmap Line dengan Motif Jaring-Jaring BNI & Checklist Milestone)
 
 ## 3. TECHNICAL CONSTRAINTS
 - Single-page application di `index.html`.

@@ -61,13 +61,19 @@ MGHB WORKSPACE (Tepat 4 Menu Navigasi):
   - Pola alokasi 50/30/20 (pokok, operasional, tabungan/darurat di rekening BNI/Wondr).
   - Tombol salin rekap pengeluaran bulanan.
 
-### 4. 🧭 Tab 4: Plan & Workflow MGHB
-Pusat kendali dan panduan operasional pemagangan Zaki dengan 5 sub-tab navigasi segmented:
-1. **Roadmap & Plan Magang**: Timeline 6 bulan pemagangan di Divisi SSE BNI (Fase 1 s.d. 6) dilengkapi interactive milestone checklist yang tersimpan di `localStorage`.
-2. **Daily Logbook & Scratchpad**: Scratchpad catatan cepat auto-save, formulator 3 bagian standar Kemnaker (Aktivitas, Output, Kendala), AI Claude generator via API, formulator template offline, riwayat logbook, dan ekspor laporan bulanan ke Word/Markdown.
-3. **SOP & Jam Kerja Kantor BNI**: Jam kerja Menara BNI (07.30–17.00 WIB), presensi ganda (DigiHC BNI internal + GPS MagangHub Kemnaker), etika TPP Lanyard, standar pakaian HCS (Senin-Selasa Formal, Rabu-Kamis Batik, Jumat Casual/Blazer), dan kepatuhan rahasia bank (Banking Secrecy / NDA).
-4. **Template Chat Mentor**: Template WhatsApp resmi ke Pak Guruh (Izin Wisuda UMS, Izin Sakit, Konfirmasi Selesai Penugasan Harian, Reminder Approval Logbook).
-5. **Toolkit & Kamus SSE**: Rumus Excel data analytics (VLOOKUP, INDEX-MATCH, SUMIFS, Pivot), glosarium istilah perbankan (CASA, DPK, Pipeline, NPL), dan panduan fasilitas Menara BNI serta sentra kuliner Benhil.
+### 4. 🧭 Tab 4: Roadmap Magang (Roadmap Line dengan Jaring-Jaring BNI)
+Pusat navigasi visual perjalanan dinas Zaki di Divisi SSE BNI dengan tampilan **Roadmap Line bertingkat** dan motif geometris **Jaring-Jaring (JARIN Network)**:
+1. **Roadmap Track & Jaring-Jaring**: Spine line vertikal dinamis dengan gradient BNI Teal-Coral yang menghubungkan simpul node 6 bulan pemagangan, berlatar belakang motif batik jaring-jaring (`jarin-pattern-light.svg` & `jarin-pattern.svg`).
+2. **6 Node Checkpoint**:
+   - *Bulan 1*: Onboarding, Budaya BNI HCS & Kerangka ABT-Cabang-BRAVE (Selesai).
+   - *Bulan 2*: Olah Data Leads CICO, Cleansing Database CIF & Analisis Spasial Transit (Aktif Berjalan dengan pulsating glow).
+   - *Bulan 3*: Pengembangan Sub-Sistem Pre-Sales BCS/GIS Area BNI.
+   - *Bulan 4*: Monev Tengah Periode Kemnaker & Akselerasi Pipeline Prospek.
+   - *Bulan 5*: Simulasi Threshold 20% TAP Serapan Produk Mandatory & Handover BAST.
+   - *Bulan 6*: Laporan Akhir Magang & Uji Sertifikasi Kompetensi BNSP.
+3. **Interactive Deliverables & Progress Tracker**:
+   - Checklist capaian tugas per fase yang dapat dicentang langsung dan disimpan ke `localStorage`.
+   - Real-time progress bar persentase capaian dinas magang.
 
 ---
 
