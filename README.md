@@ -1,96 +1,93 @@
-# MGHB — Checklist Bawaan & Asisten Magang BNI
+# MGHB — Asisten & Workspace Magang BNI (Kemnaker)
 
-Aplikasi web produktivitas (*Mobile-First Productivity App*) yang dirancang sebagai asisten harian pemagangan **Zaki Tri Pamungkas** di **PT Bank Negara Indonesia (Persero) Tbk**, Divisi Sales Strategy & Execution (SSE), Menara BNI Pejompongan.
+Aplikasi web produktivitas (*Mobile-First Productivity App*) yang dirancang khusus sebagai sistem asisten harian pemagangan **Zaki Tri Pamungkas** di **PT Bank Negara Indonesia (Persero) Tbk**, Divisi Sales Strategy & Execution (SSE), Menara BNI Pejompongan.
 
 🌐 **Repositori GitHub**: [https://github.com/ZAKITRIPAMUNGKAS/mghb](https://github.com/ZAKITRIPAMUNGKAS/mghb)
 
 ---
 
-## 🚀 5 Modul Utama Asisten Magang
+## 🚀 4 Fungsi Utama Sistem MGHB
 
-### 1. 🎒 Bawaan & Wisuda UMS (38 Item)
-* Checklist perlengkapan keberangkatan dinas Jakarta & wisuda sarjana UMS (24–27 September 2026).
-* Standar pakaian formal BNI HCS: Kemeja putih hari pertama, Senin–Selasa Business Formal, Rabu–Kamis Batik lengan panjang (tidak boleh dilipat), Jumat Business Casual lapis blazer berkerah, celana bahan gelap (jeans dilarang keras).
-* Dokumen PKM-0026-PKM-II-2026, tiket KA, pakta integritas, elektronik, toiletries grooming, obat, dan esensial.
+Sistem ini dirampingkan dan difokuskan ke dalam **4 fungsi inti** terpadu:
 
-### 2. 📋 SOP Kerja & Kepatuhan BNI (17 Item)
-* Alur operasional harian: Presensi GPS MagangHub Kemnaker, absensi internal DigiHC BNI, penggunaan TPP (Lanyard/ID Card), dan briefing penugasan mentor Pak Guruh Sri Handoyo.
-* Evaluasi berkala: Prosedur izin wisuda ("Tidak Hadir Dengan Keterangan"), surat dokter jika sakit >1 hari, approval logbook mingguan, dan rekap bulanan.
-* Tata tertib perbankan: Kerahasiaan data nasabah (*Banking Secrecy* / NDA), larangan konten medsos pribadi di area kerja, penolakan gratifikasi, dan disiplin K3 Menara BNI.
+```text
+MGHB WORKSPACE
+├── 1. 📰 Portal Berita       (Warta & Pengumuman MagangHub Kemnaker)
+├── 2. 🎒 Inventaris           (Inventaris Kost & Kantor, Perlengkapan Dinas BNI)
+├── 3. 💰 Keuangan             (Budgeting Rantau Jakarta & Tracker Pengeluaran)
+└── 4. 🧭 Plan & Workflow MGHB (Roadmap 6 Bulan, SOP Jam Kerja BNI, Daily Logbook & Mentor)
+```
 
-### 3. ✍️ Daily Logbook Formulator & Quick Scratchpad
-* **Catatan Cepat Harian & Rapat (Scratchpad)**: Notepads auto-save real-time untuk mencatat arahan mentor, data sales, atau kendala lapangan saat jam kerja. Dilengkapi tombol satu-klik *"Pindahkan ke Formulator"*.
-* Masukkan poin-poin kasar aktivitas pekerjaan Anda dalam bahasa santai/cepat.
-* Sistem otomatis memformulasikannya menjadi kalimat formal perbankan terstruktur:
-  1. **Uraian Pekerjaan / Aktivitas** (kosakata korporat profesional).
-  2. **Hasil / Capaian Output** (terukur dan berorientasi hasil).
-  3. **Kendala & Solusi** (opsional / terstandardisasi).
-* Tombol **"Salin Semua ke Clipboard"** untuk langsung ditempelkan ke portal MagangHub Kemnaker.
-* **Arsip Riwayat Logbook Lokal**: Menyimpan catatan hari-hari sebelumnya di memori browser.
-* **Ekspor Ringkasan Bulanan (Executive Summary)**: Mengagregasi seluruh riwayat logbook harian menjadi draf laporan bulanan resmi berstandar Kemnaker & BNI, siap diekspor ke Microsoft Word atau diunduh sebagai berkas `.md`.
+---
 
-### 4. 💬 Asisten SSE & Panduan Menara BNI
-* **Banner Anti-Lupa Pulang & Ritme Kantor**: Indikator real-time jam operasional kantor Menara BNI (07.30 - 17.00 WIB) dengan alert otomatis pada pukul 16.30 - 17.30 WIB untuk presensi pulang di MagangHub & DigiHC serta submit logbook harian.
-* **Panduan Gedung Menara BNI & Survival Pejompongan**:
-  - Akses gerbang gedung, lift zoning (Low Zone vs High Zone), etika TPP (ID Card).
-  - Transit & mobilitas: KRL Palmerah (1.8 km / ojol 5 mnt), MRT Bendungan Hilir, TransJakarta Koridor 9 Halte Slipi Petamburan, Mikrotrans JakLingko.
-  - Spot makan siang ramah kantong: Kantin karyawan basement Menara BNI & sentra kuliner Jalan Penjernihan / Pasar Benhil.
+### 1. 📰 Portal Berita (Kabar & Warta MagangHub)
+* **Agregasi Otomatis Berita Kredibel**: Menarik pembaruan berita dan regulasi pemagangan secara otomatis dari sumber-sumber terpercaya:
+  - **Kementerian Ketenagakerjaan RI (Kemnaker)**: Rilis pers resmi, jadwal batch, dan ketentuan uang saku.
+  - **ANTARA News**: Kebijakan pemagangan nasional & sertifikasi kompetensi BNSP.
+  - **Media Nasional (Kompas, Detikcom, CNBC Indonesia)**: Liputan program BNI dan dunia kerja.
+* **Filter Kategori Topik**: *Semua Berita*, *Pengumuman & Batch*, *Regulasi & Uang Saku*, *Sertifikasi BNSP*, *Kemnaker & BNI*.
+* **Portal Layanan Resmi Terkait**: Akses cepat 1-klik ke portal MagangHub Kemnaker, SIAPkerja, dan BNI.
+
+---
+
+### 2. 🎒 Inventaris (Inventaris Rantau & Kantor)
+* **Daftar Barang & Kategori**:
+  - Pakaian Formal & Batik BNI (HCS compliance).
+  - Perlengkapan Kamar Kost & Elektronik (Laptop dinas, charger, TPP Lanyard).
+  - Dokumen Legal (PKM-0026-PKM-II-2026, LoA, Surat Penempatan, Kartu Identitas).
+  - Obat-obatan pribadi & toiletries grooming.
+* **Fitur Interaktif**: Filter ketersediaan barang (*Tersedia / Di Kost / Dibawa ke Kantor / Perlu Beli*), pencarian instan, dan tombol **"Salin Inventaris"** siap bagikan.
+
+---
+
+### 3. 💰 Keuangan (Manajemen Finansial Rantau Jakarta)
+* **Kalkulator Budgeting Realistis**: Input uang saku / pemasukan bulanan, kalkulasi otomatis sisa anggaran harian aman, dan indikator batas pengeluaran (*Aman*, *Waspada*, *Defisit*).
+* **Quick Expense Tracker (1-Klik)**: Pencatat pengeluaran instan dengan preset riil Menara BNI Pejompongan:
+  - `+15rb` Kantin Basement Menara BNI
+  - `+20rb` Warteg Penjernihan Benhil
+  - `+3rb` KRL Stasiun Palmerah
+  - `+10rb` Ojek Online Stasiun - Kantor
+  - `+25rb` Laundry Kiloan
+* **Pola Alokasi 50/30/20**: Pembagian pos kebutuhan pokok (kos & listrik), operasional (makan & transport), serta tabungan/dana darurat di rekening BNI / Wondr.
+* **Salin Rekap Finansial**: Satu klik untuk menyalin rekapitulasi pengeluaran ke clipboard WhatsApp.
+
+---
+
+### 4. 🧭 Plan & Workflow Selama MGHB
+Pusat kendali dan panduan operasional pemagangan Zaki di Divisi SSE BNI:
+* **Roadmap 6 Bulan Pemagangan**:
+  - *Bulan 1*: Onboarding, Budaya BNI HCS & Pemahaman Kerangka ABT-Cabang-BRAVE.
+  - *Bulan 2*: Olah Data CICO Leads, Cleansing Database Nasabah & Analisis Spasial.
+  - *Bulan 3*: Pengembangan Sub-Sistem Pre-Sales BCS/GIS Area BNI.
+  - *Bulan 4*: Monev Tengah Periode Kemnaker & Akselerasi Pipeline Prospek.
+  - *Bulan 5*: Simulasi Threshold 20% TAP Serapan Produk Mandatory & Handover BAST.
+  - *Bulan 6*: Penyusunan Laporan Akhir Magang & Uji Sertifikasi BNSP.
+  - *Target Milestone Checklist*: Checklist progresif interaktif yang tersimpan di `localStorage`.
+* **Daily Logbook Formulator & Scratchpad**:
+  - Scratchpad pencatat cepat aktivitas harian (auto-save).
+  - Formulator Laporan Harian Kemnaker 3 bagian: *Uraian Aktivitas*, *Hasil/Output*, *Kendala*.
+  - Generator AI (Claude via API) & Generator Template Offline.
+  - Ekspor Riwayat & Draf Laporan Bulanan Resmi.
+* **SOP & Jam Kerja Menara BNI**:
+  - Jam Operasional Kantor: 07.30 – 17.00 WIB.
+  - Presensi Ganda: Aplikasi internal **DigiHC BNI** + GPS Portal **MagangHub Kemnaker**.
+  - Standar Busana HCS (Senin-Selasa Formal, Rabu-Kamis Batik, Jumat Casual/Blazer).
+  - Kepatuhan Kerahasiaan Bank (Banking Secrecy / NDA).
 * **Template Chat WhatsApp Mentor**:
-  - *Permohonan Izin Wisuda UMS (Jumat 25 Sep)* (disertai lampiran izin resmi).
-  - *Pemberitahuan Izin Sakit & Surat Dokter*.
-  - *Konfirmasi Selesai Penugasan Harian*.
-  - *Reminder Approval Logbook Mingguan ke Mentor*.
-* **💰 Manajemen Keuangan & Survival Magang Jakarta**:
-  - **Kalkulator Budgeting Realistis**: Input uang saku / pemasukan bulanan, kalkulasi otomatis sisa anggaran harian aman, dan indikator batas pengeluaran (*Aman*, *Waspada*, *Defisit*).
-  - **Quick Expense Tracker (1-Klik)**: Pencatat pengeluaran harian instan dengan tombol preset:
-    - `+15rb` Kantin Basement Menara BNI
-    - `+20rb` Warteg Penjernihan Benhil
-    - `+3rb` KRL Stasiun Palmerah
-    - `+10rb` Ojek Online Stasiun - Kantor
-    - `+25rb` Laundry Kiloan
-  - **Pola Alokasi Anggaran 50/30/20 Magang Jakarta**: Pembagian terukur pos kebutuhan pokok (kos & listrik), operasional (makan & transport), serta tabungan/dana darurat di rekening BNI / Wondr.
-  - **Ekspor & Salin Rekap Finansial**: Satu klik untuk menyalin rekapitulasi pengeluaran bulanan terstruktur siap kirim via WhatsApp.
-* **Kamus Kilat Istilah Perbankan & Divisi SSE**:
-  - Glosarium istilah perbankan: CASA, DPK, Sales Pipeline, NPL, Achievement Rate, Data Cleansing, Cross-Selling.
-  - Dilengkapi kolom **💡 Tips Peran Zaki (IT/Data)**: Cara mengaplikasikan analisis data, Excel, dan pembersihan data pada setiap istilah bisnis tersebut.
-
-### 5. 📰 Kabar & Warta MagangHub (Auto-Sync News Feed)
-* **Agregasi Otomatis Berita Kredibel**: Menarik pembaruan warta terkini secara otomatis dari sumber-sumber terpercaya:
-  - **Kementerian Ketenagakerjaan RI (Kemnaker)**: Rilis resmi, pengumuman batch, dan regulasi.
-  - **ANTARA News**: Kebijakan pemagangan nasional & sertifikasi BNSP.
-  - **Kompas.com, Detikcom, & CNBC Indonesia**: Jadwal seleksi, aturan hak & uang saku peserta, serta liputan program BNI.
-* **Fitur Live Refresh & Offline Cache**:
-  - Mengambil feed dinamis secara berkala tanpa membebani browser.
-  - Tetap dapat dibaca meski sedang offline berkat arsip lokal terverifikasi.
-  - Filter kategori cepat: *Semua*, *Pengumuman*, *Regulasi & Uang Saku*, *Sertifikasi BNSP*, *Kemnaker & BNI*.
-  - Tautan langsung ke portal resmi: MagangHub, SIAPkerja, Kemnaker News, dan BNI.
+  - Izin Wisuda UMS, Izin Sakit / Surat Dokter, Laporan Selesai Penugasan Harian, Pengajuan Approval Logbook Mingguan ke Mentor (Bapak Guruh Sri Handoyo).
+* **Kamus & Toolkit SSE**:
+  - Rumus Excel Olah Data Sales (VLOOKUP, INDEX-MATCH, SUMIFS, Pivot Table).
+  - Kamus Istilah Bisnis Perbankan (CASA, DPK, Pipeline, NPL, dll.).
+  - Panduan Gedung Menara BNI & Lingkungan Kuliner Pejompongan / Benhil.
 
 ---
 
-## 🗄️ Database Cloud (PostgreSQL via Supabase) & Arsitektur Offline-First
+## 🗄️ Database Cloud & Offline-First
 
-Aplikasi kini dilengkapi dengan integrasi database cloud modern menggunakan **Supabase (PostgreSQL)** dengan arsitektur **Hybrid Offline-First**:
-
-1. **Kenapa Supabase PostgreSQL?**:
-   * **Ideal untuk Peran IT & Data Analytics (SSE)**: Data tersimpan dalam tabel relasional PostgreSQL standar (`mghb_logbooks`, `mghb_expenses`, `mghb_checklists`, `mghb_moms`), siap di-query SQL atau diekspor ke format CSV / Microsoft Excel untuk analisis tren.
-   * **Sinkronisasi Multi-Perangkat**: Zaki dapat mencatat logbook di laptop kantor Menara BNI dan mengecek checklist serta pengeluaran di HP smartphone secara otomatis tanpa bentrok.
-   * **Tanpa Backend Server Rumit**: Terkoneksi langsung melalui browser via Supabase JS SDK CDN.
-   * **100% Tetap Berfungsi Offline**: Jika belum terhubung ke Supabase atau koneksi internet mati di lapangan, seluruh data tetap aman di `localStorage` peramban.
-
-2. **Panduan Setup Cepat 3 Langkah**:
-   * **Langkah 1**: Buat proyek baru gratis di [Supabase.com](https://supabase.com).
-   * **Langkah 2**: Buka menu **SQL Editor** di dashboard Supabase, lalu jalankan script [`supabase-schema.sql`](./supabase-schema.sql) yang sudah disediakan.
-   * **Langkah 3**: Buka aplikasi MGHB, klik tombol Database (**☁️**) di header atas atau menu Sinkronisasi, masukkan *Project URL* dan *Anon Public Key*, lalu klik **Uji & Hubungkan**. Seluruh data lokal akan otomatis tersinkronisasi ke cloud!
+* **Supabase PostgreSQL**: Sinkronisasi lintas perangkat (Laptop kantor dan HP) untuk tabel logbook, expenses, dan inventaris.
+* **100% Offline-First**: Aplikasi tetap dapat berjalan optimal tanpa internet berkat memori lokal `localStorage`.
+* **Keamanan Sesi**: Dilengkapi PIN Lock Screen untuk privasi saat meninggalkan laptop di meja kerja.
 
 ---
 
-## 🔒 Privasi, Backup & Sinkronisasi Lintas Perangkat
-
-* **Buka di HP via QR Code**: Pindai kode QR dari layar laptop untuk menyelaraskan status centang ke smartphone secara instan.
-* **Cadangan Berkas (Backup / Restore JSON)**: Unduh atau pulihkan berkas data `.json` kapan saja secara offline.
-* **Modern Mobile-First Navigation**: Dilengkapi Bottom Navigation Bar di bagian bawah layar smartphone untuk navigasi satu tangan yang cepat dan nyaman.
-* **Filter Cepat & Search**: Filter status `Semua`, `Belum`, `Selesai` serta pintasan keyboard `/` untuk pencarian cepat.
-
----
-
-*Dikembangkan khusus untuk mendukung efisiensi, kepatuhan, dan kesuksesan pemagangan Zaki Tri Pamungkas di BNI & MagangHub Kemnaker RI.*
+*Dikembangkan khusus untuk mendukung efisiensi, kepatuhan, dan kesuksesan pemagangan Zaki Tri Pamungkas di PT Bank Negara Indonesia (Persero) Tbk & Program MagangHub Kemnaker RI.*

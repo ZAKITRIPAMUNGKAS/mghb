@@ -26,28 +26,10 @@
       try {
         var hash = (window.location.hash || '').replace(/^#\/?/, '').toLowerCase().trim();
         var p = (window.location.pathname || '').toLowerCase().replace(/\/+$/, '') || '/';
-        var isTransit = ['transit','transjakarta','busway'].indexOf(hash) !== -1 || ['/transit','/transjakarta'].indexOf(p) !== -1;
-
-        if (isTransit) {
-          document.documentElement.classList.add('transit-public');
-        }
-
-        if (!isTransit) {
-          var exp = localStorage.getItem('mghb_auth_session_v1');
-          var now = Date.now();
-          if (!exp || isNaN(parseInt(exp, 10)) || now > parseInt(exp, 10)) {
-            document.documentElement.classList.add('app-locked');
-          }
-        }
-
-        var hash = (window.location.hash || '').replace(/^#\/?/, '').toLowerCase().trim();
-        var p = (window.location.pathname || '').toLowerCase().replace(/\/+$/, '') || '/';
         var t = 'berita';
         if (['inventaris', 'packing'].indexOf(hash) !== -1 || ['/inventaris', '/packing'].indexOf(p) !== -1) t = 'packing';
         else if (['keuangan', 'finance'].indexOf(hash) !== -1 || ['/keuangan', '/finance'].indexOf(p) !== -1) t = 'keuangan';
-        else if (hash === 'logbook' || p === '/logbook') t = 'logbook';
-        else if (['toolkit', 'asisten'].indexOf(hash) !== -1 || ['/toolkit', '/asisten'].indexOf(p) !== -1) t = 'asisten';
-        else if (['transit','transjakarta','busway'].indexOf(hash) !== -1 || ['/transit','/transjakarta'].indexOf(p) !== -1) t = 'transit';
+        else if (['workflow', 'plan', 'logbook', 'toolkit', 'asisten', 'transit'].indexOf(hash) !== -1 || ['/workflow', '/plan', '/logbook', '/toolkit', '/asisten', '/transit'].indexOf(p) !== -1) t = 'workflow';
         
         if (t !== 'berita') {
           document.documentElement.setAttribute('data-initial-tab', t);
@@ -259,17 +241,15 @@
     html[data-initial-tab="packing"] #view-packing { display: block !important; }
     html[data-initial-tab="packing"] #office-status-banner { display: none !important; }
 
-    html[data-initial-tab="logbook"] #view-berita { display: none !important; }
-    html[data-initial-tab="logbook"] #view-logbook { display: block !important; }
-    html[data-initial-tab="logbook"] #office-status-banner { display: none !important; }
-
+    html[data-initial-tab="workflow"] #view-berita,
+    html[data-initial-tab="logbook"] #view-berita,
     html[data-initial-tab="asisten"] #view-berita { display: none !important; }
-    html[data-initial-tab="asisten"] #view-asisten { display: block !important; }
+    html[data-initial-tab="workflow"] #view-workflow,
+    html[data-initial-tab="logbook"] #view-workflow,
+    html[data-initial-tab="asisten"] #view-workflow { display: block !important; }
+    html[data-initial-tab="workflow"] #office-status-banner,
+    html[data-initial-tab="logbook"] #office-status-banner,
     html[data-initial-tab="asisten"] #office-status-banner { display: none !important; }
-
-    html[data-initial-tab="transit"] #view-berita { display: none !important; }
-    html[data-initial-tab="transit"] #view-transit { display: block !important; }
-    html[data-initial-tab="transit"] #office-status-banner { display: none !important; }
 
     /* Public transit mode: no PIN, no bottom nav, only transit view */
     html.transit-public #app-lock-screen { display: none !important; }
@@ -557,7 +537,7 @@
       max-width: 600px;
       margin: 0 auto;
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       height: 58px;
       align-items: center;
       padding: 0 4px;
@@ -4563,7 +4543,7 @@
       max-width: 820px;
       margin: 0 auto;
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       height: 60px;
       align-items: center;
       padding: 0 4px;
@@ -5316,158 +5296,7 @@
     </div>
   </main>
 
-  <!-- TAB 3: DAILY LOGBOOK FORMULATOR & SCRATCHPAD -->
-  <main id="view-logbook" class="tab-content">
-    <div class="feature-card" id="formulator-card">
-      <div class="feature-head">
-        <div class="feature-title">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-            <polyline points="14 2 14 8 20 8"></polyline>
-            <line x1="16" y1="13" x2="8" y2="13"></line>
-            <line x1="16" y1="17" x2="8" y2="17"></line>
-            <polyline points="10 9 9 9 8 9"></polyline>
-          </svg>
-          Logbook MagangHub
-        </div>
-        <span class="badge badge-accent">Standar Kemnaker</span>
-      </div>
-      <p style="font-size: 0.76rem; color: var(--text-secondary); margin-bottom: 12px;">
-        Isi poin kasar aktivitas harian. Tekan AI untuk memformulasikan menjadi 3 bagian resmi Kemnaker (masing-masing ≥ 100 karakter), lalu submit di
-        <a href="https://monev.maganghub.kemnaker.go.id/dashboard" target="_blank" rel="noopener noreferrer" style="color: var(--accent); font-weight: 600;">dashboard Monev ↗</a>.
-      </p>
-
-      <div class="form-group">
-        <label class="form-label">Tanggal Laporan</label>
-        <input type="date" class="form-control" id="lb-date">
-      </div>
-
-      <div class="form-group">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-          <label class="form-label" style="margin-bottom: 0;">Catatan Aktivitas / Poin Kasar</label>
-          <span id="lb-draft-indicator" style="font-size: 0.7rem; color: var(--text-tertiary); display: none; align-items: center; gap: 4px;">
-            <svg class="ic ic-14" aria-hidden="true" style="color: var(--success);"><use href="#i-check-circle"/></svg> Draft tersimpan
-          </span>
-        </div>
-        <textarea class="form-control" id="lb-rough-notes" placeholder="Format waktu bebas, satu baris satu kegiatan:&#10;08:00 Briefing pagi bareng Pak Guruh soal target sales Area Jakarta&#10;10:15 Rekap data DPK &amp; CASA cabang, perbaiki 2 anomali format&#10;14:30 Bikin diagram achievement rate di Excel"></textarea>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">Kendala (Opsional)</label>
-        <input type="text" class="form-control" id="lb-obstacle" placeholder="Kosongkan jika lancar, sistem otomatis buatkan narasi standar ≥100 karakter">
-      </div>
-
-      <div class="form-group" id="lb-weekend-hint" style="display: none; margin-top: -4px;">
-        <div style="background: var(--highlight-subtle); border: 1px solid var(--highlight); border-radius: 6px; padding: 8px 10px; font-size: 0.74rem; color: var(--text-primary);">
-          <svg class="ic ic-16" aria-hidden="true"><use href="#i-calendar"/></svg> Tanggal ini jatuh pada <strong>Sabtu/Minggu (libur)</strong>. Logbook MagangHub tidak perlu diisi — generate AI otomatis di-skip.
-        </div>
-      </div>
-
-      <div style="display: flex; gap: 8px; margin-bottom: 8px;">
-        <button type="button" class="utility-btn" onclick="insertTimeStamp()" title="Sisipkan jam sekarang ke catatan"><svg class="ic ic-16" aria-hidden="true"><use href="#i-clock"/></svg> +Jam</button>
-        <span style="font-size: 0.7rem; color: var(--text-tertiary); align-self: center;">Bebas: <code>08:00</code>, <code>08.00</code>, atau <code>Pukul 08.30</code> — AI baca urutannya</span>
-      </div>
-
-      <button class="btn-block" id="btn-generate-ai" onclick="generateLogbookAI()">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
-        </svg>
-        <span id="btn-generate-ai-label"><svg class="ic ic-16" aria-hidden="true"><use href="#i-sparkles"/></svg> Generate dengan AI (Claude)</span>
-      </button>
-      <button class="btn-block btn-secondary" style="margin-top: 8px;" onclick="generateLogbook()">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 20h9"></path>
-          <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
-        </svg>
-        Formulasikan Offline (Template)
-      </button>
-
-      <!-- Logbook Generated Output -->
-      <div id="lb-output-card" style="display: none; margin-top: 16px;">
-        <div class="logbook-result-box">
-          <!-- 1. Uraian aktivitas -->
-          <div class="result-section">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; flex-wrap: wrap; gap: 4px;">
-              <div class="result-title" style="margin-bottom: 0;">1. Uraian aktivitas</div>
-              <div style="display: flex; align-items: center; gap: 6px;">
-                <span class="badge" id="cnt-activity" style="font-size: 0.68rem; background: var(--surface); color: var(--success); border: 1px solid var(--border);">0 kar · ≥100 <svg class="ic ic-14" aria-hidden="true"><use href="#i-check-circle"/></svg></span>
-                <button type="button" class="utility-btn" onclick="copyLogbookSection('activity')" style="padding: 2px 7px; font-size: 0.7rem;"><svg class="ic ic-16" aria-hidden="true"><use href="#i-clipboard"/></svg> Salin</button>
-              </div>
-            </div>
-            <div class="result-content" id="res-activity"></div>
-          </div>
-
-          <!-- 2. Pembelajaran yang diperoleh -->
-          <div class="result-section">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; flex-wrap: wrap; gap: 4px;">
-              <div class="result-title" style="margin-bottom: 0;">2. Pembelajaran yang diperoleh</div>
-              <div style="display: flex; align-items: center; gap: 6px;">
-                <span class="badge" id="cnt-learning" style="font-size: 0.68rem; background: var(--surface); color: var(--success); border: 1px solid var(--border);">0 kar · ≥100 <svg class="ic ic-14" aria-hidden="true"><use href="#i-check-circle"/></svg></span>
-                <button type="button" class="utility-btn" onclick="copyLogbookSection('learning')" style="padding: 2px 7px; font-size: 0.7rem;"><svg class="ic ic-16" aria-hidden="true"><use href="#i-clipboard"/></svg> Salin</button>
-              </div>
-            </div>
-            <div class="result-content" id="res-learning"></div>
-          </div>
-
-          <!-- 3. Kendala yang dialami -->
-          <div class="result-section">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; flex-wrap: wrap; gap: 4px;">
-              <div class="result-title" style="margin-bottom: 0;">3. Kendala yang dialami</div>
-              <div style="display: flex; align-items: center; gap: 6px;">
-                <span class="badge" id="cnt-obstacle" style="font-size: 0.68rem; background: var(--surface); color: var(--success); border: 1px solid var(--border);">0 kar · ≥100 <svg class="ic ic-14" aria-hidden="true"><use href="#i-check-circle"/></svg></span>
-                <button type="button" class="utility-btn" onclick="copyLogbookSection('obstacle')" style="padding: 2px 7px; font-size: 0.7rem;"><svg class="ic ic-16" aria-hidden="true"><use href="#i-clipboard"/></svg> Salin</button>
-              </div>
-            </div>
-            <div class="result-content" id="res-obstacle"></div>
-          </div>
-
-          <div class="result-actions" style="margin-top: 14px;">
-            <button class="btn-action" style="flex: 1;" onclick="copyLogbookFull()">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-              Salin Semua Sekaligus
-            </button>
-            <button class="btn-action btn-secondary" onclick="saveLogbookHistory()">
-              <svg class="ic ic-16" aria-hidden="true"><use href="#i-save"/></svg> Simpan Riwayat
-            </button>
-          </div>
-          <a href="https://monev.maganghub.kemnaker.go.id/dashboard" target="_blank" rel="noopener noreferrer" class="btn-block" style="margin-top: 10px; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px; background: var(--highlight, #e05315);">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-            Buka Dashboard Monev — Submit Resmi ↗
-          </a>
-          <p style="font-size: 0.7rem; color: var(--text-tertiary); text-align: center; margin-top: 6px;">
-            Salin hasil di atas, lalu tempel ke 3 kolom di dashboard Monev Kemnaker.
-          </p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Riwayat Logbook Lokal & Generator Laporan Bulanan -->
-    <div class="feature-card" style="margin-top: 14px;">
-      <div class="feature-head">
-        <div class="feature-title">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"></circle>
-            <polyline points="12 6 12 12 16 14"></polyline>
-          </svg>
-          Riwayat Logbook Tersimpan
-        </div>
-        <div style="display: flex; align-items: center; gap: 6px;">
-          <button class="btn-action btn-xs" onclick="openWeeklyReportModal()" style="background: var(--accent-subtle); color: var(--accent); border: 1px solid var(--accent); font-weight: 600;">
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-            Rekap Mingguan
-          </button>
-          <button class="btn-action btn-xs" onclick="openMonthlyReportModal()" style="background: var(--accent-subtle); color: var(--accent); border: 1px solid var(--accent); font-weight: 600;">
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
-            Ringkasan Bulanan
-          </button>
-          <button class="utility-btn" onclick="clearLogbookHistory()">Hapus</button>
-        </div>
-      </div>
-      <div id="lb-history-list" style="font-size: 0.76rem; color: var(--text-secondary);">
-        Belum ada riwayat logbook tersimpan di peramban ini.
-      </div>
-    </div>
-  </main>
+  
 
   <!-- TAB: KEUANGAN RAUTAU -->
   <main id="view-keuangan" class="tab-content">
@@ -5933,17 +5762,467 @@
     </div>
   </main>
 
-  <!-- TAB 4: ASISTEN SSE (CHAT TEMPLATES & GLOSSARY) -->
-  <main id="view-asisten" class="tab-content">
-    <div class="subnav-pills">
-      <button class="subnav-btn" id="asisten-tab-btn-toolkit" onclick="switchAsistenSubtab('toolkit')"><svg class="ic ic-16" aria-hidden="true"><use href="#i-chart"/></svg> Excel &amp; Rumus</button>
-      <button class="subnav-btn" id="asisten-tab-btn-glossary" onclick="switchAsistenSubtab('glossary')"><svg class="ic ic-16" aria-hidden="true"><use href="#i-book"/></svg> Kamus Perbankan</button>
-      <button class="subnav-btn" id="asisten-tab-btn-guide" onclick="switchAsistenSubtab('guide')"><svg class="ic ic-16" aria-hidden="true"><use href="#i-building"/></svg> Panduan Kost &amp; Kantor</button>
-      <button class="subnav-btn" id="asisten-tab-btn-chat" onclick="switchAsistenSubtab('chat')"><svg class="ic ic-16" aria-hidden="true"><use href="#i-message"/></svg> Template Chat</button>
+  
+  <!-- TAB 4: PLAN & WORKFLOW MAGANGHUB (INTEGRATED ROADMAP, LOGBOOK, SOP, CHAT, & TOOLKIT) -->
+  <main id="view-workflow" class="tab-content">
+    <div class="feature-card" style="margin-bottom: 14px; background: linear-gradient(135deg, rgba(0, 94, 106, 0.06) 0%, rgba(250, 90, 42, 0.05) 100%);">
+      <div class="feature-head">
+        <div class="feature-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+          </svg>
+          Plan &amp; Workflow MagangHub (MGHB)
+        </div>
+        <span class="badge badge-accent">Divisi SSE BNI</span>
+      </div>
+      <p style="font-size: 0.78rem; color: var(--text-secondary); margin: 0; line-height: 1.45;">
+        Pusat kendali operasional magang: perencanaan 6 bulan, SOP ritme kerja kantor Menara BNI Pejompongan, formulasi logbook harian resmi Kemnaker, template komunikasi mentor, serta kamus istilah bisnis perbankan.
+      </p>
     </div>
 
-    <!-- SUB-PANE: CHAT TEMPLATES -->
-    <div id="asisten-pane-chat">
+    <!-- Segmented Sub-Navigation Pills -->
+    <div class="subnav-pills" style="margin-bottom: 16px;">
+      <button class="subnav-btn active" id="wf-subtab-btn-plan" onclick="switchWorkflowSubtab('plan')">
+        <svg class="ic ic-16" aria-hidden="true"><use href="#i-calendar"/></svg> Roadmap &amp; Plan
+      </button>
+      <button class="subnav-btn" id="wf-subtab-btn-logbook" onclick="switchWorkflowSubtab('logbook')">
+        <svg class="ic ic-16" aria-hidden="true"><use href="#i-check-circle"/></svg> Logbook &amp; Scratchpad
+      </button>
+      <button class="subnav-btn" id="wf-subtab-btn-sop" onclick="switchWorkflowSubtab('sop')">
+        <svg class="ic ic-16" aria-hidden="true"><use href="#i-clock"/></svg> SOP &amp; Jam Kerja
+      </button>
+      <button class="subnav-btn" id="wf-subtab-btn-chat" onclick="switchWorkflowSubtab('chat')">
+        <svg class="ic ic-16" aria-hidden="true"><use href="#i-message"/></svg> Template Chat
+      </button>
+      <button class="subnav-btn" id="wf-subtab-btn-toolkit" onclick="switchWorkflowSubtab('toolkit')">
+        <svg class="ic ic-16" aria-hidden="true"><use href="#i-book"/></svg> Toolkit &amp; Kamus
+      </button>
+    </div>
+
+    
+    <!-- SUB-PANE 1: ROADMAP & PLAN MAGANG 6 BULAN (SSE BNI) -->
+    <div id="wf-pane-plan">
+      <!-- Overview Executive Card -->
+      <div class="feature-card" style="margin-bottom: 14px; background: linear-gradient(135deg, rgba(0, 94, 106, 0.04) 0%, rgba(250, 90, 42, 0.04) 100%); border-left: 4px solid var(--accent);">
+        <div class="feature-head">
+          <div class="feature-title">
+            <svg class="ic ic-18" aria-hidden="true" style="color: var(--accent);"><use href="#i-calendar"/></svg>
+            Roadmap &amp; Target Capaian Magang (MGHB)
+          </div>
+          <span class="badge badge-accent">Batch II · Divisi SSE</span>
+        </div>
+        <p style="font-size: 0.78rem; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.5;">
+          Rencana kerja dan tahapan strategis pemagangan <strong>Zaki Tri Pamungkas</strong> di <strong>PT Bank Negara Indonesia (Persero) Tbk</strong>, Divisi Sales Strategy &amp; Execution (SSE), Menara BNI Pejompongan.
+        </p>
+
+        <!-- Stat Pill Grid -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; margin-top: 10px;">
+          <div style="background: var(--surface); padding: 10px; border-radius: 12px; border: 1px solid var(--border);">
+            <div style="font-size: 0.68rem; color: var(--text-tertiary); font-weight: 700; text-transform: uppercase;">Durasi Program</div>
+            <div style="font-size: 0.95rem; font-weight: 800; color: var(--text-primary); margin-top: 2px;">6 Bulan Penuh</div>
+            <div style="font-size: 0.7rem; color: var(--text-secondary);">Kemnaker RI &amp; BNI</div>
+          </div>
+          <div style="background: var(--surface); padding: 10px; border-radius: 12px; border: 1px solid var(--border);">
+            <div style="font-size: 0.68rem; color: var(--text-tertiary); font-weight: 700; text-transform: uppercase;">Penempatan</div>
+            <div style="font-size: 0.95rem; font-weight: 800; color: var(--text-primary); margin-top: 2px;">Menara BNI</div>
+            <div style="font-size: 0.7rem; color: var(--text-secondary);">Pejompongan, Jakpus</div>
+          </div>
+          <div style="background: var(--surface); padding: 10px; border-radius: 12px; border: 1px solid var(--border);">
+            <div style="font-size: 0.68rem; color: var(--text-tertiary); font-weight: 700; text-transform: uppercase;">Fokus Tugas</div>
+            <div style="font-size: 0.95rem; font-weight: 800; color: var(--text-primary); margin-top: 2px;">Data &amp; Pre-Sales</div>
+            <div style="font-size: 0.7rem; color: var(--text-secondary);">BCS &amp; GIS Area</div>
+          </div>
+          <div style="background: var(--surface); padding: 10px; border-radius: 12px; border: 1px solid var(--border);">
+            <div style="font-size: 0.68rem; color: var(--text-tertiary); font-weight: 700; text-transform: uppercase;">Output Akhir</div>
+            <div style="font-size: 0.95rem; font-weight: 800; color: var(--accent); margin-top: 2px;">Sertifikat &amp; BNSP</div>
+            <div style="font-size: 0.7rem; color: var(--text-secondary);">Kelulusan Resmi</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6-Month Timeline Cards -->
+      <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
+
+        <!-- Month 1 -->
+        <div class="feature-card" style="border-radius: 16px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="background: var(--accent); color: #fff; font-size: 0.72rem; font-weight: 800; padding: 3px 8px; border-radius: 6px;">BULAN 1</span>
+              <strong style="font-size: 0.88rem; color: var(--text-primary);">Onboarding, Budaya BNI &amp; Kerangka ABT</strong>
+            </div>
+            <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #059669; font-weight: 700;">Fase Selesai</span>
+          </div>
+          <p style="font-size: 0.76rem; color: var(--text-secondary); margin-bottom: 8px; line-height: 1.45;">
+            Adaptasi etika perbankan BNI, pembekalan HCS, aktivasi akun presensi DigiHC &amp; MagangHub, serta pemahaman fondasi operasional <em>Area Business &amp; Transaction (ABT) - Cabang - BRAVE</em>.
+          </p>
+          <div style="background: var(--background); border-radius: 8px; padding: 8px 10px; font-size: 0.72rem; color: var(--text-secondary);">
+            <strong>Milestone Output:</strong> Penandatanganan PKM, dispensasi wisuda UMS, briefing mentor Pak Guruh, dan kesiapan workstation kerja.
+          </div>
+        </div>
+
+        <!-- Month 2 -->
+        <div class="feature-card" style="border-radius: 16px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="background: var(--accent); color: #fff; font-size: 0.72rem; font-weight: 800; padding: 3px 8px; border-radius: 6px;">BULAN 2</span>
+              <strong style="font-size: 0.88rem; color: var(--text-primary);">Olah Data CICO Leads &amp; Analisis Spasial</strong>
+            </div>
+            <span class="badge badge-accent">Sedang Berjalan</span>
+          </div>
+          <p style="font-size: 0.76rem; color: var(--text-secondary); margin-bottom: 8px; line-height: 1.45;">
+            Pembersihan dan validasi basis data leads <em>Cash-In Cash-Out</em> (CICO), standarisasi format CIF (8 digit unik), pemetaan deviasi DPK &amp; CASA, serta kompilasi spasial jaringan KC/KCP dekat koridor transit Jakarta.
+          </p>
+          <div style="background: var(--background); border-radius: 8px; padding: 8px 10px; font-size: 0.72rem; color: var(--text-secondary);">
+            <strong>Milestone Output:</strong> Database leads bersih, visualisasi awal Power BI, skrip kompilasi transit, dan pencatatan logbook harian disiplin.
+          </div>
+        </div>
+
+        <!-- Month 3 -->
+        <div class="feature-card" style="border-radius: 16px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="background: #64748b; color: #fff; font-size: 0.72rem; font-weight: 800; padding: 3px 8px; border-radius: 6px;">BULAN 3</span>
+              <strong style="font-size: 0.88rem; color: var(--text-primary);">Pengembangan Sub-Sistem Pre-Sales BCS/GIS</strong>
+            </div>
+            <span class="badge">Rencana Kerja</span>
+          </div>
+          <p style="font-size: 0.76rem; color: var(--text-secondary); margin-bottom: 8px; line-height: 1.45;">
+            Pengembangan sistem workstation internal Pre-Sales Area BNI (modul portofolio dual-target, produk mandatory BNIDirect/Giro/VA, agenda visit &amp; call report, serta kalkulasi capaian).
+          </p>
+          <div style="background: var(--background); border-radius: 8px; padding: 8px 10px; font-size: 0.72rem; color: var(--text-secondary);">
+            <strong>Milestone Output:</strong> PRD lengkap, arsitektur perangkat lunak, slide deck presentasi ke mentor, dan prototipe fungsional workstation.
+          </div>
+        </div>
+
+        <!-- Month 4 -->
+        <div class="feature-card" style="border-radius: 16px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="background: #64748b; color: #fff; font-size: 0.72rem; font-weight: 800; padding: 3px 8px; border-radius: 6px;">BULAN 4</span>
+              <strong style="font-size: 0.88rem; color: var(--text-primary);">Monev Kemnaker &amp; Akselerasi Pipeline Prospek</strong>
+            </div>
+            <span class="badge">Rencana Kerja</span>
+          </div>
+          <p style="font-size: 0.76rem; color: var(--text-secondary); margin-bottom: 8px; line-height: 1.45;">
+            Evaluasi berkala di portal Monev MagangHub Kemnaker bersama mentor, pemantauan conversion rate nasabah baru dari canvassing, dan review realisasi setoran awal.
+          </p>
+          <div style="background: var(--background); border-radius: 8px; padding: 8px 10px; font-size: 0.72rem; color: var(--text-secondary);">
+            <strong>Milestone Output:</strong> Form Monev tengah periode terverifikasi, approval logbook berkala, dan report analisa konversi pipeline SSE.
+          </div>
+        </div>
+
+        <!-- Month 5 -->
+        <div class="feature-card" style="border-radius: 16px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="background: #64748b; color: #fff; font-size: 0.72rem; font-weight: 800; padding: 3px 8px; border-radius: 6px;">BULAN 5</span>
+              <strong style="font-size: 0.88rem; color: var(--text-primary);">Simulasi Threshold 20% TAP &amp; Handover BAST</strong>
+            </div>
+            <span class="badge">Rencana Kerja</span>
+          </div>
+          <p style="font-size: 0.76rem; color: var(--text-secondary); margin-bottom: 8px; line-height: 1.45;">
+            Pengujian skema serah terima kelolaan (BAST) setelah menyerap minimal 20% produk mandatory dari target TAP ke Cabang Padanan, serta standardisasi risalah kunjungan sales lapangan.
+          </p>
+          <div style="background: var(--background); border-radius: 8px; padding: 8px 10px; font-size: 0.72rem; color: var(--text-secondary);">
+            <strong>Milestone Output:</strong> Berita Acara Serah Terima (BAST) percontohan, integrasi live sistem ke Vercel, dan pengujian performa UI.
+          </div>
+        </div>
+
+        <!-- Month 6 -->
+        <div class="feature-card" style="border-radius: 16px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="background: #64748b; color: #fff; font-size: 0.72rem; font-weight: 800; padding: 3px 8px; border-radius: 6px;">BULAN 6</span>
+              <strong style="font-size: 0.88rem; color: var(--text-primary);">Laporan Akhir, Uji Kompetensi &amp; Sertifikasi BNSP</strong>
+            </div>
+            <span class="badge">Rencana Kerja</span>
+          </div>
+          <p style="font-size: 0.76rem; color: var(--text-secondary); margin-bottom: 8px; line-height: 1.45;">
+            Penyusunan Laporan Akhir Magang Komprehensif (standar BNI SSE &amp; Kemnaker), presentasi sidang akhir pemagangan di hadapan pimpinan divisi, serta klaim sertifikat magang dan uji kompetensi BNSP.
+          </p>
+          <div style="background: var(--background); border-radius: 8px; padding: 8px 10px; font-size: 0.72rem; color: var(--text-secondary);">
+            <strong>Milestone Output:</strong> Naskah Laporan Akhir resmi, tanda tangan pengesahan mentor, dan Sertifikat Kelulusan MagangHub Kemnaker RI.
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Interactive Milestone Checklist Tracker -->
+      <div class="feature-card">
+        <div class="feature-head">
+          <div class="feature-title">
+            <svg class="ic ic-18" aria-hidden="true" style="color: var(--accent);"><use href="#i-check-circle"/></svg>
+            Target Milestone Progresif Zaki
+          </div>
+          <span class="badge" id="wf-milestone-counter">0 / 8 Tercapai</span>
+        </div>
+        <div id="wf-milestone-list" style="display: flex; flex-direction: column; gap: 8px; margin-top: 10px;">
+          <!-- Loaded via JS -->
+        </div>
+      </div>
+    </div>
+
+
+    <!-- SUB-PANE 2: DAILY LOGBOOK FORMULATOR & SCRATCHPAD -->
+    <div id="wf-pane-logbook" style="display: none;">
+      <div class="feature-card" id="formulator-card">
+      <div class="feature-head">
+        <div class="feature-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10 9 9 9 8 9"></polyline>
+          </svg>
+          Logbook MagangHub
+        </div>
+        <span class="badge badge-accent">Standar Kemnaker</span>
+      </div>
+      <p style="font-size: 0.76rem; color: var(--text-secondary); margin-bottom: 12px;">
+        Isi poin kasar aktivitas harian. Tekan AI untuk memformulasikan menjadi 3 bagian resmi Kemnaker (masing-masing ≥ 100 karakter), lalu submit di
+        <a href="https://monev.maganghub.kemnaker.go.id/dashboard" target="_blank" rel="noopener noreferrer" style="color: var(--accent); font-weight: 600;">dashboard Monev ↗</a>.
+      </p>
+
+      <div class="form-group">
+        <label class="form-label">Tanggal Laporan</label>
+        <input type="date" class="form-control" id="lb-date">
+      </div>
+
+      <div class="form-group">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <label class="form-label" style="margin-bottom: 0;">Catatan Aktivitas / Poin Kasar</label>
+          <span id="lb-draft-indicator" style="font-size: 0.7rem; color: var(--text-tertiary); display: none; align-items: center; gap: 4px;">
+            <svg class="ic ic-14" aria-hidden="true" style="color: var(--success);"><use href="#i-check-circle"/></svg> Draft tersimpan
+          </span>
+        </div>
+        <textarea class="form-control" id="lb-rough-notes" placeholder="Format waktu bebas, satu baris satu kegiatan:&#10;08:00 Briefing pagi bareng Pak Guruh soal target sales Area Jakarta&#10;10:15 Rekap data DPK &amp; CASA cabang, perbaiki 2 anomali format&#10;14:30 Bikin diagram achievement rate di Excel"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Kendala (Opsional)</label>
+        <input type="text" class="form-control" id="lb-obstacle" placeholder="Kosongkan jika lancar, sistem otomatis buatkan narasi standar ≥100 karakter">
+      </div>
+
+      <div class="form-group" id="lb-weekend-hint" style="display: none; margin-top: -4px;">
+        <div style="background: var(--highlight-subtle); border: 1px solid var(--highlight); border-radius: 6px; padding: 8px 10px; font-size: 0.74rem; color: var(--text-primary);">
+          <svg class="ic ic-16" aria-hidden="true"><use href="#i-calendar"/></svg> Tanggal ini jatuh pada <strong>Sabtu/Minggu (libur)</strong>. Logbook MagangHub tidak perlu diisi — generate AI otomatis di-skip.
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+        <button type="button" class="utility-btn" onclick="insertTimeStamp()" title="Sisipkan jam sekarang ke catatan"><svg class="ic ic-16" aria-hidden="true"><use href="#i-clock"/></svg> +Jam</button>
+        <span style="font-size: 0.7rem; color: var(--text-tertiary); align-self: center;">Bebas: <code>08:00</code>, <code>08.00</code>, atau <code>Pukul 08.30</code> — AI baca urutannya</span>
+      </div>
+
+      <button class="btn-block" id="btn-generate-ai" onclick="generateLogbookAI()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+        </svg>
+        <span id="btn-generate-ai-label"><svg class="ic ic-16" aria-hidden="true"><use href="#i-sparkles"/></svg> Generate dengan AI (Claude)</span>
+      </button>
+      <button class="btn-block btn-secondary" style="margin-top: 8px;" onclick="generateLogbook()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 20h9"></path>
+          <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+        </svg>
+        Formulasikan Offline (Template)
+      </button>
+
+      <!-- Logbook Generated Output -->
+      <div id="lb-output-card" style="display: none; margin-top: 16px;">
+        <div class="logbook-result-box">
+          <!-- 1. Uraian aktivitas -->
+          <div class="result-section">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; flex-wrap: wrap; gap: 4px;">
+              <div class="result-title" style="margin-bottom: 0;">1. Uraian aktivitas</div>
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <span class="badge" id="cnt-activity" style="font-size: 0.68rem; background: var(--surface); color: var(--success); border: 1px solid var(--border);">0 kar · ≥100 <svg class="ic ic-14" aria-hidden="true"><use href="#i-check-circle"/></svg></span>
+                <button type="button" class="utility-btn" onclick="copyLogbookSection('activity')" style="padding: 2px 7px; font-size: 0.7rem;"><svg class="ic ic-16" aria-hidden="true"><use href="#i-clipboard"/></svg> Salin</button>
+              </div>
+            </div>
+            <div class="result-content" id="res-activity"></div>
+          </div>
+
+          <!-- 2. Pembelajaran yang diperoleh -->
+          <div class="result-section">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; flex-wrap: wrap; gap: 4px;">
+              <div class="result-title" style="margin-bottom: 0;">2. Pembelajaran yang diperoleh</div>
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <span class="badge" id="cnt-learning" style="font-size: 0.68rem; background: var(--surface); color: var(--success); border: 1px solid var(--border);">0 kar · ≥100 <svg class="ic ic-14" aria-hidden="true"><use href="#i-check-circle"/></svg></span>
+                <button type="button" class="utility-btn" onclick="copyLogbookSection('learning')" style="padding: 2px 7px; font-size: 0.7rem;"><svg class="ic ic-16" aria-hidden="true"><use href="#i-clipboard"/></svg> Salin</button>
+              </div>
+            </div>
+            <div class="result-content" id="res-learning"></div>
+          </div>
+
+          <!-- 3. Kendala yang dialami -->
+          <div class="result-section">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; flex-wrap: wrap; gap: 4px;">
+              <div class="result-title" style="margin-bottom: 0;">3. Kendala yang dialami</div>
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <span class="badge" id="cnt-obstacle" style="font-size: 0.68rem; background: var(--surface); color: var(--success); border: 1px solid var(--border);">0 kar · ≥100 <svg class="ic ic-14" aria-hidden="true"><use href="#i-check-circle"/></svg></span>
+                <button type="button" class="utility-btn" onclick="copyLogbookSection('obstacle')" style="padding: 2px 7px; font-size: 0.7rem;"><svg class="ic ic-16" aria-hidden="true"><use href="#i-clipboard"/></svg> Salin</button>
+              </div>
+            </div>
+            <div class="result-content" id="res-obstacle"></div>
+          </div>
+
+          <div class="result-actions" style="margin-top: 14px;">
+            <button class="btn-action" style="flex: 1;" onclick="copyLogbookFull()">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              Salin Semua Sekaligus
+            </button>
+            <button class="btn-action btn-secondary" onclick="saveLogbookHistory()">
+              <svg class="ic ic-16" aria-hidden="true"><use href="#i-save"/></svg> Simpan Riwayat
+            </button>
+          </div>
+          <a href="https://monev.maganghub.kemnaker.go.id/dashboard" target="_blank" rel="noopener noreferrer" class="btn-block" style="margin-top: 10px; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px; background: var(--highlight, #e05315);">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            Buka Dashboard Monev — Submit Resmi ↗
+          </a>
+          <p style="font-size: 0.7rem; color: var(--text-tertiary); text-align: center; margin-top: 6px;">
+            Salin hasil di atas, lalu tempel ke 3 kolom di dashboard Monev Kemnaker.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Riwayat Logbook Lokal & Generator Laporan Bulanan -->
+    <div class="feature-card" style="margin-top: 14px;">
+      <div class="feature-head">
+        <div class="feature-title">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          Riwayat Logbook Tersimpan
+        </div>
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <button class="btn-action btn-xs" onclick="openWeeklyReportModal()" style="background: var(--accent-subtle); color: var(--accent); border: 1px solid var(--accent); font-weight: 600;">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            Rekap Mingguan
+          </button>
+          <button class="btn-action btn-xs" onclick="openMonthlyReportModal()" style="background: var(--accent-subtle); color: var(--accent); border: 1px solid var(--accent); font-weight: 600;">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+            Ringkasan Bulanan
+          </button>
+          <button class="utility-btn" onclick="clearLogbookHistory()">Hapus</button>
+        </div>
+      </div>
+      <div id="lb-history-list" style="font-size: 0.76rem; color: var(--text-secondary);">
+        Belum ada riwayat logbook tersimpan di peramban ini.
+      </div>
+    </div>
+    </div>
+
+    
+    <!-- SUB-PANE 3: SOP & RITME KERJA KANTOR BNI -->
+    <div id="wf-pane-sop" style="display: none;">
+      <!-- Office Cadence Banner -->
+      <div class="feature-card" style="margin-bottom: 14px; border-left: 4px solid #005E6A;">
+        <div class="feature-head">
+          <div class="feature-title">
+            <svg class="ic ic-18" aria-hidden="true" style="color: #005E6A;"><use href="#i-clock"/></svg>
+            Ritme Kantor &amp; Jam Operasional Menara BNI
+          </div>
+          <span class="badge badge-accent">07.30 – 17.00 WIB</span>
+        </div>
+        <p style="font-size: 0.76rem; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.5;">
+          Ketentuan waktu kerja harian Divisi Sales Strategy &amp; Execution (SSE), Menara BNI Pejompongan Lantai 3.
+        </p>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+          <div style="background: var(--surface); padding: 12px; border-radius: 12px; border: 1px solid var(--border);">
+            <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+              <span style="width: 8px; height: 8px; border-radius: 50%; background: #10B981;"></span>
+              <strong style="font-size: 0.82rem; color: var(--text-primary);">Pagi (Sebelum 07.30 WIB)</strong>
+            </div>
+            <p style="font-size: 0.72rem; color: var(--text-secondary); margin: 0;">
+              Tiba di kantor, tap ID Card/TPP di gerbang lobi, lakukan presensi masuk di aplikasi <strong>DigiHC</strong> &amp; selfie GPS di portal <strong>MagangHub</strong>.
+            </p>
+          </div>
+
+          <div style="background: var(--surface); padding: 12px; border-radius: 12px; border: 1px solid var(--border);">
+            <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+              <span style="width: 8px; height: 8px; border-radius: 50%; background: #3B82F6;"></span>
+              <strong style="font-size: 0.82rem; color: var(--text-primary);">Jam Kerja (08.00 – 16.30 WIB)</strong>
+            </div>
+            <p style="font-size: 0.72rem; color: var(--text-secondary); margin: 0;">
+              Briefing harian mentor Pak Guruh, eksekusi olah data, monitoring pipeline area, istirahat ISHOMA (12.00–13.00 WIB) di kantin basement / Benhil.
+            </p>
+          </div>
+
+          <div style="background: var(--surface); padding: 12px; border-radius: 12px; border: 1px solid var(--border);">
+            <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+              <span style="width: 8px; height: 8px; border-radius: 50%; background: #FA5A2A;"></span>
+              <strong style="font-size: 0.82rem; color: var(--text-primary);">Sore (16.30 – 17.30 WIB)</strong>
+            </div>
+            <p style="font-size: 0.72rem; color: var(--text-secondary); margin: 0;">
+              Kompilasi catatan aktivitas harian, generate logbook resmi via formulator, submit ke MagangHub Kemnaker, dan presensi pulang di DigiHC.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Aturan Pakaian & Etika BNI HCS -->
+      <div class="feature-card" style="margin-bottom: 14px;">
+        <div class="feature-head">
+          <div class="feature-title">
+            <svg class="ic ic-18" aria-hidden="true" style="color: var(--accent);"><use href="#i-building"/></svg>
+            Standar Busana &amp; Etika Kerja (BNI HCS)
+          </div>
+          <span class="badge">Aturan Wajib</span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-top: 8px;">
+          <div style="background: var(--surface); padding: 10px; border-radius: 10px; border: 1px solid var(--border);">
+            <strong style="font-size: 0.78rem; color: var(--text-primary); display: block; margin-bottom: 4px;">Senin &amp; Selasa</strong>
+            <p style="font-size: 0.72rem; color: var(--text-secondary); margin: 0;">
+              <strong>Business Formal:</strong> Kemeja lengan panjang polos/motif halus, dasi (opsional/hari tertentu), celana bahan gelap, sepatu pantofel formal.
+            </p>
+          </div>
+          <div style="background: var(--surface); padding: 10px; border-radius: 10px; border: 1px solid var(--border);">
+            <strong style="font-size: 0.78rem; color: var(--text-primary); display: block; margin-bottom: 4px;">Rabu &amp; Kamis</strong>
+            <p style="font-size: 0.72rem; color: var(--text-secondary); margin: 0;">
+              <strong>Batik Indonesia:</strong> Batik lengan panjang resmi (tidak boleh dilipat atau digulung), celana bahan gelap, sepatu formal.
+            </p>
+          </div>
+          <div style="background: var(--surface); padding: 10px; border-radius: 10px; border: 1px solid var(--border);">
+            <strong style="font-size: 0.78rem; color: var(--text-primary); display: block; margin-bottom: 4px;">Jumat</strong>
+            <p style="font-size: 0.72rem; color: var(--text-secondary); margin: 0;">
+              <strong>Business Casual:</strong> Kemeja berkerah / polo berkerah rapi dengan luaran blazer santai, celana bahan/chino gelap. <em>Jeans dilarang keras</em>.
+            </p>
+          </div>
+        </div>
+
+        <div style="margin-top: 12px; padding: 10px; border-radius: 10px; background: rgba(0, 94, 106, 0.05); font-size: 0.74rem; color: var(--text-primary);">
+          <strong>Ketentuan TPP (Lanyard/ID Card):</strong> Wajib selalu dikalungkan di leher selama berada di lingkungan Menara BNI Pejompongan (mulai dari lobi, lift, hingga ruang kerja divisi SSE).
+        </div>
+      </div>
+
+      <!-- Kepatuhan Kerahasiaan Bank (Banking Secrecy / NDA) -->
+      <div class="feature-card" style="border-left: 4px solid #EF4444;">
+        <div class="feature-head">
+          <div class="feature-title">
+            <svg class="ic ic-18" aria-hidden="true" style="color: #EF4444;"><use href="#i-shield"/></svg>
+            Kepatuhan Rahasia Bank &amp; Keamanan Data (NDA)
+          </div>
+          <span class="badge" style="background: #FEE2E2; color: #DC2626; font-weight: 700;">Zero Tolerance</span>
+        </div>
+        <ul class="guide-list" style="margin-top: 8px;">
+          <li><span class="guide-bullet">•</span><div><strong>Dilarang Memotret Data Nasabah:</strong> Dilarang keras mengambil foto atau tangkapan layar berkas nasabah, CIF, rekening koran, atau nomor kontak PIC nasabah dengan ponsel pribadi.</div></li>
+          <li><span class="guide-bullet">•</span><div><strong>Larangan Konten Medsos di Area Kerja:</strong> Dilarang membuat video/konten media sosial (TikTok, Instagram Reels, dll.) di ruang kerja SSE yang menampilkan dokumen atau monitor internal perbankan.</div></li>
+          <li><span class="guide-bullet">•</span><div><strong>Isolasi Repositori Git:</strong> Folder lokal yang memuat dokumen PKM, data leads CICO, dan dokumen pribadi nasabah wajib tetap di-ignore dan tidak boleh di-push ke GitHub publik.</div></li>
+          <li><span class="guide-bullet">•</span><div><strong>Integritas &amp; Antigratifikasi:</strong> Menolak segala bentuk imbalan atau gratifikasi dari pihak luar terkait penugasan pemagangan BNI.</div></li>
+        </ul>
+      </div>
+    </div>
+
+
+    <!-- SUB-PANE 4: TEMPLATE CHAT MENTOR -->
+    <div id="wf-pane-chat" style="display: none;">
+      <div id="asisten-pane-chat">
       <!-- Template 1: Izin Wisuda -->
       <div class="chat-card">
         <div class="chat-card-head">
@@ -6018,7 +6297,11 @@ Apabila Bapak berkenan, mohon kesediaan Bapak untuk melakukan review dan approva
     </div>
 
     <!-- SUB-PANE: SSE DATA & ANALYTICS TOOLKIT -->
-    <div id="asisten-pane-toolkit" style="display: none;">
+    </div>
+
+    <!-- SUB-PANE 5: TOOLKIT & KAMUS SSE -->
+    <div id="wf-pane-toolkit" style="display: none;">
+      <div id="asisten-pane-toolkit" style="display: none;">
       <!-- Search & Category Filter -->
       <div class="search-box" style="margin-top: 10px;">
         <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -6324,7 +6607,8 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
     </div>
 
     <!-- SUB-PANE: GLOSSARY -->
-    <div id="asisten-pane-glossary" style="display: none;">
+      <div style="margin-top: 14px;">
+        <div id="asisten-pane-glossary" style="display: none;">
       <div class="search-box" style="margin-top: 10px;">
         <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="11" cy="11" r="8"></circle>
@@ -6407,7 +6691,9 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
     </div>
 
     <!-- SUB-PANE: PANDUAN MENARA BNI & SURVIVAL PEJOMPONGAN -->
-    <div id="asisten-pane-guide" style="display: none;">
+      </div>
+      <div style="margin-top: 14px;">
+        <div id="asisten-pane-guide" style="display: none;">
       <!-- Seksi 1: Gedung & Rutinitas Kantor -->
       <div class="guide-section-title">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"></path><path d="M9 8h1"></path><path d="M9 12h1"></path><path d="M9 16h1"></path><path d="M14 8h1"></path><path d="M14 12h1"></path><path d="M14 16h1"></path><path d="M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"></path></svg>
@@ -6488,22 +6774,17 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
         </ul>
       </div>
     </div>
-
-  </main>
-
-  <!-- TAB 6: TRANSJAKARTA TRANSIT EXPLORER -->
-  <main id="view-transit" class="tab-content">
-    <!-- Transit Explorer loaded dynamically -->
-    <div id="transit-root">
-      <div class="transit-loading" style="padding:48px 24px;text-align:center;">
-        <div class="transit-spinner" style="width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--brand);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 12px;"></div>
-        <p style="font-size:13px;color:var(--muted);font-weight:500;">Memuat data TransJakarta...</p>
-        <p style="font-size:11px;color:var(--muted);margin-top:4px;">240 rute · 8.091 halte · GTFS resmi PPID</p>
       </div>
     </div>
   </main>
 
-  <!-- TAB 5: KABAR & BERITA MAGANGHUB OTOMATIS (LANDING PAGE) -->
+  <!-- Hidden Transit Placeholder for public transit route compatibility -->
+  <div id="view-transit" class="tab-content" style="display: none;">
+    <div id="transit-root"></div>
+  </div>
+
+
+  <!-- TAB 1: KABAR & BERITA MAGANGHUB OTOMATIS (LANDING PAGE) -->
   <main id="view-berita" class="tab-content active">
     <!-- Landing Greeting & Quick Action Hub for Zaki -->
     <div class="landing-hero-card">
@@ -6516,49 +6797,17 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
       </div>
 
       <div class="quick-hub-grid">
-        <button class="quick-hub-btn" onclick="window.open('https://monev.maganghub.kemnaker.go.id/dashboard', '_blank', 'noopener')">
+        <button class="quick-hub-btn" onclick="selectTab('berita')">
           <div class="quick-hub-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+              <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"></path>
+              <path d="M18 14h-8"></path>
+              <path d="M15 18h-5"></path>
+              <path d="M10 6h8v4h-8V6Z"></path>
             </svg>
           </div>
-          <span class="quick-hub-label">Monev Logbook</span>
-          <span class="quick-hub-sub">Submit resmi Kemnaker ↗</span>
-        </button>
-
-        <button class="quick-hub-btn" onclick="selectTab('keuangan')">
-          <div class="quick-hub-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="12" y1="1" x2="12" y2="23"></line>
-              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-            </svg>
-          </div>
-          <span class="quick-hub-label">Keuangan Rantau</span>
-          <span class="quick-hub-sub">Budget + AI advisor</span>
-        </button>
-
-        <button class="quick-hub-btn" onclick="window.location.href='journey.html'">
-          <div class="quick-hub-icon" style="color:#FF5500;background:#FFF7ED;border-color:#FED7AA;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10"></circle>
-              <polyline points="12 6 12 12 16 14"></polyline>
-            </svg>
-          </div>
-          <span class="quick-hub-label" style="color:#FF5500;">Journey Planner</span>
-          <span class="quick-hub-sub">Cari Rute &amp; Waktu ↗</span>
-        </button>
-
-        <button class="quick-hub-btn" onclick="window.location.href='transit.html'">
-          <div class="quick-hub-icon" style="color:#FF5500;background:#FFF7ED;border-color:#FED7AA;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
-              <line x1="8" y1="2" x2="8" y2="18"></line>
-              <line x1="16" y1="6" x2="16" y2="22"></line>
-            </svg>
-          </div>
-          <span class="quick-hub-label">Peta TransJakarta</span>
-          <span class="quick-hub-sub">240 Rute &amp; Halte ↗</span>
+          <span class="quick-hub-label">Portal Berita</span>
+          <span class="quick-hub-sub">Warta MagangHub ↗</span>
         </button>
 
         <button class="quick-hub-btn" onclick="selectTab('packing')">
@@ -6568,18 +6817,30 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
               <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
             </svg>
           </div>
-          <span class="quick-hub-label">Inventaris Rantau</span>
+          <span class="quick-hub-label">Inventaris</span>
           <span class="quick-hub-sub">Barang kost &amp; kantor</span>
         </button>
 
-        <button class="quick-hub-btn" onclick="selectTab('asisten')">
+        <button class="quick-hub-btn" onclick="selectTab('keuangan')">
           <div class="quick-hub-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+              <line x1="12" y1="1" x2="12" y2="23"></line>
+              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
             </svg>
           </div>
-          <span class="quick-hub-label">Toolkit &amp; Kamus</span>
-          <span class="quick-hub-sub">Rumus &amp; istilah</span>
+          <span class="quick-hub-label">Keuangan</span>
+          <span class="quick-hub-sub">Budget + Tracker</span>
+        </button>
+
+        <button class="quick-hub-btn" onclick="selectTab('workflow')">
+          <div class="quick-hub-icon" style="color:var(--accent);background:var(--accent-subtle);border-color:rgba(0,124,137,0.25);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+            </svg>
+          </div>
+          <span class="quick-hub-label" style="color:var(--accent);">Plan &amp; Workflow</span>
+          <span class="quick-hub-sub">Roadmap, SOP &amp; Logbook</span>
         </button>
       </div>
     </div>
@@ -6731,7 +6992,7 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
             <path d="M10 6h8v4h-8V6Z"></path>
           </svg>
         </div>
-        <span class="bottom-nav-label">Beranda</span>
+        <span class="bottom-nav-label">Portal Berita</span>
       </a>
 
       <a href="/inventaris" class="bottom-nav-item tab-trigger" data-tab="packing" onclick="navigateTo('packing', event)">
@@ -6754,35 +7015,14 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
         <span class="bottom-nav-label">Keuangan</span>
       </a>
 
-      <a href="/logbook" class="bottom-nav-item tab-trigger" data-tab="logbook" onclick="navigateTo('logbook', event)">
+      <a href="/workflow" class="bottom-nav-item tab-trigger" data-tab="workflow" onclick="navigateTo('workflow', event)">
         <div class="bottom-nav-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
           </svg>
         </div>
-        <span class="bottom-nav-label">Logbook</span>
-      </a>
-
-      <a href="/toolkit" class="bottom-nav-item tab-trigger" data-tab="asisten" onclick="navigateTo('asisten', event)">
-        <div class="bottom-nav-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-          </svg>
-        </div>
-        <span class="bottom-nav-label">Toolkit</span>
-      </a>
-
-      <a href="/transit" class="bottom-nav-item tab-trigger" data-tab="transit" onclick="navigateTo('transit', event)">
-        <div class="bottom-nav-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="1" y="3" width="15" height="13"></rect>
-            <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
-            <circle cx="5.5" cy="18.5" r="2.5"></circle>
-            <circle cx="18.5" cy="18.5" r="2.5"></circle>
-          </svg>
-        </div>
-        <span class="bottom-nav-label">TransJakarta</span>
+        <span class="bottom-nav-label">Plan &amp; Workflow</span>
       </a>
     </div>
     <div class="workspace-profile">
@@ -7420,9 +7660,9 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
   // --- Routing & Tab Page Configuration (Clean URL & Distinct Pages) ---
   const TAB_CONFIG = {
     'berita': {
-      path: '/beranda',
-      aliases: ['/', '/index.html', '/berita', '/beranda'],
-      title: 'Beranda & Warta | MagangHub BNI'
+      path: '/',
+      aliases: ['/', '/berita', '/beranda'],
+      title: 'Portal Berita & Warta | MagangHub BNI'
     },
     'packing': {
       path: '/inventaris',
@@ -7434,20 +7674,10 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
       aliases: ['/keuangan', '/finance'],
       title: 'Keuangan Rantau | MagangHub BNI'
     },
-    'logbook': {
-      path: '/logbook',
-      aliases: ['/logbook'],
-      title: 'Logbook Kemnaker | MagangHub BNI'
-    },
-    'asisten': {
-      path: '/toolkit',
-      aliases: ['/toolkit', '/asisten'],
-      title: 'Toolkit & Panduan | MagangHub BNI'
-    },
-    'transit': {
-      path: '/transit',
-      aliases: ['/transit', '/transjakarta', '/busway'],
-      title: 'TransJakarta Explorer | MagangHub BNI'
+    'workflow': {
+      path: '/workflow',
+      aliases: ['/workflow', '/plan', '/logbook', '/toolkit', '/asisten', '/transit'],
+      title: 'Plan & Workflow MGHB | MagangHub BNI'
     }
   };
 
@@ -7456,9 +7686,7 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
     if (hash) {
       if (['inventaris', 'packing'].includes(hash)) return 'packing';
       if (['keuangan', 'finance'].includes(hash)) return 'keuangan';
-      if (['logbook'].includes(hash)) return 'logbook';
-      if (['toolkit', 'asisten'].includes(hash)) return 'asisten';
-      if (['transit', 'transjakarta', 'busway'].includes(hash)) return 'transit';
+      if (['workflow', 'plan', 'logbook', 'toolkit', 'asisten', 'transit'].includes(hash)) return 'workflow';
       if (['beranda', 'berita'].includes(hash)) return 'berita';
     }
 
@@ -7484,24 +7712,24 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
 
   // --- Tab Selection (5 Pages) ---
   function _doSelectTab(tab) {
-    // Pane visibility — CSS animations re-trigger on .active re-add
-    const panes = ['view-packing', 'view-keuangan', 'view-logbook', 'view-asisten', 'view-berita', 'view-transit'];
+    if (['logbook', 'asisten', 'toolkit', 'transit'].includes(tab)) {
+      tab = 'workflow';
+    }
+
+    // Pane visibility for 4 core functions
+    const panes = ['view-berita', 'view-packing', 'view-keuangan', 'view-workflow'];
     panes.forEach(id => {
       const el = document.getElementById(id);
       if (!el) return;
       const shouldBeActive = (
+        (id === 'view-berita'   && tab === 'berita')   ||
         (id === 'view-packing'  && tab === 'packing')  ||
         (id === 'view-keuangan' && tab === 'keuangan') ||
-        (id === 'view-logbook'  && tab === 'logbook')  ||
-        (id === 'view-asisten'  && tab === 'asisten')  ||
-        (id === 'view-berita'   && tab === 'berita')   ||
-        (id === 'view-transit'  && tab === 'transit')
+        (id === 'view-workflow' && tab === 'workflow')
       );
       if (shouldBeActive && !el.classList.contains('active')) {
-        // Force animation replay by briefly removing the class
         el.classList.remove('active');
-        // eslint-disable-next-line no-void
-        void el.offsetWidth; // trigger reflow
+        void el.offsetWidth;
         el.classList.add('active');
       } else if (!shouldBeActive) {
         el.classList.remove('active');
@@ -7519,7 +7747,13 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
     const overviewRow = document.getElementById('header-overview-row');
     const toolbarRow  = document.getElementById('header-toolbar-row');
 
-    if (tab === 'packing') {
+    if (tab === 'berita') {
+      badgeEl.textContent = 'Portal Berita';
+      labelEl.textContent = 'Warta & Pengumuman MagangHub Kemnaker RI';
+      overviewRow.style.display = 'none';
+      toolbarRow.style.display = 'none';
+      if (!newsLoadedOnce) fetchLiveNews(false);
+    } else if (tab === 'packing') {
       badgeEl.textContent = 'Inventaris';
       labelEl.textContent = 'Daftar barang yang dimiliki di rantau';
       overviewRow.style.display = 'none';
@@ -7531,40 +7765,33 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
       labelEl.textContent = 'Anggaran, bayar bulanan & batas aman';
       overviewRow.style.display = 'none';
       toolbarRow.style.display = 'none';
-    } else if (tab === 'logbook') {
-      badgeEl.textContent = 'MagangHub';
-      labelEl.textContent = 'Generator Formulasi Laporan Harian Kemnaker';
+    } else if (tab === 'workflow') {
+      badgeEl.textContent = 'Plan & Workflow';
+      labelEl.textContent = 'Roadmap magang, SOP ritme kerja, logbook & mentor';
       overviewRow.style.display = 'none';
       toolbarRow.style.display = 'none';
-    } else if (tab === 'asisten') {
-      badgeEl.textContent = 'Toolkit & Chat';
-      labelEl.textContent = 'Rumus, istilah & template siap pakai';
-      overviewRow.style.display = 'none';
-      toolbarRow.style.display = 'none';
-    } else if (tab === 'transit') {
-      badgeEl.textContent = 'TransJakarta';
-      labelEl.textContent = '240 Rute & 8.091 Halte BRT Jakarta';
-      overviewRow.style.display = 'none';
-      toolbarRow.style.display = 'none';
-      if (!transitDataLoaded) initTransitExplorer();
-    } else if (tab === 'berita') {
-      badgeEl.textContent = 'Live Feed';
-      labelEl.textContent = 'Warta & Pengumuman MagangHub Kemnaker RI';
-      overviewRow.style.display = 'none';
-      toolbarRow.style.display = 'none';
-      if (!newsLoadedOnce) fetchLiveNews(false);
+      renderMilestones();
     }
   }
 
   function selectTab(tab, updateUrl = true) {
     document.documentElement.removeAttribute('data-initial-tab');
+    
+    let subTabToActivate = null;
+    if (tab === 'logbook') {
+      tab = 'workflow';
+      subTabToActivate = 'logbook';
+    } else if (tab === 'asisten' || tab === 'toolkit') {
+      tab = 'workflow';
+      subTabToActivate = 'toolkit';
+    }
+
     activeTab = tab;
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
 
     const route = TAB_CONFIG[tab] || TAB_CONFIG['berita'];
     if (route && route.title) document.title = route.title;
 
-    // Update URL *before* transition (keeps history correct immediately)
     if (updateUrl) {
       try {
         const targetPath = (tab === 'berita') ? '/' : (route ? route.path : '/');
@@ -7581,7 +7808,6 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
       }
     }
 
-    // Trigger buttons (nav highlight)
     document.querySelectorAll('.tab-trigger').forEach(btn => {
       const isMatch = btn.getAttribute('data-tab') === tab;
       btn.classList.toggle('active', isMatch);
@@ -7589,11 +7815,14 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
       else btn.removeAttribute('aria-current');
     });
 
-    // View Transitions API — silky cross-tab animation
     if (typeof document.startViewTransition === 'function') {
-      document.startViewTransition(() => _doSelectTab(tab));
+      document.startViewTransition(() => {
+        _doSelectTab(tab);
+        if (subTabToActivate) switchWorkflowSubtab(subTabToActivate);
+      });
     } else {
       _doSelectTab(tab);
+      if (subTabToActivate) switchWorkflowSubtab(subTabToActivate);
     }
   }
 
@@ -9280,7 +9509,89 @@ print(outliers[['kode_cabang', 'no_rekening', 'saldo_total']].head())</pre>
   }
 
   // --- Asisten Subtabs (Chat vs MoM vs Toolkit vs Glossary vs Guide vs Finance) ---
+  
+  // --- Workflow Subtab & Milestone Interactive Logic ---
+  const WORKFLOW_MILESTONES = [
+    { id: 'm1', title: 'Onboarding & Absensi DigiHC + MagangHub aktif', phase: 'Bulan 1', done: true },
+    { id: 'm2', title: 'Pemahaman Kerangka Kerja ABT-Cabang-BRAVE & SSE', phase: 'Bulan 1', done: true },
+    { id: 'm3', title: 'Cleansing Database Leads CICO & Standardisasi CIF', phase: 'Bulan 2', done: true },
+    { id: 'm4', title: 'Kompilasi Geospasial Transit KC/KCP BNI Jakarta', phase: 'Bulan 2', done: false },
+    { id: 'm5', title: 'Development Sub-Sistem Pre-Sales BCS/GIS Area', phase: 'Bulan 3', done: false },
+    { id: 'm6', title: 'Monev Tengah Periode MagangHub Kemnaker', phase: 'Bulan 4', done: false },
+    { id: 'm7', title: 'Simulasi Threshold 20% TAP Serapan Produk & BAST', phase: 'Bulan 5', done: false },
+    { id: 'm8', title: 'Penyusunan Laporan Akhir & Sertifikasi BNSP', phase: 'Bulan 6', done: false }
+  ];
+
+  function switchWorkflowSubtab(sub) {
+    const validSubs = ['plan', 'logbook', 'sop', 'chat', 'toolkit'];
+    if (!validSubs.includes(sub)) sub = 'plan';
+    validSubs.forEach(s => {
+      const btn = document.getElementById('wf-subtab-btn-' + s);
+      if (btn) btn.classList.toggle('active', s === sub);
+      const pane = document.getElementById('wf-pane-' + s);
+      if (pane) pane.style.display = (s === sub) ? 'block' : 'none';
+    });
+  }
+
   function switchAsistenSubtab(sub) {
+    selectTab('workflow');
+    if (sub === 'chat') {
+      switchWorkflowSubtab('chat');
+    } else {
+      switchWorkflowSubtab('toolkit');
+    }
+  }
+
+  function renderMilestones() {
+    const listEl = document.getElementById('wf-milestone-list');
+    const counterEl = document.getElementById('wf-milestone-counter');
+    if (!listEl) return;
+
+    const saved = JSON.parse(localStorage.getItem('mghb_milestones_checked_v1') || 'null');
+    const checkedMap = {};
+    if (saved && Array.isArray(saved)) {
+      saved.forEach(id => { checkedMap[id] = true; });
+    } else {
+      WORKFLOW_MILESTONES.forEach(m => { if (m.done) checkedMap[m.id] = true; });
+    }
+
+    let achieved = 0;
+    listEl.innerHTML = WORKFLOW_MILESTONES.map(m => {
+      const isChecked = !!checkedMap[m.id];
+      if (isChecked) achieved++;
+      return `
+        <label style="display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; cursor: pointer; transition: background .15s ease;">
+          <div style="display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1;">
+            <input type="checkbox" onchange="toggleMilestone('${m.id}')" ${isChecked ? 'checked' : ''} style="width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer;">
+            <span style="font-size: 0.78rem; font-weight: 600; color: ${isChecked ? 'var(--text-tertiary)' : 'var(--text-primary)'}; text-decoration: ${isChecked ? 'line-through' : 'none'};">
+              ${m.title}
+            </span>
+          </div>
+          <span style="font-size: 0.68rem; font-weight: 700; color: var(--accent); background: var(--accent-subtle); padding: 2px 6px; border-radius: 4px; white-space: nowrap; margin-left: 8px;">
+            ${m.phase}
+          </span>
+        </label>
+      `;
+    }).join('');
+
+    if (counterEl) {
+      counterEl.textContent = `${achieved} / ${WORKFLOW_MILESTONES.length} Tercapai`;
+    }
+  }
+
+  function toggleMilestone(id) {
+    const saved = JSON.parse(localStorage.getItem('mghb_milestones_checked_v1') || 'null');
+    let checked = saved || WORKFLOW_MILESTONES.filter(m => m.done).map(m => m.id);
+    if (checked.includes(id)) {
+      checked = checked.filter(i => i !== id);
+    } else {
+      checked.push(id);
+    }
+    localStorage.setItem('mghb_milestones_checked_v1', JSON.stringify(checked));
+    renderMilestones();
+  }
+
+  function _legacySwitchAsistenSubtab(sub) {
     document.getElementById('asisten-tab-btn-chat').classList.toggle('active', sub === 'chat');
     document.getElementById('asisten-tab-btn-toolkit').classList.toggle('active', sub === 'toolkit');
     document.getElementById('asisten-tab-btn-glossary').classList.toggle('active', sub === 'glossary');
