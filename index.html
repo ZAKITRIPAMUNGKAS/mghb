@@ -5515,9 +5515,11 @@
       <input 
         type="password" 
         id="lock-hidden-input" 
-        inputmode="numeric" 
+        inputmode="none" 
         maxlength="6" 
         autocomplete="off" 
+        readonly
+        onfocus="this.blur()"
         style="position: absolute; opacity: 0; pointer-events: none; width: 1px; height: 1px;"
       >
 
@@ -6667,8 +6669,24 @@
 
   <!-- Footer -->
   <footer class="app-footer">
-    <p>MGHB Workspace · Zaki Tri Pamungkas</p>
-    <p>Divisi Sales Strategy &amp; Execution · Menara BNI Pejompongan</p>
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <img src="bni-logo.svg" alt="BNI" style="height: 16px; width: auto; opacity: 0.6;">
+        <span style="font-weight: 700; font-size: 0.74rem; color: var(--text-primary); opacity: 0.7;">MGHB Workspace</span>
+      </div>
+      <div class="footer-meta">
+        <span>Zaki Tri Pamungkas</span>
+        <span class="footer-dot">·</span>
+        <span>SSE BNI Pejompongan</span>
+        <span class="footer-dot">·</span>
+        <span>MagangHub 2026</span>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/ZAKITRIPAMUNGKAS/mghb" target="_blank" rel="noopener noreferrer" class="footer-link">GitHub</a>
+        <span class="footer-dot">·</span>
+        <span class="footer-version">v2.4</span>
+      </div>
+    </div>
   </footer>
 
   <!-- Fixed Bottom Navigation Bar (Mobile-First Native App Style) -->
@@ -12351,6 +12369,15 @@ function renderFinanceHeatmap() {
   window.flyToStop = flyToStop;
   window.filterByCategory = filterByCategory;
   window.filterTransitRoutes = filterTransitRoutes;
+
+  // ===== PWA Service Worker Registration =====
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js')
+        .then(reg => console.log('[PWA] SW registered:', reg.scope))
+        .catch(err => console.warn('[PWA] SW registration failed:', err));
+    });
+  }
 </script>
 <!-- ===== Icon Sprite (Lucide-style, stroke-based, no external dependency) ===== -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
