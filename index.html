@@ -2635,6 +2635,144 @@
       font-size: 0.72rem;
       color: var(--text-secondary);
     }
+
+    /* Fin AI Advisor Bento Box */
+    .fin-ai-box {
+      margin-top: 14px;
+      border: 1px solid rgba(0, 124, 137, 0.22);
+      border-radius: 12px;
+      padding: 12px 14px;
+      background: linear-gradient(135deg, rgba(0, 124, 137, 0.05) 0%, rgba(241, 90, 35, 0.03) 100%), var(--surface);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      overflow: hidden;
+    }
+
+    [data-theme="dark"] .fin-ai-box {
+      border-color: rgba(0, 124, 137, 0.35);
+      background: linear-gradient(135deg, rgba(0, 124, 137, 0.12) 0%, rgba(241, 90, 35, 0.05) 100%), var(--surface);
+    }
+
+    .fin-ai-box::before {
+      content: '';
+      position: absolute;
+      top: -30px;
+      right: -30px;
+      width: 90px;
+      height: 90px;
+      background: radial-gradient(circle, rgba(0, 124, 137, 0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .fin-ai-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .fin-ai-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .fin-ai-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+    }
+
+    .fin-ai-badge {
+      font-size: 0.62rem;
+      font-weight: 700;
+      padding: 1px 7px;
+      border-radius: 9999px;
+      background: rgba(0, 124, 137, 0.1);
+      color: var(--accent);
+      border: 1px solid rgba(0, 124, 137, 0.25);
+      white-space: nowrap;
+    }
+
+    .fin-ai-actions {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+
+    .fin-ai-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 7px 6px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      transition: all 0.15s ease;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    .fin-ai-btn:hover {
+      background: var(--accent-subtle);
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-1px);
+      box-shadow: 0 2px 6px rgba(0, 124, 137, 0.15);
+    }
+
+    .fin-ai-btn:active {
+      transform: translateY(0);
+    }
+
+    .fin-ai-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .fin-ai-output-box {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      line-height: 1.45;
+      background: rgba(0, 0, 0, 0.02);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 9px 12px;
+      min-height: 24px;
+    }
+
+    [data-theme="dark"] .fin-ai-output-box {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    @media (max-width: 480px) {
+      .fin-ai-actions {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 5px;
+      }
+      .fin-ai-btn {
+        padding: 6px 3px;
+        font-size: 0.68rem;
+        gap: 3px;
+      }
+    }
+
     .finance-envelopes-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -6025,21 +6163,39 @@
         <div id="fin-balance-banner" style="margin-top: 10px; display: none; border-radius: 8px; padding: 10px 12px; font-size: 0.76rem; line-height: 1.4;"></div>
 
         <!-- AI Advisor -->
-        <div id="fin-ai-card" style="margin-top: 12px; border: 1px solid var(--border); border-radius: 10px; padding: 12px; background: var(--surface);">
-          <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; flex-wrap: wrap;">
-            <span class="feature-title" style="font-size: 0.82rem;"><svg class="ic ic-16" aria-hidden="true"><use href="#i-sparkles"/></svg> Asisten Finansial AI (Claude)</span>
-            <div style="display: flex; gap: 6px;">
-              <button type="button" class="btn-action btn-xs" id="btn-fin-ai" onclick="requestFinanceAdvice('quick')">Tanya AI</button>
-              <button type="button" class="btn-action btn-xs" style="background: var(--accent-subtle); color: var(--accent); border: 1px solid var(--accent); font-weight: 600;" onclick="openFinanceReportModal()">📊 Raport (+AI)</button>
+        <div id="fin-ai-card" class="fin-ai-box">
+          <div class="fin-ai-head">
+            <div class="fin-ai-title-wrap">
+              <span class="fin-ai-title">
+                <svg class="ic ic-16" aria-hidden="true" style="color: var(--accent);"><use href="#i-sparkles"/></svg>
+                Asisten Finansial AI
+              </span>
+              <span class="fin-ai-badge">Claude</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <button type="button" class="btn-action btn-xs" id="btn-fin-ai" onclick="requestFinanceAdvice('quick')" style="padding: 3px 9px; font-weight: 700; font-size: 0.72rem;">
+                Tanya AI
+              </button>
+              <button type="button" class="btn-action btn-xs" onclick="openFinanceReportModal()" style="background: var(--accent-subtle); color: var(--accent); border: 1px solid var(--accent); font-weight: 600; padding: 3px 8px; font-size: 0.7rem;" title="Buka Raport Bulanan">
+                📊 Raport
+              </button>
             </div>
           </div>
-          <div style="display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 8px;">
-            <button type="button" class="finance-chip" style="font-size: 0.68rem; padding: 2px 8px;" onclick="requestFinanceAdvice('quick')">⚡ Analisis Kilat</button>
-            <button type="button" class="finance-chip" style="font-size: 0.68rem; padding: 2px 8px;" onclick="requestFinanceAdvice('saving')">💡 Kiat Hemat Benhil</button>
-            <button type="button" class="finance-chip" style="font-size: 0.68rem; padding: 2px 8px;" onclick="requestFinanceAdvice('leakage')">🔍 Cek Kebocoran</button>
+
+          <div class="fin-ai-actions">
+            <button type="button" class="fin-ai-btn" onclick="requestFinanceAdvice('quick')">
+              <span>⚡</span> <span>Analisis</span>
+            </button>
+            <button type="button" class="fin-ai-btn" onclick="requestFinanceAdvice('saving')">
+              <span>💡</span> <span>Kiat Hemat</span>
+            </button>
+            <button type="button" class="fin-ai-btn" onclick="requestFinanceAdvice('leakage')">
+              <span>🔍</span> <span>Cek Bocor</span>
+            </button>
           </div>
-          <div id="fin-ai-output" style="font-size: 0.76rem; color: var(--text-secondary); line-height: 1.45; min-height: 20px;">
-            Tekan salah satu tombol di atas atau <em>Tanya AI</em> untuk penilaian pemasukan, batas aman belanja, dan strategi penghematan Menara BNI.
+
+          <div id="fin-ai-output" class="fin-ai-output-box">
+            Pilih analisis di atas atau <em>Tanya AI</em> untuk penilaian batas aman belanja dan strategi hemat Menara BNI.
           </div>
         </div>
       </div>
@@ -11973,14 +12129,17 @@ function renderFinanceHeatmap() {
   async function requestFinanceAdvice(promptType = 'quick') {
     const out = document.getElementById('fin-ai-output');
     const btn = document.getElementById('btn-fin-ai');
+    const allBtns = document.querySelectorAll('.fin-ai-btn');
     const snap = window.__finSnapshot || null;
     if (btn) btn.disabled = true;
+    allBtns.forEach(b => b.disabled = true);
     if (out) out.textContent = '⏳ Menganalisis keuangan dengan AI...';
     updateFinanceCalculations();
     const s = window.__finSnapshot || snap;
     if (!s || !s.income) {
       if (out) out.textContent = 'Isi dulu pemasukan bulanan agar AI bisa menilai.';
       if (btn) btn.disabled = false;
+      allBtns.forEach(b => b.disabled = false);
       return;
     }
     try {
@@ -12013,6 +12172,7 @@ function renderFinanceHeatmap() {
       showToast('AI keuangan gagal dijangkau');
     } finally {
       if (btn) btn.disabled = false;
+      allBtns.forEach(b => b.disabled = false);
     }
   }
 
