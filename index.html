@@ -11487,9 +11487,12 @@
 
   // --- Tampilkan 3 bagian logbook ke UI + badge karakter ---
   function renderLogbookOutput(act, lrn, obs) {
-    document.getElementById('res-activity').textContent = act;
-    document.getElementById('res-learning').textContent = lrn;
-    document.getElementById('res-obstacle').textContent = obs;
+    const elAct = document.getElementById('res-activity');
+    if (elAct) elAct.textContent = act;
+    const elLrn = document.getElementById('res-learning');
+    if (elLrn) elLrn.textContent = lrn;
+    const elObs = document.getElementById('res-obstacle');
+    if (elObs) elObs.textContent = obs;
     const cntAct = document.getElementById('cnt-activity');
     const cntLrn = document.getElementById('cnt-learning');
     const cntObs = document.getElementById('cnt-obstacle');
@@ -11638,7 +11641,7 @@
   }
 
   function saveLogbookHistory() {
-    const dateVal = document.getElementById('lb-date').value || new Date().toISOString().slice(0, 10);
+    const dateVal = document.getElementById('lb-date')?.value || new Date().toISOString().slice(0, 10);
     const category = 'general';
     const catLabel = 'Logbook Harian MagangHub';
     const rough = document.getElementById('lb-rough-notes')?.value.trim() || '';
@@ -16830,10 +16833,11 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   }
 
   function filterByCategory(el) {
-    const cat = el.dataset.cat;
-    const active = el.classList.contains('cat-active');
-    document.querySelectorAll('[data-cat]').forEach(e => e.classList.remove('cat-active'));
-    if (!active) { el.classList.add('cat-active'); }
+    if (!el) return;
+    const cat = el.dataset ? el.dataset.cat : (typeof el === 'string' ? el : null);
+    const active = el.classList ? el.classList.contains('cat-active') : false;
+    document.querySelectorAll('[data-cat]').forEach(e => e.classList?.remove('cat-active'));
+    if (!active && el.classList) { el.classList.add('cat-active'); }
     filterTransitRoutes(document.getElementById('transit-search')?.value || '', active ? null : cat);
   }
 
@@ -16856,7 +16860,48 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   window.filterByCategory = filterByCategory;
   window.filterTransitRoutes = filterTransitRoutes;
 
-  // ===== PWA Service Worker Registration =====
+  // ===== PWA Service Worker & Install Prompt =====
+  let deferredPwaPrompt = null;
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPwaPrompt = e;
+    try {
+      const isDismissed = localStorage.getItem('mghb_pwa_banner_dismissed') === 'true';
+      const banner = document.getElementById('pwa-install-banner');
+      if (banner && !isDismissed) {
+        banner.style.display = 'flex';
+      }
+    } catch (_) {}
+  });
+
+  window.triggerPwaInstall = async function() {
+    if (deferredPwaPrompt) {
+      deferredPwaPrompt.prompt();
+      try {
+        const choice = await deferredPwaPrompt.userChoice;
+        console.log('[PWA] User choice:', choice);
+      } catch (err) {
+        console.warn('[PWA] userChoice err:', err);
+      }
+      deferredPwaPrompt = null;
+      window.dismissPwaBanner();
+    } else {
+      if (typeof showToast === 'function') {
+        showToast('Untuk install di HP: Buka menu browser (⋮ atau Share), lalu tap "Add to Home Screen" / "Install Aplikasi".');
+      } else {
+        alert('Untuk install di HP: Buka menu browser (⋮ atau Share), lalu tap "Add to Home Screen" / "Install Aplikasi".');
+      }
+    }
+  };
+
+  window.dismissPwaBanner = function() {
+    const banner = document.getElementById('pwa-install-banner');
+    if (banner) banner.style.display = 'none';
+    try {
+      localStorage.setItem('mghb_pwa_banner_dismissed', 'true');
+    } catch (_) {}
+  };
+
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('./sw.js')
