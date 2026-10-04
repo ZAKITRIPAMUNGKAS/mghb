@@ -9210,6 +9210,26 @@
             <input type="file" id="import-file-input" accept=".json" style="display: none;" onchange="handleImportFile(event)">
           </div>
         </div>
+
+        <div style="margin-top: 18px; padding-top: 14px; border-top: 1px dashed var(--border);">
+          <div style="font-size: 0.78rem; font-weight: 700; color: #ef4444; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+            Zona Reset &amp; Pembersihan Data
+          </div>
+          <p style="font-size: 0.72rem; color: var(--text-secondary); margin-bottom: 10px; line-height: 1.4;">
+            Kembalikan data aplikasi ke kondisi awal jika Anda ingin memulai pencatatan dari nol.
+          </p>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <button type="button" class="btn-action" onclick="resetFinanceData()" style="background: rgba(239, 68, 68, 0.08); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.25); font-size: 0.72rem; justify-content: center;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+              Reset Keuangan
+            </button>
+            <button type="button" class="btn-action" onclick="resetAllAppData()" style="background: #ef4444; color: #ffffff; border: 1px solid #ef4444; font-size: 0.72rem; justify-content: center;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+              Reset Semua (Factory)
+            </button>
+          </div>
+        </div>
       </div>
 
       <!-- Pane 3: Supabase Database Cloud -->
@@ -15426,17 +15446,70 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   }
 
   function clearFinanceHistory() {
-    if (confirm('Hapus seluruh riwayat transaksi (pengeluaran & pemasukan) yang tersimpan?')) {
-      const ids = getFinanceExpenses().map(e => e.id);
-      saveFinanceExpenses([]);
-      if (supabaseClient && ids.length > 0) {
-        supabaseClient.from('mghb_expenses').delete().in('id', ids).then(() => {}, err => console.warn('Supabase clear expense error:', err));
-      }
-      renderFinanceExpenses();
-      renderFinanceHeatmap();
-      updateFinanceCalculations(false);
-      showToast('Seluruh riwayat transaksi berhasil di-reset');
+    resetFinanceData();
+  }
+
+  function resetFinanceData(silent = false) {
+    if (!silent && !confirm('Reset seluruh data FinOS & Keuangan?\n\nSemua riwayat transaksi akan dihapus, saldo akun dikembalikan ke default (BNI 3,5jt, GoPay 150rb, Tunai 100rb, Tabungan Wondr 500rb), dan seluruh tagihan dikembalikan ke belum lunas.')) {
+      return;
     }
+    const finKeys = [
+      'mghb_fin_income', 'mghb_fin_expenses', 'mghb_fin_fixed_monthly',
+      'mghb_fin_bills', 'mghb_fin_accounts', 'mghb_fin_transactions',
+      'mghb_fin_commitments', 'mghb_fin_goals_v2', 'mghb_fin_snapshots',
+      'mghb_accounts', 'mghb_commitments', 'mghb_financial_goals',
+      'mghb_transactions', 'mghb_daily_snapshots', 'mghb_fin_goals',
+      'mghb_finance_filter', 'mghb_expenses', 'mghb_bills', 'mghb_goals'
+    ];
+    finKeys.forEach(k => {
+      try { localStorage.removeItem(k); } catch (_) {}
+    });
+
+    if (supabaseClient) {
+      supabaseClient.from('mghb_expenses').delete().neq('id', '00000000-0000-0000-0000-000000000000')
+        .then(() => {}, err => console.warn('Supabase clear expense error:', err));
+    }
+
+    if (typeof FinOS !== 'undefined' && FinOS.init) {
+      FinOS.init();
+    }
+    if (typeof updateFinanceCalculations === 'function') updateFinanceCalculations(false);
+    if (typeof renderAccountsStrip === 'function') renderAccountsStrip();
+    if (typeof renderFinanceExpenses === 'function') renderFinanceExpenses();
+    if (typeof renderFinanceBills === 'function') renderFinanceBills();
+    if (typeof renderFinanceGoals === 'function') renderFinanceGoals();
+    if (typeof renderFinanceHeatmap === 'function') renderFinanceHeatmap();
+
+    if (typeof showToast === 'function') {
+      showToast('Seluruh data FinOS & Keuangan berhasil di-reset ke kondisi awal!');
+    }
+  }
+
+  function resetAllAppData(silent = false) {
+    if (!silent && !confirm('⚠️ PERINGATAN: Apakah Anda yakin ingin me-reset SELURUH data aplikasi MagangHub ke kondisi awal?\n\nSemua transaksi keuangan, riwayat logbook, checklist, dan inventaris akan dikembalikan ke kondisi awal (default).')) {
+      return;
+    }
+    try {
+      for (let i = localStorage.length - 1; i >= 0; i--) {
+        const k = localStorage.key(i);
+        if (k && k.startsWith('mghb_') && !k.startsWith('mghb_auth_session')) {
+          localStorage.removeItem(k);
+        }
+      }
+    } catch (_) {}
+
+    if ('caches' in window) {
+      caches.keys().then(names => {
+        names.forEach(name => {
+          if (name.startsWith('mghb-')) caches.delete(name);
+        });
+      }).catch(() => {});
+    }
+
+    if (!silent) {
+      alert('Semua data aplikasi telah berhasil di-reset ke kondisi awal. Halaman akan dimuat ulang.');
+    }
+    window.location.reload();
   }
 
   function renderFinanceExpenses() {
@@ -16859,6 +16932,21 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   window.flyToStop = flyToStop;
   window.filterByCategory = filterByCategory;
   window.filterTransitRoutes = filterTransitRoutes;
+  window.resetFinanceData = resetFinanceData;
+  window.resetAllAppData = resetAllAppData;
+  window.resetAllData = resetAllAppData;
+
+  // URL query parameter trigger for fast reset (?reset=all or ?reset=fin)
+  (function checkUrlResetTrigger() {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('reset') === 'all' || params.get('reset') === '1') {
+        resetAllAppData(true);
+      } else if (params.get('reset') === 'fin' || params.get('reset') === 'finance') {
+        resetFinanceData(true);
+      }
+    } catch (_) {}
+  })();
 
   // ===== PWA Service Worker & Install Prompt =====
   let deferredPwaPrompt = null;
