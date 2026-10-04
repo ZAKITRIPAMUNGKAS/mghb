@@ -2637,62 +2637,137 @@
     }
     .finance-envelopes-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: 1fr 1fr;
       gap: 10px;
-      margin-top: 14px;
+      margin-top: 10px;
     }
-    @media (max-width: 640px) {
-      .finance-envelopes-grid {
-        grid-template-columns: 1fr;
-      }
-    }
+
     .finance-envelope-card {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 10px 12px;
+      border-radius: 12px;
+      padding: 12px 14px;
       display: flex;
       flex-direction: column;
+      justify-content: space-between;
       gap: 6px;
-      transition: transform 0.15s ease, border-color 0.15s ease;
+      transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+      box-shadow: var(--shadow-sm);
     }
+
     .finance-envelope-card:hover {
       border-color: var(--border-strong);
       transform: translateY(-1px);
     }
+
+    /* Hero Bento Envelope: Needs 50% */
+    .finance-envelope-card.finance-env-hero {
+      grid-column: 1 / -1;
+      background: linear-gradient(135deg, rgba(2, 132, 199, 0.06) 0%, var(--surface) 100%);
+      border: 1px solid rgba(2, 132, 199, 0.28);
+    }
+
+    [data-theme="dark"] .finance-envelope-card.finance-env-hero {
+      background: linear-gradient(135deg, rgba(2, 132, 199, 0.12) 0%, var(--surface) 100%);
+      border-color: rgba(2, 132, 199, 0.38);
+    }
+
+    /* Companion Bento Envelopes: Wants 30% & Savings 20% */
+    .finance-envelope-card.finance-env-wants {
+      background: linear-gradient(135deg, rgba(241, 90, 35, 0.05) 0%, var(--surface) 100%);
+      border: 1px solid rgba(241, 90, 35, 0.22);
+    }
+
+    [data-theme="dark"] .finance-envelope-card.finance-env-wants {
+      background: linear-gradient(135deg, rgba(241, 90, 35, 0.1) 0%, var(--surface) 100%);
+      border-color: rgba(241, 90, 35, 0.32);
+    }
+
+    .finance-envelope-card.finance-env-savings {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, var(--surface) 100%);
+      border: 1px solid rgba(16, 185, 129, 0.22);
+    }
+
+    [data-theme="dark"] .finance-envelope-card.finance-env-savings {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, var(--surface) 100%);
+      border-color: rgba(16, 185, 129, 0.32);
+    }
+
     .finance-envelope-head {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 6px;
     }
+
     .finance-envelope-title {
       font-size: 0.74rem;
       font-weight: 700;
       color: var(--text-primary);
       display: flex;
       align-items: center;
-      gap: 5px;
+      gap: 6px;
+      white-space: nowrap;
     }
+
     .finance-envelope-amt {
-      font-size: 0.95rem;
+      font-size: 1.05rem;
       font-weight: 800;
       color: var(--text-primary);
+      letter-spacing: -0.02em;
     }
+
+    .finance-envelope-card.finance-env-hero .finance-envelope-amt {
+      font-size: 1.18rem;
+    }
+
     .finance-envelope-sub {
       font-size: 0.68rem;
-      color: var(--text-tertiary);
+      color: var(--text-secondary);
+      line-height: 1.35;
     }
+
     .finance-envelope-track {
       width: 100%;
       height: 6px;
       background: var(--surface-hover);
       border-radius: 999px;
       overflow: hidden;
+      margin-top: 2px;
     }
+
     .finance-envelope-fill {
       height: 100%;
       border-radius: 999px;
-      transition: width 0.3s ease;
+      transition: width 0.3s ease, background-color 0.3s ease;
+    }
+
+    @media (max-width: 640px) {
+      .finance-envelopes-grid {
+        gap: 8px;
+        margin-top: 8px;
+      }
+
+      .finance-envelope-card {
+        padding: 10px 12px;
+        border-radius: 11px;
+      }
+
+      .finance-envelope-card.finance-env-hero .finance-envelope-amt {
+        font-size: 1.12rem;
+      }
+
+      .finance-envelope-amt {
+        font-size: 0.96rem;
+      }
+
+      .finance-envelope-title {
+        font-size: 0.71rem;
+      }
+
+      .finance-envelope-sub {
+        font-size: 0.65rem;
+      }
     }
     .finance-bills-card {
       background: var(--surface);
@@ -5882,6 +5957,7 @@
               <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
             </svg>
             Keuangan Rantau Jakarta · Advanced Fintech Suite
+            <span id="fin-db-dot" title="Koneksi Database" style="display:inline-flex;width:8px;height:8px;border-radius:50%;background:#94a3b8;margin-left:6px;vertical-align:middle;"></span>
           </div>
           <span class="badge badge-accent" id="fin-status-badge" style="font-size: 0.72rem; padding: 3px 10px;">Terkendali</span>
         </div>
@@ -6107,51 +6183,72 @@
         </div>
       </div>
 
-      <!-- Live 50/30/20 Digital Envelopes Grid -->
-      <div class="finance-envelopes-grid" id="fin-envelopes-section">
-        <!-- Envelope 1: Needs 50% -->
-        <div class="finance-envelope-card">
-          <div class="finance-envelope-head">
-            <span class="finance-envelope-title"><svg class="ic ic-16" aria-hidden="true"><use href="#i-home"/></svg> Needs / Pokok (50%)</span>
-            <span class="badge" id="fin-env-needs-status" style="font-size: 0.65rem; padding: 1px 6px;">0%</span>
+      <!-- Live 50/30/20 Digital Envelopes Bento Grid -->
+      <div class="feature-card" id="fin-envelopes-section">
+        <div class="feature-head">
+          <div>
+            <div class="feature-title" style="font-size: 0.84rem;">
+              <svg class="ic ic-16" aria-hidden="true" style="color: var(--accent);"><use href="#i-chart-pie"/></svg>
+              Alokasi Anggaran 50/30/20
+            </div>
+            <p style="font-size: 0.72rem; color: var(--text-secondary); margin-top: 2px;">
+              Pos budgeting otomatis: Pokok (50%), Gaya Hidup (30%), &amp; Tabungan (20%).
+            </p>
           </div>
-          <div class="finance-envelope-amt" id="fin-env-needs-spent">Rp 0</div>
-          <div class="finance-envelope-sub" id="fin-env-needs-target">Alokasi target: Rp 1.750.000</div>
-          <div class="finance-envelope-track">
-            <div class="finance-envelope-fill" id="fin-env-needs-fill" style="width: 0%; background: #0284c7;"></div>
-          </div>
+          <span class="badge badge-accent" style="font-size: 0.65rem; padding: 2px 7px;">Smart Envelopes</span>
         </div>
 
-        <!-- Envelope 2: Wants 30% -->
-        <div class="finance-envelope-card">
-          <div class="finance-envelope-head">
-            <span class="finance-envelope-title"><svg class="ic ic-16" aria-hidden="true"><use href="#i-coffee"/></svg> Wants / Gaya Hidup (30%)</span>
-            <span class="badge" id="fin-env-wants-status" style="font-size: 0.65rem; padding: 1px 6px;">0%</span>
+        <div class="finance-envelopes-grid">
+          <!-- Envelope 1: Needs 50% (Hero Bento) -->
+          <div class="finance-envelope-card finance-env-hero">
+            <div class="finance-envelope-head">
+              <span class="finance-envelope-title"><svg class="ic ic-16" aria-hidden="true" style="color: #0284c7;"><use href="#i-home"/></svg> Needs / Pokok (50%)</span>
+              <span class="badge" id="fin-env-needs-status" style="font-size: 0.65rem; padding: 1px 6px;">0%</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap;">
+              <div class="finance-envelope-amt" id="fin-env-needs-spent">Rp 0</div>
+              <div class="finance-envelope-sub" id="fin-env-needs-target">Target: Rp 1.750.000</div>
+            </div>
+            <div class="finance-envelope-track">
+              <div class="finance-envelope-fill" id="fin-env-needs-fill" style="width: 0%; background: #0284c7;"></div>
+            </div>
           </div>
-          <div class="finance-envelope-amt" id="fin-env-wants-spent">Rp 0</div>
-          <div class="finance-envelope-sub" id="fin-env-wants-target">Alokasi target: Rp 1.050.000</div>
-          <div class="finance-envelope-track">
-            <div class="finance-envelope-fill" id="fin-env-wants-fill" style="width: 0%; background: #F15A24;"></div>
-          </div>
-        </div>
 
-        <!-- Envelope 3: Savings 20% -->
-        <div class="finance-envelope-card">
-          <div class="finance-envelope-head">
-            <span class="finance-envelope-title"><svg class="ic ic-16" aria-hidden="true"><use href="#i-wallet"/></svg> Savings / Wondr (20%)</span>
-            <span class="badge" id="fin-env-savings-status" style="font-size: 0.65rem; padding: 1px 6px;">0%</span>
+          <!-- Envelope 2: Wants 30% -->
+          <div class="finance-envelope-card finance-env-wants">
+            <div class="finance-envelope-head">
+              <span class="finance-envelope-title"><svg class="ic ic-16" aria-hidden="true" style="color: #F15A24;"><use href="#i-coffee"/></svg> Wants (30%)</span>
+              <span class="badge" id="fin-env-wants-status" style="font-size: 0.65rem; padding: 1px 6px;">0%</span>
+            </div>
+            <div>
+              <div class="finance-envelope-amt" id="fin-env-wants-spent">Rp 0</div>
+              <div class="finance-envelope-sub" id="fin-env-wants-target">Target: Rp 1.050.000</div>
+            </div>
+            <div class="finance-envelope-track">
+              <div class="finance-envelope-fill" id="fin-env-wants-fill" style="width: 0%; background: #F15A24;"></div>
+            </div>
           </div>
-          <div class="finance-envelope-amt" id="fin-env-savings-spent">Rp 0</div>
-          <div class="finance-envelope-sub" id="fin-env-savings-target">Alokasi target: Rp 700.000</div>
-          <div class="finance-envelope-track">
-            <div class="finance-envelope-fill" id="fin-env-savings-fill" style="width: 0%; background: #10b981;"></div>
+
+          <!-- Envelope 3: Savings 20% -->
+          <div class="finance-envelope-card finance-env-savings">
+            <div class="finance-envelope-head">
+              <span class="finance-envelope-title"><svg class="ic ic-16" aria-hidden="true" style="color: #10b981;"><use href="#i-wallet"/></svg> Savings (20%)</span>
+              <span class="badge" id="fin-env-savings-status" style="font-size: 0.65rem; padding: 1px 6px;">0%</span>
+            </div>
+            <div>
+              <div class="finance-envelope-amt" id="fin-env-savings-spent">Rp 0</div>
+              <div class="finance-envelope-sub" id="fin-env-savings-target">Target: Rp 700.000</div>
+            </div>
+            <div class="finance-envelope-track">
+              <div class="finance-envelope-fill" id="fin-env-savings-fill" style="width: 0%; background: #10b981;"></div>
+            </div>
           </div>
         </div>
       </div>
 
       <!-- Tujuan & Sisihan (Financial Goals) -->
 
-      <div class="feature-card" style="margin-top: 14px;" id="fin-goals-card">
+      <div class="feature-card" id="fin-goals-card">
         <div class="feature-head">
           <div>
             <div class="feature-title" style="font-size: 0.84rem;">
