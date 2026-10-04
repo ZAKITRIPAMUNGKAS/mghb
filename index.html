@@ -8905,6 +8905,68 @@
             }
           });
         })
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'mghb_expenses' }, () => {
+          supabaseClient.from('mghb_expenses').select('*').order('tx_date', { ascending: false }).then(({ data: cloudExp }) => {
+            if (cloudExp && Array.isArray(cloudExp)) {
+              const localMap = new Map(getFinanceExpenses().map(e => [e.id, e]));
+              cloudExp.forEach(ce => {
+                if (!localMap.has(ce.id)) {
+                  const isInc = ce.category && (FIN_INCOME_META[ce.category] || ce.category.endsWith('_inc') || ce.category === 'saku_bni');
+                  localMap.set(ce.id, {
+                    id: ce.id,
+                    cat: ce.category,
+                    desc: ce.description,
+                    amount: Number(ce.amount) || 0,
+                    date: ce.tx_date,
+                    type: isInc ? 'income' : 'expense'
+                  });
+                }
+              });
+              const merged = Array.from(localMap.values())
+                .sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+              saveFinanceExpenses(merged, false);
+              renderFinanceExpenses();
+              updateFinanceCalculations();
+            }
+          });
+        })
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'mghb_logbooks' }, () => {
+          supabaseClient.from('mghb_logbooks').select('*').order('report_date', { ascending: false }).then(({ data: cloudLogs }) => {
+            if (cloudLogs && Array.isArray(cloudLogs) && cloudLogs.length > 0) {
+              const mergedLogs = cloudLogs.map(cl => ({
+                id: cl.id,
+                date: cl.report_date,
+                category: cl.category,
+                categoryLabel: cl.category_label,
+                roughNotes: cl.rough_notes,
+                activity: cl.activity,
+                output: cl.output,
+                obstacle: cl.obstacle
+              }));
+              localStorage.setItem(LOGBOOK_STORAGE_KEY, JSON.stringify(mergedLogs));
+              renderLogbookHistory();
+            }
+          });
+        })
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'mghb_settings' }, payload => {
+          if (payload.new && payload.new.key === 'roadmap_tasks') {
+            if (payload.new.value && typeof payload.new.value === 'object') {
+              localStorage.setItem('mghb_roadmap_tasks_v1', JSON.stringify(payload.new.value));
+              renderRoadmapLine();
+            }
+          } else if (payload.new && payload.new.key === 'inventaris_items') {
+            if (payload.new.value && Array.isArray(payload.new.value)) {
+              saveInventarisItems(payload.new.value);
+              renderInventaris();
+            }
+          } else if (payload.new && payload.new.key === 'finance_income') {
+            const incVal = Number(payload.new.value) || 0;
+            if (incVal > 0) {
+              localStorage.setItem(FIN_INCOME_KEY, String(incVal));
+              updateFinanceCalculations(true);
+            }
+          }
+        })
         .subscribe();
     } catch (e) {
       console.warn('Realtime subscription skipped:', e);
@@ -9051,9 +9113,16 @@
         await supabaseClient.from('mghb_checklists').upsert(checklistRows);
       }
 
-      // 2. Sync Expenses (Batch Upsert Cepat)
+      // 2. Sync Expenses & Pemasukan (Batch Upsert Cepat + Backup Settings)
       const localExpenses = getFinanceExpenses();
       if (localExpenses.length > 0) {
+        // Snapshot array lengkap transaksi (termasuk tipe pemasukan) ke settings
+        await supabaseClient.from('mghb_settings').upsert({
+          key: 'finance_expenses_backup',
+          value: localExpenses,
+          updated_at: new Date().toISOString()
+        }).then(() => {}, () => {});
+
         const expenseRows = localExpenses.map(item => ({
           id: item.id,
           tx_date: item.date,
@@ -9153,19 +9222,36 @@
         cloudExpenses.forEach(ce => {
           if (!ce || !ce.id) return;
           if (!expenseMap.has(ce.id)) {
+            const isInc = ce.category && (FIN_INCOME_META[ce.category] || ce.category.endsWith('_inc') || ce.category === 'saku_bni');
             expenseMap.set(ce.id, {
               id: ce.id,
               date: ce.tx_date,
               cat: ce.category,
               desc: ce.description,
-              amount: Number(ce.amount) || 0
+              amount: Number(ce.amount) || 0,
+              type: isInc ? 'income' : 'expense'
             });
           }
         });
         const mergedExpenses = Array.from(expenseMap.values()).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-        saveFinanceExpenses(mergedExpenses);
+        saveFinanceExpenses(mergedExpenses, false);
         renderFinanceExpenses();
         updateFinanceCalculations(false);
+      } else {
+        // Fallback: periksa backup di mghb_settings bila tabel mghb_expenses kosong
+        const { data: backupExp } = await supabaseClient.from('mghb_settings').select('value').eq('key', 'finance_expenses_backup').maybeSingle();
+        if (backupExp && Array.isArray(backupExp.value) && backupExp.value.length > 0) {
+          const localExpenses = getFinanceExpenses();
+          const expenseMap = new Map();
+          localExpenses.forEach(e => { if (e && e.id) expenseMap.set(e.id, e); });
+          backupExp.value.forEach(be => {
+            if (be && be.id && !expenseMap.has(be.id)) expenseMap.set(be.id, be);
+          });
+          const mergedExpenses = Array.from(expenseMap.values()).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+          saveFinanceExpenses(mergedExpenses, false);
+          renderFinanceExpenses();
+          updateFinanceCalculations(false);
+        }
       }
 
       // 8. Fetch cloud bills to merge back (UNION: Tagihan kustom & status lokal dipertahankan)
@@ -9322,6 +9408,23 @@
           const incEl = document.getElementById('fin-income-input');
           if (incEl && document.activeElement !== incEl) incEl.value = incVal.toLocaleString('id-ID');
         }
+      }
+
+      // 12. Sync & Fetch Status Progres Roadmap & Target Mingguan
+      const localRoadmap = getRoadmapCheckedTasks();
+      if (localRoadmap && Object.keys(localRoadmap).length > 0 && supabaseClient) {
+        await supabaseClient.from('mghb_settings').upsert({
+          key: 'roadmap_tasks',
+          value: localRoadmap,
+          updated_at: new Date().toISOString()
+        }).then(() => {}, () => {});
+      }
+      const { data: cloudRoadmap } = await supabaseClient.from('mghb_settings').select('value').eq('key', 'roadmap_tasks').maybeSingle();
+      if (cloudRoadmap && cloudRoadmap.value && typeof cloudRoadmap.value === 'object') {
+        const currentTasks = getRoadmapCheckedTasks();
+        const merged = { ...currentTasks, ...cloudRoadmap.value };
+        localStorage.setItem('mghb_roadmap_tasks_v1', JSON.stringify(merged));
+        renderRoadmapLine();
       }
 
       if (!silent) {
@@ -9867,6 +9970,13 @@
     const checkedMap = getRoadmapCheckedTasks();
     checkedMap[taskId] = !checkedMap[taskId];
     localStorage.setItem('mghb_roadmap_tasks_v1', JSON.stringify(checkedMap));
+    if (supabaseClient) {
+      supabaseClient.from('mghb_settings').upsert({
+        key: 'roadmap_tasks',
+        value: checkedMap,
+        updated_at: new Date().toISOString()
+      }).then(() => {}, err => console.warn('Supabase roadmap sync error:', err));
+    }
     renderRoadmapLine();
   }
 
@@ -11591,10 +11701,18 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     }
   }
 
-  function saveFinanceExpenses(expenses) {
+  function saveFinanceExpenses(expenses, syncToCloud = true) {
     localStorage.setItem(FIN_EXPENSES_KEY, JSON.stringify(expenses));
     // Background sync to Supabase (fire-and-forget)
-    if (supabaseClient) {
+    if (supabaseClient && syncToCloud) {
+      // 1. Snapshot array lengkap transaksi (termasuk tipe pemasukan) ke settings
+      supabaseClient.from('mghb_settings').upsert({
+        key: 'finance_expenses_backup',
+        value: expenses || [],
+        updated_at: new Date().toISOString()
+      }).then(() => {}, err => console.warn('Supabase expense backup error:', err));
+
+      // 2. Upsert ke tabel mghb_expenses
       const rows = (expenses || []).map(e => ({
         id: e.id,
         tx_date: e.date || e.tx_date,
@@ -11855,16 +11973,32 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
           const localMap = new Map(getFinanceExpenses().map(e => [e.id, e]));
           cloudExp.forEach(ce => {
             if (!localMap.has(ce.id)) {
+              const isInc = ce.category && (FIN_INCOME_META[ce.category] || ce.category.endsWith('_inc') || ce.category === 'saku_bni');
               localMap.set(ce.id, {
                 id: ce.id, cat: ce.category, desc: ce.description,
-                amount: Number(ce.amount) || 0, date: ce.tx_date
+                amount: Number(ce.amount) || 0, date: ce.tx_date,
+                type: isInc ? 'income' : 'expense'
               });
             }
           });
           const merged = Array.from(localMap.values())
             .sort((a, b) => (b.date || '').localeCompare(a.date || ''));
-          saveFinanceExpenses(merged);
+          saveFinanceExpenses(merged, false);
           renderFinanceExpenses();
+        } else {
+          // Fallback cek settings jika tabel expenses belum ada record
+          supabaseClient.from('mghb_settings').select('value').eq('key', 'finance_expenses_backup').maybeSingle().then(({ data: backupExp }) => {
+            if (backupExp && Array.isArray(backupExp.value) && backupExp.value.length > 0) {
+              const localMap = new Map(getFinanceExpenses().map(e => [e.id, e]));
+              backupExp.value.forEach(be => {
+                if (be && be.id && !localMap.has(be.id)) localMap.set(be.id, be);
+              });
+              const merged = Array.from(localMap.values()).sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+              saveFinanceExpenses(merged, false);
+              renderFinanceExpenses();
+              updateFinanceCalculations();
+            }
+          });
         }
       });
 

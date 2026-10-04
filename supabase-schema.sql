@@ -17,15 +17,19 @@ CREATE TABLE IF NOT EXISTS mghb_logbooks (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 2. TABEL PENGELUARAN & ANGGARAN JAKARTA (Expense Tracker)
+-- 2. TABEL PENGELUARAN & PEMASUKAN JAKARTA (Cash Flow & Expense Tracker)
 CREATE TABLE IF NOT EXISTS mghb_expenses (
     id TEXT PRIMARY KEY,
     tx_date DATE NOT NULL DEFAULT CURRENT_DATE,
     category TEXT NOT NULL DEFAULT 'makan',
     description TEXT NOT NULL,
     amount NUMERIC(12, 2) NOT NULL DEFAULT 0,
+    type TEXT NOT NULL DEFAULT 'expense',
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- Migrasi aman: tambahkan kolom type bila tabel lama sudah ada sebelumnya
+ALTER TABLE mghb_expenses ADD COLUMN IF NOT EXISTS type TEXT NOT NULL DEFAULT 'expense';
 
 -- 3. TABEL CENTANG & CHECKLIST STATUS (Dinas Jakarta & SOP BNI)
 CREATE TABLE IF NOT EXISTS mghb_checklists (
