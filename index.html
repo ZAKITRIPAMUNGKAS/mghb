@@ -9846,6 +9846,75 @@
   </div>
 </div>
 
+<!-- Modal: Sesuaikan Saldo Rekening / Dompet (Modern Reconciliation Modal) -->
+<div class="modal-overlay" id="finance-account-modal" onclick="handleAccountModalBackdrop(event)">
+  <div class="modal-box" style="max-width: 420px; border-radius: 16px; overflow: hidden;">
+    <div class="modal-head" style="padding: 16px 20px 12px; border-bottom: 1px solid var(--border);">
+      <h3 style="display: flex; align-items: center; gap: 8px; font-size: 1.05rem; font-weight: 700; margin: 0; color: var(--text-primary);">
+        <span id="acc-modal-icon-badge" style="display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 8px; background: rgba(0, 94, 106, 0.1); color: #005E6A;">
+          <iconify-icon icon="lucide:wallet" width="18" height="18"></iconify-icon>
+        </span>
+        <span id="acc-modal-title">Sesuaikan Saldo Rekening</span>
+      </h3>
+      <button class="btn-close" onclick="closeAccountModal()" title="Tutup">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <form id="account-modal-form" onsubmit="handleAccountModalSubmit(event)">
+      <input type="hidden" id="acc-modal-account-id">
+      
+      <div class="modal-body" style="padding: 18px 20px 14px;">
+        <!-- Saldo Tercatat Saat Ini -->
+        <div style="background: var(--surface-hover); border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <div style="font-size: 0.72rem; color: var(--text-tertiary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Saldo Tercatat</div>
+            <div id="acc-modal-current-balance" style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary); margin-top: 2px;">Rp 0</div>
+          </div>
+          <span id="acc-modal-account-tag" style="font-size: 11px; font-weight: 600; color: var(--text-secondary); background: var(--surface); padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border);">
+            Tunai
+          </span>
+        </div>
+
+        <!-- Input Saldo Riil / Baru -->
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label class="form-label" for="acc-modal-balance-input" style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px;">
+            Saldo Riil / Baru Sekarang
+          </label>
+          <div style="position: relative;">
+            <span style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-weight: 700; color: var(--brand-teal); font-size: 1.05rem;">Rp</span>
+            <input type="text" inputmode="numeric" class="form-control" id="acc-modal-balance-input" placeholder="0" oninput="formatMoneyInput(this); updateAccountModalDelta();" required style="padding-left: 44px; font-size: 1.3rem; font-weight: 800; color: var(--text-primary);">
+          </div>
+        </div>
+
+        <!-- Quick Shortcut Buttons -->
+        <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px;">
+          <button type="button" class="fin-date-shortcut-btn" onclick="setAccountModalQuickAmount(0)">Set ke Rp 0</button>
+          <button type="button" class="fin-date-shortcut-btn" onclick="addAccountModalQuickDelta(50000)">+50rb</button>
+          <button type="button" class="fin-date-shortcut-btn" onclick="addAccountModalQuickDelta(100000)">+100rb</button>
+          <button type="button" class="fin-date-shortcut-btn" onclick="addAccountModalQuickDelta(500000)">+500rb</button>
+        </div>
+
+        <!-- Live Delta / Difference indicator -->
+        <div id="acc-modal-delta-row" style="font-size: 0.78rem; color: var(--text-secondary); padding: 8px 12px; background: rgba(0, 94, 106, 0.05); border-radius: 8px; border: 1px dashed var(--border); display: flex; align-items: center; justify-content: space-between;">
+          <span>Perubahan Saldo:</span>
+          <strong id="acc-modal-delta-val" style="color: var(--text-secondary);">Tidak ada perubahan</strong>
+        </div>
+      </div>
+
+      <div class="modal-foot" style="display: flex; justify-content: flex-end; gap: 8px; padding: 14px 20px; border-top: 1px solid var(--border); background: var(--surface);">
+        <button type="button" class="btn-action btn-secondary" onclick="closeAccountModal()" style="padding: 8px 16px;">Batal</button>
+        <button type="submit" class="btn-action" style="background: var(--brand-teal); border: none; color: #fff; font-weight: 700; padding: 8px 22px; border-radius: var(--radius-sm); box-shadow: 0 2px 8px rgba(0, 94, 106, 0.25);">
+          Simpan Saldo
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <!-- Modal: Tambah & Edit Tagihan (Clean & Mobile-First) -->
 <div class="modal-overlay" id="finance-bill-modal" onclick="handleBillModalBackdrop(event)">
   <div class="modal-box" style="max-width: 420px; border-radius: 16px; overflow: hidden;">
@@ -13953,17 +14022,142 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   }
 
   function promptEditAccountBalance(accId) {
+    openAccountModal(accId);
+  }
+
+  function openAccountModal(accId) {
+    const modal = document.getElementById('finance-account-modal');
+    if (!modal) return;
+
+    const accounts = (typeof FinOS !== 'undefined' && FinOS.getAccounts) ? FinOS.getAccounts() : [];
+    const acc = accounts.find(a => a.id === accId) || accounts[0];
+    if (!acc) return;
+
+    const idInput = document.getElementById('acc-modal-account-id');
+    const titleEl = document.getElementById('acc-modal-title');
+    const badgeEl = document.getElementById('acc-modal-icon-badge');
+    const curBalEl = document.getElementById('acc-modal-current-balance');
+    const tagEl = document.getElementById('acc-modal-account-tag');
+    const balInput = document.getElementById('acc-modal-balance-input');
+
+    if (idInput) idInput.value = acc.id;
+    if (titleEl) titleEl.textContent = `Sesuaikan Saldo ${acc.name}`;
+    if (curBalEl) curBalEl.textContent = formatRupiah(acc.balance);
+    if (tagEl) tagEl.textContent = acc.name;
+    if (balInput) {
+      balInput.value = acc.balance > 0 ? Number(acc.balance).toLocaleString('id-ID') : '0';
+    }
+
+    if (badgeEl) {
+      if (acc.id === 'acc_bni') {
+        badgeEl.style.background = 'rgba(0, 94, 106, 0.12)';
+        badgeEl.innerHTML = '<img src="bni-logo.svg" alt="BNI" style="height:15px;vertical-align:middle;">';
+      } else if (acc.id === 'acc_gopay') {
+        badgeEl.style.background = 'rgba(0, 170, 19, 0.12)';
+        badgeEl.innerHTML = '<iconify-icon icon="simple-icons:gojek" width="18" height="18" style="color:#00AA13;vertical-align:middle;"></iconify-icon>';
+      } else if (acc.id === 'acc_cash') {
+        badgeEl.style.background = 'rgba(16, 185, 129, 0.12)';
+        badgeEl.innerHTML = '<iconify-icon icon="lucide:wallet" width="18" height="18" style="color:#10B981;vertical-align:middle;"></iconify-icon>';
+      } else if (acc.id === 'acc_shopeepay') {
+        badgeEl.style.background = 'rgba(238, 77, 45, 0.12)';
+        badgeEl.innerHTML = '<iconify-icon icon="simple-icons:shopee" width="18" height="18" style="color:#EE4D2D;vertical-align:middle;"></iconify-icon>';
+      } else {
+        badgeEl.style.background = 'rgba(0, 94, 106, 0.12)';
+        badgeEl.innerHTML = '<iconify-icon icon="lucide:credit-card" width="18" height="18" style="color:#005E6A;vertical-align:middle;"></iconify-icon>';
+      }
+    }
+
+    updateAccountModalDelta();
+    modal.classList.add('active');
+
+    if (balInput) {
+      setTimeout(() => {
+        balInput.focus();
+        balInput.select();
+      }, 80);
+    }
+  }
+
+  function closeAccountModal() {
+    const modal = document.getElementById('finance-account-modal');
+    if (modal) modal.classList.remove('active');
+  }
+
+  function handleAccountModalBackdrop(e) {
+    if (e.target === document.getElementById('finance-account-modal')) {
+      closeAccountModal();
+    }
+  }
+
+  function updateAccountModalDelta() {
+    const idInput = document.getElementById('acc-modal-account-id');
+    const balInput = document.getElementById('acc-modal-balance-input');
+    const deltaEl = document.getElementById('acc-modal-delta-val');
+    if (!deltaEl) return;
+
+    const accId = idInput ? idInput.value : '';
+    const accounts = (typeof FinOS !== 'undefined' && FinOS.getAccounts) ? FinOS.getAccounts() : [];
+    const acc = accounts.find(a => a.id === accId);
+    const currBal = acc ? (Number(acc.balance) || 0) : 0;
+    const newBal = balInput ? parseMoney(balInput.value) : 0;
+    const diff = newBal - currBal;
+
+    if (diff > 0) {
+      deltaEl.textContent = `+${formatRupiah(diff)} (Bertambah)`;
+      deltaEl.style.color = '#10b981';
+    } else if (diff < 0) {
+      deltaEl.textContent = `-${formatRupiah(Math.abs(diff))} (Berkurang)`;
+      deltaEl.style.color = '#ef4444';
+    } else {
+      deltaEl.textContent = 'Tidak ada perubahan';
+      deltaEl.style.color = 'var(--text-secondary)';
+    }
+  }
+
+  function setAccountModalQuickAmount(amt) {
+    const balInput = document.getElementById('acc-modal-balance-input');
+    if (balInput) {
+      balInput.value = Number(amt).toLocaleString('id-ID');
+      updateAccountModalDelta();
+      balInput.focus();
+    }
+  }
+
+  function addAccountModalQuickDelta(delta) {
+    const balInput = document.getElementById('acc-modal-balance-input');
+    if (balInput) {
+      const cur = parseMoney(balInput.value) || 0;
+      const next = Math.max(0, cur + delta);
+      balInput.value = Number(next).toLocaleString('id-ID');
+      updateAccountModalDelta();
+      balInput.focus();
+    }
+  }
+
+  function handleAccountModalSubmit(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    const idInput = document.getElementById('acc-modal-account-id');
+    const balInput = document.getElementById('acc-modal-balance-input');
+    if (!idInput || !balInput) return;
+
+    const accId = idInput.value;
+    const newBal = parseMoney(balInput.value);
+
+    if (newBal < 0) {
+      showToast('Masukkan nominal saldo yang valid');
+      return;
+    }
+
     const accounts = FinOS.getAccounts();
     const acc = accounts.find(a => a.id === accId);
     if (!acc) return;
-    const input = prompt(`Rekonsiliasi / Sesuaikan Saldo ${acc.name}:`, acc.balance);
-    if (input === null) return;
-    const newBal = parseMoney(input);
+
     acc.balance = newBal;
     FinOS.saveAccounts(accounts, true);
+    closeAccountModal();
     renderAccountsStrip();
     updateFinanceCalculations(false);
-    showToast(`Saldo ${acc.name} berhasil diperbarui!`);
+    showToast(`✅ Saldo ${acc.name} berhasil diperbarui: ${formatRupiah(newBal)}!`);
   }
 
   function setWhatIfPreset(amt) {
@@ -17211,6 +17405,13 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   window.submitSheetExpense = submitSheetExpense;
   window.renderAccountsStrip = renderAccountsStrip;
   window.promptEditAccountBalance = promptEditAccountBalance;
+  window.openAccountModal = openAccountModal;
+  window.closeAccountModal = closeAccountModal;
+  window.handleAccountModalBackdrop = handleAccountModalBackdrop;
+  window.updateAccountModalDelta = updateAccountModalDelta;
+  window.setAccountModalQuickAmount = setAccountModalQuickAmount;
+  window.addAccountModalQuickDelta = addAccountModalQuickDelta;
+  window.handleAccountModalSubmit = handleAccountModalSubmit;
   window.openIncomeModal = openIncomeModal;
   window.closeIncomeModal = closeIncomeModal;
   window.selectIncomeModalAccount = selectIncomeModalAccount;
