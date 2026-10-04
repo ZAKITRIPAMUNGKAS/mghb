@@ -7978,7 +7978,7 @@
         </div>
         <div class="fin-snapshot-hero" style="margin-bottom:0;padding:12px 14px;background:var(--surface-hover);border:1px solid var(--border);border-radius:12px;">
           <span class="fin-snapshot-hero-label">Total Saldo Likuid</span>
-          <span class="fin-snapshot-hero-value" id="fin-remaining-budget" style="font-size:22px;">Rp 3.500.000</span>
+          <span class="fin-snapshot-hero-value" id="fin-remaining-budget" style="font-size:22px;">Rp 0</span>
           <span class="fin-snapshot-metric-sub" id="fin-liquid-sub-desc" style="margin-top:2px;">Rekening operasional + Tunai</span>
         </div>
       </div>
@@ -8009,9 +8009,9 @@
             <span class="fin-snapshot-metric-label">Pemasukan</span>
             <span style="font-size:10px;font-weight:700;color:#10b981;background:rgba(16,185,129,0.12);padding:1px 6px;border-radius:6px;">Ubah ✎</span>
           </div>
-          <span class="fin-snapshot-metric-value" id="fin-total-income-display">Rp 3.500.000</span>
-          <span class="fin-snapshot-metric-sub" id="fin-income-sources-label">1 sumber aktif</span>
-          <input type="hidden" id="fin-income-input" value="3.500.000">
+          <span class="fin-snapshot-metric-value" id="fin-total-income-display">Rp 0</span>
+          <span class="fin-snapshot-metric-sub" id="fin-income-sources-label">Belum ada pemasukan</span>
+          <input type="hidden" id="fin-income-input" value="0">
         </div>
         <div class="fin-snapshot-divider"></div>
         <div class="fin-snapshot-metric" id="fin-metric-spent">
@@ -9828,14 +9828,14 @@
         </span>
       </button>
 
-      <!-- Opsi 3: Factory Reset Keuangan -->
+      <!-- Opsi 3: Reset Total Keuangan (0 Semua) -->
       <button type="button" class="fin-reset-option-card" onclick="executeFinanceReset('full')" style="margin-bottom: 0;">
         <div style="display: flex; justify-content: space-between; align-items: center;">
-          <strong style="font-size: 0.92rem; color: #ef4444;">3. Reset Total Keuangan (Setelan Awal)</strong>
-          <span style="font-size: 11px; font-weight: 700; color: #ef4444; background: rgba(239,68,68,0.1); padding: 2px 8px; border-radius: 6px;">Penuh</span>
+          <strong style="font-size: 0.92rem; color: #ef4444;">3. Reset Total (Semua Jadi Rp 0)</strong>
+          <span style="font-size: 11px; font-weight: 700; color: #ef4444; background: rgba(239,68,68,0.1); padding: 2px 8px; border-radius: 6px;">0 Semua</span>
         </div>
         <span style="font-size: 0.78rem; color: var(--text-secondary); line-height: 1.35;">
-          Kembalikan saldo 4 rekening ke default awal (BNI 3,5jt, GoPay 150rb, Tunai 100rb, ShopeePay 150rb), pasang ulang tagihan, dan hapus riwayat.
+          Setel semua saldo rekening (BNI, GoPay, Tunai, ShopeePay) ke Rp 0, pemasukan ke Rp 0, dan kosongkan seluruh riwayat transaksi.
         </span>
       </button>
     </div>
@@ -13421,10 +13421,10 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     },
 
     DEFAULT_ACCOUNTS: [
-      { id: 'acc_bni', name: 'Rekening BNI', type: 'checking', balance: 3500000, is_liquid: true, icon: 'bni-logo.svg', color: '#007C89' },
-      { id: 'acc_gopay', name: 'GoPay', type: 'wallet', balance: 150000, is_liquid: true, icon: 'simple-icons:gojek', color: '#00AED6' },
-      { id: 'acc_cash', name: 'Uang Tunai', type: 'cash', balance: 100000, is_liquid: true, icon: 'lucide:wallet', color: '#10B981' },
-      { id: 'acc_shopeepay', name: 'ShopeePay', type: 'wallet', balance: 150000, is_liquid: true, icon: 'simple-icons:shopee', color: '#EE4D2D' }
+      { id: 'acc_bni', name: 'Rekening BNI', type: 'checking', balance: 0, is_liquid: true, icon: 'bni-logo.svg', color: '#007C89' },
+      { id: 'acc_gopay', name: 'GoPay', type: 'wallet', balance: 0, is_liquid: true, icon: 'simple-icons:gojek', color: '#00AED6' },
+      { id: 'acc_cash', name: 'Uang Tunai', type: 'cash', balance: 0, is_liquid: true, icon: 'lucide:wallet', color: '#10B981' },
+      { id: 'acc_shopeepay', name: 'ShopeePay', type: 'wallet', balance: 0, is_liquid: true, icon: 'simple-icons:shopee', color: '#EE4D2D' }
     ],
 
     DEFAULT_GOALS: [
@@ -13696,7 +13696,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       const cycleSavings = cycleTxs.filter(t => t.type === 'saving');
 
       const totalRecordedIncome = cycleIncomes.reduce((s, t) => s + (Number(t.amount) || 0), 0);
-      const baselineIncome = typeof getFinanceIncome === 'function' ? getFinanceIncome() : 3500000;
+      const baselineIncome = typeof getFinanceIncome === 'function' ? getFinanceIncome() : 0;
       const totalIncome = cycleIncomes.length > 0 ? totalRecordedIncome : baselineIncome;
 
       const unpaidMandatoryBills = commitments
@@ -14110,7 +14110,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     if (val !== null && val !== undefined && !isNaN(parseInt(val, 10))) {
       return Math.max(0, parseInt(val, 10));
     }
-    return 3500000;
+    return 0;
   }
 
   function getFinanceBills() {
@@ -15324,18 +15324,18 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
         sourceEl.title = 'Pemasukan tersimpan (klik untuk ubah atau reset)';
       }
     } else {
-      income = 3500000;
-      localStorage.setItem(FIN_INCOME_KEY, '3500000');
+      income = 0;
+      localStorage.setItem(FIN_INCOME_KEY, '0');
       if (syncInputField && incomeInput && document.activeElement !== incomeInput) {
-        incomeInput.value = '3.500.000';
+        incomeInput.value = '0';
       }
       if (incomeDisplay) {
-        incomeDisplay.textContent = formatRupiah(income);
+        incomeDisplay.textContent = formatRupiah(0);
       }
       const sourceEl = document.getElementById('fin-income-sources-label');
       if (sourceEl) {
-        sourceEl.textContent = 'Baseline saku';
-        sourceEl.title = 'Baseline saku (klik untuk ubah)';
+        sourceEl.textContent = 'Belum ada pemasukan';
+        sourceEl.title = 'Belum ada pemasukan (klik untuk catat pemasukan)';
       }
     }
 
@@ -16337,9 +16337,9 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     }
 
     if (presetAmount !== undefined && presetAmount !== null && amountEl) {
-      amountEl.value = Number(presetAmount).toLocaleString('id-ID');
-    } else if (amountEl && (!amountEl.value || parseMoney(amountEl.value) <= 0)) {
-      amountEl.value = '3.500.000';
+      amountEl.value = Number(presetAmount) > 0 ? Number(presetAmount).toLocaleString('id-ID') : '';
+    } else if (amountEl) {
+      amountEl.value = '';
     }
 
     if (presetDesc && descEl) {
@@ -16466,30 +16466,30 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     }
 
     if (type === 'full') {
-      if (!confirm('PERINGATAN: Setel ulang seluruh data keuangan ke pengaturan awal default?\n\n• Saldo BNI: Rp 3.500.000\n• Saldo GoPay: Rp 150.000\n• Saldo Tunai: Rp 100.000\n• Saldo ShopeePay: Rp 150.000\n• Pemasukan: Rp 3.500.000\n• Semua riwayat transaksi dikosongkan.')) return;
+      if (!confirm('PERINGATAN: Setel ulang seluruh data keuangan ke 0?\n\n• Semua saldo rekening (BNI, GoPay, Tunai, ShopeePay) menjadi Rp 0\n• Pemasukan menjadi Rp 0\n• Seluruh riwayat transaksi dikosongkan.')) return;
 
       if (typeof FinOS !== 'undefined') {
-        const defaultAccs = [
-          { id: 'acc_bni', name: 'Rekening BNI', type: 'checking', balance: 3500000, is_liquid: true, icon: 'bni-logo.svg', color: '#007C89' },
-          { id: 'acc_gopay', name: 'GoPay', type: 'wallet', balance: 150000, is_liquid: true, icon: 'simple-icons:gojek', color: '#00AED6' },
-          { id: 'acc_cash', name: 'Uang Tunai', type: 'cash', balance: 100000, is_liquid: true, icon: 'lucide:wallet', color: '#10B981' },
-          { id: 'acc_shopeepay', name: 'ShopeePay', type: 'wallet', balance: 150000, is_liquid: true, icon: 'simple-icons:shopee', color: '#EE4D2D' }
+        const zeroAccounts = [
+          { id: 'acc_bni', name: 'Rekening BNI', type: 'checking', balance: 0, is_liquid: true, icon: 'bni-logo.svg', color: '#007C89' },
+          { id: 'acc_gopay', name: 'GoPay', type: 'wallet', balance: 0, is_liquid: true, icon: 'simple-icons:gojek', color: '#00AED6' },
+          { id: 'acc_cash', name: 'Uang Tunai', type: 'cash', balance: 0, is_liquid: true, icon: 'lucide:wallet', color: '#10B981' },
+          { id: 'acc_shopeepay', name: 'ShopeePay', type: 'wallet', balance: 0, is_liquid: true, icon: 'simple-icons:shopee', color: '#EE4D2D' }
         ];
-        FinOS.saveAccounts(defaultAccs, true);
+        FinOS.saveAccounts(zeroAccounts, true);
         FinOS.saveTransactions([], true);
       }
 
       saveFinanceExpenses([]);
-      localStorage.setItem(FIN_INCOME_KEY, '3500000');
+      localStorage.setItem(FIN_INCOME_KEY, '0');
       const incomeInput = document.getElementById('fin-income-input');
-      if (incomeInput) incomeInput.value = '3.500.000';
+      if (incomeInput) incomeInput.value = '0';
 
       closeResetFinanceModal();
       renderAccountsStrip();
       renderFinanceExpenses();
       renderFinanceHeatmap();
       updateFinanceCalculations(true);
-      showToast('✨ Keuangan berhasil di-reset penuh ke kondisi awal!');
+      showToast('✨ Seluruh data keuangan berhasil di-reset menjadi 0!');
     }
   }
 
@@ -16523,7 +16523,6 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
 
     if (sel.value === 'saku_bni') {
       if (descEl) descEl.value = 'Uang Saku Magang BNI';
-      if (amountEl && (!amountEl.value || parseMoney(amountEl.value) <= 0)) amountEl.value = '3.500.000';
       if (dateEl) dateEl.value = cycle.paydayStr;
       selectIncomeModalAccount('acc_bni');
     } else if (sel.value === 'maganghub') {
