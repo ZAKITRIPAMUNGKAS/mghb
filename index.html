@@ -3941,14 +3941,58 @@
 
     /* Footnote */
     footer.app-footer {
-      margin-top: 36px;
+      margin-top: 40px;
+      padding: 18px 16px 24px;
+      border-top: 1px solid var(--border-subtle);
+    }
+    .footer-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
       text-align: center;
+    }
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .footer-meta {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 6px;
       font-size: 0.72rem;
       color: var(--text-tertiary);
     }
-
-    footer.app-footer p + p {
-      margin-top: 2px;
+    .footer-links {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.72rem;
+    }
+    .footer-link {
+      color: var(--accent);
+      font-weight: 600;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    .footer-link:hover {
+      color: var(--accent-strong);
+    }
+    .footer-version {
+      color: var(--text-tertiary);
+    }
+    .footer-dot {
+      color: var(--text-faint);
+      user-select: none;
+    }
+    /* Pastikan footer tidak tertutup bottom nav di mobile */
+    @media (max-width: 959px) {
+      footer.app-footer {
+        padding-bottom: 96px;
+      }
     }
     /* ==========================================================================
        MODERN REDESIGNED WORKSPACE UI/UX (DESKTOP SIDEBAR + MOBILE DOCKED NAV)
