@@ -6113,7 +6113,8 @@
       white-space: nowrap;
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
-      padding: 2px 0 4px;
+      padding: 4px 2px 6px;
+      scroll-snap-type: x proximity;
     }
     .fin-action-chips::-webkit-scrollbar { display: none; }
 
@@ -6136,6 +6137,8 @@
       transition: all 180ms ease;
       -webkit-tap-highlight-color: transparent;
       outline: none;
+      scroll-snap-align: start;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
     }
     .fin-action-chip:hover {
       background: #F3F4F6;
@@ -6986,10 +6989,10 @@
       color: var(--text-secondary);
       cursor: pointer;
     }
-    /* Segmented Tab Switcher for Quick Sheet */
+    /* Segmented Tab Switcher for Quick Sheet (Expense / Income / Saving) */
     .fin-sheet-type-tabs {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(3, 1fr);
       gap: 4px;
       padding: 4px;
       background: var(--surface-hover, #f3f4f6);
@@ -7001,16 +7004,31 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
+      gap: 5px;
       height: 36px;
+      padding: 0 6px;
       background: transparent;
       border: none;
       border-radius: 8px;
-      font-size: 13px;
+      font-size: 12.5px;
       font-weight: 600;
       color: var(--text-secondary, #6b7280);
       cursor: pointer;
       transition: all 180ms ease;
+      white-space: nowrap;
+    }
+    @media (max-width: 400px) {
+      .fin-sheet-type-tab {
+        font-size: 11px;
+        gap: 3px;
+        padding: 0 2px;
+        height: 34px;
+      }
+      .fin-sheet-type-tab svg,
+      .fin-sheet-type-tab iconify-icon {
+        width: 13px !important;
+        height: 13px !important;
+      }
     }
     .fin-sheet-type-tab.active {
       background: #FFFFFF;
@@ -7119,9 +7137,10 @@
       display: flex;
       gap: 8px;
       overflow-x: auto;
-      padding: 4px 0 10px;
+      padding: 4px 2px 10px;
       scrollbar-width: none;
       -webkit-overflow-scrolling: touch;
+      scroll-snap-type: x mandatory;
     }
     .fin-accounts-strip::-webkit-scrollbar { display: none; }
     .fin-account-pill {
@@ -7141,6 +7160,8 @@
       transition: all 0.15s ease;
       -webkit-tap-highlight-color: transparent;
       user-select: none;
+      scroll-snap-align: start;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
     }
     .fin-account-pill:hover {
       border-color: #005E6A;
@@ -7253,10 +7274,105 @@
     /* ── RESPONSIVE: widen on tablet+ ── */
     @media (min-width: 640px) {
       .fin-layout {
-        gap: 28px;
+        gap: 24px;
       }
       .fin-bills-summary {
-        gap: 24px;
+        gap: 20px;
+      }
+    }
+
+    /* ── RESPONSIVE: Mobile-First Polish (< 480px) ── */
+    @media (max-width: 480px) {
+      .fin-layout {
+        gap: 14px;
+        padding: 4px 0 calc(88px + env(safe-area-inset-bottom, 16px));
+      }
+      .fin-snapshot,
+      .fin-health,
+      .fin-budget,
+      .fin-bills,
+      .fin-goals,
+      .fin-recent,
+      .fin-analytics,
+      .fin-utilities {
+        padding: 14px 12px;
+        border-radius: 12px;
+      }
+      .fin-snapshot-hero-value {
+        font-size: clamp(24px, 6.5vw, 30px);
+      }
+      .fin-snapshot-row {
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+      .fin-snapshot-metric-value {
+        font-size: 16px;
+      }
+      .fin-action-buttons {
+        gap: 8px;
+      }
+      .fin-action-btn {
+        height: 44px;
+        font-size: 13.5px;
+        padding: 0 12px;
+      }
+      .fin-action-chip {
+        height: 36px;
+        padding: 6px 12px;
+        font-size: 12.5px;
+      }
+      .fin-bills-summary {
+        padding: 8px 10px;
+        gap: 8px;
+      }
+      .fin-bills-stat-label {
+        font-size: 9.5px;
+      }
+      .fin-bills-stat-val {
+        font-size: 12.5px;
+      }
+      .fin-health-title,
+      .fin-recent-title,
+      .fin-budget-title,
+      .fin-bills-title,
+      .fin-goals-title,
+      .fin-analytics-title {
+        font-size: 14px;
+      }
+      .fin-sheet {
+        padding: 8px 14px calc(24px + env(safe-area-inset-bottom, 16px));
+        max-height: 90vh;
+      }
+      .fin-account-select-chip {
+        padding: 7px 8px;
+        font-size: 11.5px;
+        min-height: 40px;
+      }
+    }
+
+    @media (max-width: 375px) {
+      .fin-action-buttons {
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+      }
+      .fin-action-btn {
+        font-size: 12px;
+        padding: 0 6px;
+        height: 42px;
+        gap: 4px;
+      }
+      .fin-action-btn svg {
+        width: 14px;
+        height: 14px;
+      }
+      .fin-snapshot-hero-value {
+        font-size: 23px;
+      }
+      .fin-snapshot-metric-value {
+        font-size: 15px;
+      }
+      .fin-bills-stat-val {
+        font-size: 11.5px;
       }
     }
 
