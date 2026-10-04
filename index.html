@@ -8649,7 +8649,7 @@
             <section class="fin-goals" id="fin-goals-card">
               <div class="fin-goals-head">
                 <span class="fin-goals-title">Tujuan Keuangan</span>
-                <button type="button" class="fin-goals-add" onclick="promptAddGoal()">+ Tujuan</button>
+                <button type="button" class="fin-goals-add" onclick="openGoalModal()">+ Tujuan</button>
               </div>
               <div class="finance-goals-grid" id="finance-goals-container"></div>
             </section>
@@ -10359,6 +10359,157 @@
         <button type="submit" class="btn-action" style="background: #005E6A; border: none; color: #fff; font-weight: 700; padding: 8px 22px; border-radius: var(--radius-sm); box-shadow: 0 2px 8px rgba(0, 94, 106, 0.25);">
           Simpan Tagihan
         </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal: Tambah & Edit Tujuan Keuangan (Modern Goal Form) -->
+<div class="modal-overlay" id="finance-goal-modal" onclick="handleGoalModalBackdrop(event)">
+  <div class="modal-box" style="max-width: 480px; border-radius: 16px; overflow: hidden; max-height: 90vh; display: flex; flex-direction: column;">
+    <div class="modal-head" style="padding: 16px 20px 12px; border-bottom: 1px solid var(--border); flex-shrink: 0;">
+      <h3 style="display: flex; align-items: center; gap: 8px; font-size: 1.05rem; font-weight: 700; margin: 0; color: var(--text-primary);">
+        <span style="display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 8px; background: rgba(0, 94, 106, 0.12); color: var(--brand-teal);">
+          <iconify-icon icon="lucide:target" width="18" height="18"></iconify-icon>
+        </span>
+        <span id="goal-modal-title-text">Tambah Tujuan Keuangan</span>
+      </h3>
+      <button class="btn-close" onclick="closeGoalModal()" title="Tutup">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <form id="goal-modal-form" onsubmit="handleGoalModalSubmit(event)" style="display: flex; flex-direction: column; overflow: hidden; flex: 1;">
+      <input type="hidden" id="goal-modal-id">
+      <input type="hidden" id="goal-modal-icon-val" value="lucide:target">
+      <input type="hidden" id="goal-modal-color-val" value="#007C89">
+
+      <div class="modal-body" style="padding: 18px 20px 14px; overflow-y: auto; flex: 1;">
+        
+        <!-- Template Preset Chips (1-Click Fill) -->
+        <div id="goal-modal-presets" style="margin-bottom: 16px;">
+          <label style="font-size: 0.72rem; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px;">
+            Pilih Cepat Template Tujuan:
+          </label>
+          <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+            <button type="button" class="fin-date-shortcut-btn" onclick="applyGoalPreset('iphone')">📱 iPhone 18</button>
+            <button type="button" class="fin-date-shortcut-btn" onclick="applyGoalPreset('darurat')">🛡️ Dana Darurat</button>
+            <button type="button" class="fin-date-shortcut-btn" onclick="applyGoalPreset('laptop')">💻 Laptop Kerja</button>
+            <button type="button" class="fin-date-shortcut-btn" onclick="applyGoalPreset('mudik')">🚄 Mudik Lebaran</button>
+            <button type="button" class="fin-date-shortcut-btn" onclick="applyGoalPreset('kursus')">🎓 Kursus/Skill</button>
+            <button type="button" class="fin-date-shortcut-btn" onclick="applyGoalPreset('kos')">🏠 Kontrakan/Kos</button>
+          </div>
+        </div>
+
+        <!-- Nama Tujuan -->
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label class="form-label" for="goal-modal-name" style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px;">
+            Nama Tujuan Keuangan <span style="color:#ef4444">*</span>
+          </label>
+          <input type="text" class="form-control" id="goal-modal-name" placeholder="Contoh: Tabungan iPhone 18, Dana Darurat" required maxlength="50" style="font-size: 0.95rem; font-weight: 600;">
+        </div>
+
+        <!-- Target Nominal (Rp) -->
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label class="form-label" for="goal-modal-target" style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px;">
+            Target Dana (Rp) <span style="color:#ef4444">*</span>
+          </label>
+          <div style="position: relative;">
+            <span style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-weight: 700; color: var(--brand-teal); font-size: 1.05rem;">Rp</span>
+            <input type="text" inputmode="numeric" class="form-control" id="goal-modal-target" placeholder="0" oninput="formatMoneyInput(this); updateGoalModalEstimates();" required style="padding-left: 44px; font-size: 1.25rem; font-weight: 800; color: var(--text-primary);">
+          </div>
+          <!-- Quick Target Addition Buttons -->
+          <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px;">
+            <button type="button" class="fin-date-shortcut-btn" onclick="addGoalModalTargetDelta(1000000)">+1 Jt</button>
+            <button type="button" class="fin-date-shortcut-btn" onclick="addGoalModalTargetDelta(3000000)">+3 Jt</button>
+            <button type="button" class="fin-date-shortcut-btn" onclick="addGoalModalTargetDelta(5000000)">+5 Jt</button>
+            <button type="button" class="fin-date-shortcut-btn" onclick="addGoalModalTargetDelta(10000000)">+10 Jt</button>
+            <button type="button" class="fin-date-shortcut-btn" onclick="setGoalModalTarget(30000000)">Set 30 Jt</button>
+          </div>
+        </div>
+
+        <!-- Grid 2 Kolom: Dana Terkumpul & Tenggat Tanggal -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
+          <!-- Dana Terkumpul Saat Ini -->
+          <div class="form-group">
+            <label class="form-label" for="goal-modal-saved" style="font-size: 0.78rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px;">
+              Saldo Awal Terkumpul (Rp)
+            </label>
+            <div style="position: relative;">
+              <span style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-weight: 700; color: var(--text-tertiary); font-size: 0.88rem;">Rp</span>
+              <input type="text" inputmode="numeric" class="form-control" id="goal-modal-saved" placeholder="0" oninput="formatMoneyInput(this); updateGoalModalEstimates();" style="padding-left: 38px; font-size: 0.95rem; font-weight: 700;">
+            </div>
+          </div>
+
+          <!-- Tenggat Tanggal (Deadline) -->
+          <div class="form-group">
+            <label class="form-label" for="goal-modal-deadline" style="font-size: 0.78rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px;">
+              Target Tanggal Capaian
+            </label>
+            <input type="date" class="form-control" id="goal-modal-deadline" onchange="updateGoalModalEstimates()" style="font-size: 0.88rem;">
+          </div>
+        </div>
+
+        <!-- Estimasi & Rekomendasi Sisihkan / Bulan Card -->
+        <div id="goal-modal-preview-box" style="background: rgba(0, 94, 106, 0.05); border: 1px dashed var(--border); border-radius: 10px; padding: 10px 14px; margin-bottom: 16px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+            <span style="font-size: 0.74rem; font-weight: 600; color: var(--text-tertiary); text-transform: uppercase;">Estimasi Sisihkan:</span>
+            <span id="goal-modal-diff-label" style="font-size: 0.74rem; color: var(--brand-teal); font-weight: 700;">Selisih: Rp 0</span>
+          </div>
+          <div id="goal-modal-rec-text" style="font-size: 0.82rem; font-weight: 600; color: var(--text-primary); line-height: 1.4;">
+            Masukkan target dana untuk melihat simulasi tabungan bulanan.
+          </div>
+        </div>
+
+        <!-- Pilihan Ikon Visual -->
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label class="form-label" style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px;">
+            Pilih Ikon Tujuan
+          </label>
+          <div id="goal-modal-icon-chips" style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <!-- Rendered by renderGoalModalChips -->
+          </div>
+        </div>
+
+        <!-- Pilihan Warna Visual -->
+        <div class="form-group" style="margin-bottom: 16px;">
+          <label class="form-label" style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px;">
+            Warna Identitas
+          </label>
+          <div id="goal-modal-color-chips" style="display: flex; gap: 10px; align-items: center;">
+            <!-- Rendered by renderGoalModalChips -->
+          </div>
+        </div>
+
+        <!-- Checkbox / Toggle: Jadikan Tujuan Utama (Hero Goal) -->
+        <div style="background: var(--surface-hover); border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; display: flex; align-items: flex-start; gap: 10px; cursor: pointer;" onclick="document.getElementById('goal-modal-is-primary').click()">
+          <input type="checkbox" id="goal-modal-is-primary" style="margin-top: 3px; cursor: pointer;" onclick="event.stopPropagation()">
+          <div>
+            <label for="goal-modal-is-primary" style="font-size: 0.84rem; font-weight: 700; color: var(--text-primary); display: block; cursor: pointer;">
+              Jadikan Tujuan Finansial Utama (Hero Goal)
+            </label>
+            <span style="font-size: 0.72rem; color: var(--text-secondary); display: block; margin-top: 2px;">
+              Ditampilkan paling atas dan menjadi acuan utama pada kalkulator simulasi pengeluaran & what-if dashboard.
+            </span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="modal-foot" style="display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; border-top: 1px solid var(--border); background: var(--surface); flex-shrink: 0;">
+        <button type="button" id="goal-modal-delete-btn" class="btn-action" onclick="handleGoalModalDelete()" style="display: none; background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); font-weight: 600; padding: 8px 14px; border-radius: var(--radius-sm);">
+          <iconify-icon icon="lucide:trash-2" width="14" height="14" style="vertical-align: middle; margin-right: 4px;"></iconify-icon>
+          Hapus
+        </button>
+        <div style="display: flex; gap: 8px; margin-left: auto;">
+          <button type="button" class="btn-action btn-secondary" onclick="closeGoalModal()" style="padding: 8px 16px;">Batal</button>
+          <button type="submit" id="goal-modal-submit-btn" class="btn-action" style="background: var(--brand-teal); border: none; color: #fff; font-weight: 700; padding: 8px 22px; border-radius: var(--radius-sm); box-shadow: 0 2px 8px rgba(0, 94, 106, 0.25);">
+            Simpan Tujuan
+          </button>
+        </div>
       </div>
     </form>
   </div>
@@ -15297,16 +15448,375 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
 
   
 
-  function promptAddGoal() {
-    const name = prompt('Nama tujuan (mis. Laptop Baru, Bayar SKS):');
-    if (!name || !name.trim()) return;
-    const target = parseMoney(prompt('Target nominal (angka, mis. 3000000):') || '');
-    if (!target || target <= 0) { showToast('Nominal target tidak valid'); return; }
-    const goals = getFinanceGoals();
-    goals.push({ id: 'goal_' + Date.now(), name: name.trim(), target, saved: 0, deadline: '', icon: 'i-target', color: '#0284c7', custom: true });
+  // ===== Financial Goals: Presets, Icons, & Color Palette =====
+  const GOAL_PRESETS = {
+    iphone: {
+      name: 'Tabungan iPhone 18',
+      target: 30000000,
+      icon: 'lucide:smartphone',
+      color: '#007C89',
+      is_primary: true
+    },
+    darurat: {
+      name: 'Dana Darurat Rantau',
+      target: 4500000,
+      icon: 'lucide:shield-check',
+      color: '#10B981',
+      is_primary: false
+    },
+    laptop: {
+      name: 'Laptop Kerja / Coding',
+      target: 15000000,
+      icon: 'lucide:laptop',
+      color: '#0284C7',
+      is_primary: false
+    },
+    mudik: {
+      name: 'Mudik Lebaran (Tiket PP & Saku)',
+      target: 1200000,
+      icon: 'lucide:train',
+      color: '#F59E0B',
+      is_primary: false
+    },
+    kursus: {
+      name: 'Sertifikasi / Kursus Profesional',
+      target: 2500000,
+      icon: 'lucide:graduation-cap',
+      color: '#8B5CF6',
+      is_primary: false
+    },
+    kos: {
+      name: 'Uang Muka Kos / Kontrakan Tahunan',
+      target: 6000000,
+      icon: 'lucide:home',
+      color: '#EC4899',
+      is_primary: false
+    }
+  };
+
+  const GOAL_ICONS = [
+    { id: 'lucide:smartphone', label: 'Gadget' },
+    { id: 'lucide:shield-check', label: 'Darurat' },
+    { id: 'lucide:laptop', label: 'Laptop' },
+    { id: 'lucide:train', label: 'Mudik' },
+    { id: 'lucide:home', label: 'Kos/Rumah' },
+    { id: 'lucide:graduation-cap', label: 'Kursus' },
+    { id: 'lucide:plane', label: 'Liburan' },
+    { id: 'lucide:users', label: 'Keluarga' },
+    { id: 'lucide:piggy-bank', label: 'Nabung' },
+    { id: 'lucide:target', label: 'Target' }
+  ];
+
+  const GOAL_COLORS = [
+    '#007C89', // BNI Teal
+    '#10B981', // Emerald
+    '#0284C7', // Sky Blue
+    '#EC4899', // Pink
+    '#F59E0B', // Amber
+    '#8B5CF6'  // Purple
+  ];
+
+  function renderGoalIcon(icon, size = 16) {
+    if (!icon) return `<iconify-icon icon="lucide:target" width="${size}" height="${size}"></iconify-icon>`;
+    if (icon.includes(':')) {
+      return `<iconify-icon icon="${icon}" width="${size}" height="${size}"></iconify-icon>`;
+    }
+    const icn = icon.startsWith('i-') ? icon : ('i-' + icon);
+    return `<svg class="ic ic-${size}" aria-hidden="true"><use href="#${escHtml(icn)}"/></svg>`;
+  }
+
+  function renderGoalModalChips(activeIcon = 'lucide:target', activeColor = '#007C89') {
+    const iconContainer = document.getElementById('goal-modal-icon-chips');
+    if (iconContainer) {
+      iconContainer.innerHTML = GOAL_ICONS.map(ic => {
+        const isAct = ic.id === activeIcon;
+        return `
+          <button type="button" class="fin-goal-icon-chip ${isAct ? 'active' : ''}" 
+            onclick="selectGoalIcon('${ic.id}')" title="${ic.label}"
+            style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:10px;border:1.5px solid ${isAct ? 'var(--brand-teal)' : 'var(--border)'};background:${isAct ? 'rgba(0,94,106,0.12)' : 'var(--surface)'};color:${isAct ? 'var(--brand-teal)' : 'var(--text-secondary)'};cursor:pointer;transition:all 0.15s ease;">
+            <iconify-icon icon="${ic.id}" width="18" height="18"></iconify-icon>
+          </button>
+        `;
+      }).join('');
+    }
+
+    const colorContainer = document.getElementById('goal-modal-color-chips');
+    if (colorContainer) {
+      colorContainer.innerHTML = GOAL_COLORS.map(c => {
+        const isAct = c.toLowerCase() === activeColor.toLowerCase();
+        return `
+          <button type="button" class="fin-goal-color-swatch ${isAct ? 'active' : ''}"
+            onclick="selectGoalColor('${c}')"
+            style="width:28px;height:28px;border-radius:50%;background:${c};border:none;cursor:pointer;transition:transform 0.15s ease;${isAct ? 'box-shadow:0 0 0 2px var(--surface-elevated), 0 0 0 4.5px ' + c + ';transform:scale(1.15);' : 'opacity:0.8;'}">
+          </button>
+        `;
+      }).join('');
+    }
+  }
+
+  function selectGoalIcon(iconId) {
+    const valInput = document.getElementById('goal-modal-icon-val');
+    if (valInput) valInput.value = iconId;
+    const activeColor = (document.getElementById('goal-modal-color-val') && document.getElementById('goal-modal-color-val').value) || '#007C89';
+    renderGoalModalChips(iconId, activeColor);
+  }
+
+  function selectGoalColor(colorHex) {
+    const valInput = document.getElementById('goal-modal-color-val');
+    if (valInput) valInput.value = colorHex;
+    const activeIcon = (document.getElementById('goal-modal-icon-val') && document.getElementById('goal-modal-icon-val').value) || 'lucide:target';
+    renderGoalModalChips(activeIcon, colorHex);
+  }
+
+  function applyGoalPreset(key) {
+    const p = GOAL_PRESETS[key];
+    if (!p) return;
+    const nameInput = document.getElementById('goal-modal-name');
+    const targetInput = document.getElementById('goal-modal-target');
+    const iconInput = document.getElementById('goal-modal-icon-val');
+    const colorInput = document.getElementById('goal-modal-color-val');
+    const primaryCheck = document.getElementById('goal-modal-is-primary');
+
+    if (nameInput) nameInput.value = p.name;
+    if (targetInput) targetInput.value = Number(p.target).toLocaleString('id-ID');
+    if (iconInput) iconInput.value = p.icon;
+    if (colorInput) colorInput.value = p.color;
+    if (primaryCheck) primaryCheck.checked = Boolean(p.is_primary);
+
+    renderGoalModalChips(p.icon, p.color);
+    updateGoalModalEstimates();
+  }
+
+  function addGoalModalTargetDelta(delta) {
+    const input = document.getElementById('goal-modal-target');
+    if (!input) return;
+    const current = parseMoney(input.value) || 0;
+    input.value = Number(current + delta).toLocaleString('id-ID');
+    updateGoalModalEstimates();
+  }
+
+  function setGoalModalTarget(amount) {
+    const input = document.getElementById('goal-modal-target');
+    if (!input) return;
+    input.value = Number(amount).toLocaleString('id-ID');
+    updateGoalModalEstimates();
+  }
+
+  function updateGoalModalEstimates() {
+    const targetEl = document.getElementById('goal-modal-target');
+    const savedEl = document.getElementById('goal-modal-saved');
+    const deadlineEl = document.getElementById('goal-modal-deadline');
+    const diffEl = document.getElementById('goal-modal-diff-label');
+    const textEl = document.getElementById('goal-modal-rec-text');
+    if (!diffEl || !textEl) return;
+
+    const target = targetEl ? (parseMoney(targetEl.value) || 0) : 0;
+    const saved = savedEl ? (parseMoney(savedEl.value) || 0) : 0;
+    const deadline = deadlineEl ? deadlineEl.value : '';
+
+    const remaining = Math.max(0, target - saved);
+    diffEl.textContent = `Selisih: ${formatRupiah(remaining)}`;
+
+    if (target <= 0) {
+      textEl.innerHTML = 'Masukkan target dana untuk melihat simulasi tabungan bulanan.';
+      return;
+    }
+
+    if (remaining === 0) {
+      textEl.innerHTML = '🎉 <strong>Target sudah terpenuhi!</strong> Saldo terkumpul sudah menutup 100% dari target nominal.';
+      return;
+    }
+
+    if (deadline) {
+      const now = new Date();
+      const parts = deadline.split('-').map(Number);
+      const targetDate = new Date(parts[0], parts[1] - 1, parts[2] || 1);
+      let monthsDiff = (targetDate.getFullYear() - now.getFullYear()) * 12 + (targetDate.getMonth() - now.getMonth());
+      if (monthsDiff <= 0) monthsDiff = 1;
+      const monthlyRec = Math.ceil(remaining / monthsDiff);
+      const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+      const targetLabel = `${monthNames[targetDate.getMonth()]} ${targetDate.getFullYear()}`;
+      textEl.innerHTML = `🎯 Sisihkan <strong>${formatRupiah(monthlyRec)} / bulan</strong> selama ${monthsDiff} bulan menuju ${targetLabel}.`;
+    } else {
+      const m6 = Math.ceil(remaining / 6);
+      const m12 = Math.ceil(remaining / 12);
+      textEl.innerHTML = `💡 Butuh <strong>${formatRupiah(remaining)}</strong> lagi. Pilihan ritme: <br>• <strong>${formatRupiah(m6)}/bln</strong> (6 bulan) &nbsp;• <strong>${formatRupiah(m12)}/bln</strong> (1 tahun)`;
+    }
+  }
+
+  function openGoalModal(id = null) {
+    const modal = document.getElementById('finance-goal-modal');
+    if (!modal) return;
+
+    const idInput = document.getElementById('goal-modal-id');
+    const titleText = document.getElementById('goal-modal-title-text');
+    const nameInput = document.getElementById('goal-modal-name');
+    const targetInput = document.getElementById('goal-modal-target');
+    const savedInput = document.getElementById('goal-modal-saved');
+    const deadlineInput = document.getElementById('goal-modal-deadline');
+    const isPrimaryCheck = document.getElementById('goal-modal-is-primary');
+    const deleteBtn = document.getElementById('goal-modal-delete-btn');
+    const presetsBox = document.getElementById('goal-modal-presets');
+
+    if (id) {
+      // Mode EDIT
+      const goals = getFinanceGoals();
+      const g = goals.find(x => x.id === id);
+      if (!g) return;
+
+      idInput.value = g.id;
+      titleText.textContent = 'Edit Tujuan Keuangan';
+      nameInput.value = g.name || '';
+      targetInput.value = Number(g.target || 0).toLocaleString('id-ID');
+      savedInput.value = Number(g.saved || 0).toLocaleString('id-ID');
+      deadlineInput.value = g.deadline || '';
+      if (isPrimaryCheck) isPrimaryCheck.checked = Boolean(g.is_primary);
+
+      const activeIcon = g.icon || 'lucide:target';
+      const activeColor = g.color || '#007C89';
+      document.getElementById('goal-modal-icon-val').value = activeIcon;
+      document.getElementById('goal-modal-color-val').value = activeColor;
+      renderGoalModalChips(activeIcon, activeColor);
+
+      if (deleteBtn) deleteBtn.style.display = 'inline-flex';
+      if (presetsBox) presetsBox.style.display = 'none';
+    } else {
+      // Mode TAMBAH BARU
+      idInput.value = '';
+      titleText.textContent = 'Tambah Tujuan Keuangan';
+      nameInput.value = '';
+      targetInput.value = '';
+      savedInput.value = '0';
+      deadlineInput.value = '';
+
+      const goals = getFinanceGoals();
+      if (isPrimaryCheck) isPrimaryCheck.checked = (goals.length === 0);
+
+      const defaultIcon = 'lucide:target';
+      const defaultColor = '#007C89';
+      document.getElementById('goal-modal-icon-val').value = defaultIcon;
+      document.getElementById('goal-modal-color-val').value = defaultColor;
+      renderGoalModalChips(defaultIcon, defaultColor);
+
+      if (deleteBtn) deleteBtn.style.display = 'none';
+      if (presetsBox) presetsBox.style.display = 'block';
+    }
+
+    updateGoalModalEstimates();
+    modal.classList.add('active');
+
+    setTimeout(() => {
+      if (id) {
+        if (targetInput) targetInput.focus();
+      } else {
+        if (nameInput) nameInput.focus();
+      }
+    }, 120);
+  }
+
+  function closeGoalModal() {
+    const modal = document.getElementById('finance-goal-modal');
+    if (modal) modal.classList.remove('active');
+  }
+
+  function handleGoalModalBackdrop(e) {
+    if (e && e.target === document.getElementById('finance-goal-modal')) {
+      closeGoalModal();
+    }
+  }
+
+  function handleGoalModalSubmit(e) {
+    e.preventDefault();
+    const id = document.getElementById('goal-modal-id').value;
+    const name = document.getElementById('goal-modal-name').value.trim();
+    const target = parseMoney(document.getElementById('goal-modal-target').value);
+    const saved = parseMoney(document.getElementById('goal-modal-saved').value) || 0;
+    const deadline = document.getElementById('goal-modal-deadline').value || '';
+    const icon = document.getElementById('goal-modal-icon-val').value || 'lucide:target';
+    const color = document.getElementById('goal-modal-color-val').value || '#007C89';
+    const isPrimary = Boolean(document.getElementById('goal-modal-is-primary') && document.getElementById('goal-modal-is-primary').checked);
+
+    if (!name) {
+      showToast('Mohon masukkan nama tujuan keuangan');
+      return;
+    }
+    if (!target || target <= 0) {
+      showToast('Mohon masukkan target dana yang valid');
+      return;
+    }
+
+    let goals = getFinanceGoals();
+
+    if (isPrimary) {
+      goals.forEach(g => { g.is_primary = false; });
+    }
+
+    const remaining = Math.max(0, target - saved);
+    let months = 12;
+    if (deadline) {
+      const now = new Date();
+      const parts = deadline.split('-').map(Number);
+      const targetDate = new Date(parts[0], parts[1] - 1, parts[2] || 1);
+      months = Math.max(1, (targetDate.getFullYear() - now.getFullYear()) * 12 + (targetDate.getMonth() - now.getMonth()));
+    }
+    const monthlyAlloc = Math.round(remaining / months);
+
+    if (id) {
+      const existing = goals.find(g => g.id === id);
+      if (existing) {
+        existing.name = name;
+        existing.target = target;
+        existing.saved = saved;
+        existing.deadline = deadline;
+        existing.icon = icon;
+        existing.color = color;
+        existing.is_primary = isPrimary;
+        existing.monthly_allocation = monthlyAlloc;
+
+        if (isPrimary) {
+          goals = [existing, ...goals.filter(g => g.id !== id)];
+        }
+      }
+    } else {
+      const newGoal = {
+        id: 'goal_' + Date.now(),
+        name: name,
+        target: target,
+        saved: saved,
+        deadline: deadline,
+        monthly_allocation: monthlyAlloc,
+        icon: icon,
+        color: color,
+        is_primary: isPrimary,
+        custom: true
+      };
+      if (isPrimary) {
+        goals.unshift(newGoal);
+      } else {
+        goals.push(newGoal);
+      }
+    }
+
     saveFinanceGoals(goals);
+    if (typeof FinOS !== 'undefined' && FinOS.saveGoals) {
+      FinOS.saveGoals(goals, true);
+    }
+
     renderFinanceGoals();
-    showToast('Tujuan baru dibuat — klik untuk sisihkan');
+    updateFinanceCalculations(false);
+    closeGoalModal();
+    showToast(id ? `Tujuan "${name}" berhasil diperbarui!` : `Tujuan "${name}" berhasil dibuat!`);
+  }
+
+  function handleGoalModalDelete() {
+    const id = document.getElementById('goal-modal-id').value;
+    if (!id) return;
+    deleteGoal(id);
+    closeGoalModal();
+  }
+
+  function promptAddGoal() {
+    openGoalModal();
   }
 
   function depositToGoal(id, amount) {
@@ -15383,22 +15893,37 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   }
 
   function renderGoalHtml(g, isHero = false) {
-    const icn = (g.icon && String(g.icon).startsWith('i-')) ? g.icon : ('i-' + (g.icon || 'target'));
+    const isHeroFinal = isHero || Boolean(g.is_primary);
     const pct = g.target > 0 ? Math.min(100, Math.round((g.saved / g.target) * 100)) : 0;
     const remaining = Math.max(0, (Number(g.target) || 0) - (Number(g.saved) || 0));
-    const monthsLeft = g.deadline ? Math.max(1, Math.ceil((new Date(g.deadline + '-01') - new Date()) / (30 * 24 * 3600 * 1000))) : 3;
-    const monthly = g.deadline ? Math.round(remaining / monthsLeft) : Math.round(remaining / 3);
+    const monthsLeft = g.deadline ? Math.max(1, Math.ceil((new Date(g.deadline + (g.deadline.length === 7 ? '-01' : '')) - new Date()) / (30 * 24 * 3600 * 1000))) : 3;
+    const monthly = g.monthly_allocation || (g.deadline ? Math.round(remaining / monthsLeft) : Math.round(remaining / 3));
+
+    let deadlineBadge = '';
+    if (g.deadline) {
+      deadlineBadge = ` · <span style="opacity:0.8;">Target: ${escHtml(g.deadline)}</span>`;
+    }
+
     return `
-      <div class="finance-goal-card ${isHero ? 'finance-goal-hero' : ''}">
+      <div class="finance-goal-card ${isHeroFinal ? 'finance-goal-hero' : ''}">
         <div class="finance-goal-head">
           <span class="finance-goal-name">
-            <span class="finance-goal-icon" style="background:${g.color || '#10b981'}"><svg class="ic ic-14" aria-hidden="true"><use href="#${escHtml(icn)}"/></svg></span>
-            ${escHtml(g.name)} ${isHero ? '<span style="font-size:10px;font-weight:700;color:#10b981;background:rgba(16,185,129,0.12);padding:2px 6px;border-radius:4px;margin-left:4px">Utama</span>' : ''}
+            <span class="finance-goal-icon" style="background:${g.color || '#10b981'};color:#fff;display:inline-flex;align-items:center;justify-content:center;">
+              ${renderGoalIcon(g.icon, 14)}
+            </span>
+            ${escHtml(g.name)} ${isHeroFinal ? '<span style="font-size:10px;font-weight:700;color:#10b981;background:rgba(16,185,129,0.12);padding:2px 6px;border-radius:4px;margin-left:4px">Utama</span>' : ''}
           </span>
-          <button type="button" class="finance-tx-del" title="Hapus tujuan" onclick="deleteGoal('${escHtml(g.id)}')"><svg class="ic ic-14" aria-hidden="true"><use href="#i-trash"/></svg></button>
+          <div style="display:flex;align-items:center;gap:4px;">
+            <button type="button" class="finance-tx-del" title="Edit tujuan" onclick="openGoalModal('${escHtml(g.id)}')">
+              <iconify-icon icon="lucide:pencil" width="13" height="13"></iconify-icon>
+            </button>
+            <button type="button" class="finance-tx-del" title="Hapus tujuan" onclick="deleteGoal('${escHtml(g.id)}')">
+              <iconify-icon icon="lucide:trash-2" width="13" height="13"></iconify-icon>
+            </button>
+          </div>
         </div>
         <div class="finance-goal-amt">${formatRupiah(g.saved)} <span style="opacity:.55;font-weight:500;">/ ${formatRupiah(g.target)}</span></div>
-        <div class="finance-goal-meta">Selisih ${formatRupiah(remaining)} · sisihkan ~${formatRupiah(monthly)}/bln</div>
+        <div class="finance-goal-meta">Selisih ${formatRupiah(remaining)} · sisihkan ~${formatRupiah(monthly)}/bln${deadlineBadge}</div>
         <div class="finance-goal-track"><div class="finance-goal-fill" style="width:${pct}%;background:${g.color || '#10b981'}"></div></div>
         <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">
           <input type="text" inputmode="numeric" class="finance-goal-input" style="flex:1;font-family:inherit;font-size:0.72rem;color:var(--text-primary);background:var(--surface-hover);border:1px solid var(--border);border-radius:6px;padding:4px 8px;" value="${Number(g.saved || 0).toLocaleString('id-ID')}" oninput="formatMoneyInput(this)" onchange="adjustGoalSaved('${escHtml(g.id)}', this.value)" title="Jumlah tersimpan (klik untuk edit)">
@@ -15420,8 +15945,13 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       container.innerHTML = '<div style="font-size:0.74rem;color:var(--text-tertiary);text-align:center;padding:12px;grid-column:1/-1;">Belum ada tujuan. Klik "+ Tujuan" di atas.</div>';
       return;
     }
-    const heroGoal = goals[0];
-    const otherGoals = goals.slice(1);
+    const primaryIdx = goals.findIndex(g => Boolean(g.is_primary));
+    let heroGoal = goals[0];
+    let otherGoals = goals.slice(1);
+    if (primaryIdx > 0) {
+      heroGoal = goals[primaryIdx];
+      otherGoals = goals.filter((_, idx) => idx !== primaryIdx);
+    }
     let out = renderGoalHtml(heroGoal, true);
     if (otherGoals.length > 0) {
       out += `
@@ -18362,6 +18892,18 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   window.closeSalaryPromptModal = closeSalaryPromptModal;
   window.handleSalaryPromptBackdrop = handleSalaryPromptBackdrop;
   window.confirmSwitchToSiklusGajian = confirmSwitchToSiklusGajian;
+  window.openGoalModal = openGoalModal;
+  window.closeGoalModal = closeGoalModal;
+  window.handleGoalModalBackdrop = handleGoalModalBackdrop;
+  window.handleGoalModalSubmit = handleGoalModalSubmit;
+  window.handleGoalModalDelete = handleGoalModalDelete;
+  window.applyGoalPreset = applyGoalPreset;
+  window.selectGoalIcon = selectGoalIcon;
+  window.selectGoalColor = selectGoalColor;
+  window.addGoalModalTargetDelta = addGoalModalTargetDelta;
+  window.setGoalModalTarget = setGoalModalTarget;
+  window.updateGoalModalEstimates = updateGoalModalEstimates;
+  window.promptAddGoal = openGoalModal;
 
   // --- Initialization ---
   async function initApp() {
