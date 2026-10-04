@@ -6059,55 +6059,129 @@
     .fin-action {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 14px;
     }
     .fin-action-buttons {
       display: grid;
-      grid-template-columns: 1.25fr 1fr;
-      gap: 10px;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
     }
     .fin-action-btn {
+      position: relative;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      height: 46px;
+      gap: 10px;
+      height: 48px;
       padding: 0 16px;
-      border-radius: 10px;
-      font-size: 14px;
+      border-radius: 14px;
+      font-size: 13.5px;
       font-weight: 700;
+      letter-spacing: -0.01em;
       cursor: pointer;
-      transition: background 0.15s, border-color 0.15s, transform 0.1s;
+      border: 1px solid transparent;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
       -webkit-tap-highlight-color: transparent;
+      user-select: none;
     }
     .fin-action-btn:active {
-      transform: scale(0.985);
+      transform: scale(0.975);
+    }
+    .fin-action-btn-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .fin-action-btn:hover .fin-action-btn-icon {
+      transform: rotate(90deg) scale(1.08);
     }
     .fin-action-btn-primary {
-      background: #005E6A;
+      background: linear-gradient(135deg, #005E6A 0%, #087F8C 100%);
       color: #FFFFFF;
-      border: 1px solid #005E6A;
-      box-shadow: 0 2px 4px rgba(0, 94, 106, 0.15);
+      border-color: rgba(255, 255, 255, 0.16);
+      box-shadow: 0 1px 0 rgba(255, 255, 255, 0.25) inset, 0 4px 14px rgba(0, 94, 106, 0.24);
+    }
+    .fin-action-btn-primary .fin-action-btn-icon {
+      background: rgba(255, 255, 255, 0.2);
+      color: #FFFFFF;
     }
     .fin-action-btn-primary:hover {
-      background: #004D57;
-      border-color: #004D57;
+      background: linear-gradient(135deg, #004D57 0%, #066A75 100%);
+      box-shadow: 0 1px 0 rgba(255, 255, 255, 0.3) inset, 0 8px 20px rgba(0, 94, 106, 0.35);
+      transform: translateY(-1.5px);
     }
     .fin-action-btn-secondary {
-      background: #FFFFFF;
-      color: #005E6A;
-      border: 1.5px solid #005E6A;
+      background: linear-gradient(135deg, #FFFFFF 0%, #F0FDF4 100%);
+      color: #065F46;
+      border: 1.5px solid rgba(16, 185, 129, 0.4);
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.08), 0 1px 2px rgba(0, 0, 0, 0.03);
+    }
+    .fin-action-btn-secondary .fin-action-btn-icon {
+      background: rgba(16, 185, 129, 0.14);
+      color: #059669;
     }
     .fin-action-btn-secondary:hover {
-      background: #F0F9FA;
+      background: #ECFDF5;
+      border-color: #059669;
+      color: #047857;
+      box-shadow: 0 6px 18px rgba(16, 185, 129, 0.18);
+      transform: translateY(-1.5px);
     }
     [data-theme="dark"] .fin-action-btn-secondary {
-      background: var(--surface);
-      color: #2dd4bf;
-      border-color: #005E6A;
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.85) 0%, rgba(15, 23, 42, 0.95) 100%);
+      color: #34D399;
+      border-color: rgba(52, 211, 153, 0.35);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+    [data-theme="dark"] .fin-action-btn-secondary .fin-action-btn-icon {
+      background: rgba(52, 211, 153, 0.18);
+      color: #34D399;
     }
     [data-theme="dark"] .fin-action-btn-secondary:hover {
-      background: var(--surface-hover);
+      background: rgba(30, 41, 59, 1);
+      border-color: #34D399;
+      color: #6EE7B7;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+    }
+
+    /* Chips Header & Wrapper */
+    .fin-action-chips-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+    .fin-action-chips-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2px;
+    }
+    .fin-action-chips-title {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-tertiary, #64748B);
+    }
+    .fin-action-chips-title svg {
+      color: #005E6A;
+    }
+    [data-theme="dark"] .fin-action-chips-title svg {
+      color: #2DD4BF;
+    }
+    .fin-action-chips-hint {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-tertiary, #94A3B8);
+      user-select: none;
     }
 
     .fin-action-chips {
@@ -6117,61 +6191,130 @@
       white-space: nowrap;
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
-      padding: 4px 2px 6px;
+      padding: 3px 2px 8px;
       scroll-snap-type: x proximity;
+      scroll-padding-left: 2px;
+      mask-image: linear-gradient(to right, black 0%, black calc(100% - 24px), transparent 100%);
+      -webkit-mask-image: linear-gradient(to right, black 0%, black calc(100% - 24px), transparent 100%);
     }
     .fin-action-chips::-webkit-scrollbar { display: none; }
 
     /* Category Chip Specification */
     .fin-action-chip {
+      position: relative;
       display: inline-flex;
       align-items: center;
-      gap: 7px;
-      height: 36px;
-      padding: 8px 14px;
+      gap: 8px;
+      height: 38px;
+      padding: 5px 14px 5px 6px;
       flex-shrink: 0;
-      background: #FFFFFF;
-      border: 1px solid #E5E7EB;
-      border-radius: 9px;
+      background: var(--surface, #FFFFFF);
+      border: 1px solid var(--border, #E2E8F0);
+      border-radius: 12px;
       font-size: 13px;
-      font-weight: 500;
+      font-weight: 600;
       color: var(--text-primary, #1F2937);
       cursor: pointer;
       white-space: nowrap;
-      transition: all 180ms ease;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
       -webkit-tap-highlight-color: transparent;
       outline: none;
       scroll-snap-align: start;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+      user-select: none;
     }
     .fin-action-chip:hover {
-      background: #F3F4F6;
-      border-color: #D1D5DB;
+      transform: translateY(-1.5px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      border-color: rgba(0, 94, 106, 0.3);
+    }
+    .fin-action-chip:active {
+      transform: scale(0.96);
     }
     .fin-action-chip:focus-visible {
       box-shadow: 0 0 0 2px rgba(0, 94, 106, 0.25);
     }
-    .fin-action-chip.active,
-    .fin-action-chip:active {
+    .fin-action-chip.active {
       background: #005E6A;
       color: #FFFFFF;
       border-color: #005E6A;
     }
+
+    .fin-chip-icon {
+      width: 26px;
+      height: 26px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: transform 0.2s ease;
+    }
+    .fin-action-chip:hover .fin-chip-icon {
+      transform: scale(1.08);
+    }
+    .fin-chip-label {
+      line-height: 1.2;
+    }
+
+    /* Category Specific Visual Accents */
+    .chip-makan .fin-chip-icon { background: #FFF2EA; color: #EA580C; }
+    .chip-makan:hover { border-color: rgba(234, 88, 12, 0.4); background: #FFF9F5; }
+
+    .chip-transport .fin-chip-icon { background: #E0F2FE; color: #0284C7; }
+    .chip-transport:hover { border-color: rgba(2, 132, 199, 0.4); background: #F5FAFF; }
+
+    .chip-kopi .fin-chip-icon { background: #FEF3C7; color: #B45309; }
+    .chip-kopi:hover { border-color: rgba(180, 83, 9, 0.4); background: #FFFDF5; }
+
+    .chip-laundry .fin-chip-icon { background: #F3E8FF; color: #7C3AED; }
+    .chip-laundry:hover { border-color: rgba(124, 58, 237, 0.4); background: #FAF5FF; }
+
+    .chip-belanja .fin-chip-icon { background: #FCE7F3; color: #DB2777; }
+    .chip-belanja:hover { border-color: rgba(219, 39, 119, 0.4); background: #FFF5F9; }
+
+    .chip-kos .fin-chip-icon { background: #E0E7FF; color: #4F46E5; }
+    .chip-kos:hover { border-color: rgba(79, 70, 229, 0.4); background: #F5F6FF; }
+
+    .chip-saku .fin-chip-icon { background: #ECFDF5; color: #059669; }
+    .chip-saku:hover { border-color: rgba(5, 150, 105, 0.4); background: #F0FDF4; }
+
+    .chip-transfer .fin-chip-icon { background: #E6F6F7; color: #005E6A; }
+    .chip-transfer:hover { border-color: rgba(0, 94, 106, 0.4); background: #F0F9FA; }
+
+    /* Dark Mode Chips */
     [data-theme="dark"] .fin-action-chip {
       background: var(--surface, #1e293b);
       border-color: var(--border, #334155);
       color: var(--text-primary, #f1f5f9);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
     }
     [data-theme="dark"] .fin-action-chip:hover {
-      background: var(--surface-hover, #334155);
-      border-color: var(--border-hover, #475569);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
     }
-    [data-theme="dark"] .fin-action-chip.active,
-    [data-theme="dark"] .fin-action-chip:active {
-      background: #005E6A;
-      color: #FFFFFF;
-      border-color: #005E6A;
-    }
+    [data-theme="dark"] .chip-makan .fin-chip-icon { background: rgba(234, 88, 12, 0.22); color: #FB923C; }
+    [data-theme="dark"] .chip-makan:hover { border-color: rgba(251, 146, 60, 0.45); background: rgba(234, 88, 12, 0.1); }
+
+    [data-theme="dark"] .chip-transport .fin-chip-icon { background: rgba(2, 132, 199, 0.22); color: #38BDF8; }
+    [data-theme="dark"] .chip-transport:hover { border-color: rgba(56, 189, 248, 0.45); background: rgba(2, 132, 199, 0.1); }
+
+    [data-theme="dark"] .chip-kopi .fin-chip-icon { background: rgba(217, 119, 6, 0.22); color: #FBBF24; }
+    [data-theme="dark"] .chip-kopi:hover { border-color: rgba(251, 191, 36, 0.45); background: rgba(217, 119, 6, 0.1); }
+
+    [data-theme="dark"] .chip-laundry .fin-chip-icon { background: rgba(124, 58, 237, 0.22); color: #A78BFA; }
+    [data-theme="dark"] .chip-laundry:hover { border-color: rgba(167, 139, 250, 0.45); background: rgba(124, 58, 237, 0.1); }
+
+    [data-theme="dark"] .chip-belanja .fin-chip-icon { background: rgba(219, 39, 119, 0.22); color: #F472B6; }
+    [data-theme="dark"] .chip-belanja:hover { border-color: rgba(244, 114, 182, 0.45); background: rgba(219, 39, 119, 0.1); }
+
+    [data-theme="dark"] .chip-kos .fin-chip-icon { background: rgba(79, 70, 229, 0.22); color: #818CF8; }
+    [data-theme="dark"] .chip-kos:hover { border-color: rgba(129, 140, 248, 0.45); background: rgba(79, 70, 229, 0.1); }
+
+    [data-theme="dark"] .chip-saku .fin-chip-icon { background: rgba(5, 150, 105, 0.22); color: #34D399; }
+    [data-theme="dark"] .chip-saku:hover { border-color: rgba(52, 211, 153, 0.45); background: rgba(5, 150, 105, 0.1); }
+
+    [data-theme="dark"] .chip-transfer .fin-chip-icon { background: rgba(0, 94, 106, 0.28); color: #2DD4BF; }
+    [data-theme="dark"] .chip-transfer:hover { border-color: rgba(45, 212, 191, 0.45); background: rgba(0, 94, 106, 0.15); }
 
     /* ── SECTION 3: FINANCIAL HEALTH ── */
     .fin-health {
@@ -7192,7 +7335,12 @@
       height: 13px;
       padding: 1.5px 5px;
     }
-    .fin-action-chip .fin-pill-brand-logo,
+    .fin-action-chip .fin-pill-brand-logo {
+      height: 12px;
+      padding: 0;
+      object-fit: contain;
+      display: block;
+    }
     .fin-sheet-chip .fin-pill-brand-logo {
       height: 14px;
       padding: 1.5px 5px;
@@ -7523,24 +7671,29 @@
       .fin-action {
         display: flex;
         flex-direction: column;
-        gap: 12px;
+        gap: 14px;
       }
       .fin-action-buttons {
         display: flex;
         gap: 12px;
         max-width: 480px;
       }
+      .fin-action-btn {
+        flex: 1;
+      }
       .fin-action-chips {
         display: flex;
         flex-wrap: wrap;
         gap: 8px;
         overflow-x: visible;
+        mask-image: none;
+        -webkit-mask-image: none;
       }
       .fin-action-chip {
-        height: 32px;
-        padding: 0 12px;
-        font-size: 12px;
-        border-radius: 8px;
+        height: 38px;
+        padding: 5px 13px 5px 6px;
+        font-size: 12.5px;
+        border-radius: 12px;
       }
 
       /* Desktop Alerts */
@@ -7582,13 +7735,14 @@
         gap: 8px;
       }
       .fin-action-btn {
-        height: 44px;
-        font-size: 13.5px;
-        padding: 0 12px;
+        height: 46px;
+        font-size: 13px;
+        padding: 0 10px;
+        gap: 8px;
       }
       .fin-action-chip {
-        height: 36px;
-        padding: 6px 12px;
+        height: 38px;
+        padding: 5px 12px 5px 6px;
         font-size: 12.5px;
       }
       .fin-bills-summary {
@@ -7629,14 +7783,18 @@
         gap: 6px;
       }
       .fin-action-btn {
-        font-size: 12px;
+        font-size: 11.5px;
         padding: 0 6px;
-        height: 42px;
-        gap: 4px;
+        height: 44px;
+        gap: 6px;
       }
-      .fin-action-btn svg {
-        width: 14px;
-        height: 14px;
+      .fin-action-btn-icon {
+        width: 22px;
+        height: 22px;
+      }
+      .fin-action-btn-icon svg {
+        width: 13px;
+        height: 13px;
       }
       .fin-snapshot-hero-value {
         font-size: 23px;
@@ -8226,47 +8384,61 @@
     <section class="fin-action" id="fin-action-section">
       <div class="fin-action-buttons">
         <button type="button" class="fin-action-btn fin-action-btn-primary" onclick="openQuickExpenseSheet(null,null,null,'expense')">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span class="fin-action-btn-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </span>
           <span>Catat Pengeluaran</span>
         </button>
         <button type="button" class="fin-action-btn fin-action-btn-secondary" onclick="openQuickExpenseSheet(null,null,null,'income')">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span class="fin-action-btn-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </span>
           <span>Catat Pemasukan</span>
         </button>
       </div>
-      <div class="fin-action-chips" id="fin-action-chips" role="region" aria-label="Kategori Cepat">
-        <button type="button" class="fin-action-chip" onclick="quickFillExpense('makan',15000,'Makan Siang','expense')" aria-label="Makan">
-          <iconify-icon icon="lucide:utensils" width="18" height="18" aria-hidden="true"></iconify-icon>
-          <span>Makan</span>
-        </button>
-        <button type="button" class="fin-action-chip" onclick="quickFillExpense('transport',10000,'Transport','expense')" aria-label="Transport">
-          <iconify-icon icon="lucide:bus" width="18" height="18" aria-hidden="true"></iconify-icon>
-          <span>Transport</span>
-        </button>
-        <button type="button" class="fin-action-chip" onclick="quickFillExpense('kopi',18000,'Kopi/Hangout','expense')" aria-label="Kopi">
-          <iconify-icon icon="lucide:coffee" width="18" height="18" aria-hidden="true"></iconify-icon>
-          <span>Kopi</span>
-        </button>
-        <button type="button" class="fin-action-chip" onclick="quickFillExpense('laundry',25000,'Laundry','expense')" aria-label="Laundry">
-          <iconify-icon icon="lucide:shirt" width="18" height="18" aria-hidden="true"></iconify-icon>
-          <span>Laundry</span>
-        </button>
-        <button type="button" class="fin-action-chip" onclick="quickFillExpense('belanja',35000,'Belanja Kebutuhan','expense')" aria-label="Belanja">
-          <iconify-icon icon="lucide:shopping-bag" width="18" height="18" aria-hidden="true"></iconify-icon>
-          <span>Belanja</span>
-        </button>
-        <button type="button" class="fin-action-chip" onclick="quickFillExpense('kos',100000,'Iuran/Listrik Kos','expense')" aria-label="Kos">
-          <iconify-icon icon="lucide:home" width="18" height="18" aria-hidden="true"></iconify-icon>
-          <span>Kos</span>
-        </button>
-        <button type="button" class="fin-action-chip" onclick="quickFillExpense('saku_bni',3500000,'Uang Saku BNI','income')" aria-label="Uang Saku BNI">
-          <img src="bni-logo.svg" alt="BNI" class="fin-pill-brand-logo">
-          <span>Uang Saku</span>
-        </button>
-        <button type="button" class="fin-action-chip" onclick="openQuickExpenseSheet(null,null,null,'transfer')" aria-label="Transfer Saldo Antar Dompet">
-          <iconify-icon icon="lucide:arrow-left-right" width="18" height="18" aria-hidden="true" style="color:#005E6A;"></iconify-icon>
-          <span>Transfer</span>
-        </button>
+
+      <div class="fin-action-chips-wrapper">
+        <div class="fin-action-chips-head">
+          <span class="fin-action-chips-title">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            <span>Pintas Cepat (1-Klik)</span>
+          </span>
+          <span class="fin-action-chips-hint">Geser &rsaquo;</span>
+        </div>
+        <div class="fin-action-chips" id="fin-action-chips" role="region" aria-label="Kategori Cepat">
+          <button type="button" class="fin-action-chip chip-makan" onclick="quickFillExpense('makan',15000,'Makan Siang','expense')" aria-label="Makan">
+            <span class="fin-chip-icon"><iconify-icon icon="lucide:utensils" width="16" height="16" aria-hidden="true"></iconify-icon></span>
+            <span class="fin-chip-label">Makan</span>
+          </button>
+          <button type="button" class="fin-action-chip chip-transport" onclick="quickFillExpense('transport',10000,'Transport','expense')" aria-label="Transport">
+            <span class="fin-chip-icon"><iconify-icon icon="lucide:bus" width="16" height="16" aria-hidden="true"></iconify-icon></span>
+            <span class="fin-chip-label">Transport</span>
+          </button>
+          <button type="button" class="fin-action-chip chip-kopi" onclick="quickFillExpense('kopi',18000,'Kopi/Hangout','expense')" aria-label="Kopi">
+            <span class="fin-chip-icon"><iconify-icon icon="lucide:coffee" width="16" height="16" aria-hidden="true"></iconify-icon></span>
+            <span class="fin-chip-label">Kopi</span>
+          </button>
+          <button type="button" class="fin-action-chip chip-laundry" onclick="quickFillExpense('laundry',25000,'Laundry','expense')" aria-label="Laundry">
+            <span class="fin-chip-icon"><iconify-icon icon="lucide:shirt" width="16" height="16" aria-hidden="true"></iconify-icon></span>
+            <span class="fin-chip-label">Laundry</span>
+          </button>
+          <button type="button" class="fin-action-chip chip-belanja" onclick="quickFillExpense('belanja',35000,'Belanja Kebutuhan','expense')" aria-label="Belanja">
+            <span class="fin-chip-icon"><iconify-icon icon="lucide:shopping-bag" width="16" height="16" aria-hidden="true"></iconify-icon></span>
+            <span class="fin-chip-label">Belanja</span>
+          </button>
+          <button type="button" class="fin-action-chip chip-kos" onclick="quickFillExpense('kos',100000,'Iuran/Listrik Kos','expense')" aria-label="Kos">
+            <span class="fin-chip-icon"><iconify-icon icon="lucide:home" width="16" height="16" aria-hidden="true"></iconify-icon></span>
+            <span class="fin-chip-label">Kos</span>
+          </button>
+          <button type="button" class="fin-action-chip chip-saku" onclick="quickFillExpense('saku_bni',3500000,'Uang Saku BNI','income')" aria-label="Uang Saku BNI">
+            <span class="fin-chip-icon"><img src="bni-logo.svg" alt="BNI" class="fin-pill-brand-logo"></span>
+            <span class="fin-chip-label">Uang Saku</span>
+          </button>
+          <button type="button" class="fin-action-chip chip-transfer" onclick="openQuickExpenseSheet(null,null,null,'transfer')" aria-label="Transfer Saldo Antar Dompet">
+            <span class="fin-chip-icon"><iconify-icon icon="lucide:arrow-left-right" width="16" height="16" aria-hidden="true"></iconify-icon></span>
+            <span class="fin-chip-label">Transfer</span>
+          </button>
+        </div>
       </div>
     </section>
 
