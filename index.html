@@ -7232,6 +7232,61 @@
       background: rgba(45, 212, 191, 0.12);
       color: #2dd4bf;
     }
+    .fin-reset-hdr-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      padding: 3px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .fin-reset-hdr-btn:hover {
+      color: #ef4444;
+      border-color: rgba(239, 68, 68, 0.4);
+      background: rgba(239, 68, 68, 0.08);
+    }
+    .fin-inc-mode-chip {
+      flex: 1;
+      padding: 7px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .fin-inc-mode-chip.active {
+      background: var(--surface);
+      color: #10b981;
+      font-weight: 700;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+    .fin-reset-option-card {
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 10px;
+      text-align: left;
+      width: 100%;
+    }
+    .fin-reset-option-card:hover {
+      border-color: #ef4444;
+      background: rgba(239, 68, 68, 0.04);
+    }
     .fin-sim-impact-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -7903,7 +7958,13 @@
     <section class="fin-snapshot" id="fin-snapshot-section">
       <div class="fin-snapshot-status-row">
         <span class="fin-snapshot-label">Keuangan Rantau Jakarta</span>
-        <span class="fin-snapshot-badge" id="fin-status-badge">Terkendali</span>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <button type="button" class="fin-reset-hdr-btn" onclick="openResetFinanceModal()" title="Reset data keuangan, transaksi, atau pemasukan">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:2px;"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+            Reset Data
+          </button>
+          <span class="fin-snapshot-badge" id="fin-status-badge">Terkendali</span>
+        </div>
       </div>
 
       <div class="fin-hero-split">
@@ -7943,8 +8004,11 @@
       </div>
 
       <div class="fin-snapshot-row">
-        <div class="fin-snapshot-metric" id="fin-metric-income" onclick="openIncomeModal()" style="cursor:pointer">
-          <span class="fin-snapshot-metric-label">Pemasukan</span>
+        <div class="fin-snapshot-metric" id="fin-metric-income" onclick="handleIncomeMetricClick()" style="cursor:pointer" title="Klik untuk ubah pemasukan atau reset">
+          <div style="display:flex;justify-content:space-between;align-items:center;width:100%;">
+            <span class="fin-snapshot-metric-label">Pemasukan</span>
+            <span style="font-size:10px;font-weight:700;color:#10b981;background:rgba(16,185,129,0.12);padding:1px 6px;border-radius:6px;">Ubah ✎</span>
+          </div>
           <span class="fin-snapshot-metric-value" id="fin-total-income-display">Rp 3.500.000</span>
           <span class="fin-snapshot-metric-sub" id="fin-income-sources-label">1 sumber aktif</span>
           <input type="hidden" id="fin-income-input" value="3.500.000">
@@ -9614,6 +9678,22 @@
 
     <form id="income-modal-form" onsubmit="handleIncomeModalSubmit(event)">
       <div class="modal-body" style="padding: 18px 20px 14px;">
+        <!-- Pilihan Mode: Ganti Saku vs Tambah Baru -->
+        <div style="margin-bottom: 14px;">
+          <div style="display:flex;gap:6px;background:var(--surface-hover);padding:4px;border-radius:10px;border:1px solid var(--border);">
+            <button type="button" class="fin-inc-mode-chip active" id="inc-mode-replace-btn" onclick="setIncomeModalMode('replace')">
+              🔄 Ganti Nilai Saku
+            </button>
+            <button type="button" class="fin-inc-mode-chip" id="inc-mode-add-btn" onclick="setIncomeModalMode('add')">
+              ➕ Tambah Sumber Baru
+            </button>
+          </div>
+          <input type="hidden" id="inc-modal-mode" value="replace">
+          <div id="inc-mode-desc-hint" style="font-size: 0.72rem; color: var(--text-tertiary); margin-top: 5px; line-height: 1.3;">
+            🔄 Mengganti total pemasukan siklus ini &amp; menyesuaikan saldo rekening.
+          </div>
+        </div>
+
         <!-- Nominal -->
         <div class="form-group" style="margin-bottom: 14px;">
           <label class="form-label" for="inc-modal-amount" style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px;">Nominal (Rp)</label>
@@ -9688,13 +9768,81 @@
         </div>
       </div>
 
-      <div class="modal-foot" style="display: flex; justify-content: flex-end; gap: 8px; padding: 14px 20px; border-top: 1px solid var(--border); background: var(--surface);">
-        <button type="button" class="btn-action btn-secondary" onclick="closeIncomeModal()" style="padding: 8px 16px;">Batal</button>
-        <button type="submit" class="btn-action" style="background: #10b981; border: none; color: #fff; font-weight: 700; padding: 8px 22px; border-radius: var(--radius-sm); box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);">
-          Simpan
+      <div class="modal-foot" style="display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 14px 20px; border-top: 1px solid var(--border); background: var(--surface);">
+        <button type="button" class="btn-action" onclick="quickResetIncome()" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.25); font-size: 12px; font-weight: 700; padding: 8px 12px; border-radius: var(--radius-sm); cursor: pointer;">
+          Reset ke 0
         </button>
+        <div style="display: flex; gap: 8px;">
+          <button type="button" class="btn-action btn-secondary" onclick="closeIncomeModal()" style="padding: 8px 16px;">Batal</button>
+          <button type="submit" class="btn-action" style="background: #10b981; border: none; color: #fff; font-weight: 700; padding: 8px 22px; border-radius: var(--radius-sm); box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);">
+            Simpan
+          </button>
+        </div>
       </div>
     </form>
+  </div>
+</div>
+
+<!-- Modal: Reset Keuangan & Transaksi (Dedicated Reset Center) -->
+<div class="modal-overlay" id="finance-reset-modal" onclick="handleResetModalBackdrop(event)">
+  <div class="modal-box" style="max-width: 440px; border-radius: 16px; overflow: hidden;">
+    <div class="modal-head" style="padding: 16px 20px 12px; border-bottom: 1px solid var(--border);">
+      <h3 style="display: flex; align-items: center; gap: 8px; font-size: 1.05rem; font-weight: 700; margin: 0; color: var(--text-primary);">
+        <span style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; background: rgba(239, 68, 68, 0.12); color: #ef4444;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+        </span>
+        <span>Pusat Reset Data Keuangan</span>
+      </h3>
+      <button class="btn-close" onclick="closeResetFinanceModal()" title="Tutup">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <div class="modal-body" style="padding: 18px 20px 14px;">
+      <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0; margin-bottom: 14px; line-height: 1.4;">
+        Pilih opsi reset data yang ingin Anda lakukan. Tindakan ini memulihkan sinkronisasi perhitungan:
+      </p>
+
+      <!-- Opsi 1: Reset Pemasukan Saja -->
+      <button type="button" class="fin-reset-option-card" onclick="executeFinanceReset('income')">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <strong style="font-size: 0.92rem; color: #10b981;">1. Reset Pemasukan Saja (Rp 0)</strong>
+          <span style="font-size: 11px; font-weight: 700; color: #10b981; background: rgba(16,185,129,0.1); padding: 2px 8px; border-radius: 6px;">Cepat</span>
+        </div>
+        <span style="font-size: 0.78rem; color: var(--text-secondary); line-height: 1.35;">
+          Kosongkan semua transaksi pemasukan siklus aktif dan setel nilai pemasukan ke Rp 0. Saldo akun yang bertambah dari pemasukan akan direkonsiliasi.
+        </span>
+      </button>
+
+      <!-- Opsi 2: Kosongkan Riwayat Transaksi -->
+      <button type="button" class="fin-reset-option-card" onclick="executeFinanceReset('transactions')">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <strong style="font-size: 0.92rem; color: #f59e0b;">2. Kosongkan Riwayat Transaksi</strong>
+          <span style="font-size: 11px; font-weight: 700; color: #f59e0b; background: rgba(245,158,11,0.1); padding: 2px 8px; border-radius: 6px;">Riwayat</span>
+        </div>
+        <span style="font-size: 0.78rem; color: var(--text-secondary); line-height: 1.35;">
+          Hapus seluruh riwayat pengeluaran &amp; pemasukan yang tercatat. Saldo dompet/rekening saat ini tetap dipertahankan.
+        </span>
+      </button>
+
+      <!-- Opsi 3: Factory Reset Keuangan -->
+      <button type="button" class="fin-reset-option-card" onclick="executeFinanceReset('full')" style="margin-bottom: 0;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <strong style="font-size: 0.92rem; color: #ef4444;">3. Reset Total Keuangan (Setelan Awal)</strong>
+          <span style="font-size: 11px; font-weight: 700; color: #ef4444; background: rgba(239,68,68,0.1); padding: 2px 8px; border-radius: 6px;">Penuh</span>
+        </div>
+        <span style="font-size: 0.78rem; color: var(--text-secondary); line-height: 1.35;">
+          Kembalikan saldo 4 rekening ke default awal (BNI 3,5jt, GoPay 150rb, Tunai 100rb, ShopeePay 150rb), pasang ulang tagihan, dan hapus riwayat.
+        </span>
+      </button>
+    </div>
+
+    <div class="modal-foot" style="display: flex; justify-content: flex-end; padding: 12px 20px; border-top: 1px solid var(--border); background: var(--surface);">
+      <button type="button" class="btn-action btn-secondary" onclick="closeResetFinanceModal()" style="padding: 8px 18px;">Tutup</button>
+    </div>
   </div>
 </div>
 
@@ -13210,13 +13358,13 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       const day = parts[2];
 
       let start, end, payday;
-      if (day >= 21) {
+      if (day >= 22) {
         start = new Date(y, m - 1, 21);
-        end = new Date(y, m, 21);
+        end = new Date(y, m, 22);
         payday = new Date(y, m, 22);
       } else {
         start = new Date(y, m - 2, 21);
-        end = new Date(y, m - 1, 21);
+        end = new Date(y, m - 1, 22);
         payday = new Date(y, m - 1, 22);
       }
       return {
@@ -13229,7 +13377,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       const now = new Date();
       return {
         start: new Date(now.getFullYear(), now.getMonth(), 21),
-        end: new Date(now.getFullYear(), now.getMonth() + 1, 21),
+        end: new Date(now.getFullYear(), now.getMonth() + 1, 22),
         payday: new Date(now.getFullYear(), now.getMonth() + 1, 22),
         startStr: '', endStr: '', paydayStr: ''
       };
@@ -13541,14 +13689,15 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       const msDiff = cycle.payday.getTime() - new Date(todayWibStr).getTime();
       const remainingDays = Math.max(1, Math.round(msDiff / (24 * 3600 * 1000)));
 
-      const cycleTxs = txs.filter(t => t.date >= cycle.startStr && t.date <= cycle.endStr);
+      const maxCycleDate = cycle.paydayStr > cycle.endStr ? cycle.paydayStr : cycle.endStr;
+      const cycleTxs = txs.filter(t => t.date >= cycle.startStr && t.date <= maxCycleDate);
       const cycleExpenses = cycleTxs.filter(t => t.type === 'expense');
       const cycleIncomes = cycleTxs.filter(t => t.type === 'income');
       const cycleSavings = cycleTxs.filter(t => t.type === 'saving');
 
       const totalRecordedIncome = cycleIncomes.reduce((s, t) => s + (Number(t.amount) || 0), 0);
       const baselineIncome = typeof getFinanceIncome === 'function' ? getFinanceIncome() : 3500000;
-      const totalIncome = totalRecordedIncome > 0 ? totalRecordedIncome : baselineIncome;
+      const totalIncome = cycleIncomes.length > 0 ? totalRecordedIncome : baselineIncome;
 
       const unpaidMandatoryBills = commitments
         .filter(c => c.is_mandatory && c.is_active && !c.is_paid)
@@ -13958,7 +14107,10 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
 
   function getFinanceIncome() {
     const val = localStorage.getItem(FIN_INCOME_KEY);
-    return val ? parseInt(val, 10) : 3500000;
+    if (val !== null && val !== undefined && !isNaN(parseInt(val, 10))) {
+      return Math.max(0, parseInt(val, 10));
+    }
+    return 3500000;
   }
 
   function getFinanceBills() {
@@ -14820,13 +14972,13 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       const day = parts[2];
 
       let start, end, payday;
-      if (day >= 21) {
+      if (day >= 22) {
         start = new Date(y, m - 1, 21);
-        end = new Date(y, m, 21);
+        end = new Date(y, m, 22);
         payday = new Date(y, m, 22);
       } else {
         start = new Date(y, m - 2, 21);
-        end = new Date(y, m - 1, 21);
+        end = new Date(y, m - 1, 22);
         payday = new Date(y, m - 1, 22);
       }
       return {
@@ -14841,7 +14993,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       const now = new Date();
       return {
         start: new Date(now.getFullYear(), now.getMonth(), 21),
-        end: new Date(now.getFullYear(), now.getMonth() + 1, 21),
+        end: new Date(now.getFullYear(), now.getMonth() + 1, 22),
         payday: new Date(now.getFullYear(), now.getMonth() + 1, 22),
         startStr: '',
         endStr: '',
@@ -15133,15 +15285,18 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   function updateFinanceCalculations(syncInputField = true) {
     const cycle = getFinanceCycleRange();
     const allTxs = getFinanceExpenses();
+    const maxCycleDate = cycle.paydayStr > cycle.endStr ? cycle.paydayStr : cycle.endStr;
 
     // Rincian pemasukan siklus aktif
-    const cycleIncomes = allTxs.filter(t => t.type === 'income' && t.date >= cycle.startStr && t.date <= cycle.endStr);
+    const cycleIncomes = allTxs.filter(t => t.type === 'income' && t.date >= cycle.startStr && t.date <= maxCycleDate);
     const totalRecordedIncome = cycleIncomes.reduce((s, i) => s + (Number(i.amount) || 0), 0);
 
     const incomeInput = document.getElementById('fin-income-input');
     const incomeDisplay = document.getElementById('fin-total-income-display');
+    const storedIncome = localStorage.getItem(FIN_INCOME_KEY);
+
     let income;
-    if (totalRecordedIncome > 0) {
+    if (cycleIncomes.length > 0) {
       income = totalRecordedIncome;
       localStorage.setItem(FIN_INCOME_KEY, income.toString());
       if (syncInputField && incomeInput && document.activeElement !== incomeInput) {
@@ -15155,10 +15310,8 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
         sourceEl.textContent = `${cycleIncomes.length} sumber aktif`;
         sourceEl.title = `${cycleIncomes.length} sumber pemasukan (${formatRupiah(totalRecordedIncome)})`;
       }
-    } else {
-      income = incomeInput ? parseMoney(incomeInput.value) : getFinanceIncome();
-      if (income <= 0) income = getFinanceIncome();
-      localStorage.setItem(FIN_INCOME_KEY, income.toString());
+    } else if (storedIncome !== null && !isNaN(parseInt(storedIncome, 10))) {
+      income = Math.max(0, parseInt(storedIncome, 10));
       if (syncInputField && incomeInput && document.activeElement !== incomeInput) {
         incomeInput.value = income.toLocaleString('id-ID');
       }
@@ -15167,8 +15320,22 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       }
       const sourceEl = document.getElementById('fin-income-sources-label');
       if (sourceEl) {
+        sourceEl.textContent = income === 0 ? 'Belum ada pemasukan' : 'Nilai tersimpan';
+        sourceEl.title = 'Pemasukan tersimpan (klik untuk ubah atau reset)';
+      }
+    } else {
+      income = 3500000;
+      localStorage.setItem(FIN_INCOME_KEY, '3500000');
+      if (syncInputField && incomeInput && document.activeElement !== incomeInput) {
+        incomeInput.value = '3.500.000';
+      }
+      if (incomeDisplay) {
+        incomeDisplay.textContent = formatRupiah(income);
+      }
+      const sourceEl = document.getElementById('fin-income-sources-label');
+      if (sourceEl) {
         sourceEl.textContent = 'Baseline saku';
-        sourceEl.title = 'Baseline saku (klik "+ Catat" untuk tambah sumber)';
+        sourceEl.title = 'Baseline saku (klik untuk ubah)';
       }
     }
 
@@ -15183,7 +15350,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     const unpaidBills = totalBills - paidBills;
 
     // Filter ke pengeluaran saja (bukan pemasukan) dalam siklus aktif
-    const expenses = allTxs.filter(item => item.type !== 'income' && item.date >= cycle.startStr && item.date <= cycle.endStr);
+    const expenses = allTxs.filter(item => item.type !== 'income' && item.date >= cycle.startStr && item.date <= maxCycleDate);
     const totalSpent = expenses.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
 
     // effectiveTotalSpent = pengeluaran manual + tagihan yang sudah dibayar (dicentang)
@@ -16107,7 +16274,49 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     }
   }
 
-  function openIncomeModal(presetCat, presetAmount, presetDesc, presetAccount) {
+  function setIncomeModalMode(mode) {
+    const modeInput = document.getElementById('inc-modal-mode');
+    const replaceBtn = document.getElementById('inc-mode-replace-btn');
+    const addBtn = document.getElementById('inc-mode-add-btn');
+    const modeDesc = document.getElementById('inc-mode-desc-hint');
+    if (modeInput) modeInput.value = mode;
+
+    if (replaceBtn && addBtn) {
+      if (mode === 'replace') {
+        replaceBtn.classList.add('active');
+        replaceBtn.style.background = 'var(--surface)';
+        replaceBtn.style.color = '#10b981';
+        replaceBtn.style.fontWeight = '700';
+        addBtn.classList.remove('active');
+        addBtn.style.background = 'transparent';
+        addBtn.style.color = 'var(--text-secondary)';
+        addBtn.style.fontWeight = '600';
+        if (modeDesc) modeDesc.textContent = '🔄 Mengganti total pemasukan siklus ini & menyesuaikan saldo rekening.';
+      } else {
+        addBtn.classList.add('active');
+        addBtn.style.background = 'var(--surface)';
+        addBtn.style.color = '#10b981';
+        addBtn.style.fontWeight = '700';
+        replaceBtn.classList.remove('active');
+        replaceBtn.style.background = 'transparent';
+        replaceBtn.style.color = 'var(--text-secondary)';
+        replaceBtn.style.fontWeight = '600';
+        if (modeDesc) modeDesc.textContent = '➕ Menambahkan pemasukan baru ke riwayat tanpa menghapus pemasukan sebelumnya.';
+      }
+    }
+  }
+
+  function handleIncomeMetricClick() {
+    const cycle = getFinanceCycleRange();
+    const allTxs = getFinanceExpenses();
+    const maxCycleDate = cycle.paydayStr > cycle.endStr ? cycle.paydayStr : cycle.endStr;
+    const cycleIncomes = allTxs.filter(t => t.type === 'income' && t.date >= cycle.startStr && t.date <= maxCycleDate);
+    const recorded = cycleIncomes.reduce((s, t) => s + (Number(t.amount) || 0), 0);
+    const currentVal = recorded > 0 ? recorded : getFinanceIncome();
+    openIncomeModal('saku_bni', currentVal, 'Uang Saku Magang BNI', 'acc_bni', 'replace');
+  }
+
+  function openIncomeModal(presetCat, presetAmount, presetDesc, presetAccount, presetMode = 'replace') {
     const modal = document.getElementById('finance-income-modal');
     if (!modal) return;
 
@@ -16119,13 +16328,15 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     const cycle = getFinanceCycleRange();
     const todayStr = getWibDateString();
 
+    setIncomeModalMode(presetMode);
+
     if (presetCat && catEl) {
       catEl.value = presetCat;
     } else if (catEl) {
       catEl.value = 'saku_bni';
     }
 
-    if (presetAmount && amountEl) {
+    if (presetAmount !== undefined && presetAmount !== null && amountEl) {
       amountEl.value = Number(presetAmount).toLocaleString('id-ID');
     } else if (amountEl && (!amountEl.value || parseMoney(amountEl.value) <= 0)) {
       amountEl.value = '3.500.000';
@@ -16168,6 +16379,117 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   function handleIncomeModalBackdrop(e) {
     if (e.target === document.getElementById('finance-income-modal')) {
       closeIncomeModal();
+    }
+  }
+
+  function quickResetIncome() {
+    if (!confirm('Yakin ingin mereset total pemasukan siklus ini menjadi Rp 0?')) return;
+    const cycle = getFinanceCycleRange();
+    const maxCycleDate = cycle.paydayStr > cycle.endStr ? cycle.paydayStr : cycle.endStr;
+
+    // 1. Ambil semua pengeluaran & bersihkan income siklus ini
+    const expenses = getFinanceExpenses();
+    const cycleIncomes = expenses.filter(t => t.type === 'income' && t.date >= cycle.startStr && t.date <= maxCycleDate);
+
+    // Reconcile accounts: kurangi saldo rekening yang sebelumnya dikreditkan pemasukan ini
+    if (typeof FinOS !== 'undefined' && FinOS.getAccounts) {
+      const accounts = FinOS.getAccounts();
+      cycleIncomes.forEach(inc => {
+        const accId = inc.destination_account_id || inc.source_account_id || 'acc_bni';
+        const acc = accounts.find(a => a.id === accId);
+        if (acc) {
+          acc.balance = Math.max(0, (Number(acc.balance) || 0) - (Number(inc.amount) || 0));
+        }
+      });
+      FinOS.saveAccounts(accounts, true);
+    }
+
+    // Filter keluar transaksi pemasukan siklus aktif
+    const remainingExpenses = expenses.filter(t => !(t.type === 'income' && t.date >= cycle.startStr && t.date <= maxCycleDate));
+    saveFinanceExpenses(remainingExpenses);
+
+    if (typeof FinOS !== 'undefined' && FinOS.getTransactions) {
+      const finTxs = FinOS.getTransactions().filter(t => !(t.type === 'income' && t.date >= cycle.startStr && t.date <= maxCycleDate));
+      FinOS.saveTransactions(finTxs, true);
+    }
+
+    // Set stored income to '0'
+    localStorage.setItem(FIN_INCOME_KEY, '0');
+    const incomeInput = document.getElementById('fin-income-input');
+    if (incomeInput) incomeInput.value = '0';
+
+    closeIncomeModal();
+    renderAccountsStrip();
+    renderFinanceExpenses();
+    renderFinanceHeatmap();
+    updateFinanceCalculations(true);
+    showToast('🔄 Pemasukan siklus ini berhasil direset ke Rp 0!');
+  }
+
+  // --- Pusat Reset Data Keuangan (Dedicated Modal) ---
+  function openResetFinanceModal() {
+    const modal = document.getElementById('finance-reset-modal');
+    if (modal) modal.classList.add('active');
+  }
+
+  function closeResetFinanceModal() {
+    const modal = document.getElementById('finance-reset-modal');
+    if (modal) modal.classList.remove('active');
+  }
+
+  function handleResetModalBackdrop(e) {
+    if (e.target === document.getElementById('finance-reset-modal')) {
+      closeResetFinanceModal();
+    }
+  }
+
+  function executeFinanceReset(type) {
+    if (type === 'income') {
+      closeResetFinanceModal();
+      quickResetIncome();
+      return;
+    }
+
+    if (type === 'transactions') {
+      if (!confirm('Hapus SEMUA riwayat transaksi (pengeluaran & pemasukan)?\nSaldo masing-masing rekening saat ini akan tetap dipertahankan.')) return;
+      saveFinanceExpenses([]);
+      if (typeof FinOS !== 'undefined' && FinOS.saveTransactions) {
+        FinOS.saveTransactions([], true);
+      }
+      closeResetFinanceModal();
+      renderAccountsStrip();
+      renderFinanceExpenses();
+      renderFinanceHeatmap();
+      updateFinanceCalculations(true);
+      showToast('🗑️ Seluruh riwayat transaksi berhasil dikosongkan!');
+      return;
+    }
+
+    if (type === 'full') {
+      if (!confirm('PERINGATAN: Setel ulang seluruh data keuangan ke pengaturan awal default?\n\n• Saldo BNI: Rp 3.500.000\n• Saldo GoPay: Rp 150.000\n• Saldo Tunai: Rp 100.000\n• Saldo ShopeePay: Rp 150.000\n• Pemasukan: Rp 3.500.000\n• Semua riwayat transaksi dikosongkan.')) return;
+
+      if (typeof FinOS !== 'undefined') {
+        const defaultAccs = [
+          { id: 'acc_bni', name: 'Rekening BNI', type: 'checking', balance: 3500000, is_liquid: true, icon: 'bni-logo.svg', color: '#007C89' },
+          { id: 'acc_gopay', name: 'GoPay', type: 'wallet', balance: 150000, is_liquid: true, icon: 'simple-icons:gojek', color: '#00AED6' },
+          { id: 'acc_cash', name: 'Uang Tunai', type: 'cash', balance: 100000, is_liquid: true, icon: 'lucide:wallet', color: '#10B981' },
+          { id: 'acc_shopeepay', name: 'ShopeePay', type: 'wallet', balance: 150000, is_liquid: true, icon: 'simple-icons:shopee', color: '#EE4D2D' }
+        ];
+        FinOS.saveAccounts(defaultAccs, true);
+        FinOS.saveTransactions([], true);
+      }
+
+      saveFinanceExpenses([]);
+      localStorage.setItem(FIN_INCOME_KEY, '3500000');
+      const incomeInput = document.getElementById('fin-income-input');
+      if (incomeInput) incomeInput.value = '3.500.000';
+
+      closeResetFinanceModal();
+      renderAccountsStrip();
+      renderFinanceExpenses();
+      renderFinanceHeatmap();
+      updateFinanceCalculations(true);
+      showToast('✨ Keuangan berhasil di-reset penuh ke kondisi awal!');
     }
   }
 
@@ -16243,7 +16565,8 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     if (!hintEl) return;
     const dateVal = dateEl && dateEl.value ? dateEl.value : getWibDateString();
     const cycle = getFinanceCycleRange();
-    const inActiveCycle = dateVal >= cycle.startStr && dateVal <= cycle.endStr;
+    const maxCycleDate = cycle.paydayStr > cycle.endStr ? cycle.paydayStr : cycle.endStr;
+    const inActiveCycle = dateVal >= cycle.startStr && dateVal <= maxCycleDate;
     const monthNamesShort = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
 
     if (inActiveCycle) {
@@ -16274,68 +16597,139 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     const dateEl = document.getElementById('inc-modal-date');
     const descEl = document.getElementById('inc-modal-desc');
     const accEl = document.getElementById('inc-modal-account');
+    const modeEl = document.getElementById('inc-modal-mode');
 
     const amount = amountEl ? parseMoney(amountEl.value) : 0;
     const cat = catEl ? catEl.value : 'saku_bni';
     const date = dateEl && dateEl.value ? dateEl.value : getWibDateString();
     const desc = descEl ? descEl.value.trim() : '';
     const targetAccountId = accEl && accEl.value ? accEl.value : 'acc_bni';
+    const mode = (modeEl && modeEl.value) || 'replace';
 
-    if (!amount || amount <= 0) {
+    if (amount < 0) {
       showToast('Masukkan nominal pemasukan yang valid');
       return;
     }
 
     const meta = FIN_INCOME_META[cat] || { label: 'Pemasukan', badge: '💵' };
     const txId = 'fin_inc_' + Date.now();
+    const cycle = getFinanceCycleRange();
+    const maxCycleDate = cycle.paydayStr > cycle.endStr ? cycle.paydayStr : cycle.endStr;
 
-    // 1. Langsung kreditkan saldo rekening tujuan di FinOS
     let targetAccName = 'BNI Taplus';
-    if (typeof FinOS !== 'undefined' && FinOS.getAccounts) {
-      const accounts = FinOS.getAccounts();
+    let expenses = getFinanceExpenses();
+    let accounts = (typeof FinOS !== 'undefined' && FinOS.getAccounts) ? FinOS.getAccounts() : [];
+
+    if (mode === 'replace') {
+      // 1. Cari pemasukan siklus aktif sebelumnya
+      const oldCycleIncomes = expenses.filter(t => t.type === 'income' && t.date >= cycle.startStr && t.date <= maxCycleDate);
+
+      // Reconcile saldo rekening dari pemasukan lama
+      oldCycleIncomes.forEach(inc => {
+        const accId = inc.destination_account_id || inc.source_account_id || 'acc_bni';
+        const acc = accounts.find(a => a.id === accId);
+        if (acc) {
+          acc.balance = Math.max(0, (Number(acc.balance) || 0) - (Number(inc.amount) || 0));
+        }
+      });
+
+      // Kreditkan nominal baru ke target account
       const targetAcc = accounts.find(a => a.id === targetAccountId) || accounts[0];
       if (targetAcc) {
         targetAcc.balance = (Number(targetAcc.balance) || 0) + amount;
         targetAccName = targetAcc.name || targetAccountId;
+      }
+      if (typeof FinOS !== 'undefined' && FinOS.saveAccounts) {
         FinOS.saveAccounts(accounts, true);
       }
-    }
 
-    // 2. Buat objek transaksi lengkap dengan referensi rekening tujuan
-    const newTx = {
-      id: txId,
-      type: 'income',
-      cat: cat,
-      desc: desc || meta.label,
-      amount: amount,
-      date: date,
-      source_account_id: targetAccountId,
-      destination_account_id: targetAccountId
-    };
+      // Hapus pemasukan lama dari riwayat
+      expenses = expenses.filter(t => !(t.type === 'income' && t.date >= cycle.startStr && t.date <= maxCycleDate));
 
-    // 3. Simpan ke expenses riwayat
-    const expenses = getFinanceExpenses();
-    expenses.unshift(newTx);
-    saveFinanceExpenses(expenses);
-
-    // 4. Sinkronkan ke FinOS.getTransactions() agar tidak ada duplikasi / disparitas
-    if (typeof FinOS !== 'undefined' && FinOS.getTransactions) {
-      const finTxs = FinOS.getTransactions();
-      if (!finTxs.some(t => t.id === txId)) {
-        finTxs.unshift({
+      // Jika amount > 0, tambahkan transaksi baru
+      if (amount > 0) {
+        const newTx = {
           id: txId,
           type: 'income',
-          category: cat,
-          description: newTx.desc,
+          cat: cat,
+          desc: desc || meta.label,
           amount: amount,
           date: date,
           source_account_id: targetAccountId,
-          destination_account_id: targetAccountId,
-          goal_id: null,
-          commitment_id: null
-        });
-        FinOS.saveTransactions(finTxs, true);
+          destination_account_id: targetAccountId
+        };
+        expenses.unshift(newTx);
+
+        if (typeof FinOS !== 'undefined' && FinOS.getTransactions) {
+          const finTxs = FinOS.getTransactions().filter(t => !(t.type === 'income' && t.date >= cycle.startStr && t.date <= maxCycleDate));
+          finTxs.unshift({
+            id: txId,
+            type: 'income',
+            category: cat,
+            description: newTx.desc,
+            amount: amount,
+            date: date,
+            source_account_id: targetAccountId,
+            destination_account_id: targetAccountId,
+            goal_id: null,
+            commitment_id: null
+          });
+          FinOS.saveTransactions(finTxs, true);
+        }
+      } else {
+        if (typeof FinOS !== 'undefined' && FinOS.getTransactions) {
+          const finTxs = FinOS.getTransactions().filter(t => !(t.type === 'income' && t.date >= cycle.startStr && t.date <= maxCycleDate));
+          FinOS.saveTransactions(finTxs, true);
+        }
       }
+
+      saveFinanceExpenses(expenses);
+      localStorage.setItem(FIN_INCOME_KEY, amount.toString());
+      showToast(`✅ Pemasukan siklus berhasil diubah menjadi ${formatRupiah(amount)} (di ${targetAccName})!`);
+    } else {
+      // Mode 'add': tambahkan sumber baru
+      const targetAcc = accounts.find(a => a.id === targetAccountId) || accounts[0];
+      if (targetAcc) {
+        targetAcc.balance = (Number(targetAcc.balance) || 0) + amount;
+        targetAccName = targetAcc.name || targetAccountId;
+        if (typeof FinOS !== 'undefined' && FinOS.saveAccounts) {
+          FinOS.saveAccounts(accounts, true);
+        }
+      }
+
+      const newTx = {
+        id: txId,
+        type: 'income',
+        cat: cat,
+        desc: desc || meta.label,
+        amount: amount,
+        date: date,
+        source_account_id: targetAccountId,
+        destination_account_id: targetAccountId
+      };
+      expenses.unshift(newTx);
+      saveFinanceExpenses(expenses);
+
+      if (typeof FinOS !== 'undefined' && FinOS.getTransactions) {
+        const finTxs = FinOS.getTransactions();
+        if (!finTxs.some(t => t.id === txId)) {
+          finTxs.unshift({
+            id: txId,
+            type: 'income',
+            category: cat,
+            description: newTx.desc,
+            amount: amount,
+            date: date,
+            source_account_id: targetAccountId,
+            destination_account_id: targetAccountId,
+            goal_id: null,
+            commitment_id: null
+          });
+          FinOS.saveTransactions(finTxs, true);
+        }
+      }
+
+      showToast(`✅ Pemasukan ${formatRupiah(amount)} (${meta.label}) ditambahkan ke ${targetAccName}!`);
     }
 
     if (amountEl) amountEl.value = '';
@@ -16346,17 +16740,16 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     renderFinanceExpenses();
     renderFinanceHeatmap();
     updateFinanceCalculations(true);
-
-    showToast(`✅ Pemasukan ${formatRupiah(amount)} (${meta.label}) masuk ke ${targetAccName}!`);
   }
 
   function generateFinanceReportLocalText() {
     const allTxs = getFinanceExpenses();
     const cycle = getFinanceCycleRange();
-    const cycleIncomes = allTxs.filter(t => t.type === 'income' && t.date >= cycle.startStr && t.date <= cycle.endStr);
+    const maxCycleDate = cycle.paydayStr > cycle.endStr ? cycle.paydayStr : cycle.endStr;
+    const cycleIncomes = allTxs.filter(t => t.type === 'income' && t.date >= cycle.startStr && t.date <= maxCycleDate);
     const recordedIncome = cycleIncomes.reduce((s, t) => s + (Number(t.amount) || 0), 0);
-    const income = recordedIncome > 0 ? recordedIncome : getFinanceIncome();
-    const expenses = allTxs.filter(t => t.type !== 'income' && t.date >= cycle.startStr && t.date <= cycle.endStr);
+    const income = cycleIncomes.length > 0 ? recordedIncome : getFinanceIncome();
+    const expenses = allTxs.filter(t => t.type !== 'income' && t.date >= cycle.startStr && t.date <= maxCycleDate);
     const bills = getFinanceBills();
     const goals = getFinanceGoals();
     const score = computeHealthScore();
@@ -16824,6 +17217,13 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   window.selectIncomeModalAccount = selectIncomeModalAccount;
   window.handleIncomeModalCatChange = handleIncomeModalCatChange;
   window.handleIncomeModalSubmit = handleIncomeModalSubmit;
+  window.handleIncomeMetricClick = handleIncomeMetricClick;
+  window.setIncomeModalMode = setIncomeModalMode;
+  window.quickResetIncome = quickResetIncome;
+  window.openResetFinanceModal = openResetFinanceModal;
+  window.closeResetFinanceModal = closeResetFinanceModal;
+  window.handleResetModalBackdrop = handleResetModalBackdrop;
+  window.executeFinanceReset = executeFinanceReset;
 
   // --- Initialization ---
   async function initApp() {
