@@ -6333,34 +6333,53 @@
     .fin-budget-wants { border-left: 3px solid #F15A24; }
     .fin-budget-savings { border-left: 3px solid #1D9A6C; }
 
-    /* ── SECTION 7: UPCOMING BILLS ── */
+    /* ── SECTION 7: KALENDER & JADWAL TAGIHAN ── */
+    .fin-bills {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+    }
     .fin-bills-head {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
+      align-items: flex-start;
+      margin-bottom: 12px;
+      gap: 12px;
     }
     .fin-bills-title {
-      font-size: 14px;
-      font-weight: 600;
+      font-size: 15px;
+      font-weight: 700;
       color: var(--text-primary);
+      display: block;
     }
     .fin-bills-link {
       font-size: 12px;
-      font-weight: 600;
+      font-weight: 700;
       color: #005E6A;
-      background: none;
-      border: none;
+      background: rgba(0, 94, 106, 0.08);
+      border: 1px solid rgba(0, 94, 106, 0.2);
+      border-radius: 6px;
       cursor: pointer;
-      padding: 4px 0;
+      padding: 6px 10px;
+      white-space: nowrap;
+      transition: background 0.15s;
+    }
+    .fin-bills-link:active {
+      background: rgba(0, 94, 106, 0.16);
     }
     .fin-bills-summary {
       display: flex;
-      gap: 16px;
+      gap: 12px;
+      padding: 10px 12px;
+      background: var(--surface-hover);
+      border-radius: 8px;
+      border: 1px solid var(--border-subtle);
       margin-bottom: 12px;
     }
     .fin-bills-stat {
       flex: 1;
+      min-width: 0;
     }
     .fin-bills-stat-label {
       font-size: 10px;
@@ -6368,18 +6387,163 @@
       color: var(--text-tertiary);
       text-transform: uppercase;
       letter-spacing: 0.03em;
+      display: block;
+      margin-bottom: 2px;
     }
     .fin-bills-stat-val {
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 700;
+      line-height: 1.2;
     }
     .fin-bills-due {
-      margin-bottom: 10px;
+      margin-bottom: 12px;
+    }
+    .fin-calendar-box {
+      margin: 12px 0 16px;
+      padding: 12px;
+      background: var(--surface-hover);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+    }
+    .fin-heatmap-legend {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 10px;
+      padding-top: 8px;
+      border-top: 1px dashed var(--border);
+    }
+    .fin-legend-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 10px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+    .fin-heat-bill-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+    .fin-heat-bill-dot.unpaid {
+      background: #D9891C;
+      box-shadow: 0 0 3px rgba(217, 137, 28, 0.8);
+    }
+    .fin-heat-bill-dot.paid {
+      background: #10b981;
     }
     .fin-bills-list {
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 8px;
+    }
+    .fin-bill-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      transition: all 0.15s ease;
+    }
+    .fin-bill-row.paid {
+      opacity: 0.72;
+      background: var(--surface-hover);
+    }
+    .fin-bill-check-wrap {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      margin: 0;
+    }
+    .fin-bill-badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: var(--surface-hover);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .fin-bill-badge.overdue {
+      background: #FFF5F5;
+      color: #DC2626;
+      border-color: rgba(220, 38, 38, 0.3);
+    }
+    .fin-bill-badge.paid {
+      background: #F0FDF4;
+      color: #16A34A;
+      border-color: rgba(22, 163, 74, 0.3);
+    }
+    [data-theme="dark"] .fin-bill-badge.overdue { background: rgba(220, 38, 38, 0.12); }
+    [data-theme="dark"] .fin-bill-badge.paid { background: rgba(22, 163, 74, 0.12); }
+    .fin-bill-info {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .fin-bill-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .fin-bill-row.paid .fin-bill-name {
+      text-decoration: line-through;
+      color: var(--text-secondary);
+    }
+    .fin-bill-status-sub {
+      font-size: 10px;
+      color: var(--text-tertiary);
+    }
+    .fin-bill-status-sub.text-danger { color: #DC2626; font-weight: 600; }
+    .fin-bill-status-sub.text-success { color: #16A34A; }
+    .fin-bill-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .fin-bill-amount {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-primary);
+      font-variant-numeric: tabular-nums;
+    }
+    .fin-bill-edit-btn,
+    .finance-bill-del {
+      background: none;
+      border: none;
+      color: var(--text-tertiary);
+      padding: 4px;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.15s, background 0.15s;
+    }
+    .fin-bill-edit-btn:hover { color: #005E6A; background: var(--surface-hover); }
+    .finance-bill-del:hover { color: #DC2626; background: var(--surface-hover); }
+    .fin-bill-highlight {
+      animation: billPulse 1.5s ease;
+    }
+    @keyframes billPulse {
+      0% { box-shadow: 0 0 0 2px #005E6A; }
+      50% { box-shadow: 0 0 0 4px #005E6A; background: rgba(0, 94, 106, 0.08); }
+      100% { box-shadow: none; }
     }
 
     /* ── SECTION 8: SAVINGS & GOALS ── */
@@ -6435,30 +6599,7 @@
       gap: 6px 12px;
     }
 
-    /* ── SECTION 10: SPENDING CALENDAR ── */
-    .fin-calendar {
-      background: var(--surface);
-      border: 1px solid #E1E8E8;
-      border-radius: 10px;
-      padding: 14px 16px;
-    }
-    .fin-calendar[open] { padding-bottom: 14px; }
-    .fin-calendar-summary {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--text-primary);
-      cursor: pointer;
-      list-style: none;
-    }
-    .fin-calendar-summary::-webkit-details-marker { display: none; }
-    .fin-calendar-period {
-      font-size: 11px;
-      color: var(--text-tertiary);
-      font-weight: 500;
-    }
+
 
     /* ── SECTION 11: AI ASSISTANT ── */
     .fin-ai {
@@ -7342,13 +7483,17 @@
     </section>
 
     <!-- ═══════════════════════════════════════════════════
-    SECTION 7 — UPCOMING BILLS (PLAN)
+    SECTION 7 — KALENDER & JADWAL TAGIHAN (PLAN)
     ═══════════════════════════════════════════════════ -->
     <section class="fin-bills" id="fin-bills-section">
       <div class="fin-bills-head">
-        <span class="fin-bills-title">Tagihan Mendatang</span>
-        <button type="button" class="fin-bills-link" onclick="promptAddCustomBill()">+ Tagihan</button>
+        <div>
+          <span class="fin-bills-title">Kalender &amp; Jadwal Tagihan</span>
+          <span class="fin-calendar-period" id="fin-heatmap-period" style="font-size:11px;color:var(--text-tertiary);margin-top:2px;display:block"></span>
+        </div>
+        <button type="button" class="fin-bills-link" onclick="openAddBillModal()">+ Tagihan</button>
       </div>
+
       <div class="fin-bills-summary">
         <div class="fin-bills-stat">
           <span class="fin-bills-stat-label">Total Tagihan</span>
@@ -7363,7 +7508,21 @@
           <span class="fin-bills-stat-val" style="color:#D9891C" id="fin-bills-unpaid">Rp 0</span>
         </div>
       </div>
+
+      <!-- Urgent bill alert strip -->
       <div class="fin-bills-due" id="fin-due-strip"></div>
+
+      <!-- Unified Interactive Calendar Grid with Bill Markers -->
+      <div class="fin-calendar-box" id="fin-heatmap-section">
+        <div class="fin-heatmap" id="fin-heatmap"></div>
+        <div class="fin-heatmap-legend">
+          <div class="fin-legend-pill"><span class="fin-heat-bill-dot unpaid"></span> Tagihan Belum Lunas</div>
+          <div class="fin-legend-pill"><span class="fin-heat-bill-dot paid"></span> Tagihan Lunas</div>
+          <div class="fin-legend-pill"><span style="font-size:11px;line-height:1">💰</span> Gajian BNI</div>
+        </div>
+      </div>
+
+      <!-- Clean Agenda Tagihan List -->
       <div class="fin-bills-list" id="finance-bills-container"></div>
     </section>
 
@@ -7390,25 +7549,7 @@
       <div class="fin-analytics-legend" id="fin-cat-legend"></div>
     </section>
 
-    <!-- ═══════════════════════════════════════════════════
-    SECTION 10 — SPENDING CALENDAR (ANALYSIS)
-    ═══════════════════════════════════════════════════ -->
-    <details class="fin-calendar" id="fin-heatmap-section">
-      <summary class="fin-calendar-summary">
-        <span>Kalender Aktivitas Belanja</span>
-        <span class="fin-calendar-period" id="fin-heatmap-period"></span>
-      </summary>
-      <div class="fin-heatmap" id="fin-heatmap"></div>
-      <div class="fin-heatmap-legend" style="display:flex;align-items:center;justify-content:flex-end;gap:4px;margin-top:8px">
-        <span style="font-size:0.66rem;color:var(--text-tertiary)">Hemat</span>
-        <span style="width:10px;height:10px;border-radius:2px;background:#e2e8f0"></span>
-        <span style="width:10px;height:10px;border-radius:2px;background:#b6e6c9"></span>
-        <span style="width:10px;height:10px;border-radius:2px;background:#34d399"></span>
-        <span style="width:10px;height:10px;border-radius:2px;background:#f59e0b"></span>
-        <span style="width:10px;height:10px;border-radius:2px;background:#ef4444"></span>
-        <span style="font-size:0.66rem;color:var(--text-tertiary)">Boros</span>
-      </div>
-    </details>
+
 
     <!-- ═══════════════════════════════════════════════════
     SECTION 11 — AI FINANCIAL ASSISTANT (EXPLORE)
@@ -8514,6 +8655,61 @@
         <button type="button" class="btn-action btn-secondary" onclick="closeIncomeModal()" style="padding: 8px 16px;">Batal</button>
         <button type="submit" class="btn-action" style="background: #10b981; border: none; color: #fff; font-weight: 700; padding: 8px 22px; border-radius: var(--radius-sm); box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);">
           Simpan
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal: Tambah & Edit Tagihan (Clean & Mobile-First) -->
+<div class="modal-overlay" id="finance-bill-modal" onclick="handleBillModalBackdrop(event)">
+  <div class="modal-box" style="max-width: 420px; border-radius: 16px; overflow: hidden;">
+    <div class="modal-head" style="padding: 16px 20px 12px; border-bottom: 1px solid var(--border);">
+      <h3 style="display: flex; align-items: center; gap: 8px; font-size: 1.05rem; font-weight: 700; margin: 0; color: var(--text-primary);">
+        <span style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; background: rgba(0, 94, 106, 0.12); color: #005E6A;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+        </span>
+        <span id="bill-modal-title-text">Tagihan Rutin</span>
+      </h3>
+      <button class="btn-close" onclick="closeBillModal()" title="Tutup">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <form id="bill-modal-form" onsubmit="handleBillModalSubmit(event)">
+      <div class="modal-body" style="padding: 18px 20px 14px;">
+        <input type="hidden" id="bill-modal-id">
+
+        <!-- Nama Tagihan -->
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label class="form-label" for="bill-modal-name" style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px;">Nama Tagihan</label>
+          <input type="text" class="form-control" id="bill-modal-name" placeholder="Contoh: Sewa Kos Benhil, Token Listrik" required maxlength="40" style="font-size: 0.95rem; font-weight: 600;">
+        </div>
+
+        <!-- Nominal -->
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label class="form-label" for="bill-modal-amount" style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px;">Nominal Tagihan (Rp)</label>
+          <div style="position: relative;">
+            <span style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-weight: 700; color: var(--text-primary); font-size: 1rem;">Rp</span>
+            <input type="text" inputmode="numeric" class="form-control" id="bill-modal-amount" placeholder="0" oninput="formatMoneyInput(this)" required style="padding-left: 44px; font-size: 1.15rem; font-weight: 700;">
+          </div>
+        </div>
+
+        <!-- Tanggal Jatuh Tempo -->
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label class="form-label" for="bill-modal-day" style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px;">Tanggal Jatuh Tempo (Tiap Bulan)</label>
+          <input type="number" min="1" max="31" class="form-control" id="bill-modal-day" placeholder="1-31" required style="font-size: 0.95rem; font-weight: 600;">
+          <span style="font-size: 0.72rem; color: var(--text-tertiary); margin-top: 4px; display: block;">Masukkan angka tanggal antara 1 sampai 31.</span>
+        </div>
+      </div>
+
+      <div class="modal-foot" style="display: flex; justify-content: flex-end; gap: 8px; padding: 14px 20px; border-top: 1px solid var(--border); background: var(--surface);">
+        <button type="button" class="btn-action btn-secondary" onclick="closeBillModal()" style="padding: 8px 16px;">Batal</button>
+        <button type="submit" class="btn-action" style="background: #005E6A; border: none; color: #fff; font-weight: 700; padding: 8px 22px; border-radius: var(--radius-sm); box-shadow: 0 2px 8px rgba(0, 94, 106, 0.25);">
+          Simpan Tagihan
         </button>
       </div>
     </form>
@@ -12025,25 +12221,99 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       saveFinanceBills(bills);
       renderFinanceBills();
       updateFinanceCalculations();
-      showToast(`${item.name}: status ${item.paid ? 'Lunas ' : 'Belum Bayar'}`);
+      showToast(`${item.name}: status ${item.paid ? 'Lunas ✓' : 'Belum Bayar'}`);
     }
   }
 
-  function promptAddCustomBill() {
+  // --- Bill Modal (Add / Edit) Handlers ---
+  function openAddBillModal() {
+    const modal = document.getElementById('finance-bill-modal');
+    if (!modal) return;
+    document.getElementById('bill-modal-id').value = '';
+    document.getElementById('bill-modal-title-text').textContent = 'Tambah Tagihan Baru';
+    document.getElementById('bill-modal-name').value = '';
+    document.getElementById('bill-modal-amount').value = '';
+    document.getElementById('bill-modal-day').value = '5';
+    modal.classList.add('active');
+    setTimeout(() => {
+      const nameInput = document.getElementById('bill-modal-name');
+      if (nameInput) nameInput.focus();
+    }, 120);
+  }
+
+  function openEditBillModal(id) {
     const bills = getFinanceBills();
-    bills.push({
-      id: 'bill_' + Date.now(),
-      name: 'Tagihan Baru',
-      amount: 100000,
-      dueDay: 5,
-      paid: false,
-      icon: '',
-      custom: true
-    });
+    const bill = bills.find(b => b.id === id);
+    if (!bill) return;
+    const modal = document.getElementById('finance-bill-modal');
+    if (!modal) return;
+    document.getElementById('bill-modal-id').value = bill.id;
+    document.getElementById('bill-modal-title-text').textContent = 'Edit Tagihan';
+    document.getElementById('bill-modal-name').value = bill.name || '';
+    document.getElementById('bill-modal-amount').value = Number(bill.amount || 0).toLocaleString('id-ID');
+    document.getElementById('bill-modal-day').value = bill.dueDay || 1;
+    modal.classList.add('active');
+    setTimeout(() => {
+      const amtInput = document.getElementById('bill-modal-amount');
+      if (amtInput) amtInput.focus();
+    }, 120);
+  }
+
+  function closeBillModal() {
+    const modal = document.getElementById('finance-bill-modal');
+    if (modal) modal.classList.remove('active');
+  }
+
+  function handleBillModalBackdrop(e) {
+    if (e && e.target === document.getElementById('finance-bill-modal')) {
+      closeBillModal();
+    }
+  }
+
+  function handleBillModalSubmit(e) {
+    e.preventDefault();
+    const id = document.getElementById('bill-modal-id').value;
+    const name = document.getElementById('bill-modal-name').value.trim();
+    const amount = parseMoney(document.getElementById('bill-modal-amount').value);
+    const day = Math.min(Math.max(parseInt(document.getElementById('bill-modal-day').value, 10) || 1, 1), 31);
+
+    if (!name) {
+      showToast('Mohon masukkan nama tagihan');
+      return;
+    }
+    if (!amount || amount <= 0) {
+      showToast('Mohon masukkan nominal yang valid');
+      return;
+    }
+
+    const bills = getFinanceBills();
+    if (id) {
+      const item = bills.find(b => b.id === id);
+      if (item) {
+        item.name = name;
+        item.amount = amount;
+        item.dueDay = day;
+      }
+    } else {
+      bills.push({
+        id: 'bill_' + Date.now(),
+        name: name,
+        amount: amount,
+        dueDay: day,
+        paid: false,
+        custom: true
+      });
+    }
+
     saveFinanceBills(bills);
     renderFinanceBills();
     updateFinanceCalculations();
-    showToast('Tagihan baru ditambahkan — klik untuk edit');
+    closeBillModal();
+    showToast(`Tagihan "${name}" berhasil disimpan`);
+  }
+
+  function promptAddCustomBill() {
+    openAddBillModal();
   }
 
   function updateBillField(id, field, value) {
@@ -12059,6 +12329,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     }
     saveFinanceBills(bills);
     if (field === 'amount' || field === 'dueDay') updateFinanceCalculations();
+    renderFinanceBills();
   }
 
   function deleteBill(id) {
@@ -12103,35 +12374,41 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     if (!container) return;
 
     if (bills.length === 0) {
-      container.innerHTML = '<div style="font-size: 0.74rem; color: var(--text-tertiary); text-align: center; padding: 12px;">Belum ada tagihan tetap terdaftar. Klik "+ Tagihan" di atas.</div>';
+      container.innerHTML = '<div style="font-size: 0.74rem; color: var(--text-tertiary); text-align: center; padding: 12px;">Belum ada tagihan terdaftar. Klik "+ Tagihan" untuk menambah.</div>';
+      renderFinanceHeatmap();
       return;
     }
 
     const todayDay = new Date().getDate();
 
+    // Sort bills by dueDay ascending
+    const sortedBills = [...bills].sort((a, b) => (Number(a.dueDay) || 0) - (Number(b.dueDay) || 0));
+
     let html = '';
-    bills.forEach(bill => {
-      const isPastDue = todayDay > bill.dueDay && !bill.paid;
-      const dueLabel = bill.paid 
-        ? 'Lunas' : (isPastDue ? `Lewat tgl ${bill.dueDay}` : `Tgl ${bill.dueDay} tiap bulan`);
+    sortedBills.forEach(bill => {
+      const dueDay = Number(bill.dueDay) || 1;
+      const isPastDue = todayDay > dueDay && !bill.paid;
 
       html += `
-        <div class="finance-bill-row ${bill.paid ? 'paid' : ''}">
-          <div class="finance-bill-left">
-            <input type="checkbox" class="finance-bill-checkbox" ${bill.paid ? 'checked' : ''} onchange="toggleBillPaid('${bill.id}')" title="Centang jika sudah lunas">
-            <div class="finance-bill-info">
-              <input type="text" class="finance-bill-edit-name" value="${String(bill.name).replace(/"/g, '&quot;')}" onchange="updateBillField('${bill.id}','name',this.value)" oninput="updateBillField('${bill.id}','name',this.value)" title="Klik untuk edit nama" maxlength="40">
-              <span class="finance-bill-due" style="${isPastDue ? 'color:#ef4444; font-weight:600;' : ''}">
-                Tgl <input type="number" min="1" max="31" class="finance-bill-edit-day" value="${bill.dueDay}" onchange="updateBillField('${bill.id}','dueDay',this.value)" title="Tanggal jatuh tempo (1-31)"> tiap bulan${isPastDue ? ' · lewat' : ''}
-              </span>
-            </div>
+        <div class="fin-bill-row ${bill.paid ? 'paid' : ''}" id="fin-bill-item-${dueDay}">
+          <label class="fin-bill-check-wrap" title="${bill.paid ? 'Tandai belum lunas' : 'Tandai lunas'}">
+            <input type="checkbox" class="finance-bill-checkbox" ${bill.paid ? 'checked' : ''} onchange="toggleBillPaid('${bill.id}')">
+          </label>
+          <div class="fin-bill-badge ${isPastDue ? 'overdue' : (bill.paid ? 'paid' : '')}">
+            Tgl ${dueDay}
           </div>
-          <div class="finance-bill-right">
-            <span class="finance-bill-amount">
-              <span style="opacity:.6;">Rp</span>
-              <input type="text" inputmode="numeric" class="finance-bill-edit-amount" value="${Number(bill.amount || 0).toLocaleString('id-ID')}" oninput="formatMoneyInput(this)" onchange="updateBillField('${bill.id}','amount',this.value)" onblur="updateBillField('${bill.id}','amount',this.value)" title="Klik untuk edit nominal">
+          <div class="fin-bill-info" onclick="openEditBillModal('${bill.id}')" title="Ketuk untuk edit tagihan" style="cursor:pointer">
+            <span class="fin-bill-name">${escHtml(bill.name)}</span>
+            <span class="fin-bill-status-sub ${isPastDue ? 'text-danger' : (bill.paid ? 'text-success' : '')}">
+              ${bill.paid ? '✓ Sudah Lunas' : (isPastDue ? `⚠️ Lewat tempo (tgl ${dueDay})` : `Jatuh tempo tiap tgl ${dueDay}`)}
             </span>
-            <button type="button" class="finance-bill-del" title="Hapus tagihan" onclick="deleteBill('${bill.id}')">
+          </div>
+          <div class="fin-bill-right">
+            <span class="fin-bill-amount" onclick="openEditBillModal('${bill.id}')" title="Ketuk untuk edit tagihan" style="cursor:pointer">${formatRupiah(bill.amount)}</span>
+            <button type="button" class="fin-bill-edit-btn" onclick="openEditBillModal('${bill.id}')" title="Edit tagihan">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            </button>
+            <button type="button" class="finance-bill-del" onclick="deleteBill('${bill.id}')" title="Hapus tagihan">
               <svg class="ic ic-14" aria-hidden="true"><use href="#i-trash"/></svg>
             </button>
           </div>
@@ -12139,6 +12416,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       `;
     });
     container.innerHTML = html;
+    renderFinanceHeatmap();
   }
 
   function getFinanceFixed() {
@@ -13460,6 +13738,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     if (!container) return;
 
     const expenses = getFinanceExpenses();
+    const bills = getFinanceBills();
     const cycle = getFinanceCycleRange();
     const todayStr = getWibDateString();
 
@@ -13491,7 +13770,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     }
 
     function heatColor(amount, isPayday) {
-      if (amount === 0) return isPayday ? 'rgba(16, 185, 129, 0.15)' : 'var(--surface-hover)';
+      if (amount === 0) return isPayday ? 'rgba(16, 185, 129, 0.15)' : 'var(--surface)';
       const ratio = maxDaily > 0 ? amount / maxDaily : 0;
       if (ratio <= 0.25) return '#b6e6c9';
       if (ratio <= 0.5) return '#34d399';
@@ -13513,16 +13792,50 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       const isPayday = key === cycle.paydayStr;
       const bg = heatColor(amount, isPayday);
       const dNum = curr.getDate();
-      const tip = `${dNum} ${monthNamesShort[curr.getMonth()]}: ${amount > 0 ? formatRupiah(amount) : 'Rp 0'}${isPayday ? ' (Hari Gajian \ud83d\udcb0)' : ''}${isToday ? ' [Hari Ini]' : ''}`;
 
-      html += `<div class="fin-heatmap-cell ${isPayday ? 'payday' : ''}" style="background: ${bg};${isToday ? ' outline: 2px solid var(--accent); outline-offset: -1px;' : ''}" title="${tip}">
+      const dayBills = bills.filter(b => (Number(b.dueDay) || 1) === dNum);
+      const hasUnpaid = dayBills.some(b => !b.paid);
+      const allPaid = dayBills.length > 0 && !hasUnpaid;
+
+      let billText = '';
+      if (dayBills.length > 0) {
+        billText = ` · Tagihan: ${dayBills.map(b => `${b.name} (${formatRupiah(b.amount)} - ${b.paid ? 'Lunas' : 'Belum Lunas'})`).join(', ')}`;
+      }
+
+      const tip = `${dNum} ${monthNamesShort[curr.getMonth()]}: ${amount > 0 ? formatRupiah(amount) : 'Belanja Rp 0'}${isPayday ? ' (Hari Gajian \ud83d\udcb0)' : ''}${billText}${isToday ? ' [Hari Ini]' : ''}`;
+
+      const cellCls = [
+        'fin-heatmap-cell',
+        isPayday ? 'payday' : '',
+        hasUnpaid ? 'has-unpaid-bill' : '',
+        dayBills.length > 0 ? 'has-bill' : ''
+      ].filter(Boolean).join(' ');
+
+      html += `<div class="${cellCls}" style="background: ${bg};${isToday ? ' outline: 2px solid var(--accent); outline-offset: -1px;' : ''}" title="${tip}" onclick="selectCalendarDate(${dNum})">
         <span class="fin-heat-date">${dNum}</span>
         ${isPayday ? '<span class="fin-heat-payday" title="Gajian!">💰</span>' : ''}
+        ${hasUnpaid ? '<span class="fin-heat-bill-dot unpaid" title="Ada tagihan belum lunas"></span>' : (allPaid ? '<span class="fin-heat-bill-dot paid" title="Tagihan lunas"></span>' : '')}
       </div>`;
       curr.setDate(curr.getDate() + 1);
     }
 
     container.innerHTML = html;
+  }
+
+  function selectCalendarDate(dNum) {
+    const bills = getFinanceBills().filter(b => (Number(b.dueDay) || 1) === dNum);
+    const billItem = document.getElementById('fin-bill-item-' + dNum);
+    if (billItem) {
+      billItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      billItem.classList.remove('fin-bill-highlight');
+      void billItem.offsetWidth; // trigger reflow
+      billItem.classList.add('fin-bill-highlight');
+    }
+    if (bills.length > 0) {
+      showToast(`Tgl ${dNum}: ${bills.map(b => `${b.name} (${formatRupiah(b.amount)} · ${b.paid ? 'Lunas ✓' : 'Belum Lunas'})`).join(', ')}`);
+    } else {
+      showToast(`Tanggal ${dNum} dipilih`);
+    }
   }
 
   function exportFinanceCSV() {
