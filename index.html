@@ -10908,11 +10908,22 @@
       else btn.removeAttribute('aria-current');
     });
 
-    if (typeof document.startViewTransition === 'function') {
-      document.startViewTransition(() => {
+    if (typeof document.startViewTransition === 'function' && document.visibilityState === 'visible') {
+      try {
+        const vt = document.startViewTransition(() => {
+          _doSelectTab(tab);
+          if (subTabToActivate) switchWorkflowSubtab(subTabToActivate);
+        });
+        if (vt && typeof vt.catch === 'function') {
+          vt.catch(() => {
+            _doSelectTab(tab);
+            if (subTabToActivate) switchWorkflowSubtab(subTabToActivate);
+          });
+        }
+      } catch (_) {
         _doSelectTab(tab);
         if (subTabToActivate) switchWorkflowSubtab(subTabToActivate);
-      });
+      }
     } else {
       _doSelectTab(tab);
       if (subTabToActivate) switchWorkflowSubtab(subTabToActivate);
@@ -19319,7 +19330,10 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('./sw.js')
-        .then(reg => console.log('[PWA] SW registered:', reg.scope))
+        .then(reg => {
+          console.log('[PWA] SW registered:', reg.scope);
+          try { reg.update(); } catch (_) {}
+        })
         .catch(err => console.warn('[PWA] SW registration failed:', err));
     });
   }
