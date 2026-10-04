@@ -5945,6 +5945,9 @@
       color: var(--text-primary);
       line-height: 1.2;
     }
+    .fin-snapshot-hero-value.danger { color: #D94A45; }
+    .fin-snapshot-hero-value.warning { color: #D9891C; }
+    .fin-snapshot-hero-value.success { color: var(--text-primary); }
     .fin-snapshot-row {
       display: flex;
       gap: 20px;
@@ -6186,6 +6189,59 @@
       flex-direction: column;
       gap: 8px;
     }
+    .fin-alert {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .fin-alert.danger {
+      border-left-color: #D94A45;
+      background: #FFF8F8;
+    }
+    .fin-alert.warning {
+      border-left-color: #D9891C;
+      background: #FFFBF2;
+    }
+    .fin-alert.success {
+      border-left-color: #0E8A5E;
+      background: #F4FBF7;
+    }
+    .fin-alert.info {
+      border-left-color: #005E6A;
+      background: #F4F9FA;
+    }
+    [data-theme="dark"] .fin-alert.danger { background: rgba(217, 74, 69, 0.1); }
+    [data-theme="dark"] .fin-alert.warning { background: rgba(217, 137, 28, 0.1); }
+    [data-theme="dark"] .fin-alert.success { background: rgba(14, 138, 94, 0.1); }
+    [data-theme="dark"] .fin-alert.info { background: rgba(0, 94, 106, 0.1); }
+    .fin-alert-head {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .fin-alert-badge {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 1px 6px;
+      border-radius: 4px;
+    }
+    .fin-alert.danger .fin-alert-badge { color: #D94A45; background: rgba(217, 74, 69, 0.14); }
+    .fin-alert.warning .fin-alert-badge { color: #D9891C; background: rgba(217, 137, 28, 0.14); }
+    .fin-alert.success .fin-alert-badge { color: #0E8A5E; background: rgba(14, 138, 94, 0.14); }
+    .fin-alert.info .fin-alert-badge { color: #005E6A; background: rgba(0, 94, 106, 0.14); }
+    .fin-alert-body {
+      font-size: 12px;
+      line-height: 1.45;
+      color: var(--text-secondary);
+      margin: 0;
+    }
 
     /* ── SECTION 5: RECENT TRANSACTIONS ── */
     .fin-recent-head {
@@ -6366,12 +6422,17 @@
       color: var(--text-tertiary);
     }
     .fin-analytics-track {
-      margin-bottom: 8px;
+      height: 8px;
+      display: flex;
+      background: var(--surface-hover);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 10px;
     }
     .fin-analytics-legend {
       display: flex;
-      flex-direction: column;
-      gap: 4px;
+      flex-wrap: wrap;
+      gap: 6px 12px;
     }
 
     /* ── SECTION 10: SPENDING CALENDAR ── */
@@ -7152,6 +7213,31 @@
         <span class="fin-recent-title">Transaksi Terbaru</span>
         <button type="button" class="fin-recent-link" onclick="openFullTransactionHistory()">Lihat Semua →</button>
       </div>
+
+      <!-- Finance filter bar for full history view (toggled by Lihat Semua) -->
+      <div class="finance-filter-bar" id="fin-filter-bar" style="display:none;margin-bottom:12px">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+          <div style="display:flex;align-items:center;gap:6px">
+            <div class="finance-type-pills">
+              <button type="button" class="fin-type-pill active" id="fin-view-all" onclick="setFinanceTypeFilter('all')">Semua</button>
+              <button type="button" class="fin-type-pill" id="fin-view-expense" onclick="setFinanceTypeFilter('expense')">Pengeluaran</button>
+              <button type="button" class="fin-type-pill" id="fin-view-income" onclick="setFinanceTypeFilter('income')">Pemasukan</button>
+            </div>
+            <button type="button" class="fin-add-income-btn" onclick="openIncomeModal()">+ Pemasukan</button>
+          </div>
+          <span id="fin-filter-count" style="font-size:0.68rem;color:var(--text-tertiary);font-weight:600">0 transaksi</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap;margin-top:8px">
+          <div class="finance-filter-chips">
+            <button type="button" class="finance-filter-btn active" id="fin-filter-all" onclick="setFinanceFilter('all')">Semua Waktu</button>
+            <button type="button" class="finance-filter-btn" id="fin-filter-today" onclick="setFinanceFilter('today')">Hari Ini</button>
+            <button type="button" class="finance-filter-btn" id="fin-filter-week" onclick="setFinanceFilter('week')">7 Hari</button>
+            <button type="button" class="finance-filter-btn" id="fin-filter-month" onclick="setFinanceFilter('month')">Siklus Aktif</button>
+          </div>
+          <div id="fin-stream-summary" style="font-size:0.7rem;font-weight:700"></div>
+        </div>
+      </div>
+
       <div class="fin-recent-list" id="finance-tx-container">
         <div style="font-size:0.78rem;color:var(--text-secondary);text-align:center;padding:16px;border:1px dashed var(--border);border-radius:6px;background:var(--surface-hover)">
           Belum ada transaksi tercatat. Gunakan <strong>+ Catat Pengeluaran</strong> di atas.
@@ -7417,34 +7503,7 @@
       </div>
     </details>
 
-    <!-- ═══════════════════════════════════════════════════
-    HIDDEN: Full transaction history modal anchor
-    ═══════════════════════════════════════════════════ -->
-    <div style="display:none">
-      <!-- Finance filter bar for full history view -->
-      <div class="finance-filter-bar" id="fin-filter-bar">
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
-          <div style="display:flex;align-items:center;gap:6px">
-            <div class="finance-type-pills">
-              <button type="button" class="fin-type-pill active" id="fin-view-all" onclick="setFinanceTypeFilter('all')">Semua</button>
-              <button type="button" class="fin-type-pill" id="fin-view-expense" onclick="setFinanceTypeFilter('expense')">Pengeluaran</button>
-              <button type="button" class="fin-type-pill" id="fin-view-income" onclick="setFinanceTypeFilter('income')">Pemasukan</button>
-            </div>
-            <button type="button" class="fin-add-income-btn" onclick="openIncomeModal()">+ Pemasukan</button>
-          </div>
-          <span id="fin-filter-count" style="font-size:0.68rem;color:var(--text-tertiary);font-weight:600">0 transaksi</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap;margin-top:8px">
-          <div class="finance-filter-chips">
-            <button type="button" class="finance-filter-btn active" id="fin-filter-all" onclick="setFinanceFilter('all')">Semua Waktu</button>
-            <button type="button" class="finance-filter-btn" id="fin-filter-today" onclick="setFinanceFilter('today')">Hari Ini</button>
-            <button type="button" class="finance-filter-btn" id="fin-filter-week" onclick="setFinanceFilter('week')">7 Hari</button>
-            <button type="button" class="finance-filter-btn" id="fin-filter-month" onclick="setFinanceFilter('month')">Siklus Aktif</button>
-          </div>
-          <div id="fin-stream-summary" style="font-size:0.7rem;font-weight:700"></div>
-        </div>
-      </div>
-    </div>
+
 
     <!-- ═══════════════════════════════════════════════════
     QUICK EXPENSE BOTTOM SHEET (Mobile-first)
@@ -12253,7 +12312,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     strip.innerHTML = chips.map(c => `<span class="fin-due-chip ${c.cls}"><svg class="ic ic-14" aria-hidden="true"><use href="#i-alert"/></svg> ${escHtml(c.name)} — ${c.label}</span>`).join('');
   }
 
-  // ===== Insight Otomatis =====
+  // ===== Insight Otomatis (Smart Alerts) =====
   function renderInsights() {
     const container = document.getElementById('fin-insight-list');
     if (!container) return;
@@ -12262,52 +12321,146 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     const bills = getFinanceBills();
     const goals = getFinanceGoals();
     const totalSpent = expenses.reduce((s, e) => s + (Number(e.amount) || 0), 0);
+    const todayDay = new Date().getDate();
     const insights = [];
 
-    if (income > 0 && totalSpent === 0) {
-      insights.push({ icon: 'i-clock', text: 'Belum ada pengeluaran tercatat. Mulai catat pengeluaran pertama agar insight & jatah harian akurat.' });
+    // 1. Tagihan lewat tempo (Critical Danger)
+    const overdue = bills.filter(b => !b.paid && todayDay > (Number(b.dueDay) || 1));
+    if (overdue.length > 0) {
+      insights.push({
+        severity: 'danger',
+        title: 'Tagihan Lewat Tempo',
+        text: `${overdue.length} tagihan belum dibayar: ${overdue.map(b => b.name).join(', ')}. Selesaikan segera untuk menjaga skor & menghindari denda.`,
+        weight: 100
+      });
     }
+
+    // 2. Defisit Anggaran
+    if (income > 0 && totalSpent > income) {
+      insights.push({
+        severity: 'danger',
+        title: 'Defisit Anggaran',
+        text: `Total pengeluaran (${formatRupiah(totalSpent)}) telah melampaui seluruh pemasukan (${formatRupiah(income)}). Tekan belanja non-kritis.`,
+        weight: 95
+      });
+    }
+
+    // 3. Tagihan Jatuh Tempo Dekat (<= 3 hari)
+    const nearBills = bills.filter(b => !b.paid && (Number(b.dueDay) - todayDay >= 0) && (Number(b.dueDay) - todayDay <= 3));
+    if (nearBills.length > 0) {
+      insights.push({
+        severity: 'warning',
+        title: 'Jatuh Tempo Dekat',
+        text: `${nearBills.map(b => `${b.name} (${formatRupiah(b.amount)})`).join(', ')} jatuh tempo dalam waktu dekat. Pastikan saldo mencukupi.`,
+        weight: 85
+      });
+    }
+
+    // 4. Pengeluaran Tunggal Sangat Besar
+    if (totalSpent > 0 && income > 0) {
+      const biggest = [...expenses].sort((a, b) => (Number(b.amount) || 0) - (Number(a.amount) || 0))[0];
+      if (biggest && (Number(biggest.amount) || 0) >= income * 0.2) {
+        insights.push({
+          severity: 'warning',
+          title: 'Pengeluaran Besar',
+          text: `Transaksi tunggal ${formatRupiah(biggest.amount)} (${escHtml(biggest.desc || 'Pengeluaran')}) menghabiskan ${Math.round((biggest.amount / income) * 100)}% total pemasukan.`,
+          weight: 80
+        });
+      }
+    }
+
+    // 5. Konsentrasi Kategori Belanja Tinggi
     if (totalSpent > 0) {
       const catTotals = {};
       expenses.forEach(e => { catTotals[e.cat] = (catTotals[e.cat] || 0) + (Number(e.amount) || 0); });
       const top = Object.entries(catTotals).sort((a, b) => b[1] - a[1])[0];
-      if (top) {
-        const meta = FIN_CATEGORY_META[top[0]] || { label: 'Lainnya' };
+      if (top && top[1] > 0) {
         const share = Math.round((top[1] / totalSpent) * 100);
-        insights.push({ icon: 'i-chart-pie', text: `Kategori terbesar: ${meta.label}, ${formatRupiah(top[1])} (${share}% pengeluaran).${share > 40 ? ' Pertimbangkan memangkas di sini.' : ''}` });
+        if (share >= 40) {
+          const meta = FIN_CATEGORY_META[top[0]] || { label: 'Lainnya' };
+          insights.push({
+            severity: 'warning',
+            title: 'Dominasi Belanja',
+            text: `Pengeluaran ${meta.label} mendominasi ${share}% dari seluruh belanja (${formatRupiah(top[1])}). Pertimbangkan rasionalisasi.`,
+            weight: 75
+          });
+        }
       }
-      const biggest = [...expenses].sort((a, b) => (Number(b.amount) || 0) - (Number(a.amount) || 0))[0];
-      if (biggest && (Number(biggest.amount) || 0) >= income * 0.1) {
-        insights.push({ icon: 'i-alert', text: `Transaksi tunggal terbesar ${formatRupiah(biggest.amount)} (${escHtml(biggest.desc || '')}) — ${Math.round((biggest.amount / income) * 100)}% pemasukan.` });
-      }
     }
-    // Langganan tahunan
-    const monthly = bills.filter(b => b.name.toLowerCase().includes('kuota') || b.name.toLowerCase().includes('langganan') || b.name.toLowerCase().includes('data'))
-      .reduce((s, b) => s + (Number(b.amount) || 0), 0);
-    if (monthly > 0) {
-      insights.push({ icon: 'i-coins', text: `Langganan harian-harian ${formatRupiah(monthly)}/bln = ${formatRupiah(monthly * 12)}/tahun (${monthly > 0 ? `≈ ${Math.round(monthly / 15000)} x makan siang kantin` : ''}).` });
+
+    // 6. Proyeksi Kondisi Aman
+    if (income > 0 && totalSpent > 0 && totalSpent <= income * 0.7) {
+      const remaining = income - totalSpent;
+      insights.push({
+        severity: 'success',
+        title: 'Kondisi Terkendali',
+        text: `Dengan pola belanja saat ini, saldo diperkirakan masih tersisa ${formatRupiah(remaining)} di akhir periode siklus.`,
+        weight: 60
+      });
     }
-    const overdue = bills.filter(b => !b.paid && new Date().getDate() > (Number(b.dueDay) || 1));
-    if (overdue.length > 0) {
-      insights.push({ icon: 'i-alert', text: `${overdue.length} tagihan lewat tempo: ${overdue.map(b => b.name).join(', ')}. Selesaikan untuk jaga skor & hindari denda.` });
-    }
-    // Dana darurat
+
+    // 7. Dana Darurat Progress
     const emergency = goals.find(g => /darurat/i.test(g.name));
     if (emergency && emergency.target > 0 && emergency.saved < emergency.target) {
       const pct = Math.round((emergency.saved / emergency.target) * 100);
-      insights.push({ icon: 'i-target', text: `Dana darurat baru ${pct}% (${formatRupiah(emergency.saved)}/${formatRupiah(emergency.target)}). Sisihkan bertahap.` });
-    }
-    // Tabungan
-    const totalSaved = goals.reduce((s, g) => s + (Number(g.saved) || 0), 0);
-    if (totalSaved > 0) {
-      insights.push({ icon: 'i-wallet', text: `Total sudah disisihkan ke tujuan: ${formatRupiah(totalSaved)}. Pertahankan disiplin!` });
+      insights.push({
+        severity: 'info',
+        title: 'Dana Darurat',
+        text: `Target dana darurat terkumpul ${pct}% (${formatRupiah(emergency.saved)} / ${formatRupiah(emergency.target)}). Terus sisihkan secara konsisten.`,
+        weight: 50
+      });
     }
 
-    if (insights.length === 0) {
-      container.innerHTML = '<div style="font-size:0.74rem;color:var(--text-tertiary);">Insight muncul otomatis setelah ada pemasukan & transaksi.</div>';
+    // 8. Tabungan Berjalan
+    const totalSaved = goals.reduce((s, g) => s + (Number(g.saved) || 0), 0);
+    if (totalSaved > 0 && !insights.some(i => i.title === 'Dana Darurat')) {
+      insights.push({
+        severity: 'success',
+        title: 'Tabungan Disiplin',
+        text: `Total ${formatRupiah(totalSaved)} telah diamankan di tujuan finansial. Disiplin menabung berjalan baik.`,
+        weight: 45
+      });
+    }
+
+    // 9. Langganan Rutin
+    const monthly = bills.filter(b => b.name.toLowerCase().includes('kuota') || b.name.toLowerCase().includes('langganan') || b.name.toLowerCase().includes('data'))
+      .reduce((s, b) => s + (Number(b.amount) || 0), 0);
+    if (monthly > 0 && insights.length < 2) {
+      insights.push({
+        severity: 'info',
+        title: 'Biaya Langganan',
+        text: `Tagihan langganan rutin ${formatRupiah(monthly)}/bulan setara ${formatRupiah(monthly * 12)}/tahun.`,
+        weight: 30
+      });
+    }
+
+    // 10. Initial State (No expense recorded yet)
+    if (income > 0 && totalSpent === 0) {
+      insights.push({
+        severity: 'info',
+        title: 'Mulai Tracking',
+        text: 'Belum ada pengeluaran tercatat. Mulai catat belanja pertama agar insight & perhitungan burn rate harian aktif.',
+        weight: 20
+      });
+    }
+
+    // Sort by weight descending & take top 1-3 priority insights
+    insights.sort((a, b) => b.weight - a.weight);
+    const topInsights = insights.slice(0, 3);
+
+    if (topInsights.length === 0) {
+      container.innerHTML = '<div style="font-size:0.75rem;color:var(--text-tertiary);text-align:center;padding:10px 0">Insight finansial akan tampil otomatis setelah ada aktivitas transaksi.</div>';
       return;
     }
-    container.innerHTML = insights.map(i => `<div class="fin-insight"><svg class="ic ic-16" aria-hidden="true"><use href="#${i.icon}"/></svg><span>${i.text}</span></div>`).join('');
+
+    container.innerHTML = topInsights.map(i => `
+      <div class="fin-alert ${i.severity}">
+        <div class="fin-alert-head">
+          <span class="fin-alert-badge">${i.title}</span>
+        </div>
+        <p class="fin-alert-body">${i.text}</p>
+      </div>
+    `).join('');
   }
 
   // ===== Skor Kesehatan Finansial =====
@@ -12871,7 +13024,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     const remEl = document.getElementById('fin-remaining-budget');
     if (remEl) {
       remEl.textContent = formatRupiah(remaining);
-      remEl.className = 'finance-metric-val ' + (remaining < 0 ? 'danger' : (percentSpent > 80 ? 'warning' : 'success'));
+      remEl.className = 'fin-snapshot-hero-value ' + (remaining < 0 ? 'danger' : (percentSpent > 80 ? 'warning' : 'success'));
     }
 
     const dailyLimitEl = document.getElementById('fin-daily-safe-limit');
@@ -13163,36 +13316,11 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   }
 
   function quickFillExpense(cat, amount, desc, type = 'expense', autoSubmit = null) {
-    if (type !== currentTxType) {
-      setFinanceTxType(type);
+    if (type === 'income') {
+      openIncomeModal();
+      return;
     }
-    const catEl = document.getElementById('fin-tx-cat');
-    const amountEl = document.getElementById('fin-tx-amount');
-    const descEl = document.getElementById('fin-tx-desc');
-    const dateEl = document.getElementById('fin-tx-date');
-
-    if (catEl) catEl.value = cat;
-    if (amountEl) amountEl.value = Number(amount).toLocaleString('id-ID');
-    if (descEl) descEl.value = desc || '';
-
-    const cycle = getFinanceCycleRange();
-    if (dateEl) {
-      if (cat === 'saku_bni') {
-        dateEl.value = cycle.paydayStr; // Tgl 22 hari gajian BNI
-      } else if (!dateEl.value) {
-        dateEl.value = getWibDateString();
-      }
-    }
-
-    // Untuk pengeluaran: cepat 1-klik submit langsung
-    // Untuk pemasukan: isi form & arahkan ke tanggal agar bisa dipilih & di-tracking
-    const shouldSubmit = autoSubmit !== null ? autoSubmit : (type !== 'income');
-    if (shouldSubmit) {
-      handleNewExpense();
-    } else {
-      if (dateEl) dateEl.focus();
-      showToast(`Preset ${desc || 'pemasukan'} terisi! Sesuaikan tanggal jika perlu, lalu klik Simpan Pemasukan.`);
-    }
+    openQuickExpenseSheet(cat, amount, desc);
   }
 
   function deleteExpense(id) {
@@ -13990,24 +14118,48 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   }
 
   // --- Quick Expense Bottom Sheet (Mobile-First) ---
-  function openQuickExpenseSheet() {
+  function openQuickExpenseSheet(presetCat, presetAmount, presetDesc) {
     const sheet = document.getElementById('fin-quick-sheet');
     if (!sheet) return;
     const dateInput = document.getElementById('fin-sheet-date');
     if (dateInput && !dateInput.value) {
       dateInput.value = getWibDateString();
     }
-    document.getElementById('fin-sheet-amount').value = '';
-    document.getElementById('fin-sheet-desc').value = '';
-    document.getElementById('fin-sheet-cat').value = 'makan';
-    document.getElementById('fin-sheet-type').value = 'expense';
-    // Reset chip selection
-    document.querySelectorAll('.fin-sheet-chip').forEach((c, i) => {
-      c.classList.toggle('active', i === 0);
+    const cat = presetCat || 'makan';
+    const amountVal = presetAmount ? Number(presetAmount).toLocaleString('id-ID') : '';
+    const descVal = presetDesc || '';
+
+    const amtEl = document.getElementById('fin-sheet-amount');
+    const descEl = document.getElementById('fin-sheet-desc');
+    const catEl = document.getElementById('fin-sheet-cat');
+    const typeEl = document.getElementById('fin-sheet-type');
+
+    if (amtEl) amtEl.value = amountVal;
+    if (descEl) descEl.value = descVal;
+    if (catEl) catEl.value = cat;
+    if (typeEl) typeEl.value = 'expense';
+
+    // Reset chip selection & highlight matching category chip in sheet
+    document.querySelectorAll('.fin-sheet-chip').forEach(c => {
+      const oc = c.getAttribute('onclick') || '';
+      const match = oc.match(/selectSheetCat\('([^']+)'/);
+      if (match && match[1]) {
+        c.classList.toggle('active', match[1] === cat);
+      }
     });
-    document.getElementById('fin-sheet-title').textContent = 'Catat Pengeluaran';
+
+    const titleEl = document.getElementById('fin-sheet-title');
+    if (titleEl) titleEl.textContent = 'Catat Pengeluaran';
+
     sheet.style.display = 'flex';
     document.body.style.overflow = 'hidden';
+
+    setTimeout(() => {
+      if (amtEl) {
+        amtEl.focus();
+        if (amountVal) amtEl.select();
+      }
+    }, 120);
   }
 
   function closeQuickExpenseSheet(event) {
@@ -14065,25 +14217,23 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     if (formDate) formDate.value = date;
   }
 
-  // --- Full Transaction History (modal-like inline expand) ---
+  // --- Full Transaction History (inline expand/collapse) ---
   function openFullTransactionHistory() {
-    // Show filter bar and render full list
     const filterBar = document.getElementById('fin-filter-bar');
+    const toggleBtn = document.querySelector('.fin-recent-link');
+    const isCurrentlyOpen = filterBar && filterBar.style.display === 'block';
+
     if (filterBar) {
-      filterBar.style.display = filterBar.style.display === 'block' ? 'none' : 'block';
+      filterBar.style.display = isCurrentlyOpen ? 'none' : 'block';
     }
-    if (filterBar && filterBar.style.display === 'block') {
-      // Scroll to history section
-      document.getElementById('fin-history-section').scrollIntoView({ behavior: 'smooth' });
-      // Render full transaction list
-      const container = document.getElementById('finance-tx-container');
-      if (container) {
-        renderFinanceExpenses();
-      }
+
+    if (!isCurrentlyOpen) {
+      if (toggleBtn) toggleBtn.textContent = 'Tutup Riwayat ▴';
+      document.getElementById('fin-history-section')?.scrollIntoView({ behavior: 'smooth' });
     } else {
-      // Collapsed view: show only 5 recent
-      renderRecentTransactionsSummary();
+      if (toggleBtn) toggleBtn.textContent = 'Lihat Semua →';
     }
+    renderFinanceExpenses();
   }
 
   // Show only 3-5 most recent transactions on dashboard
