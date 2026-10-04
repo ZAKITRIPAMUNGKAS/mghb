@@ -7137,6 +7137,39 @@
       color: var(--text-primary);
       white-space: nowrap;
       flex-shrink: 0;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    .fin-account-pill:hover {
+      border-color: #005E6A;
+      background: rgba(0, 94, 106, 0.05);
+      transform: translateY(-1px);
+    }
+    .fin-account-pill:active {
+      transform: translateY(0);
+    }
+    .fin-pill-brand-logo {
+      height: 12px;
+      width: auto;
+      max-width: 44px;
+      object-fit: contain;
+      vertical-align: middle;
+      display: inline-block;
+      background: #ffffff;
+      padding: 1.5px 4px;
+      border-radius: 3px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+    }
+    .fin-account-select-chip .fin-pill-brand-logo {
+      height: 13px;
+      padding: 1.5px 5px;
+    }
+    .fin-action-chip .fin-pill-brand-logo,
+    .fin-sheet-chip .fin-pill-brand-logo {
+      height: 14px;
+      padding: 1.5px 5px;
     }
     .fin-account-pill-amt {
       font-weight: 700;
@@ -7658,10 +7691,22 @@
 
       <!-- Multi-Account Balance Quick Strip -->
       <div class="fin-accounts-strip" id="fin-accounts-strip">
-        <div class="fin-account-pill"><iconify-icon icon="fluent-emoji-flat:bank" width="14" height="14"></iconify-icon> <span>BNI:</span> <strong class="fin-account-pill-amt" id="fin-acc-bni-val">Rp 0</strong></div>
-        <div class="fin-account-pill"><iconify-icon icon="fluent-emoji-flat:mobile-phone" width="14" height="14"></iconify-icon> <span>GoPay:</span> <strong class="fin-account-pill-amt" id="fin-acc-gopay-val">Rp 0</strong></div>
-        <div class="fin-account-pill"><iconify-icon icon="fluent-emoji-flat:money-with-wings" width="14" height="14"></iconify-icon> <span>Tunai:</span> <strong class="fin-account-pill-amt" id="fin-acc-cash-val">Rp 0</strong></div>
-        <div class="fin-account-pill"><iconify-icon icon="fluent-emoji-flat:piggy-bank" width="14" height="14"></iconify-icon> <span>Wondr:</span> <strong class="fin-account-pill-amt" id="fin-acc-savings-val">Rp 0</strong></div>
+        <div class="fin-account-pill" onclick="promptEditAccountBalance('acc_bni')" role="button" tabindex="0" title="Klik untuk rekonsiliasi saldo BNI">
+          <img src="bni-logo.svg" alt="BNI" class="fin-pill-brand-logo">
+          <span>BNI:</span> <strong class="fin-account-pill-amt" id="fin-acc-bni-val">Rp 0</strong>
+        </div>
+        <div class="fin-account-pill" onclick="promptEditAccountBalance('acc_gopay')" role="button" tabindex="0" title="Klik untuk rekonsiliasi saldo GoPay">
+          <iconify-icon icon="simple-icons:gojek" width="13" height="13" style="color:#00AA13;vertical-align:middle;"></iconify-icon>
+          <span>GoPay:</span> <strong class="fin-account-pill-amt" id="fin-acc-gopay-val">Rp 0</strong>
+        </div>
+        <div class="fin-account-pill" onclick="promptEditAccountBalance('acc_cash')" role="button" tabindex="0" title="Klik untuk rekonsiliasi uang Tunai">
+          <iconify-icon icon="lucide:wallet" width="13" height="13" style="color:#10B981;vertical-align:middle;"></iconify-icon>
+          <span>Tunai:</span> <strong class="fin-account-pill-amt" id="fin-acc-cash-val">Rp 0</strong>
+        </div>
+        <div class="fin-account-pill" onclick="promptEditAccountBalance('acc_savings')" role="button" tabindex="0" title="Klik untuk rekonsiliasi saldo Wondr (BNI)">
+          <img src="bni-logo.svg" alt="Wondr by BNI" class="fin-pill-brand-logo">
+          <span>Wondr:</span> <strong class="fin-account-pill-amt" id="fin-acc-savings-val">Rp 0</strong>
+        </div>
       </div>
 
       <div class="fin-snapshot-row">
@@ -7732,31 +7777,31 @@
       </div>
       <div class="fin-action-chips" id="fin-action-chips" role="region" aria-label="Kategori Cepat">
         <button type="button" class="fin-action-chip" onclick="quickFillExpense('makan',15000,'Makan Siang','expense')" aria-label="Makan">
-          <iconify-icon icon="fluent-emoji-flat:bento-box" width="18" height="18" aria-hidden="true"></iconify-icon>
+          <iconify-icon icon="lucide:utensils" width="18" height="18" aria-hidden="true"></iconify-icon>
           <span>Makan</span>
         </button>
         <button type="button" class="fin-action-chip" onclick="quickFillExpense('transport',10000,'Transport','expense')" aria-label="Transport">
-          <iconify-icon icon="fluent-emoji-flat:bus" width="18" height="18" aria-hidden="true"></iconify-icon>
+          <iconify-icon icon="lucide:bus" width="18" height="18" aria-hidden="true"></iconify-icon>
           <span>Transport</span>
         </button>
         <button type="button" class="fin-action-chip" onclick="quickFillExpense('kopi',18000,'Kopi/Hangout','expense')" aria-label="Kopi">
-          <iconify-icon icon="fluent-emoji-flat:hot-beverage" width="18" height="18" aria-hidden="true"></iconify-icon>
+          <iconify-icon icon="lucide:coffee" width="18" height="18" aria-hidden="true"></iconify-icon>
           <span>Kopi</span>
         </button>
         <button type="button" class="fin-action-chip" onclick="quickFillExpense('laundry',25000,'Laundry','expense')" aria-label="Laundry">
-          <iconify-icon icon="fluent-emoji-flat:basket" width="18" height="18" aria-hidden="true"></iconify-icon>
+          <iconify-icon icon="lucide:shirt" width="18" height="18" aria-hidden="true"></iconify-icon>
           <span>Laundry</span>
         </button>
         <button type="button" class="fin-action-chip" onclick="quickFillExpense('belanja',35000,'Belanja Kebutuhan','expense')" aria-label="Belanja">
-          <iconify-icon icon="fluent-emoji-flat:shopping-bags" width="18" height="18" aria-hidden="true"></iconify-icon>
+          <iconify-icon icon="lucide:shopping-bag" width="18" height="18" aria-hidden="true"></iconify-icon>
           <span>Belanja</span>
         </button>
         <button type="button" class="fin-action-chip" onclick="quickFillExpense('kos',100000,'Iuran/Listrik Kos','expense')" aria-label="Kos">
-          <iconify-icon icon="fluent-emoji-flat:house" width="18" height="18" aria-hidden="true"></iconify-icon>
+          <iconify-icon icon="lucide:home" width="18" height="18" aria-hidden="true"></iconify-icon>
           <span>Kos</span>
         </button>
         <button type="button" class="fin-action-chip" onclick="quickFillExpense('saku_bni',3500000,'Uang Saku BNI','income')" aria-label="Uang Saku BNI">
-          <iconify-icon icon="fluent-emoji-flat:bank" width="18" height="18" aria-hidden="true"></iconify-icon>
+          <img src="bni-logo.svg" alt="BNI" class="fin-pill-brand-logo">
           <span>Uang Saku</span>
         </button>
       </div>
@@ -7950,7 +7995,7 @@
         <div class="fin-budget-row needs">
           <div class="fin-budget-row-top">
             <span class="fin-budget-row-label">
-              <iconify-icon icon="fluent-emoji-flat:house" width="16" height="16" aria-hidden="true"></iconify-icon>
+              <iconify-icon icon="lucide:home" width="16" height="16" aria-hidden="true"></iconify-icon>
               <span>Needs (50%)</span>
             </span>
             <span class="fin-budget-row-status" id="fin-env-needs-status">0%</span>
@@ -7965,7 +8010,7 @@
         <div class="fin-budget-row wants">
           <div class="fin-budget-row-top">
             <span class="fin-budget-row-label">
-              <iconify-icon icon="fluent-emoji-flat:hot-beverage" width="16" height="16" aria-hidden="true"></iconify-icon>
+              <iconify-icon icon="lucide:coffee" width="16" height="16" aria-hidden="true"></iconify-icon>
               <span>Wants (30%)</span>
             </span>
             <span class="fin-budget-row-status" id="fin-env-wants-status">0%</span>
@@ -7980,7 +8025,7 @@
         <div class="fin-budget-row savings">
           <div class="fin-budget-row-top">
             <span class="fin-budget-row-label">
-              <iconify-icon icon="fluent-emoji-flat:money-with-wings" width="16" height="16" aria-hidden="true"></iconify-icon>
+              <iconify-icon icon="lucide:wallet" width="16" height="16" aria-hidden="true"></iconify-icon>
               <span>Savings (20%)</span>
             </span>
             <span class="fin-budget-row-status" id="fin-env-savings-status">0%</span>
@@ -8039,7 +8084,7 @@
             <div class="fin-heatmap-legend">
               <div class="fin-legend-pill"><span class="fin-heat-bill-dot unpaid"></span> Tagihan Belum Lunas</div>
               <div class="fin-legend-pill"><span class="fin-heat-bill-dot paid"></span> Tagihan Lunas</div>
-              <div class="fin-legend-pill"><iconify-icon icon="fluent-emoji-flat:money-bag" width="13" height="13" aria-hidden="true" style="vertical-align:middle;display:inline-flex;"></iconify-icon> Gajian BNI</div>
+              <div class="fin-legend-pill"><iconify-icon icon="lucide:banknote" width="13" height="13" aria-hidden="true" style="vertical-align:middle;display:inline-flex;"></iconify-icon> Gajian BNI</div>
             </div>
           </div>
         </div>
@@ -8132,7 +8177,7 @@
         <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:14px;">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
             <span style="font-size:12px;font-weight:700;color:var(--text-primary);display:flex;align-items:center;gap:5px;">
-              <iconify-icon icon="fluent-emoji-flat:crystal-ball" width="16" height="16"></iconify-icon>
+              <iconify-icon icon="lucide:sparkles" width="16" height="16"></iconify-icon>
               Simulasi Beli Sesuatu (What-If)
             </span>
             <span id="fin-sim-rec-badge" class="fin-health-badge success" style="font-size:10px;padding:2px 7px;">Aman</span>
@@ -8257,7 +8302,7 @@
             <span>Pemasukan</span>
           </button>
           <button type="button" class="fin-sheet-type-tab" id="fin-tab-saving" onclick="switchQuickSheetType('saving')">
-            <iconify-icon icon="fluent-emoji-flat:piggy-bank" width="14" height="14" aria-hidden="true"></iconify-icon>
+            <iconify-icon icon="lucide:piggy-bank" width="14" height="14" aria-hidden="true"></iconify-icon>
             <span>Nabung/Goal</span>
           </button>
         </div>
@@ -8270,19 +8315,19 @@
           </label>
           <div class="fin-account-select-chips" id="fin-sheet-accounts">
             <button type="button" class="fin-account-select-chip active" data-acc="acc_bni" onclick="selectSheetAccount('acc_bni', this)">
-              <iconify-icon icon="fluent-emoji-flat:bank" width="15" height="15"></iconify-icon>
+              <img src="bni-logo.svg" alt="BNI" class="fin-pill-brand-logo">
               <span>BNI</span>
             </button>
             <button type="button" class="fin-account-select-chip" data-acc="acc_gopay" onclick="selectSheetAccount('acc_gopay', this)">
-              <iconify-icon icon="fluent-emoji-flat:mobile-phone" width="15" height="15"></iconify-icon>
+              <iconify-icon icon="simple-icons:gojek" width="14" height="14" style="color:#00AA13;"></iconify-icon>
               <span>GoPay</span>
             </button>
             <button type="button" class="fin-account-select-chip" data-acc="acc_cash" onclick="selectSheetAccount('acc_cash', this)">
-              <iconify-icon icon="fluent-emoji-flat:money-with-wings" width="15" height="15"></iconify-icon>
+              <iconify-icon icon="lucide:wallet" width="14" height="14" style="color:#10B981;"></iconify-icon>
               <span>Tunai</span>
             </button>
             <button type="button" class="fin-account-select-chip" data-acc="acc_savings" onclick="selectSheetAccount('acc_savings', this)">
-              <iconify-icon icon="fluent-emoji-flat:piggy-bank" width="15" height="15"></iconify-icon>
+              <img src="bni-logo.svg" alt="Wondr by BNI" class="fin-pill-brand-logo">
               <span>Wondr</span>
             </button>
           </div>
@@ -8297,35 +8342,35 @@
         <!-- Category Chips: Expense -->
         <div class="fin-sheet-chips" id="fin-sheet-chips-expense">
           <button type="button" class="fin-sheet-chip active" onclick="selectSheetCat('makan',this)" aria-label="Makan">
-            <iconify-icon icon="fluent-emoji-flat:bento-box" width="18" height="18" aria-hidden="true"></iconify-icon>
+            <iconify-icon icon="lucide:utensils" width="18" height="18" aria-hidden="true"></iconify-icon>
             <span>Makan</span>
           </button>
           <button type="button" class="fin-sheet-chip" onclick="selectSheetCat('transport',this)" aria-label="Transport">
-            <iconify-icon icon="fluent-emoji-flat:bus" width="18" height="18" aria-hidden="true"></iconify-icon>
+            <iconify-icon icon="lucide:bus" width="18" height="18" aria-hidden="true"></iconify-icon>
             <span>Transport</span>
           </button>
           <button type="button" class="fin-sheet-chip" onclick="selectSheetCat('kos',this)" aria-label="Kos">
-            <iconify-icon icon="fluent-emoji-flat:house" width="18" height="18" aria-hidden="true"></iconify-icon>
+            <iconify-icon icon="lucide:home" width="18" height="18" aria-hidden="true"></iconify-icon>
             <span>Kos</span>
           </button>
           <button type="button" class="fin-sheet-chip" onclick="selectSheetCat('laundry',this)" aria-label="Laundry">
-            <iconify-icon icon="fluent-emoji-flat:basket" width="18" height="18" aria-hidden="true"></iconify-icon>
+            <iconify-icon icon="lucide:shirt" width="18" height="18" aria-hidden="true"></iconify-icon>
             <span>Laundry</span>
           </button>
           <button type="button" class="fin-sheet-chip" onclick="selectSheetCat('kopi',this)" aria-label="Kopi">
-            <iconify-icon icon="fluent-emoji-flat:hot-beverage" width="18" height="18" aria-hidden="true"></iconify-icon>
+            <iconify-icon icon="lucide:coffee" width="18" height="18" aria-hidden="true"></iconify-icon>
             <span>Kopi</span>
           </button>
           <button type="button" class="fin-sheet-chip" onclick="selectSheetCat('belanja',this)" aria-label="Belanja">
-            <iconify-icon icon="fluent-emoji-flat:shopping-bags" width="18" height="18" aria-hidden="true"></iconify-icon>
+            <iconify-icon icon="lucide:shopping-bag" width="18" height="18" aria-hidden="true"></iconify-icon>
             <span>Belanja</span>
           </button>
           <button type="button" class="fin-sheet-chip" onclick="selectSheetCat('tagihan',this)" aria-label="Tagihan">
-            <iconify-icon icon="fluent-emoji-flat:receipt" width="18" height="18" aria-hidden="true"></iconify-icon>
+            <iconify-icon icon="lucide:receipt" width="18" height="18" aria-hidden="true"></iconify-icon>
             <span>Tagihan</span>
           </button>
           <button type="button" class="fin-sheet-chip" onclick="selectSheetCat('lainnya',this)" aria-label="Lainnya">
-            <iconify-icon icon="fluent-emoji-flat:package" width="18" height="18" aria-hidden="true"></iconify-icon>
+            <iconify-icon icon="lucide:package" width="18" height="18" aria-hidden="true"></iconify-icon>
             <span>Lainnya</span>
           </button>
         </div>
@@ -8333,27 +8378,27 @@
         <!-- Category Chips: Income -->
         <div class="fin-sheet-chips" id="fin-sheet-chips-income" style="display:none">
           <button type="button" class="fin-sheet-chip active" onclick="selectSheetCat('saku_bni',this)" aria-label="Uang Saku BNI">
-            <iconify-icon icon="fluent-emoji-flat:bank" width="18" height="18" aria-hidden="true"></iconify-icon>
+            <img src="bni-logo.svg" alt="BNI" class="fin-pill-brand-logo">
             <span>Uang Saku BNI</span>
           </button>
           <button type="button" class="fin-sheet-chip" onclick="selectSheetCat('maganghub',this)" aria-label="Insentif MagangHub">
-            <iconify-icon icon="fluent-emoji-flat:briefcase" width="18" height="18" aria-hidden="true"></iconify-icon>
+            <iconify-icon icon="lucide:briefcase" width="18" height="18" aria-hidden="true"></iconify-icon>
             <span>MagangHub</span>
           </button>
           <button type="button" class="fin-sheet-chip" onclick="selectSheetCat('freelance',this)" aria-label="Freelance">
-            <iconify-icon icon="fluent-emoji-flat:laptop" width="18" height="18" aria-hidden="true"></iconify-icon>
+            <iconify-icon icon="lucide:laptop" width="18" height="18" aria-hidden="true"></iconify-icon>
             <span>Freelance</span>
           </button>
           <button type="button" class="fin-sheet-chip" onclick="selectSheetCat('ortu',this)" aria-label="Kiriman Ortu">
-            <iconify-icon icon="fluent-emoji-flat:family" width="18" height="18" aria-hidden="true"></iconify-icon>
+            <iconify-icon icon="lucide:users" width="18" height="18" aria-hidden="true"></iconify-icon>
             <span>Kiriman Ortu</span>
           </button>
           <button type="button" class="fin-sheet-chip" onclick="selectSheetCat('hadiah',this)" aria-label="Bonus/Reward">
-            <iconify-icon icon="fluent-emoji-flat:wrapped-gift" width="18" height="18" aria-hidden="true"></iconify-icon>
+            <iconify-icon icon="lucide:gift" width="18" height="18" aria-hidden="true"></iconify-icon>
             <span>Bonus</span>
           </button>
           <button type="button" class="fin-sheet-chip" onclick="selectSheetCat('lainnya_inc',this)" aria-label="Pemasukan Lainnya">
-            <iconify-icon icon="fluent-emoji-flat:money-bag" width="18" height="18" aria-hidden="true"></iconify-icon>
+            <iconify-icon icon="lucide:banknote" width="18" height="18" aria-hidden="true"></iconify-icon>
             <span>Lainnya</span>
           </button>
         </div>
@@ -8361,19 +8406,19 @@
         <!-- Category Chips: Goals / Savings -->
         <div class="fin-sheet-chips" id="fin-sheet-chips-saving" style="display:none">
           <button type="button" class="fin-sheet-chip active" onclick="selectSheetCat('goal_iphone18',this)" aria-label="iPhone 18">
-            <iconify-icon icon="fluent-emoji-flat:mobile-phone" width="18" height="18" aria-hidden="true"></iconify-icon>
+            <iconify-icon icon="lucide:smartphone" width="18" height="18" aria-hidden="true"></iconify-icon>
             <span>iPhone 18</span>
           </button>
           <button type="button" class="fin-sheet-chip" onclick="selectSheetCat('goal_darurat',this)" aria-label="Dana Darurat">
-            <iconify-icon icon="fluent-emoji-flat:shield" width="18" height="18" aria-hidden="true"></iconify-icon>
+            <iconify-icon icon="lucide:shield-check" width="18" height="18" aria-hidden="true"></iconify-icon>
             <span>Dana Darurat</span>
           </button>
           <button type="button" class="fin-sheet-chip" onclick="selectSheetCat('goal_mudik',this)" aria-label="Mudik Solo">
-            <iconify-icon icon="fluent-emoji-flat:bullet-train" width="18" height="18" aria-hidden="true"></iconify-icon>
+            <iconify-icon icon="lucide:train" width="18" height="18" aria-hidden="true"></iconify-icon>
             <span>Mudik Solo</span>
           </button>
           <button type="button" class="fin-sheet-chip" onclick="selectSheetCat('goal_ortu',this)" aria-label="Kirim Ortu">
-            <iconify-icon icon="fluent-emoji-flat:family" width="18" height="18" aria-hidden="true"></iconify-icon>
+            <iconify-icon icon="lucide:users" width="18" height="18" aria-hidden="true"></iconify-icon>
             <span>Kirim Ortu</span>
           </button>
         </div>
@@ -12943,17 +12988,17 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     },
 
     DEFAULT_ACCOUNTS: [
-      { id: 'acc_bni', name: 'Rekening BNI Giro/Taplus', type: 'checking', balance: 3500000, is_liquid: true, icon: 'fluent-emoji-flat:bank', color: '#007C89' },
-      { id: 'acc_gopay', name: 'GoPay / E-Wallet', type: 'wallet', balance: 150000, is_liquid: true, icon: 'fluent-emoji-flat:mobile-phone', color: '#00AED6' },
-      { id: 'acc_cash', name: 'Uang Tunai / Dompet', type: 'cash', balance: 100000, is_liquid: true, icon: 'fluent-emoji-flat:money-with-wings', color: '#10B981' },
-      { id: 'acc_savings', name: 'Tabungan Wondr (Sinking Fund)', type: 'savings', balance: 500000, is_liquid: false, icon: 'fluent-emoji-flat:piggy-bank', color: '#F59E0B' }
+      { id: 'acc_bni', name: 'Rekening BNI Giro/Taplus', type: 'checking', balance: 3500000, is_liquid: true, icon: 'bni-logo.svg', color: '#007C89' },
+      { id: 'acc_gopay', name: 'GoPay / E-Wallet', type: 'wallet', balance: 150000, is_liquid: true, icon: 'simple-icons:gojek', color: '#00AED6' },
+      { id: 'acc_cash', name: 'Uang Tunai / Dompet', type: 'cash', balance: 100000, is_liquid: true, icon: 'lucide:wallet', color: '#10B981' },
+      { id: 'acc_savings', name: 'Tabungan Wondr (Sinking Fund)', type: 'savings', balance: 500000, is_liquid: false, icon: 'bni-logo.svg', color: '#F59E0B' }
     ],
 
     DEFAULT_GOALS: [
-      { id: 'goal_iphone18', name: 'Tabungan iPhone 18', target: 18000000, saved: 1500000, monthly_allocation: 500000, deadline: '2026-09-30', priority: 1, icon: 'fluent-emoji-flat:mobile-phone', color: '#007C89', is_primary: true },
-      { id: 'goal_darurat', name: 'Dana Darurat Rantau', target: 4500000, saved: 500000, monthly_allocation: 300000, deadline: '', priority: 2, icon: 'fluent-emoji-flat:shield', color: '#10B981', is_primary: false },
-      { id: 'goal_mudik', name: 'Mudik Solo (Tiket KA PP)', target: 900000, saved: 200000, monthly_allocation: 150000, deadline: '', priority: 3, icon: 'fluent-emoji-flat:bullet-train', color: '#0284C7', is_primary: false },
-      { id: 'goal_ortu', name: 'Kirim ke Orang Tua', target: 600000, saved: 0, monthly_allocation: 200000, deadline: '', priority: 4, icon: 'fluent-emoji-flat:family', color: '#EC4899', is_primary: false }
+      { id: 'goal_iphone18', name: 'Tabungan iPhone 18', target: 18000000, saved: 1500000, monthly_allocation: 500000, deadline: '2026-09-30', priority: 1, icon: 'lucide:smartphone', color: '#007C89', is_primary: true },
+      { id: 'goal_darurat', name: 'Dana Darurat Rantau', target: 4500000, saved: 500000, monthly_allocation: 300000, deadline: '', priority: 2, icon: 'lucide:shield-check', color: '#10B981', is_primary: false },
+      { id: 'goal_mudik', name: 'Mudik Solo (Tiket KA PP)', target: 900000, saved: 200000, monthly_allocation: 150000, deadline: '', priority: 3, icon: 'lucide:train', color: '#0284C7', is_primary: false },
+      { id: 'goal_ortu', name: 'Kirim ke Orang Tua', target: 600000, saved: 0, monthly_allocation: 200000, deadline: '', priority: 4, icon: 'lucide:users', color: '#EC4899', is_primary: false }
     ],
 
     DEFAULT_COMMITMENTS: [
@@ -13076,7 +13121,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
           monthly_allocation: Number(g.monthly_allocation) || (g.target ? Math.round(g.target / 12) : 200000),
           deadline: g.deadline || '',
           priority: g.priority || 2,
-          icon: g.icon || 'fluent-emoji-flat:bullseye',
+          icon: g.icon || 'lucide:target',
           color: g.color || '#007C89',
           is_primary: g.id.includes('iphone') || Boolean(g.is_primary)
         }));
@@ -13542,34 +13587,34 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
 
   // Centralized Icon Mapping (Fluent Emoji Flat via Iconify)
   const CATEGORY_ICONS = {
-    makan: 'fluent-emoji-flat:bento-box',
-    transport: 'fluent-emoji-flat:bus',
-    kos: 'fluent-emoji-flat:house',
-    laundry: 'fluent-emoji-flat:basket',
-    kopi: 'fluent-emoji-flat:hot-beverage',
-    belanja: 'fluent-emoji-flat:shopping-bags',
-    tagihan: 'fluent-emoji-flat:receipt',
-    kesehatan: 'fluent-emoji-flat:red-heart',
-    pendidikan: 'fluent-emoji-flat:graduation-cap',
-    hiburan: 'fluent-emoji-flat:film-projector',
-    wisuda: 'fluent-emoji-flat:graduation-cap',
-    lainnya: 'fluent-emoji-flat:package'
+    makan: 'lucide:utensils',
+    transport: 'lucide:bus',
+    kos: 'lucide:home',
+    laundry: 'lucide:shirt',
+    kopi: 'lucide:coffee',
+    belanja: 'lucide:shopping-bag',
+    tagihan: 'lucide:receipt',
+    kesehatan: 'lucide:heart-pulse',
+    pendidikan: 'lucide:graduation-cap',
+    hiburan: 'lucide:film',
+    wisuda: 'lucide:graduation-cap',
+    lainnya: 'lucide:package'
   };
 
   const INCOME_ICONS = {
-    saku_bni: 'fluent-emoji-flat:bank',
-    maganghub: 'fluent-emoji-flat:briefcase',
-    freelance: 'fluent-emoji-flat:laptop',
-    ortu: 'fluent-emoji-flat:family',
-    hadiah: 'fluent-emoji-flat:wrapped-gift',
-    investasi: 'fluent-emoji-flat:chart-increasing',
-    lainnya_inc: 'fluent-emoji-flat:money-bag'
+    saku_bni: 'lucide:landmark',
+    maganghub: 'lucide:briefcase',
+    freelance: 'lucide:laptop',
+    ortu: 'lucide:users',
+    hadiah: 'lucide:gift',
+    investasi: 'lucide:trending-up',
+    lainnya_inc: 'lucide:banknote'
   };
 
   function renderCategoryIcon(catKey, size = 18, isIncome = false) {
     const key = String(catKey || '').toLowerCase();
     const map = isIncome ? INCOME_ICONS : CATEGORY_ICONS;
-    const icon = map[key] || (isIncome ? 'fluent-emoji-flat:money-bag' : (CATEGORY_ICONS[key] || 'fluent-emoji-flat:package'));
+    const icon = map[key] || (isIncome ? 'lucide:banknote' : (CATEGORY_ICONS[key] || 'lucide:package'));
     return `<iconify-icon icon="${icon}" width="${size}" height="${size}" aria-hidden="true" style="vertical-align:middle;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;"></iconify-icon>`;
   }
 
@@ -13584,25 +13629,25 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   }
 
   const FIN_CATEGORY_META = {
-    makan: { label: 'Makan & Minum', icon: 'fluent-emoji-flat:bento-box', color: '#007C89' },
-    transport: { label: 'Transportasi', icon: 'fluent-emoji-flat:bus', color: '#0284c7' },
-    kos: { label: 'Kos & Utilitas', icon: 'fluent-emoji-flat:house', color: '#d97706' },
-    laundry: { label: 'Laundry & Pribadi', icon: 'fluent-emoji-flat:basket', color: '#8b5cf6' },
-    kopi: { label: 'Kopi & Hangout', icon: 'fluent-emoji-flat:hot-beverage', color: '#F15A24' },
-    belanja: { label: 'Belanja & Kebutuhan', icon: 'fluent-emoji-flat:shopping-bags', color: '#10b981' },
-    tagihan: { label: 'Tagihan Tetap', icon: 'fluent-emoji-flat:receipt', color: '#6366f1' },
-    wisuda: { label: 'Wisuda UMS & Solo', icon: 'fluent-emoji-flat:graduation-cap', color: '#ec4899' },
-    lainnya: { label: 'Lain-lain / Darurat', icon: 'fluent-emoji-flat:package', color: '#64748b' }
+    makan: { label: 'Makan & Minum', icon: 'lucide:utensils', color: '#007C89' },
+    transport: { label: 'Transportasi', icon: 'lucide:bus', color: '#0284c7' },
+    kos: { label: 'Kos & Utilitas', icon: 'lucide:home', color: '#d97706' },
+    laundry: { label: 'Laundry & Pribadi', icon: 'lucide:shirt', color: '#8b5cf6' },
+    kopi: { label: 'Kopi & Hangout', icon: 'lucide:coffee', color: '#F15A24' },
+    belanja: { label: 'Belanja & Kebutuhan', icon: 'lucide:shopping-bag', color: '#10b981' },
+    tagihan: { label: 'Tagihan Tetap', icon: 'lucide:receipt', color: '#6366f1' },
+    wisuda: { label: 'Wisuda UMS & Solo', icon: 'lucide:graduation-cap', color: '#ec4899' },
+    lainnya: { label: 'Lain-lain / Darurat', icon: 'lucide:package', color: '#64748b' }
   };
 
   const FIN_INCOME_META = {
-    saku_bni: { label: 'Uang Saku BNI', icon: 'fluent-emoji-flat:bank', color: '#10b981' },
-    maganghub: { label: 'Insentif Kemnaker MagangHub', icon: 'fluent-emoji-flat:briefcase', color: '#0284c7' },
-    freelance: { label: 'Freelance & Jasa', icon: 'fluent-emoji-flat:laptop', color: '#6366f1' },
-    ortu: { label: 'Kiriman Keluarga / Ortu', icon: 'fluent-emoji-flat:family', color: '#ec4899' },
-    hadiah: { label: 'Bonus & Reward', icon: 'fluent-emoji-flat:wrapped-gift', color: '#f59e0b' },
-    investasi: { label: 'Dividen & Bunga', icon: 'fluent-emoji-flat:chart-increasing', color: '#14b8a6' },
-    lainnya_inc: { label: 'Pemasukan Lainnya', icon: 'fluent-emoji-flat:money-bag', color: '#10b981' }
+    saku_bni: { label: 'Uang Saku BNI', icon: 'lucide:landmark', color: '#10b981' },
+    maganghub: { label: 'Insentif Kemnaker MagangHub', icon: 'lucide:briefcase', color: '#0284c7' },
+    freelance: { label: 'Freelance & Jasa', icon: 'lucide:laptop', color: '#6366f1' },
+    ortu: { label: 'Kiriman Keluarga / Ortu', icon: 'lucide:users', color: '#ec4899' },
+    hadiah: { label: 'Bonus & Reward', icon: 'lucide:gift', color: '#f59e0b' },
+    investasi: { label: 'Dividen & Bunga', icon: 'lucide:trending-up', color: '#14b8a6' },
+    lainnya_inc: { label: 'Pemasukan Lainnya', icon: 'lucide:banknote', color: '#10b981' }
   };
 
   let currentFinanceFilter = 'all';
@@ -13884,10 +13929,10 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   const FIN_GOALS_KEY = 'mghb_fin_goals';
 
   const DEFAULT_GOALS = [
-    { id: 'goal_iphone18', name: 'Tabungan iPhone 18', target: 18000000, saved: 1500000, monthly_allocation: 500000, deadline: '2026-09-30', priority: 1, icon: 'fluent-emoji-flat:mobile-phone', color: '#007C89', custom: false, is_primary: true },
-    { id: 'goal_darurat', name: 'Dana Darurat Rantau', target: 4500000, saved: 500000, monthly_allocation: 300000, deadline: '', priority: 2, icon: 'fluent-emoji-flat:shield', color: '#10b981', custom: false },
-    { id: 'goal_mudik', name: 'Mudik Solo (Tiket KA PP)', target: 900000, saved: 200000, monthly_allocation: 150000, deadline: '', priority: 3, icon: 'fluent-emoji-flat:bullet-train', color: '#0284c7', custom: false },
-    { id: 'goal_ortu', name: 'Kirim ke Orang Tua', target: 600000, saved: 0, monthly_allocation: 200000, deadline: '', priority: 4, icon: 'fluent-emoji-flat:family', color: '#ec4899', custom: false }
+    { id: 'goal_iphone18', name: 'Tabungan iPhone 18', target: 18000000, saved: 1500000, monthly_allocation: 500000, deadline: '2026-09-30', priority: 1, icon: 'lucide:smartphone', color: '#007C89', custom: false, is_primary: true },
+    { id: 'goal_darurat', name: 'Dana Darurat Rantau', target: 4500000, saved: 500000, monthly_allocation: 300000, deadline: '', priority: 2, icon: 'lucide:shield-check', color: '#10b981', custom: false },
+    { id: 'goal_mudik', name: 'Mudik Solo (Tiket KA PP)', target: 900000, saved: 200000, monthly_allocation: 150000, deadline: '', priority: 3, icon: 'lucide:train', color: '#0284c7', custom: false },
+    { id: 'goal_ortu', name: 'Kirim ke Orang Tua', target: 600000, saved: 0, monthly_allocation: 200000, deadline: '', priority: 4, icon: 'lucide:users', color: '#ec4899', custom: false }
   ];
 
   function getFinanceGoals() {
@@ -15032,7 +15077,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
         const allCats = { ...FIN_CATEGORY_META };
         // Pastikan 'tagihan' ada jika ada paidBills
         if (!allCats['tagihan']) {
-          allCats['tagihan'] = { label: 'Tagihan Tetap', icon: 'fluent-emoji-flat:receipt', color: '#6366f1' };
+          allCats['tagihan'] = { label: 'Tagihan Tetap', icon: 'lucide:receipt', color: '#6366f1' };
         }
         Object.keys(allCats).forEach(k => {
           const amt = catTotals[k] || 0;
@@ -15412,7 +15457,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
 
       html += `<div class="${cellCls}" style="background: ${bg};${isToday ? ' outline: 2px solid var(--accent); outline-offset: -1px;' : ''}" title="${tip}" onclick="selectCalendarDate(${dNum})">
         <span class="fin-heat-date">${dNum}</span>
-        ${isPayday ? '<span class="fin-heat-payday" title="Gajian!"><iconify-icon icon="fluent-emoji-flat:money-bag" width="12" height="12" aria-hidden="true"></iconify-icon></span>' : ''}
+        ${isPayday ? '<span class="fin-heat-payday" title="Gajian!"><iconify-icon icon="lucide:banknote" width="12" height="12" aria-hidden="true"></iconify-icon></span>' : ''}
         ${hasUnpaid ? '<span class="fin-heat-bill-dot unpaid" title="Ada tagihan belum lunas"></span>' : (allPaid ? '<span class="fin-heat-bill-dot paid" title="Tagihan lunas"></span>' : '')}
       </div>`;
       curr.setDate(curr.getDate() + 1);
