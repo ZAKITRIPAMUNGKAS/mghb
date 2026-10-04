@@ -26,6 +26,8 @@
       document.write('<script src="https://unpkg.com/@supabase/supabase-js@2"><\/script>');
     }
   </script>
+  <!-- Iconify Web Component for Fluent Emoji Flat & Lucide icons -->
+  <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
   <script>
     /* Early Security & Route Pre-hydration to eliminate flash */
     (function() {
@@ -6053,51 +6055,114 @@
     .fin-action {
       display: flex;
       flex-direction: column;
+      gap: 12px;
+    }
+    .fin-action-buttons {
+      display: grid;
+      grid-template-columns: 1.25fr 1fr;
       gap: 10px;
     }
     .fin-action-btn {
-      display: flex;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
-      width: 100%;
-      height: 48px;
-      background: #005E6A;
-      color: #fff;
-      border: none;
+      height: 46px;
+      padding: 0 16px;
       border-radius: 10px;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 700;
       cursor: pointer;
-      transition: background 0.15s;
+      transition: background 0.15s, border-color 0.15s, transform 0.1s;
+      -webkit-tap-highlight-color: transparent;
     }
     .fin-action-btn:active {
-      background: #004D57;
+      transform: scale(0.985);
     }
+    .fin-action-btn-primary {
+      background: #005E6A;
+      color: #FFFFFF;
+      border: 1px solid #005E6A;
+      box-shadow: 0 2px 4px rgba(0, 94, 106, 0.15);
+    }
+    .fin-action-btn-primary:hover {
+      background: #004D57;
+      border-color: #004D57;
+    }
+    .fin-action-btn-secondary {
+      background: #FFFFFF;
+      color: #005E6A;
+      border: 1.5px solid #005E6A;
+    }
+    .fin-action-btn-secondary:hover {
+      background: #F0F9FA;
+    }
+    [data-theme="dark"] .fin-action-btn-secondary {
+      background: var(--surface);
+      color: #2dd4bf;
+      border-color: #005E6A;
+    }
+    [data-theme="dark"] .fin-action-btn-secondary:hover {
+      background: var(--surface-hover);
+    }
+
     .fin-action-chips {
       display: flex;
       gap: 8px;
       overflow-x: auto;
+      white-space: nowrap;
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
+      padding: 2px 0 4px;
     }
     .fin-action-chips::-webkit-scrollbar { display: none; }
+
+    /* Category Chip Specification */
     .fin-action-chip {
-      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      height: 36px;
       padding: 8px 14px;
-      background: var(--surface);
-      border: 1px solid #E1E8E8;
-      border-radius: 8px;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-primary);
+      flex-shrink: 0;
+      background: #FFFFFF;
+      border: 1px solid #E5E7EB;
+      border-radius: 9px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-primary, #1F2937);
       cursor: pointer;
       white-space: nowrap;
-      transition: border-color 0.15s, background 0.15s;
+      transition: all 180ms ease;
       -webkit-tap-highlight-color: transparent;
+      outline: none;
     }
+    .fin-action-chip:hover {
+      background: #F3F4F6;
+      border-color: #D1D5DB;
+    }
+    .fin-action-chip:focus-visible {
+      box-shadow: 0 0 0 2px rgba(0, 94, 106, 0.25);
+    }
+    .fin-action-chip.active,
     .fin-action-chip:active {
-      background: #F0F9FA;
+      background: #005E6A;
+      color: #FFFFFF;
+      border-color: #005E6A;
+    }
+    [data-theme="dark"] .fin-action-chip {
+      background: var(--surface, #1e293b);
+      border-color: var(--border, #334155);
+      color: var(--text-primary, #f1f5f9);
+    }
+    [data-theme="dark"] .fin-action-chip:hover {
+      background: var(--surface-hover, #334155);
+      border-color: var(--border-hover, #475569);
+    }
+    [data-theme="dark"] .fin-action-chip.active,
+    [data-theme="dark"] .fin-action-chip:active {
+      background: #005E6A;
+      color: #FFFFFF;
       border-color: #005E6A;
     }
 
@@ -6766,27 +6831,86 @@
       color: var(--text-secondary);
       cursor: pointer;
     }
+    /* Segmented Tab Switcher for Quick Sheet */
+    .fin-sheet-type-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px;
+      padding: 4px;
+      background: var(--surface-hover, #f3f4f6);
+      border-radius: 10px;
+      margin-bottom: 16px;
+      border: 1px solid var(--border, #e5e7eb);
+    }
+    .fin-sheet-type-tab {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      height: 36px;
+      background: transparent;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary, #6b7280);
+      cursor: pointer;
+      transition: all 180ms ease;
+    }
+    .fin-sheet-type-tab.active {
+      background: #FFFFFF;
+      color: #005E6A;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+    [data-theme="dark"] .fin-sheet-type-tab.active {
+      background: var(--surface, #1e293b);
+      color: #2dd4bf;
+    }
+
     .fin-sheet-chips {
       display: flex;
       flex-wrap: wrap;
-      gap: 6px;
+      gap: 8px;
       margin-bottom: 14px;
     }
     .fin-sheet-chip {
-      padding: 7px 12px;
-      background: var(--surface-hover);
-      border: 1px solid #E1E8E8;
-      border-radius: 8px;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-secondary);
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      height: 36px;
+      padding: 8px 14px;
+      background: #FFFFFF;
+      border: 1px solid #E5E7EB;
+      border-radius: 9px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-primary, #1F2937);
       cursor: pointer;
-      transition: all 0.15s;
+      white-space: nowrap;
+      transition: all 180ms ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .fin-sheet-chip:hover {
+      background: #F3F4F6;
+      border-color: #D1D5DB;
     }
     .fin-sheet-chip.active {
-      background: #F0F9FA;
+      background: #005E6A;
+      color: #FFFFFF;
       border-color: #005E6A;
-      color: #005E6A;
+    }
+    [data-theme="dark"] .fin-sheet-chip {
+      background: var(--surface, #1e293b);
+      border-color: var(--border, #334155);
+      color: var(--text-primary, #f1f5f9);
+    }
+    [data-theme="dark"] .fin-sheet-chip:hover {
+      background: var(--surface-hover, #334155);
+    }
+    [data-theme="dark"] .fin-sheet-chip.active {
+      background: #005E6A;
+      color: #FFFFFF;
+      border-color: #005E6A;
     }
 
     /* ── OLD CLASS PRESERVATION (JS renders into these) ── */
@@ -7284,15 +7408,45 @@
     SECTION 2 — QUICK ACTION (ACTION)
     ═══════════════════════════════════════════════════ -->
     <section class="fin-action" id="fin-action-section">
-      <button type="button" class="fin-action-btn" onclick="openQuickExpenseSheet()">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        <span>Catat Pengeluaran</span>
-      </button>
-      <div class="fin-action-chips" id="fin-action-chips">
-        <span class="fin-action-chip" onclick="quickFillExpense('makan',15000,'Makan Siang','expense')">🍚 Makan</span>
-        <span class="fin-action-chip" onclick="quickFillExpense('transport',10000,'Transport','expense')">🚌 Transport</span>
-        <span class="fin-action-chip" onclick="quickFillExpense('kopi',18000,'Kopi/Hangout','expense')">☕ Kopi</span>
-        <span class="fin-action-chip" onclick="quickFillExpense('laundry',25000,'Laundry','expense')">👕 Laundry</span>
+      <div class="fin-action-buttons">
+        <button type="button" class="fin-action-btn fin-action-btn-primary" onclick="openQuickExpenseSheet(null,null,null,'expense')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span>Catat Pengeluaran</span>
+        </button>
+        <button type="button" class="fin-action-btn fin-action-btn-secondary" onclick="openQuickExpenseSheet(null,null,null,'income')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span>+ Pemasukan</span>
+        </button>
+      </div>
+      <div class="fin-action-chips" id="fin-action-chips" role="region" aria-label="Kategori Cepat">
+        <button type="button" class="fin-action-chip" onclick="quickFillExpense('makan',15000,'Makan Siang','expense')" aria-label="Makan">
+          <iconify-icon icon="fluent-emoji-flat:bento-box" width="18" height="18" aria-hidden="true"></iconify-icon>
+          <span>Makan</span>
+        </button>
+        <button type="button" class="fin-action-chip" onclick="quickFillExpense('transport',10000,'Transport','expense')" aria-label="Transport">
+          <iconify-icon icon="fluent-emoji-flat:bus" width="18" height="18" aria-hidden="true"></iconify-icon>
+          <span>Transport</span>
+        </button>
+        <button type="button" class="fin-action-chip" onclick="quickFillExpense('kopi',18000,'Kopi/Hangout','expense')" aria-label="Kopi">
+          <iconify-icon icon="fluent-emoji-flat:hot-beverage" width="18" height="18" aria-hidden="true"></iconify-icon>
+          <span>Kopi</span>
+        </button>
+        <button type="button" class="fin-action-chip" onclick="quickFillExpense('laundry',25000,'Laundry','expense')" aria-label="Laundry">
+          <iconify-icon icon="fluent-emoji-flat:basket" width="18" height="18" aria-hidden="true"></iconify-icon>
+          <span>Laundry</span>
+        </button>
+        <button type="button" class="fin-action-chip" onclick="quickFillExpense('belanja',35000,'Belanja Kebutuhan','expense')" aria-label="Belanja">
+          <iconify-icon icon="fluent-emoji-flat:shopping-bags" width="18" height="18" aria-hidden="true"></iconify-icon>
+          <span>Belanja</span>
+        </button>
+        <button type="button" class="fin-action-chip" onclick="quickFillExpense('kos',100000,'Iuran/Listrik Kos','expense')" aria-label="Kos">
+          <iconify-icon icon="fluent-emoji-flat:house" width="18" height="18" aria-hidden="true"></iconify-icon>
+          <span>Kos</span>
+        </button>
+        <button type="button" class="fin-action-chip" onclick="quickFillExpense('saku_bni',3500000,'Uang Saku BNI','income')" aria-label="Uang Saku BNI">
+          <iconify-icon icon="fluent-emoji-flat:bank" width="18" height="18" aria-hidden="true"></iconify-icon>
+          <span>Uang Saku</span>
+        </button>
       </div>
     </section>
 
@@ -7518,7 +7672,7 @@
         <div class="fin-heatmap-legend">
           <div class="fin-legend-pill"><span class="fin-heat-bill-dot unpaid"></span> Tagihan Belum Lunas</div>
           <div class="fin-legend-pill"><span class="fin-heat-bill-dot paid"></span> Tagihan Lunas</div>
-          <div class="fin-legend-pill"><span style="font-size:11px;line-height:1">💰</span> Gajian BNI</div>
+          <div class="fin-legend-pill"><iconify-icon icon="fluent-emoji-flat:money-bag" width="13" height="13" aria-hidden="true" style="vertical-align:middle;display:inline-flex;"></iconify-icon> Gajian BNI</div>
         </div>
       </div>
 
@@ -7561,16 +7715,37 @@
       </summary>
       <div class="fin-ai-body">
         <div class="fin-ai-actions">
-          <button type="button" class="fin-ai-btn" id="btn-fin-ai" onclick="requestFinanceAdvice('quick')">✨ Tanya AI</button>
-          <button type="button" class="fin-ai-btn" onclick="requestFinanceAdvice('saving')">💡 Kiat Hemat</button>
-          <button type="button" class="fin-ai-btn" onclick="requestFinanceAdvice('leakage')">🔍 Cek Bocor</button>
+          <button type="button" class="fin-ai-btn" id="btn-fin-ai" onclick="requestFinanceAdvice('quick')">
+            <svg class="ic ic-14" aria-hidden="true"><use href="#i-sparkles"/></svg>
+            <span>Tanya AI</span>
+          </button>
+          <button type="button" class="fin-ai-btn" onclick="requestFinanceAdvice('saving')">
+            <svg class="ic ic-14" aria-hidden="true"><use href="#i-bulb"/></svg>
+            <span>Kiat Hemat</span>
+          </button>
+          <button type="button" class="fin-ai-btn" onclick="requestFinanceAdvice('leakage')">
+            <svg class="ic ic-14" aria-hidden="true"><use href="#i-shield"/></svg>
+            <span>Cek Bocor</span>
+          </button>
         </div>
         <div id="fin-ai-output" class="fin-ai-output-box">Pilih opsi untuk saran batas aman belanja dan rekomendasi hemat.</div>
         <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
-          <button type="button" class="btn-action btn-xs" onclick="openFinanceReportModal()">📊 Raport Bulanan</button>
-          <button type="button" class="btn-action btn-xs" onclick="exportFinanceCSV()">📥 CSV</button>
-          <button type="button" class="btn-action btn-xs" onclick="exportFinanceSummaryText()">📋 Salin WA</button>
-          <button type="button" class="utility-btn btn-xs" onclick="clearFinanceHistory()" style="color:#ef4444;border-color:rgba(239,68,68,0.3)">Reset</button>
+          <button type="button" class="btn-action btn-xs" onclick="openFinanceReportModal()">
+            <svg class="ic ic-12" aria-hidden="true"><use href="#i-chart"/></svg>
+            <span>Raport Bulanan</span>
+          </button>
+          <button type="button" class="btn-action btn-xs" onclick="exportFinanceCSV()">
+            <svg class="ic ic-12" aria-hidden="true"><use href="#i-file"/></svg>
+            <span>CSV</span>
+          </button>
+          <button type="button" class="btn-action btn-xs" onclick="exportFinanceSummaryText()">
+            <svg class="ic ic-12" aria-hidden="true"><use href="#i-copy"/></svg>
+            <span>Salin WA</span>
+          </button>
+          <button type="button" class="utility-btn btn-xs" onclick="clearFinanceHistory()" style="color:#ef4444;border-color:rgba(239,68,68,0.3)">
+            <svg class="ic ic-12" aria-hidden="true"><use href="#i-trash"/></svg>
+            <span>Reset</span>
+          </button>
         </div>
       </div>
     </details>
@@ -7647,7 +7822,7 @@
 
 
     <!-- ═══════════════════════════════════════════════════
-    QUICK EXPENSE BOTTOM SHEET (Mobile-first)
+    QUICK EXPENSE & INCOME BOTTOM SHEET (Mobile-first)
     ═══════════════════════════════════════════════════ -->
     <div class="fin-sheet-overlay" id="fin-quick-sheet" style="display:none" onclick="closeQuickExpenseSheet(event)">
       <div class="fin-sheet" onclick="event.stopPropagation()">
@@ -7656,27 +7831,97 @@
           <span class="fin-sheet-title" id="fin-sheet-title">Catat Pengeluaran</span>
           <button type="button" class="fin-sheet-close" onclick="closeQuickExpenseSheet()">&times;</button>
         </div>
-        <div style="margin-bottom:16px">
-          <label class="form-label">Nominal</label>
-          <input type="text" inputmode="numeric" class="form-control" id="fin-sheet-amount" placeholder="Rp 0" oninput="formatMoneyInput(this)" style="font-size:1.1rem;font-weight:700;height:48px">
+
+        <!-- Segmented Type Switcher -->
+        <div class="fin-sheet-type-tabs" role="tablist">
+          <button type="button" class="fin-sheet-type-tab active" id="fin-tab-expense" onclick="switchQuickSheetType('expense')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span>Pengeluaran</span>
+          </button>
+          <button type="button" class="fin-sheet-type-tab" id="fin-tab-income" onclick="switchQuickSheetType('income')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span>Pemasukan</span>
+          </button>
         </div>
+
+        <div style="margin-bottom:14px">
+          <label class="form-label" id="fin-sheet-amount-label">Nominal</label>
+          <input type="text" inputmode="numeric" class="form-control" id="fin-sheet-amount" placeholder="Rp 0" oninput="formatMoneyInput(this)" style="font-size:1.15rem;font-weight:700;height:48px">
+        </div>
+
+        <!-- Category Chips: Expense -->
         <div class="fin-sheet-chips" id="fin-sheet-chips-expense">
-          <span class="fin-sheet-chip active" onclick="selectSheetCat('makan',this)">🍚 Makan</span>
-          <span class="fin-sheet-chip" onclick="selectSheetCat('transport',this)">🚌 Transport</span>
-          <span class="fin-sheet-chip" onclick="selectSheetCat('kos',this)">🏠 Kos</span>
-          <span class="fin-sheet-chip" onclick="selectSheetCat('laundry',this)">👕 Laundry</span>
-          <span class="fin-sheet-chip" onclick="selectSheetCat('kopi',this)">☕ Kopi</span>
-          <span class="fin-sheet-chip" onclick="selectSheetCat('lainnya',this)">📦 Lainnya</span>
+          <button type="button" class="fin-sheet-chip active" onclick="selectSheetCat('makan',this)" aria-label="Makan">
+            <iconify-icon icon="fluent-emoji-flat:bento-box" width="18" height="18" aria-hidden="true"></iconify-icon>
+            <span>Makan</span>
+          </button>
+          <button type="button" class="fin-sheet-chip" onclick="selectSheetCat('transport',this)" aria-label="Transport">
+            <iconify-icon icon="fluent-emoji-flat:bus" width="18" height="18" aria-hidden="true"></iconify-icon>
+            <span>Transport</span>
+          </button>
+          <button type="button" class="fin-sheet-chip" onclick="selectSheetCat('kos',this)" aria-label="Kos">
+            <iconify-icon icon="fluent-emoji-flat:house" width="18" height="18" aria-hidden="true"></iconify-icon>
+            <span>Kos</span>
+          </button>
+          <button type="button" class="fin-sheet-chip" onclick="selectSheetCat('laundry',this)" aria-label="Laundry">
+            <iconify-icon icon="fluent-emoji-flat:basket" width="18" height="18" aria-hidden="true"></iconify-icon>
+            <span>Laundry</span>
+          </button>
+          <button type="button" class="fin-sheet-chip" onclick="selectSheetCat('kopi',this)" aria-label="Kopi">
+            <iconify-icon icon="fluent-emoji-flat:hot-beverage" width="18" height="18" aria-hidden="true"></iconify-icon>
+            <span>Kopi</span>
+          </button>
+          <button type="button" class="fin-sheet-chip" onclick="selectSheetCat('belanja',this)" aria-label="Belanja">
+            <iconify-icon icon="fluent-emoji-flat:shopping-bags" width="18" height="18" aria-hidden="true"></iconify-icon>
+            <span>Belanja</span>
+          </button>
+          <button type="button" class="fin-sheet-chip" onclick="selectSheetCat('tagihan',this)" aria-label="Tagihan">
+            <iconify-icon icon="fluent-emoji-flat:receipt" width="18" height="18" aria-hidden="true"></iconify-icon>
+            <span>Tagihan</span>
+          </button>
+          <button type="button" class="fin-sheet-chip" onclick="selectSheetCat('lainnya',this)" aria-label="Lainnya">
+            <iconify-icon icon="fluent-emoji-flat:package" width="18" height="18" aria-hidden="true"></iconify-icon>
+            <span>Lainnya</span>
+          </button>
         </div>
+
+        <!-- Category Chips: Income -->
+        <div class="fin-sheet-chips" id="fin-sheet-chips-income" style="display:none">
+          <button type="button" class="fin-sheet-chip active" onclick="selectSheetCat('saku_bni',this)" aria-label="Uang Saku BNI">
+            <iconify-icon icon="fluent-emoji-flat:bank" width="18" height="18" aria-hidden="true"></iconify-icon>
+            <span>Uang Saku BNI</span>
+          </button>
+          <button type="button" class="fin-sheet-chip" onclick="selectSheetCat('maganghub',this)" aria-label="Insentif MagangHub">
+            <iconify-icon icon="fluent-emoji-flat:briefcase" width="18" height="18" aria-hidden="true"></iconify-icon>
+            <span>MagangHub</span>
+          </button>
+          <button type="button" class="fin-sheet-chip" onclick="selectSheetCat('freelance',this)" aria-label="Freelance">
+            <iconify-icon icon="fluent-emoji-flat:laptop" width="18" height="18" aria-hidden="true"></iconify-icon>
+            <span>Freelance</span>
+          </button>
+          <button type="button" class="fin-sheet-chip" onclick="selectSheetCat('ortu',this)" aria-label="Kiriman Ortu">
+            <iconify-icon icon="fluent-emoji-flat:family" width="18" height="18" aria-hidden="true"></iconify-icon>
+            <span>Kiriman Ortu</span>
+          </button>
+          <button type="button" class="fin-sheet-chip" onclick="selectSheetCat('hadiah',this)" aria-label="Bonus/Reward">
+            <iconify-icon icon="fluent-emoji-flat:wrapped-gift" width="18" height="18" aria-hidden="true"></iconify-icon>
+            <span>Bonus</span>
+          </button>
+          <button type="button" class="fin-sheet-chip" onclick="selectSheetCat('lainnya_inc',this)" aria-label="Pemasukan Lainnya">
+            <iconify-icon icon="fluent-emoji-flat:money-bag" width="18" height="18" aria-hidden="true"></iconify-icon>
+            <span>Lainnya</span>
+          </button>
+        </div>
+
         <div style="margin-bottom:12px">
           <label class="form-label">Deskripsi</label>
-          <input type="text" class="form-control" id="fin-sheet-desc" placeholder="Contoh: Makan siang kantin">
+          <input type="text" class="form-control" id="fin-sheet-desc" placeholder="Contoh: Makan siang kantin Menara BNI">
         </div>
         <div style="margin-bottom:16px">
           <label class="form-label">Tanggal</label>
           <input type="date" class="form-control" id="fin-sheet-date">
         </div>
-        <button type="button" class="btn-block" onclick="submitSheetExpense()" style="height:44px;font-size:0.88rem;font-weight:700">Simpan Pengeluaran</button>
+        <button type="button" id="fin-sheet-submit-btn" class="btn-block" onclick="submitSheetExpense()" style="height:46px;font-size:0.92rem;font-weight:700">Simpan Pengeluaran</button>
       </div>
     </div>
     <!-- Hidden sheet category selector -->
@@ -12150,24 +12395,69 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     { id: 'bill_laundry', name: 'Langganan Laundry Kiloan', amount: 150000, dueDay: 15, paid: false, icon: '', custom: false }
   ];
 
+  // Centralized Icon Mapping (Fluent Emoji Flat via Iconify)
+  const CATEGORY_ICONS = {
+    makan: 'fluent-emoji-flat:bento-box',
+    transport: 'fluent-emoji-flat:bus',
+    kos: 'fluent-emoji-flat:house',
+    laundry: 'fluent-emoji-flat:basket',
+    kopi: 'fluent-emoji-flat:hot-beverage',
+    belanja: 'fluent-emoji-flat:shopping-bags',
+    tagihan: 'fluent-emoji-flat:receipt',
+    kesehatan: 'fluent-emoji-flat:red-heart',
+    pendidikan: 'fluent-emoji-flat:graduation-cap',
+    hiburan: 'fluent-emoji-flat:film-projector',
+    wisuda: 'fluent-emoji-flat:graduation-cap',
+    lainnya: 'fluent-emoji-flat:package'
+  };
+
+  const INCOME_ICONS = {
+    saku_bni: 'fluent-emoji-flat:bank',
+    maganghub: 'fluent-emoji-flat:briefcase',
+    freelance: 'fluent-emoji-flat:laptop',
+    ortu: 'fluent-emoji-flat:family',
+    hadiah: 'fluent-emoji-flat:wrapped-gift',
+    investasi: 'fluent-emoji-flat:chart-increasing',
+    lainnya_inc: 'fluent-emoji-flat:money-bag'
+  };
+
+  function renderCategoryIcon(catKey, size = 18, isIncome = false) {
+    const key = String(catKey || '').toLowerCase();
+    const map = isIncome ? INCOME_ICONS : CATEGORY_ICONS;
+    const icon = map[key] || (isIncome ? 'fluent-emoji-flat:money-bag' : (CATEGORY_ICONS[key] || 'fluent-emoji-flat:package'));
+    return `<iconify-icon icon="${icon}" width="${size}" height="${size}" aria-hidden="true" style="vertical-align:middle;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;"></iconify-icon>`;
+  }
+
+  function renderCategoryChip(catKey, label, active = false, onClickStr = '', isIncome = false) {
+    const iconHtml = renderCategoryIcon(catKey, 18, isIncome);
+    const clickAttr = onClickStr ? ` onclick="${onClickStr}"` : '';
+    const activeClass = active ? ' active' : '';
+    return `<button type="button" class="fin-action-chip${activeClass}" data-cat="${catKey}"${clickAttr} aria-label="${label}">
+      ${iconHtml}
+      <span>${label}</span>
+    </button>`;
+  }
+
   const FIN_CATEGORY_META = {
-    makan: { label: 'Makan & Minum', badge: '', color: '#007C89' },
-    transport: { label: 'Transportasi', badge: '', color: '#0284c7' },
-    kos: { label: 'Kos & Utilitas', badge: '', color: '#d97706' },
-    laundry: { label: 'Laundry & Pribadi', badge: '', color: '#8b5cf6' },
-    kopi: { label: 'Kopi & Hangout', badge: '', color: '#F15A24' },
-    wisuda: { label: 'Wisuda UMS & Solo', badge: '', color: '#ec4899' },
-    lainnya: { label: 'Lain-lain / Darurat', badge: '', color: '#64748b' }
+    makan: { label: 'Makan & Minum', icon: 'fluent-emoji-flat:bento-box', color: '#007C89' },
+    transport: { label: 'Transportasi', icon: 'fluent-emoji-flat:bus', color: '#0284c7' },
+    kos: { label: 'Kos & Utilitas', icon: 'fluent-emoji-flat:house', color: '#d97706' },
+    laundry: { label: 'Laundry & Pribadi', icon: 'fluent-emoji-flat:basket', color: '#8b5cf6' },
+    kopi: { label: 'Kopi & Hangout', icon: 'fluent-emoji-flat:hot-beverage', color: '#F15A24' },
+    belanja: { label: 'Belanja & Kebutuhan', icon: 'fluent-emoji-flat:shopping-bags', color: '#10b981' },
+    tagihan: { label: 'Tagihan Tetap', icon: 'fluent-emoji-flat:receipt', color: '#6366f1' },
+    wisuda: { label: 'Wisuda UMS & Solo', icon: 'fluent-emoji-flat:graduation-cap', color: '#ec4899' },
+    lainnya: { label: 'Lain-lain / Darurat', icon: 'fluent-emoji-flat:package', color: '#64748b' }
   };
 
   const FIN_INCOME_META = {
-    saku_bni: { label: 'Uang Saku BNI', badge: '🏦', color: '#10b981' },
-    maganghub: { label: 'Insentif Kemnaker MagangHub', badge: '💼', color: '#0284c7' },
-    freelance: { label: 'Freelance & Jasa', badge: '💻', color: '#6366f1' },
-    ortu: { label: 'Kiriman Keluarga / Ortu', badge: '👨‍👩‍👧', color: '#ec4899' },
-    hadiah: { label: 'Bonus & Reward', badge: '🎁', color: '#f59e0b' },
-    investasi: { label: 'Dividen & Bunga', badge: '📈', color: '#14b8a6' },
-    lainnya_inc: { label: 'Pemasukan Lainnya', badge: '💵', color: '#10b981' }
+    saku_bni: { label: 'Uang Saku BNI', icon: 'fluent-emoji-flat:bank', color: '#10b981' },
+    maganghub: { label: 'Insentif Kemnaker MagangHub', icon: 'fluent-emoji-flat:briefcase', color: '#0284c7' },
+    freelance: { label: 'Freelance & Jasa', icon: 'fluent-emoji-flat:laptop', color: '#6366f1' },
+    ortu: { label: 'Kiriman Keluarga / Ortu', icon: 'fluent-emoji-flat:family', color: '#ec4899' },
+    hadiah: { label: 'Bonus & Reward', icon: 'fluent-emoji-flat:wrapped-gift', color: '#f59e0b' },
+    investasi: { label: 'Dividen & Bunga', icon: 'fluent-emoji-flat:chart-increasing', color: '#14b8a6' },
+    lainnya_inc: { label: 'Pemasukan Lainnya', icon: 'fluent-emoji-flat:money-bag', color: '#10b981' }
   };
 
   let currentFinanceFilter = 'all';
@@ -12400,7 +12690,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
           <div class="fin-bill-info" onclick="openEditBillModal('${bill.id}')" title="Ketuk untuk edit tagihan" style="cursor:pointer">
             <span class="fin-bill-name">${escHtml(bill.name)}</span>
             <span class="fin-bill-status-sub ${isPastDue ? 'text-danger' : (bill.paid ? 'text-success' : '')}">
-              ${bill.paid ? '✓ Sudah Lunas' : (isPastDue ? `⚠️ Lewat tempo (tgl ${dueDay})` : `Jatuh tempo tiap tgl ${dueDay}`)}
+              ${bill.paid ? '✓ Sudah Lunas' : (isPastDue ? `Lewat tempo (tgl ${dueDay})` : `Jatuh tempo tiap tgl ${dueDay}`)}
             </span>
           </div>
           <div class="fin-bill-right">
@@ -13464,7 +13754,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
         const allCats = { ...FIN_CATEGORY_META };
         // Pastikan 'tagihan' ada jika ada paidBills
         if (!allCats['tagihan']) {
-          allCats['tagihan'] = { label: 'Tagihan Tetap', badge: '📋', color: '#6366f1' };
+          allCats['tagihan'] = { label: 'Tagihan Tetap', icon: 'fluent-emoji-flat:receipt', color: '#6366f1' };
         }
         Object.keys(allCats).forEach(k => {
           const amt = catTotals[k] || 0;
@@ -13472,10 +13762,11 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
             const pct = Math.round((amt / effectiveTotalSpent) * 100);
             const meta = allCats[k];
             segHtml += `<div class="finance-stacked-seg" style="width: ${pct}%; background-color: ${meta.color};" title="${meta.label}: ${formatRupiah(amt)} (${pct}%)"></div>`;
+            const iconHtml = renderCategoryIcon(k, 16);
             legHtml += `
               <div class="finance-cat-pill">
                 <span class="finance-cat-dot" style="background-color: ${meta.color};"></span>
-                <span>${meta.badge} ${meta.label}: <strong>${pct}%</strong> (${formatRupiah(amt)})</span>
+                <span style="display:inline-flex;align-items:center;gap:5px;">${iconHtml} <span>${meta.label}</span>: <strong>${pct}%</strong> (${formatRupiah(amt)})</span>
               </div>
             `;
           }
@@ -13593,12 +13884,8 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     showToast(`${type === 'income' ? 'Pemasukan' : 'Pengeluaran'} ${formatRupiah(amount)} berhasil dicatat & disimpan!`);
   }
 
-  function quickFillExpense(cat, amount, desc, type = 'expense', autoSubmit = null) {
-    if (type === 'income') {
-      openIncomeModal();
-      return;
-    }
-    openQuickExpenseSheet(cat, amount, desc);
+  function quickFillExpense(cat, amount, desc, type = 'expense') {
+    openQuickExpenseSheet(cat, amount, desc, type);
   }
 
   function deleteExpense(id) {
@@ -13704,13 +13991,14 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     displayTxs.forEach(item => {
       const isInc = item.type === 'income';
       const meta = isInc 
-        ? (FIN_INCOME_META[item.cat] || { label: 'Pemasukan', badge: '💵' })
-        : (FIN_CATEGORY_META[item.cat] || { label: 'Lainnya', badge: '💡' });
+        ? (FIN_INCOME_META[item.cat] || { label: 'Pemasukan' })
+        : (FIN_CATEGORY_META[item.cat] || { label: 'Lainnya' });
+      const iconHtml = renderCategoryIcon(item.cat, 20, isInc);
 
       html += `
         <div class="finance-tx-item ${isInc ? 'income-item' : ''}">
           <div class="finance-tx-left">
-            <span class="finance-tx-badge ${isInc ? 'income' : ''}">${escHtml(meta.badge || (isInc ? '💵' : '💡'))}</span>
+            <span class="finance-tx-badge ${isInc ? 'income' : ''}" style="display:inline-flex;align-items:center;justify-content:center;">${iconHtml}</span>
             <div class="finance-tx-info">
               <span class="finance-tx-desc">${escHtml(item.desc)}</span>
               <span class="finance-tx-date">
@@ -13813,7 +14101,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
 
       html += `<div class="${cellCls}" style="background: ${bg};${isToday ? ' outline: 2px solid var(--accent); outline-offset: -1px;' : ''}" title="${tip}" onclick="selectCalendarDate(${dNum})">
         <span class="fin-heat-date">${dNum}</span>
-        ${isPayday ? '<span class="fin-heat-payday" title="Gajian!">💰</span>' : ''}
+        ${isPayday ? '<span class="fin-heat-payday" title="Gajian!"><iconify-icon icon="fluent-emoji-flat:money-bag" width="12" height="12" aria-hidden="true"></iconify-icon></span>' : ''}
         ${hasUnpaid ? '<span class="fin-heat-bill-dot unpaid" title="Ada tagihan belum lunas"></span>' : (allPaid ? '<span class="fin-heat-bill-dot paid" title="Tagihan lunas"></span>' : '')}
       </div>`;
       curr.setDate(curr.getDate() + 1);
@@ -13917,7 +14205,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     Object.keys(FIN_CATEGORY_META).forEach(key => {
       const amt = breakdown[key] || 0;
       if (amt > 0) {
-        text += `${FIN_CATEGORY_META[key].badge} ${FIN_CATEGORY_META[key].label}: ${formatRupiah(amt)}\n`;
+        text += `• ${FIN_CATEGORY_META[key].label}: ${formatRupiah(amt)}\n`;
       }
     });
 
@@ -14430,15 +14718,65 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     showToast('File raport bulanan berhasil diunduh!');
   }
 
-  // --- Quick Expense Bottom Sheet (Mobile-First) ---
-  function openQuickExpenseSheet(presetCat, presetAmount, presetDesc) {
+  // --- Quick Expense & Income Bottom Sheet (Mobile-First) ---
+  function switchQuickSheetType(type) {
+    const isInc = type === 'income';
+    const typeEl = document.getElementById('fin-sheet-type');
+    if (typeEl) typeEl.value = isInc ? 'income' : 'expense';
+
+    const tabExp = document.getElementById('fin-tab-expense');
+    const tabInc = document.getElementById('fin-tab-income');
+    if (tabExp) tabExp.classList.toggle('active', !isInc);
+    if (tabInc) tabInc.classList.toggle('active', isInc);
+
+    const expChips = document.getElementById('fin-sheet-chips-expense');
+    const incChips = document.getElementById('fin-sheet-chips-income');
+    if (expChips) expChips.style.display = isInc ? 'none' : 'flex';
+    if (incChips) incChips.style.display = isInc ? 'flex' : 'none';
+
+    const titleEl = document.getElementById('fin-sheet-title');
+    if (titleEl) titleEl.textContent = isInc ? 'Catat Pemasukan' : 'Catat Pengeluaran';
+    const submitBtn = document.getElementById('fin-sheet-submit-btn');
+    if (submitBtn) submitBtn.textContent = isInc ? 'Simpan Pemasukan' : 'Simpan Pengeluaran';
+
+    const descEl = document.getElementById('fin-sheet-desc');
+    if (descEl && !descEl.value) {
+      descEl.placeholder = isInc ? 'Contoh: Uang saku bulan berjalan' : 'Contoh: Makan siang kantin Menara BNI';
+    }
+
+    const currentCat = document.getElementById('fin-sheet-cat').value;
+    const currentContainer = isInc ? incChips : expChips;
+    let found = false;
+    if (currentContainer) {
+      currentContainer.querySelectorAll('.fin-sheet-chip').forEach(c => {
+        const oc = c.getAttribute('onclick') || '';
+        const match = oc.match(/selectSheetCat\('([^']+)'/);
+        if (match && match[1] === currentCat) {
+          c.classList.add('active');
+          found = true;
+        } else {
+          c.classList.remove('active');
+        }
+      });
+      if (!found) {
+        const defaultCat = isInc ? 'saku_bni' : 'makan';
+        document.getElementById('fin-sheet-cat').value = defaultCat;
+        const firstChip = currentContainer.querySelector('.fin-sheet-chip');
+        if (firstChip) firstChip.classList.add('active');
+      }
+    }
+  }
+
+  function openQuickExpenseSheet(presetCat, presetAmount, presetDesc, presetType = 'expense') {
     const sheet = document.getElementById('fin-quick-sheet');
     if (!sheet) return;
     const dateInput = document.getElementById('fin-sheet-date');
     if (dateInput && !dateInput.value) {
       dateInput.value = getWibDateString();
     }
-    const cat = presetCat || 'makan';
+
+    const isInc = presetType === 'income';
+    const cat = presetCat || (isInc ? 'saku_bni' : 'makan');
     const amountVal = presetAmount ? Number(presetAmount).toLocaleString('id-ID') : '';
     const descVal = presetDesc || '';
 
@@ -14450,19 +14788,23 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     if (amtEl) amtEl.value = amountVal;
     if (descEl) descEl.value = descVal;
     if (catEl) catEl.value = cat;
-    if (typeEl) typeEl.value = 'expense';
+    if (typeEl) typeEl.value = isInc ? 'income' : 'expense';
 
-    // Reset chip selection & highlight matching category chip in sheet
-    document.querySelectorAll('.fin-sheet-chip').forEach(c => {
-      const oc = c.getAttribute('onclick') || '';
-      const match = oc.match(/selectSheetCat\('([^']+)'/);
-      if (match && match[1]) {
-        c.classList.toggle('active', match[1] === cat);
-      }
-    });
+    switchQuickSheetType(isInc ? 'income' : 'expense');
 
-    const titleEl = document.getElementById('fin-sheet-title');
-    if (titleEl) titleEl.textContent = 'Catat Pengeluaran';
+    const targetContainer = isInc
+      ? document.getElementById('fin-sheet-chips-income')
+      : document.getElementById('fin-sheet-chips-expense');
+
+    if (targetContainer) {
+      targetContainer.querySelectorAll('.fin-sheet-chip').forEach(c => {
+        const oc = c.getAttribute('onclick') || '';
+        const match = oc.match(/selectSheetCat\('([^']+)'/);
+        if (match && match[1]) {
+          c.classList.toggle('active', match[1] === cat);
+        }
+      });
+    }
 
     sheet.style.display = 'flex';
     document.body.style.overflow = 'hidden';
@@ -14486,7 +14828,10 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
 
   function selectSheetCat(cat, el) {
     document.getElementById('fin-sheet-cat').value = cat;
-    document.querySelectorAll('.fin-sheet-chip').forEach(c => c.classList.remove('active'));
+    const container = el ? el.closest('.fin-sheet-chips') : document;
+    if (container) {
+      container.querySelectorAll('.fin-sheet-chip').forEach(c => c.classList.remove('active'));
+    }
     if (el) el.classList.add('active');
   }
 
@@ -14556,17 +14901,18 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     const allTxs = getFinanceExpenses();
     const recent = allTxs.slice(0, 5);
     if (recent.length === 0) {
-      container.innerHTML = '<div style="font-size:0.78rem;color:var(--text-secondary);text-align:center;padding:16px;border:1px dashed var(--border);border-radius:6px;background:var(--surface-hover)">Belum ada transaksi tercatat. Gunakan <strong>+ Catat Pengeluaran</strong> di atas.</div>';
+      container.innerHTML = '<div style="font-size:0.78rem;color:var(--text-secondary);text-align:center;padding:16px;border:1px dashed var(--border);border-radius:6px;background:var(--surface-hover)">Belum ada transaksi tercatat. Gunakan tombol <strong>Catat Pengeluaran</strong> atau <strong>+ Pemasukan</strong> di atas.</div>';
       return;
     }
     let html = '';
     recent.forEach(tx => {
       const isInc = tx.type === 'income';
-      const meta = isInc ? (FIN_INCOME_META[tx.cat] || { label: tx.cat, badge: '💰' }) : (FIN_CATEGORY_META[tx.cat] || { label: tx.cat, badge: '📌' });
+      const meta = isInc ? (FIN_INCOME_META[tx.cat] || { label: tx.cat }) : (FIN_CATEGORY_META[tx.cat] || { label: tx.cat });
       const amt = formatRupiah(Number(tx.amount) || 0);
+      const iconHtml = renderCategoryIcon(tx.cat, 18, isInc);
       html += `<div class="fin-tx-row" onclick="deleteExpense('${tx.id}')" title="Tap untuk hapus">
-        <span class="fin-tx-cat">${meta.badge || ''} ${meta.label}</span>
-        <span class="fin-tx-desc">${tx.desc || ''}</span>
+        <span class="fin-tx-cat" style="display:inline-flex;align-items:center;gap:6px;">${iconHtml} <span>${meta.label}</span></span>
+        <span class="fin-tx-desc">${escHtml(tx.desc || '')}</span>
         <span class="fin-tx-amt ${isInc ? 'fin-tx-in' : 'fin-tx-out'}">${isInc ? '+' : '-'} ${amt}</span>
       </div>`;
     });
