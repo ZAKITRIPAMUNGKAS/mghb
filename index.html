@@ -7068,6 +7068,144 @@
       border-color: #005E6A;
     }
 
+    /* ── FINOS ADAPTIVE BUDGETING & MULTI-ACCOUNT STYLES ── */
+    .fin-hero-split {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    @media (min-width: 480px) {
+      .fin-hero-split {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    .fin-hero-card-sts {
+      background: linear-gradient(135deg, rgba(0, 94, 106, 0.08) 0%, rgba(16, 185, 129, 0.08) 100%);
+      border: 1.5px solid rgba(0, 94, 106, 0.25);
+      border-radius: 12px;
+      padding: 12px 14px;
+    }
+    [data-theme="dark"] .fin-hero-card-sts {
+      background: linear-gradient(135deg, rgba(0, 94, 106, 0.22) 0%, rgba(16, 185, 129, 0.16) 100%);
+      border-color: rgba(45, 212, 191, 0.35);
+    }
+    .fin-hero-sts-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 700;
+      color: #005E6A;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 4px;
+    }
+    [data-theme="dark"] .fin-hero-sts-label { color: #2dd4bf; }
+    .fin-hero-sts-val {
+      font-size: 24px;
+      font-weight: 800;
+      color: #005E6A;
+      line-height: 1.2;
+    }
+    [data-theme="dark"] .fin-hero-sts-val { color: #5eead4; }
+    .fin-hero-sts-sub {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+      display: block;
+    }
+    .fin-accounts-strip {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 4px 0 10px;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    .fin-accounts-strip::-webkit-scrollbar { display: none; }
+    .fin-account-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      background: var(--surface-hover);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .fin-account-pill-amt {
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .fin-account-select-chips {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    .fin-account-select-chip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 10px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      color: var(--text-primary);
+    }
+    .fin-account-select-chip.active {
+      border-color: #005E6A;
+      background: rgba(0, 94, 106, 0.08);
+      font-weight: 700;
+      color: #005E6A;
+    }
+    [data-theme="dark"] .fin-account-select-chip.active {
+      border-color: #2dd4bf;
+      background: rgba(45, 212, 191, 0.12);
+      color: #2dd4bf;
+    }
+    .fin-sim-impact-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .fin-sim-impact-card {
+      background: var(--surface-hover);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 10px;
+    }
+    .fin-sim-impact-title {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 2px;
+    }
+    .fin-sim-impact-val {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: block;
+    }
+    .fin-sim-impact-sub {
+      font-size: 10px;
+      color: var(--text-secondary);
+      display: block;
+      margin-top: 1px;
+    }
+
     /* ── OLD CLASS PRESERVATION (JS renders into these) ── */
     /* Keep fin-grid for backward compat but it's not used in the new layout */
     .fin-grid { display: none; }
@@ -7502,9 +7640,28 @@
         <span class="fin-snapshot-badge" id="fin-status-badge">Terkendali</span>
       </div>
 
-      <div class="fin-snapshot-hero">
-        <span class="fin-snapshot-hero-label">Saldo tersedia</span>
-        <span class="fin-snapshot-hero-value" id="fin-remaining-budget">Rp 3.500.000</span>
+      <div class="fin-hero-split">
+        <div class="fin-hero-card-sts">
+          <span class="fin-hero-sts-label">
+            <span>Aman Dibelanjakan</span>
+            <span class="fin-snapshot-badge" id="fin-sts-status-badge" style="font-size:10px;padding:2px 7px;">Real-Time</span>
+          </span>
+          <span class="fin-hero-sts-val" id="fin-safe-to-spend-val">Rp 0</span>
+          <span class="fin-hero-sts-sub" id="fin-sts-sub-desc">Setelah tagihan, pos iPhone 18 &amp; buffer</span>
+        </div>
+        <div class="fin-snapshot-hero" style="margin-bottom:0;padding:12px 14px;background:var(--surface-hover);border:1px solid var(--border);border-radius:12px;">
+          <span class="fin-snapshot-hero-label">Total Saldo Likuid</span>
+          <span class="fin-snapshot-hero-value" id="fin-remaining-budget" style="font-size:22px;">Rp 3.500.000</span>
+          <span class="fin-snapshot-metric-sub" id="fin-liquid-sub-desc" style="margin-top:2px;">Rekening operasional + Tunai</span>
+        </div>
+      </div>
+
+      <!-- Multi-Account Balance Quick Strip -->
+      <div class="fin-accounts-strip" id="fin-accounts-strip">
+        <div class="fin-account-pill"><iconify-icon icon="fluent-emoji-flat:bank" width="14" height="14"></iconify-icon> <span>BNI:</span> <strong class="fin-account-pill-amt" id="fin-acc-bni-val">Rp 0</strong></div>
+        <div class="fin-account-pill"><iconify-icon icon="fluent-emoji-flat:mobile-phone" width="14" height="14"></iconify-icon> <span>GoPay:</span> <strong class="fin-account-pill-amt" id="fin-acc-gopay-val">Rp 0</strong></div>
+        <div class="fin-account-pill"><iconify-icon icon="fluent-emoji-flat:money-with-wings" width="14" height="14"></iconify-icon> <span>Tunai:</span> <strong class="fin-account-pill-amt" id="fin-acc-cash-val">Rp 0</strong></div>
+        <div class="fin-account-pill"><iconify-icon icon="fluent-emoji-flat:piggy-bank" width="14" height="14"></iconify-icon> <span>Wondr:</span> <strong class="fin-account-pill-amt" id="fin-acc-savings-val">Rp 0</strong></div>
       </div>
 
       <div class="fin-snapshot-row">
@@ -7970,8 +8127,61 @@
         </div>
       </div>
 
-      <!-- Panel Simulator -->
+      <!-- Panel Simulator: What-If Decision Support Engine -->
       <div class="fin-util-panel" id="panel-util-sim">
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:14px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <span style="font-size:12px;font-weight:700;color:var(--text-primary);display:flex;align-items:center;gap:5px;">
+              <iconify-icon icon="fluent-emoji-flat:crystal-ball" width="16" height="16"></iconify-icon>
+              Simulasi Beli Sesuatu (What-If)
+            </span>
+            <span id="fin-sim-rec-badge" class="fin-health-badge success" style="font-size:10px;padding:2px 7px;">Aman</span>
+          </div>
+          <div style="font-size:11px;color:var(--text-secondary);margin-bottom:10px;line-height:1.4;">
+            Ketahui dampak pengeluaran sebelum transaksi: apakah aman, seberapa turun limit harian, dan apakah target iPhone 18 tertunda.
+          </div>
+          
+          <div style="display:flex;gap:6px;margin-bottom:8px;">
+            <input type="text" inputmode="numeric" id="fin-sim-purchase-amount" class="form-control" placeholder="Nominal belanja (mis. 500.000)" value="500.000" oninput="formatMoneyInput(this); runWhatIfSimulation();" style="font-size:13px;font-weight:700;height:38px;">
+          </div>
+          <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;">
+            <button type="button" class="fin-action-chip" style="height:28px;padding:2px 10px;font-size:11px;" onclick="setWhatIfPreset(50000)">+50rb</button>
+            <button type="button" class="fin-action-chip" style="height:28px;padding:2px 10px;font-size:11px;" onclick="setWhatIfPreset(150000)">+150rb</button>
+            <button type="button" class="fin-action-chip" style="height:28px;padding:2px 10px;font-size:11px;" onclick="setWhatIfPreset(500000)">+500rb</button>
+            <button type="button" class="fin-action-chip" style="height:28px;padding:2px 10px;font-size:11px;" onclick="setWhatIfPreset(1200000)">+1.2jt</button>
+          </div>
+
+          <!-- Dynamic Impact Metrics Grid -->
+          <div class="fin-sim-impact-grid" id="fin-sim-impact-grid">
+            <div class="fin-sim-impact-card">
+              <span class="fin-sim-impact-title">Aman Dibelanjakan</span>
+              <span class="fin-sim-impact-val" id="sim-impact-sts">Rp —</span>
+              <span class="fin-sim-impact-sub" id="sim-impact-sts-delta">Sisa aman baru</span>
+            </div>
+            <div class="fin-sim-impact-card">
+              <span class="fin-sim-impact-title">Limit Harian Baru</span>
+              <span class="fin-sim-impact-val" id="sim-impact-daily">Rp — / hari</span>
+              <span class="fin-sim-impact-sub" id="sim-impact-daily-delta">Penurunan limit</span>
+            </div>
+            <div class="fin-sim-impact-card">
+              <span class="fin-sim-impact-title">Target iPhone 18</span>
+              <span class="fin-sim-impact-val" id="sim-impact-goal">Mundur ~0 hr</span>
+              <span class="fin-sim-impact-sub" id="sim-impact-goal-sub">Estimasi penundaan</span>
+            </div>
+            <div class="fin-sim-impact-card">
+              <span class="fin-sim-impact-title">Proyeksi Saldo Akhir</span>
+              <span class="fin-sim-impact-val" id="sim-impact-eom">Rp —</span>
+              <span class="fin-sim-impact-sub" id="sim-impact-eom-sub">Saat gajian tgl 22</span>
+            </div>
+          </div>
+          <div id="fin-sim-verdict-box" style="margin-top:10px;padding:8px 10px;background:var(--surface-hover);border-radius:6px;font-size:11px;line-height:1.45;color:var(--text-secondary);">
+            Ketik nominal di atas untuk melihat analisis keputusan.
+          </div>
+        </div>
+
+        <div style="font-size:11px;font-weight:700;color:var(--text-secondary);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.04em;">
+          Simulasi Rutinitas Harian
+        </div>
         <div class="fin-sim-row">
           <div class="fin-sim-head"><span>Makan siang rata-rata / hari</span><b id="sim-makan-val">Rp 15.000</b></div>
           <input type="range" class="fin-sim-range" id="sim-makan" min="5000" max="40000" step="1000" value="15000" oninput="updateSimulator()">
@@ -8037,7 +8247,7 @@
         </div>
 
         <!-- Segmented Type Switcher -->
-        <div class="fin-sheet-type-tabs" role="tablist">
+        <div class="fin-sheet-type-tabs" role="tablist" style="grid-template-columns: 1fr 1fr 1fr;">
           <button type="button" class="fin-sheet-type-tab active" id="fin-tab-expense" onclick="switchQuickSheetType('expense')">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             <span>Pengeluaran</span>
@@ -8046,6 +8256,37 @@
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             <span>Pemasukan</span>
           </button>
+          <button type="button" class="fin-sheet-type-tab" id="fin-tab-saving" onclick="switchQuickSheetType('saving')">
+            <iconify-icon icon="fluent-emoji-flat:piggy-bank" width="14" height="14" aria-hidden="true"></iconify-icon>
+            <span>Nabung/Goal</span>
+          </button>
+        </div>
+
+        <!-- Account / Wallet Selector -->
+        <div style="margin-bottom:12px">
+          <label class="form-label" style="display:flex;justify-content:space-between;align-items:center;">
+            <span>Rekening / Sumber Dana</span>
+            <span id="fin-sheet-acc-balance-hint" style="font-size:11px;color:var(--text-tertiary);font-weight:600">Saldo: Rp —</span>
+          </label>
+          <div class="fin-account-select-chips" id="fin-sheet-accounts">
+            <button type="button" class="fin-account-select-chip active" data-acc="acc_bni" onclick="selectSheetAccount('acc_bni', this)">
+              <iconify-icon icon="fluent-emoji-flat:bank" width="15" height="15"></iconify-icon>
+              <span>BNI</span>
+            </button>
+            <button type="button" class="fin-account-select-chip" data-acc="acc_gopay" onclick="selectSheetAccount('acc_gopay', this)">
+              <iconify-icon icon="fluent-emoji-flat:mobile-phone" width="15" height="15"></iconify-icon>
+              <span>GoPay</span>
+            </button>
+            <button type="button" class="fin-account-select-chip" data-acc="acc_cash" onclick="selectSheetAccount('acc_cash', this)">
+              <iconify-icon icon="fluent-emoji-flat:money-with-wings" width="15" height="15"></iconify-icon>
+              <span>Tunai</span>
+            </button>
+            <button type="button" class="fin-account-select-chip" data-acc="acc_savings" onclick="selectSheetAccount('acc_savings', this)">
+              <iconify-icon icon="fluent-emoji-flat:piggy-bank" width="15" height="15"></iconify-icon>
+              <span>Wondr</span>
+            </button>
+          </div>
+          <input type="hidden" id="fin-sheet-account-id" value="acc_bni">
         </div>
 
         <div style="margin-bottom:14px">
@@ -8114,6 +8355,26 @@
           <button type="button" class="fin-sheet-chip" onclick="selectSheetCat('lainnya_inc',this)" aria-label="Pemasukan Lainnya">
             <iconify-icon icon="fluent-emoji-flat:money-bag" width="18" height="18" aria-hidden="true"></iconify-icon>
             <span>Lainnya</span>
+          </button>
+        </div>
+
+        <!-- Category Chips: Goals / Savings -->
+        <div class="fin-sheet-chips" id="fin-sheet-chips-saving" style="display:none">
+          <button type="button" class="fin-sheet-chip active" onclick="selectSheetCat('goal_iphone18',this)" aria-label="iPhone 18">
+            <iconify-icon icon="fluent-emoji-flat:mobile-phone" width="18" height="18" aria-hidden="true"></iconify-icon>
+            <span>iPhone 18</span>
+          </button>
+          <button type="button" class="fin-sheet-chip" onclick="selectSheetCat('goal_darurat',this)" aria-label="Dana Darurat">
+            <iconify-icon icon="fluent-emoji-flat:shield" width="18" height="18" aria-hidden="true"></iconify-icon>
+            <span>Dana Darurat</span>
+          </button>
+          <button type="button" class="fin-sheet-chip" onclick="selectSheetCat('goal_mudik',this)" aria-label="Mudik Solo">
+            <iconify-icon icon="fluent-emoji-flat:bullet-train" width="18" height="18" aria-hidden="true"></iconify-icon>
+            <span>Mudik Solo</span>
+          </button>
+          <button type="button" class="fin-sheet-chip" onclick="selectSheetCat('goal_ortu',this)" aria-label="Kirim Ortu">
+            <iconify-icon icon="fluent-emoji-flat:family" width="18" height="18" aria-hidden="true"></iconify-icon>
+            <span>Kirim Ortu</span>
           </button>
         </div>
 
@@ -12586,11 +12847,691 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   }
   window.filterLandingRoutes = filterLandingRoutes;
 
-  // --- Jakarta Financial Management Engine (Advanced Fintech Suite) ---
+  // --- Jakarta Financial Management Engine: FinOS Adaptive Goal-Based Budgeting ---
   const FIN_INCOME_KEY = 'mghb_fin_income';
   const FIN_EXPENSES_KEY = 'mghb_fin_expenses';
   const FIN_FIXED_KEY = 'mghb_fin_fixed_monthly';
   const FIN_BILLS_KEY = 'mghb_fin_bills';
+
+  // --- Centralized Utility & Formatters ---
+  function formatRupiah(num) {
+    return 'Rp ' + Number(num || 0).toLocaleString('id-ID');
+  }
+
+  function getWibDateString(d = new Date()) {
+    try {
+      const dt = typeof d === 'string' || typeof d === 'number' ? new Date(d) : d;
+      return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Jakarta' }).format(dt);
+    } catch {
+      const now = new Date();
+      const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+      const wib = new Date(utc + 3600000 * 7);
+      return wib.toISOString().slice(0, 10);
+    }
+  }
+
+  function getFinanceCycleRange(refDate = new Date()) {
+    try {
+      const dt = typeof refDate === 'string' || typeof refDate === 'number' ? new Date(refDate) : new Date(refDate);
+      const dateStr = getWibDateString(dt);
+      const parts = dateStr.split('-').map(Number);
+      const y = parts[0];
+      const m = parts[1];
+      const day = parts[2];
+
+      let start, end, payday;
+      if (day >= 21) {
+        start = new Date(y, m - 1, 21);
+        end = new Date(y, m, 21);
+        payday = new Date(y, m, 22);
+      } else {
+        start = new Date(y, m - 2, 21);
+        end = new Date(y, m - 1, 21);
+        payday = new Date(y, m - 1, 22);
+      }
+      return {
+        start, end, payday,
+        startStr: getWibDateString(start),
+        endStr: getWibDateString(end),
+        paydayStr: getWibDateString(payday)
+      };
+    } catch {
+      const now = new Date();
+      return {
+        start: new Date(now.getFullYear(), now.getMonth(), 21),
+        end: new Date(now.getFullYear(), now.getMonth() + 1, 21),
+        payday: new Date(now.getFullYear(), now.getMonth() + 1, 22),
+        startStr: '', endStr: '', paydayStr: ''
+      };
+    }
+  }
+
+  function formatMoneyInput(el) {
+    if (!el) return;
+    const digits = String(el.value || '').replace(/[^\d]/g, '');
+    el.value = digits ? Number(digits).toLocaleString('id-ID') : '';
+  }
+
+  function parseMoney(val) {
+    if (typeof val === 'number') return isFinite(val) ? Math.max(0, Math.round(val)) : 0;
+    if (!val) return 0;
+    const str = String(val).trim();
+    const kMatch = str.match(/^([\d.,]+)\s*(?:k|rb|ribu)$/i);
+    if (kMatch) {
+      const base = parseFloat(kMatch[1].replace(/,/g, '.')) || 0;
+      return Math.round(base * 1000);
+    }
+    const jtMatch = str.match(/^([\d.,]+)\s*(?:jt|juta)$/i);
+    if (jtMatch) {
+      const base = parseFloat(jtMatch[1].replace(/,/g, '.')) || 0;
+      return Math.round(base * 1000000);
+    }
+    const digits = str.replace(/[^\d]/g, '');
+    return digits ? parseInt(digits, 10) : 0;
+  }
+
+  // =========================================================================
+  // FinOS Engine: Adaptive Goal-Based Budgeting Core
+  // =========================================================================
+  const FinOS = {
+    KEYS: {
+      ACCOUNTS: 'mghb_fin_accounts',
+      TRANSACTIONS: 'mghb_fin_transactions',
+      COMMITMENTS: 'mghb_fin_commitments',
+      GOALS: 'mghb_fin_goals_v2',
+      SNAPSHOTS: 'mghb_fin_snapshots'
+    },
+
+    DEFAULT_ACCOUNTS: [
+      { id: 'acc_bni', name: 'Rekening BNI Giro/Taplus', type: 'checking', balance: 3500000, is_liquid: true, icon: 'fluent-emoji-flat:bank', color: '#007C89' },
+      { id: 'acc_gopay', name: 'GoPay / E-Wallet', type: 'wallet', balance: 150000, is_liquid: true, icon: 'fluent-emoji-flat:mobile-phone', color: '#00AED6' },
+      { id: 'acc_cash', name: 'Uang Tunai / Dompet', type: 'cash', balance: 100000, is_liquid: true, icon: 'fluent-emoji-flat:money-with-wings', color: '#10B981' },
+      { id: 'acc_savings', name: 'Tabungan Wondr (Sinking Fund)', type: 'savings', balance: 500000, is_liquid: false, icon: 'fluent-emoji-flat:piggy-bank', color: '#F59E0B' }
+    ],
+
+    DEFAULT_GOALS: [
+      { id: 'goal_iphone18', name: 'Tabungan iPhone 18', target: 18000000, saved: 1500000, monthly_allocation: 500000, deadline: '2026-09-30', priority: 1, icon: 'fluent-emoji-flat:mobile-phone', color: '#007C89', is_primary: true },
+      { id: 'goal_darurat', name: 'Dana Darurat Rantau', target: 4500000, saved: 500000, monthly_allocation: 300000, deadline: '', priority: 2, icon: 'fluent-emoji-flat:shield', color: '#10B981', is_primary: false },
+      { id: 'goal_mudik', name: 'Mudik Solo (Tiket KA PP)', target: 900000, saved: 200000, monthly_allocation: 150000, deadline: '', priority: 3, icon: 'fluent-emoji-flat:bullet-train', color: '#0284C7', is_primary: false },
+      { id: 'goal_ortu', name: 'Kirim ke Orang Tua', target: 600000, saved: 0, monthly_allocation: 200000, deadline: '', priority: 4, icon: 'fluent-emoji-flat:family', color: '#EC4899', is_primary: false }
+    ],
+
+    DEFAULT_COMMITMENTS: [
+      { id: 'bill_kos', name: 'Sewa Kos Benhil', amount: 1200000, due_day: 1, category: 'kos', is_mandatory: true, is_active: true, is_paid: false, preferred_account_id: 'acc_bni' },
+      { id: 'bill_listrik', name: 'Token Listrik Kos', amount: 150000, due_day: 5, category: 'kos', is_mandatory: true, is_active: true, is_paid: false, preferred_account_id: 'acc_bni' },
+      { id: 'bill_kuota', name: 'Paket Data / Kuota', amount: 100000, due_day: 10, category: 'tagihan', is_mandatory: true, is_active: true, is_paid: false, preferred_account_id: 'acc_bni' },
+      { id: 'bill_laundry', name: 'Langganan Laundry Kiloan', amount: 150000, due_day: 15, category: 'laundry', is_mandatory: true, is_active: true, is_paid: false, preferred_account_id: 'acc_cash' }
+    ],
+
+    getAccounts() {
+      try {
+        const raw = localStorage.getItem(this.KEYS.ACCOUNTS);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        }
+      } catch (err) {
+        console.warn('FinOS getAccounts error:', err);
+      }
+      return this.DEFAULT_ACCOUNTS;
+    },
+
+    saveAccounts(list, syncCloud = true) {
+      try {
+        localStorage.setItem(this.KEYS.ACCOUNTS, JSON.stringify(list));
+      } catch (e) {}
+      if (syncCloud && typeof supabaseClient !== 'undefined' && supabaseClient) {
+        list.forEach((acc, idx) => {
+          supabaseClient.from('mghb_accounts').upsert({
+            id: acc.id,
+            name: acc.name,
+            account_type: acc.type || 'checking',
+            balance: Number(acc.balance) || 0,
+            is_liquid: acc.is_liquid !== false,
+            is_active: acc.is_active !== false,
+            color: acc.color || '#007C89',
+            icon: acc.icon || '',
+            sort_order: idx + 1,
+            updated_at: new Date().toISOString()
+          }, { onConflict: 'id' }).then(() => {}, err => console.warn('Supabase acc sync warn:', err));
+        });
+      }
+    },
+
+    getCommitments() {
+      try {
+        const raw = localStorage.getItem(this.KEYS.COMMITMENTS);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        }
+      } catch (e) {}
+      const legacyBills = typeof getFinanceBills === 'function' ? getFinanceBills() : [];
+      if (legacyBills && legacyBills.length > 0) {
+        return legacyBills.map(b => ({
+          id: b.id,
+          name: b.name,
+          amount: Number(b.amount) || 0,
+          due_day: b.dueDay || 1,
+          category: b.cat || 'tagihan',
+          is_mandatory: true,
+          is_active: true,
+          is_paid: Boolean(b.paid),
+          preferred_account_id: 'acc_bni'
+        }));
+      }
+      return this.DEFAULT_COMMITMENTS;
+    },
+
+    saveCommitments(list, syncCloud = true) {
+      try {
+        localStorage.setItem(this.KEYS.COMMITMENTS, JSON.stringify(list));
+      } catch (e) {}
+      const legacy = list.map(c => ({
+        id: c.id,
+        name: c.name,
+        amount: Number(c.amount) || 0,
+        dueDay: c.due_day || 1,
+        paid: Boolean(c.is_paid),
+        custom: Boolean(c.custom),
+        icon: c.icon || ''
+      }));
+      try {
+        localStorage.setItem(FIN_BILLS_KEY, JSON.stringify(legacy));
+      } catch (e) {}
+      if (syncCloud && typeof supabaseClient !== 'undefined' && supabaseClient) {
+        list.forEach((c, idx) => {
+          supabaseClient.from('mghb_commitments').upsert({
+            id: c.id,
+            name: c.name,
+            category: c.category || 'tagihan',
+            amount: Number(c.amount) || 0,
+            due_day: c.due_day || 1,
+            is_mandatory: c.is_mandatory !== false,
+            is_active: c.is_active !== false,
+            is_paid: Boolean(c.is_paid),
+            preferred_account_id: c.preferred_account_id || 'acc_bni',
+            sort_order: idx + 1,
+            updated_at: new Date().toISOString()
+          }, { onConflict: 'id' }).then(() => {}, err => console.warn('Supabase comm sync warn:', err));
+        });
+      }
+    },
+
+    getGoals() {
+      try {
+        const raw = localStorage.getItem(this.KEYS.GOALS);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        }
+      } catch (e) {}
+      const legacyGoals = typeof getFinanceGoals === 'function' ? getFinanceGoals() : [];
+      if (legacyGoals && legacyGoals.length > 0) {
+        return legacyGoals.map(g => ({
+          id: g.id,
+          name: g.name,
+          target: Number(g.target) || 0,
+          saved: Number(g.saved) || 0,
+          monthly_allocation: Number(g.monthly_allocation) || (g.target ? Math.round(g.target / 12) : 200000),
+          deadline: g.deadline || '',
+          priority: g.priority || 2,
+          icon: g.icon || 'fluent-emoji-flat:bullseye',
+          color: g.color || '#007C89',
+          is_primary: g.id.includes('iphone') || Boolean(g.is_primary)
+        }));
+      }
+      return this.DEFAULT_GOALS;
+    },
+
+    saveGoals(list, syncCloud = true) {
+      try {
+        localStorage.setItem(this.KEYS.GOALS, JSON.stringify(list));
+      } catch (e) {}
+      const legacy = list.map(g => ({
+        id: g.id,
+        name: g.name,
+        target: Number(g.target) || 0,
+        saved: Number(g.saved) || 0,
+        deadline: g.deadline || '',
+        color: g.color || '#007C89',
+        icon: g.icon || '',
+        custom: true
+      }));
+      try {
+        localStorage.setItem(FIN_GOALS_KEY, JSON.stringify(legacy));
+      } catch (e) {}
+      if (syncCloud && typeof supabaseClient !== 'undefined' && supabaseClient) {
+        list.forEach((g, idx) => {
+          supabaseClient.from('mghb_financial_goals').upsert({
+            id: g.id,
+            name: g.name,
+            target_amount: Number(g.target) || 0,
+            current_saved: Number(g.saved) || 0,
+            monthly_allocation: Number(g.monthly_allocation) || 0,
+            target_date: g.deadline || null,
+            priority: g.priority || 1,
+            is_primary: Boolean(g.is_primary),
+            color: g.color || '#007C89',
+            icon: g.icon || '',
+            sort_order: idx + 1,
+            updated_at: new Date().toISOString()
+          }, { onConflict: 'id' }).then(() => {}, err => console.warn('Supabase goal sync warn:', err));
+        });
+      }
+    },
+
+    getTransactions() {
+      try {
+        const raw = localStorage.getItem(this.KEYS.TRANSACTIONS);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed)) return parsed;
+        }
+      } catch (e) {}
+      const legacyExpenses = typeof getFinanceExpenses === 'function' ? getFinanceExpenses() : [];
+      return legacyExpenses.map(e => ({
+        id: e.id,
+        type: e.type || 'expense',
+        category: e.cat || 'makan',
+        description: e.desc || '',
+        amount: Number(e.amount) || 0,
+        date: e.date || getWibDateString(),
+        source_account_id: 'acc_bni',
+        destination_account_id: null,
+        goal_id: null,
+        commitment_id: null
+      }));
+    },
+
+    saveTransactions(list, syncCloud = true) {
+      try {
+        localStorage.setItem(this.KEYS.TRANSACTIONS, JSON.stringify(list));
+      } catch (e) {}
+      const legacy = list.map(t => ({
+        id: t.id,
+        type: t.type || 'expense',
+        cat: t.category || 'makan',
+        desc: t.description || '',
+        amount: Number(t.amount) || 0,
+        date: t.date || getWibDateString()
+      }));
+      try {
+        localStorage.setItem(FIN_EXPENSES_KEY, JSON.stringify(legacy));
+      } catch (e) {}
+      if (syncCloud && typeof supabaseClient !== 'undefined' && supabaseClient) {
+        list.slice(0, 50).forEach(tx => {
+          supabaseClient.from('mghb_transactions').upsert({
+            id: tx.id,
+            tx_type: tx.type || 'expense',
+            category: tx.category || 'makan',
+            description: tx.description || '',
+            amount: Number(tx.amount) || 0,
+            tx_date: tx.date || getWibDateString(),
+            source_account_id: tx.source_account_id || 'acc_bni',
+            destination_account_id: tx.destination_account_id || null,
+            goal_id: tx.goal_id || null,
+            commitment_id: tx.commitment_id || null,
+            updated_at: new Date().toISOString()
+          }, { onConflict: 'id' }).then(() => {}, err => console.warn('Supabase tx sync warn:', err));
+        });
+      }
+    },
+
+    computeMetrics(refDate = new Date()) {
+      const cycle = getFinanceCycleRange(refDate);
+      const accounts = this.getAccounts();
+      const commitments = this.getCommitments();
+      const goals = this.getGoals();
+      const txs = this.getTransactions();
+
+      const liquidBalance = accounts.filter(a => a.is_liquid !== false).reduce((s, a) => s + (Number(a.balance) || 0), 0);
+      const savingsBalance = accounts.filter(a => a.is_liquid === false).reduce((s, a) => s + (Number(a.balance) || 0), 0);
+      const totalAssets = accounts.reduce((s, a) => s + (Number(a.balance) || 0), 0);
+
+      const now = new Date();
+      const todayWibStr = getWibDateString(now);
+      const msDiff = cycle.payday.getTime() - new Date(todayWibStr).getTime();
+      const remainingDays = Math.max(1, Math.round(msDiff / (24 * 3600 * 1000)));
+
+      const cycleTxs = txs.filter(t => t.date >= cycle.startStr && t.date <= cycle.endStr);
+      const cycleExpenses = cycleTxs.filter(t => t.type === 'expense');
+      const cycleIncomes = cycleTxs.filter(t => t.type === 'income');
+      const cycleSavings = cycleTxs.filter(t => t.type === 'saving');
+
+      const totalRecordedIncome = cycleIncomes.reduce((s, t) => s + (Number(t.amount) || 0), 0);
+      const baselineIncome = typeof getFinanceIncome === 'function' ? getFinanceIncome() : 3500000;
+      const totalIncome = totalRecordedIncome > 0 ? totalRecordedIncome : baselineIncome;
+
+      const unpaidMandatoryBills = commitments
+        .filter(c => c.is_mandatory && c.is_active && !c.is_paid)
+        .reduce((s, c) => s + (Number(c.amount) || 0), 0);
+
+      const paidBills = commitments
+        .filter(c => c.is_paid)
+        .reduce((s, c) => s + (Number(c.amount) || 0), 0);
+
+      const totalSpent = cycleExpenses.reduce((s, t) => s + (Number(t.amount) || 0), 0);
+      const effectiveSpent = totalSpent + paidBills;
+
+      const protectedGoalAllocations = goals.reduce((s, g) => s + (Number(g.monthly_allocation) || 0), 0);
+      const safetyBuffer = Math.min(Math.floor(liquidBalance * 0.05), 150000);
+
+      const rawSTS = liquidBalance - unpaidMandatoryBills - protectedGoalAllocations - safetyBuffer;
+      const safeToSpend = Math.max(0, rawSTS);
+
+      const dynamicDailyLimit = remainingDays > 0 ? Math.floor(safeToSpend / remainingDays) : 0;
+
+      const todaySpent = cycleExpenses
+        .filter(e => e.date === todayWibStr)
+        .reduce((s, e) => s + (Number(e.amount) || 0), 0);
+
+      const primaryGoal = goals.find(g => g.is_primary) || goals[0] || { name: 'iPhone 18', target: 18000000, saved: 0, monthly_allocation: 500000 };
+      const goalRemaining = Math.max(0, (primaryGoal.target || 0) - (primaryGoal.saved || 0));
+      const dailySavingRate = Math.max(1, Math.floor((primaryGoal.monthly_allocation || 500000) / 30));
+      const daysToGoal = Math.ceil(goalRemaining / dailySavingRate);
+
+      const targetNeeds = Math.round(totalIncome * 0.50);
+      const targetWants = Math.round(totalIncome * 0.30);
+      const targetSavings = Math.round(totalIncome * 0.20);
+
+      let spentNeeds = paidBills;
+      let spentWants = 0;
+      let spentSavings = cycleSavings.reduce((s, t) => s + (Number(t.amount) || 0), 0);
+
+      cycleExpenses.forEach(e => {
+        const amt = Number(e.amount) || 0;
+        if (['makan', 'transport', 'kos', 'kesehatan'].includes(e.category)) {
+          spentNeeds += amt;
+        } else if (['kopi', 'laundry', 'hiburan', 'wisuda'].includes(e.category)) {
+          spentWants += amt;
+        } else {
+          spentNeeds += amt;
+        }
+      });
+
+      const savingsScore = totalIncome > 0 ? Math.min(100, Math.round(((spentSavings + savingsBalance) / Math.max(targetSavings, 1)) * 100)) : 0;
+      const remainingBudget = totalIncome - effectiveSpent - unpaidMandatoryBills;
+      const dailyScore = Math.min(100, Math.round(Math.max(0, remainingBudget / Math.max(totalIncome, 1)) * 100));
+      const billScore = commitments.length > 0 ? Math.round((commitments.filter(c => c.is_paid).length / commitments.length) * 100) : 100;
+      let envelopeScore = 100;
+      if (targetWants > 0 && spentWants > targetWants) {
+        envelopeScore = Math.max(0, 100 - Math.round(((spentWants - targetWants) / targetWants) * 100));
+      }
+      const healthScoreTotal = Math.round(savingsScore * 0.30 + dailyScore * 0.40 + billScore * 0.20 + envelopeScore * 0.10);
+
+      return {
+        cycle,
+        remainingDays,
+        accounts,
+        liquidBalance,
+        savingsBalance,
+        totalAssets,
+        totalIncome,
+        unpaidMandatoryBills,
+        paidBills,
+        totalSpent,
+        effectiveSpent,
+        protectedGoalAllocations,
+        safetyBuffer,
+        safeToSpend,
+        dynamicDailyLimit,
+        todaySpent,
+        remainingBudget,
+        primaryGoal,
+        goalRemaining,
+        dailySavingRate,
+        daysToGoal,
+        envelopes: {
+          targetNeeds, spentNeeds,
+          targetWants, spentWants,
+          targetSavings, spentSavings
+        },
+        healthScore: {
+          total: healthScoreTotal,
+          savingsScore,
+          dailyScore,
+          billScore,
+          envelopeScore
+        },
+        whatIfSimulation(amount) {
+          const amt = Math.max(0, parseInt(amount, 10) || 0);
+          const newSTS = Math.max(0, safeToSpend - amt);
+          const newDailyLimit = remainingDays > 0 ? Math.floor(newSTS / remainingDays) : 0;
+          const dailyDiff = Math.max(0, dynamicDailyLimit - newDailyLimit);
+          const goalDelayDays = amt > 0 ? Math.ceil(amt / dailySavingRate) : 0;
+          const projectedEom = Math.max(0, (liquidBalance - amt) - unpaidMandatoryBills);
+          const runwayDays = Math.max(1, Math.floor((liquidBalance - amt) / Math.max(dynamicDailyLimit, 35000)));
+
+          let status = 'success';
+          let badgeText = 'Aman';
+          let verdict = `Pengeluaran ${formatRupiah(amt)} aman dilakukan. Sisa Safe-to-Spend Anda menjadi ${formatRupiah(newSTS)} dan limit harian disesuaikan menjadi ${formatRupiah(newDailyLimit)}/hari.`;
+
+          if (amt > safeToSpend) {
+            status = 'danger';
+            badgeText = 'Kritis';
+            const deficit = amt - safeToSpend;
+            verdict = `Peringatan: Pengeluaran ini melebihi Safe-to-Spend sebesar ${formatRupiah(deficit)}. Jika dipaksakan, alokasi tagihan wajib atau tabungan ${primaryGoal.name} akan terpakai!`;
+          } else if (newDailyLimit < 30000) {
+            status = 'warning';
+            badgeText = 'Ketat';
+            verdict = `Dapat dilakukan, namun limit harian menyempit menjadi ${formatRupiah(newDailyLimit)}/hari sampai gajian. Tunda jika ada kebutuhan makan/transport mendesak.`;
+          }
+
+          return {
+            amount: amt,
+            newSafeToSpend: newSTS,
+            newDailyLimit,
+            dailyDiff,
+            goalDelayDays,
+            projectedEom,
+            runwayDays,
+            status,
+            badgeText,
+            verdict,
+            primaryGoal
+          };
+        }
+      };
+    },
+
+    async syncSupabase() {
+      if (typeof supabaseClient === 'undefined' || !supabaseClient) return;
+      try {
+        const { data: cloudAccs } = await supabaseClient.from('mghb_accounts').select('*').order('sort_order', { ascending: true });
+        if (cloudAccs && cloudAccs.length > 0) {
+          const localAccs = this.getAccounts();
+          const accMap = new Map(localAccs.map(a => [a.id, a]));
+          cloudAccs.forEach(ca => {
+            accMap.set(ca.id, {
+              id: ca.id,
+              name: ca.name,
+              type: ca.account_type || 'checking',
+              balance: Number(ca.balance) || 0,
+              is_liquid: ca.is_liquid !== false,
+              is_active: ca.is_active !== false,
+              color: ca.color || '#007C89',
+              icon: ca.icon
+            });
+          });
+          this.saveAccounts(Array.from(accMap.values()), false);
+        } else {
+          this.saveAccounts(this.getAccounts(), true);
+        }
+
+        const { data: cloudComms } = await supabaseClient.from('mghb_commitments').select('*').order('sort_order', { ascending: true });
+        if (cloudComms && cloudComms.length > 0) {
+          const localComms = this.getCommitments();
+          const commMap = new Map(localComms.map(c => [c.id, c]));
+          cloudComms.forEach(cc => {
+            commMap.set(cc.id, {
+              id: cc.id,
+              name: cc.name,
+              category: cc.category,
+              amount: Number(cc.amount) || 0,
+              due_day: cc.due_day || 1,
+              is_paid: Boolean(cc.is_paid),
+              is_mandatory: Boolean(cc.is_mandatory),
+              is_active: Boolean(cc.is_active),
+              preferred_account_id: cc.preferred_account_id || 'acc_bni',
+              custom: true
+            });
+          });
+          this.saveCommitments(Array.from(commMap.values()), false);
+        }
+
+        const { data: cloudGoals } = await supabaseClient.from('mghb_financial_goals').select('*').order('sort_order', { ascending: true });
+        if (cloudGoals && cloudGoals.length > 0) {
+          const localGoals = this.getGoals();
+          const goalMap = new Map(localGoals.map(g => [g.id, g]));
+          cloudGoals.forEach(cg => {
+            goalMap.set(cg.id, {
+              id: cg.id,
+              name: cg.name,
+              target: Number(cg.target_amount) || 0,
+              saved: Number(cg.current_saved) || 0,
+              monthly_allocation: Number(cg.monthly_allocation) || 0,
+              deadline: cg.target_date || '',
+              priority: cg.priority || 1,
+              is_primary: Boolean(cg.is_primary),
+              color: cg.color || '#007C89',
+              icon: cg.icon || ''
+            });
+          });
+          this.saveGoals(Array.from(goalMap.values()), false);
+        }
+
+        const { data: cloudTxs } = await supabaseClient.from('mghb_transactions').select('*').order('tx_date', { ascending: false }).limit(200);
+        if (cloudTxs && cloudTxs.length > 0) {
+          const localTxs = this.getTransactions();
+          const txMap = new Map(localTxs.map(t => [t.id, t]));
+          cloudTxs.forEach(ct => {
+            txMap.set(ct.id, {
+              id: ct.id,
+              type: ct.tx_type,
+              category: ct.category,
+              description: ct.description,
+              amount: Number(ct.amount) || 0,
+              date: ct.tx_date,
+              source_account_id: ct.source_account_id || 'acc_bni',
+              destination_account_id: ct.destination_account_id || null,
+              goal_id: ct.goal_id || null,
+              commitment_id: ct.commitment_id || null
+            });
+          });
+          const merged = Array.from(txMap.values()).sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+          this.saveTransactions(merged, false);
+        }
+
+        const metrics = this.computeMetrics();
+        const todayStr = getWibDateString();
+        supabaseClient.from('mghb_daily_snapshots').upsert({
+          snapshot_date: todayStr,
+          liquid_balance: metrics.liquidBalance,
+          safe_to_spend: metrics.safeToSpend,
+          daily_safe_limit: metrics.dynamicDailyLimit,
+          day_spent: metrics.todaySpent,
+          health_score: metrics.healthScore.total,
+          unpaid_bills: metrics.unpaidMandatoryBills,
+          created_at: new Date().toISOString()
+        }, { onConflict: 'snapshot_date' }).then(() => {}, () => {});
+
+      } catch (err) {
+        console.warn('FinOS Supabase sync warning:', err);
+      }
+    }
+  };
+  window.FinOS = FinOS;
+
+  function renderAccountsStrip() {
+    const accounts = FinOS.getAccounts();
+    accounts.forEach(acc => {
+      let elId = '';
+      if (acc.id === 'acc_bni') elId = 'fin-acc-bni-val';
+      else if (acc.id === 'acc_gopay') elId = 'fin-acc-gopay-val';
+      else if (acc.id === 'acc_cash') elId = 'fin-acc-cash-val';
+      else if (acc.id === 'acc_savings') elId = 'fin-acc-savings-val';
+      const el = document.getElementById(elId);
+      if (el) el.textContent = formatRupiah(acc.balance);
+    });
+  }
+
+  function promptEditAccountBalance(accId) {
+    const accounts = FinOS.getAccounts();
+    const acc = accounts.find(a => a.id === accId);
+    if (!acc) return;
+    const input = prompt(`Rekonsiliasi / Sesuaikan Saldo ${acc.name}:`, acc.balance);
+    if (input === null) return;
+    const newBal = parseMoney(input);
+    acc.balance = newBal;
+    FinOS.saveAccounts(accounts, true);
+    renderAccountsStrip();
+    updateFinanceCalculations(false);
+    showToast(`Saldo ${acc.name} berhasil diperbarui!`);
+  }
+
+  function setWhatIfPreset(amt) {
+    const input = document.getElementById('fin-sim-purchase-amount');
+    if (input) {
+      input.value = Number(amt).toLocaleString('id-ID');
+      runWhatIfSimulation();
+    }
+  }
+
+  function runWhatIfSimulation() {
+    const input = document.getElementById('fin-sim-purchase-amount');
+    const amt = input ? parseMoney(input.value) : 500000;
+    const metrics = FinOS.computeMetrics();
+    const sim = metrics.whatIfSimulation(amt);
+
+    const stsEl = document.getElementById('sim-impact-sts');
+    const stsDeltaEl = document.getElementById('sim-impact-sts-delta');
+    const dailyEl = document.getElementById('sim-impact-daily');
+    const dailyDeltaEl = document.getElementById('sim-impact-daily-delta');
+    const goalEl = document.getElementById('sim-impact-goal');
+    const goalSubEl = document.getElementById('sim-impact-goal-sub');
+    const eomEl = document.getElementById('sim-impact-eom');
+    const eomSubEl = document.getElementById('sim-impact-eom-sub');
+    const badgeEl = document.getElementById('fin-sim-rec-badge');
+    const verdictEl = document.getElementById('fin-sim-verdict-box');
+
+    if (stsEl) stsEl.textContent = formatRupiah(sim.newSafeToSpend);
+    if (stsDeltaEl) stsDeltaEl.textContent = amt > 0 ? `Sisa aman turun ${formatRupiah(amt)}` : 'Sisa aman tidak berubah';
+    if (dailyEl) dailyEl.textContent = `${formatRupiah(sim.newDailyLimit)} / hari`;
+    if (dailyDeltaEl) dailyDeltaEl.textContent = sim.dailyDiff > 0 ? `Turun ${formatRupiah(sim.dailyDiff)}/hari` : 'Limit harian stabil';
+    if (goalEl) goalEl.textContent = sim.goalDelayDays > 0 ? `Mundur ~${sim.goalDelayDays} hr` : 'Sesuai jadwal';
+    if (goalSubEl) goalSubEl.textContent = `Target: ${sim.primaryGoal.name}`;
+    if (eomEl) eomEl.textContent = formatRupiah(sim.projectedEom);
+    if (eomSubEl) eomSubEl.textContent = `Saat gajian tgl 22`;
+
+    if (badgeEl) {
+      badgeEl.textContent = sim.badgeText;
+      badgeEl.className = 'fin-health-badge ' + (sim.status === 'success' ? 'success' : (sim.status === 'warning' ? 'warning' : 'danger'));
+    }
+
+    if (verdictEl) {
+      verdictEl.innerHTML = `<strong>Rekomendasi Keputusan:</strong> ${sim.verdict}`;
+    }
+  }
+
+  function selectSheetAccount(accId, el) {
+    const accInput = document.getElementById('fin-sheet-account-id');
+    if (accInput) accInput.value = accId;
+    const chipsContainer = document.getElementById('fin-sheet-accounts');
+    if (chipsContainer) {
+      chipsContainer.querySelectorAll('.fin-account-select-chip').forEach(c => {
+        c.classList.toggle('active', c.getAttribute('data-acc') === accId);
+      });
+    }
+    const accounts = FinOS.getAccounts();
+    const acc = accounts.find(a => a.id === accId);
+    const hintEl = document.getElementById('fin-sheet-acc-balance-hint');
+    if (hintEl && acc) {
+      hintEl.textContent = `Saldo: ${formatRupiah(acc.balance)}`;
+    }
+  }
+
+
 
   const DEFAULT_BILLS = [
     { id: 'bill_kos', name: 'Sewa Kos Benhil', amount: 1200000, dueDay: 1, paid: false, icon: '', custom: false },
@@ -12713,7 +13654,28 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     if (item) {
       item.paid = !item.paid;
       saveFinanceBills(bills);
+
+      // FinOS sync
+      const comms = FinOS.getCommitments();
+      const c = comms.find(x => x.id === id);
+      if (c) {
+        c.is_paid = item.paid;
+        FinOS.saveCommitments(comms, true);
+        const accounts = FinOS.getAccounts();
+        const acc = accounts.find(a => a.id === (c.preferred_account_id || 'acc_bni')) || accounts[0];
+        if (acc) {
+          if (c.is_paid) {
+            acc.balance = Math.max(0, (acc.balance || 0) - (c.amount || item.amount));
+          } else {
+            acc.balance = (acc.balance || 0) + (c.amount || item.amount);
+          }
+          FinOS.saveAccounts(accounts, true);
+        }
+      }
+
       renderFinanceBills();
+      renderFinanceDueStrip();
+      renderAccountsStrip();
       updateFinanceCalculations();
       showToast(`${item.name}: status ${item.paid ? 'Lunas ✓' : 'Belum Bayar'}`);
     }
@@ -12922,9 +13884,10 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   const FIN_GOALS_KEY = 'mghb_fin_goals';
 
   const DEFAULT_GOALS = [
-    { id: 'goal_darurat', name: 'Dana Darurat', target: 4500000, saved: 0, deadline: '', icon: 'i-target', color: '#10b981', custom: false },
-    { id: 'goal_mudik', name: 'Mudik Solo (Tiket KA PP)', target: 900000, saved: 0, deadline: '', icon: 'i-train', color: '#0284c7', custom: false },
-    { id: 'goal_ortu', name: 'Kirim ke Orang Tua', target: 600000, saved: 0, deadline: '', icon: 'i-heart', color: '#ec4899', custom: false }
+    { id: 'goal_iphone18', name: 'Tabungan iPhone 18', target: 18000000, saved: 1500000, monthly_allocation: 500000, deadline: '2026-09-30', priority: 1, icon: 'fluent-emoji-flat:mobile-phone', color: '#007C89', custom: false, is_primary: true },
+    { id: 'goal_darurat', name: 'Dana Darurat Rantau', target: 4500000, saved: 500000, monthly_allocation: 300000, deadline: '', priority: 2, icon: 'fluent-emoji-flat:shield', color: '#10b981', custom: false },
+    { id: 'goal_mudik', name: 'Mudik Solo (Tiket KA PP)', target: 900000, saved: 200000, monthly_allocation: 150000, deadline: '', priority: 3, icon: 'fluent-emoji-flat:bullet-train', color: '#0284c7', custom: false },
+    { id: 'goal_ortu', name: 'Kirim ke Orang Tua', target: 600000, saved: 0, monthly_allocation: 200000, deadline: '', priority: 4, icon: 'fluent-emoji-flat:family', color: '#ec4899', custom: false }
   ];
 
   function getFinanceGoals() {
@@ -12990,7 +13953,37 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     if (!g) return;
     g.saved = Math.max(0, Math.round((Number(g.saved) || 0) + amount));
     saveFinanceGoals(goals);
+
+    // FinOS Sync
+    const finGoals = FinOS.getGoals();
+    const fg = finGoals.find(x => x.id === id || (id.includes('iphone') && x.id.includes('iphone')));
+    if (fg) {
+      fg.saved = (fg.saved || 0) + amount;
+      FinOS.saveGoals(finGoals, true);
+    }
+    const accounts = FinOS.getAccounts();
+    const bni = accounts.find(a => a.id === 'acc_bni') || accounts[0];
+    const sav = accounts.find(a => a.id === 'acc_savings') || accounts[accounts.length - 1];
+    if (bni) bni.balance = Math.max(0, (bni.balance || 0) - amount);
+    if (sav) sav.balance = (sav.balance || 0) + amount;
+    FinOS.saveAccounts(accounts, true);
+
+    const txs = FinOS.getTransactions();
+    txs.unshift({
+      id: 'fin_' + Date.now(),
+      type: 'saving',
+      category: id,
+      description: `Setoran Tabungan: ${g.name}`,
+      amount: amount,
+      date: getWibDateString(),
+      source_account_id: 'acc_bni',
+      destination_account_id: 'acc_savings',
+      goal_id: id
+    });
+    FinOS.saveTransactions(txs, true);
+
     renderFinanceGoals();
+    renderAccountsStrip();
     updateFinanceCalculations(false);
     showToast(`Sisihkan ${formatRupiah(amount)} ke "${g.name}"`);
   }
@@ -13783,7 +14776,10 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     renderInsights();
     renderFinanceExpenses();
     renderFinanceHeatmap();
+    renderAccountsStrip();
+    FinOS.syncSupabase();
     updateFinanceCalculations(true);
+    runWhatIfSimulation();
   }
 
   function updateFinanceCalculations(syncInputField = true) {
@@ -14119,6 +15115,39 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     renderHealthScore();
     renderInsights();
     renderFinanceDueStrip();
+    renderAccountsStrip();
+    renderRecentTransactionsSummary();
+
+    // FinOS Hero & What-If updates
+    const finMetrics = FinOS.computeMetrics();
+    const stsValEl = document.getElementById('fin-safe-to-spend-val');
+    if (stsValEl) stsValEl.textContent = formatRupiah(finMetrics.safeToSpend);
+
+    const stsSubEl = document.getElementById('fin-sts-sub-desc');
+    if (stsSubEl) {
+      stsSubEl.textContent = `Aman hari ini: ${formatRupiah(finMetrics.dynamicDailyLimit)} • Sisa ${finMetrics.remainingDays} hari ke gajian`;
+    }
+
+    const stsBadge = document.getElementById('fin-sts-status-badge');
+    if (stsBadge) {
+      if (finMetrics.safeToSpend <= 0) {
+        stsBadge.textContent = 'Kritis';
+        stsBadge.className = 'fin-snapshot-badge danger';
+      } else if (finMetrics.dynamicDailyLimit < 35000) {
+        stsBadge.textContent = 'Ketat';
+        stsBadge.className = 'fin-snapshot-badge warning';
+      } else {
+        stsBadge.textContent = 'Aman';
+        stsBadge.className = 'fin-snapshot-badge success';
+      }
+    }
+
+    const remLiquidEl = document.getElementById('fin-remaining-budget');
+    if (remLiquidEl) {
+      remLiquidEl.textContent = formatRupiah(finMetrics.liquidBalance);
+    }
+
+    runWhatIfSimulation();
     if (document.getElementById('fin-sim-result')) updateSimulator();
   }
 
@@ -15003,49 +16032,46 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   // --- Quick Expense & Income Bottom Sheet (Mobile-First) ---
   function switchQuickSheetType(type) {
     const isInc = type === 'income';
+    const isSav = type === 'saving';
     const typeEl = document.getElementById('fin-sheet-type');
-    if (typeEl) typeEl.value = isInc ? 'income' : 'expense';
+    if (typeEl) typeEl.value = type;
 
     const tabExp = document.getElementById('fin-tab-expense');
     const tabInc = document.getElementById('fin-tab-income');
-    if (tabExp) tabExp.classList.toggle('active', !isInc);
+    const tabSav = document.getElementById('fin-tab-saving');
+    if (tabExp) tabExp.classList.toggle('active', !isInc && !isSav);
     if (tabInc) tabInc.classList.toggle('active', isInc);
+    if (tabSav) tabSav.classList.toggle('active', isSav);
 
     const expChips = document.getElementById('fin-sheet-chips-expense');
     const incChips = document.getElementById('fin-sheet-chips-income');
-    if (expChips) expChips.style.display = isInc ? 'none' : 'flex';
+    const savChips = document.getElementById('fin-sheet-chips-saving');
+    if (expChips) expChips.style.display = (!isInc && !isSav) ? 'flex' : 'none';
     if (incChips) incChips.style.display = isInc ? 'flex' : 'none';
+    if (savChips) savChips.style.display = isSav ? 'flex' : 'none';
 
     const titleEl = document.getElementById('fin-sheet-title');
-    if (titleEl) titleEl.textContent = isInc ? 'Catat Pemasukan' : 'Catat Pengeluaran';
+    if (titleEl) {
+      titleEl.textContent = isInc ? 'Catat Pemasukan' : (isSav ? 'Alokasi Tabungan / Goal' : 'Catat Pengeluaran');
+    }
     const submitBtn = document.getElementById('fin-sheet-submit-btn');
-    if (submitBtn) submitBtn.textContent = isInc ? 'Simpan Pemasukan' : 'Simpan Pengeluaran';
+    if (submitBtn) {
+      submitBtn.textContent = isInc ? 'Simpan Pemasukan' : (isSav ? 'Simpan Setoran Tabungan' : 'Simpan Pengeluaran');
+    }
 
     const descEl = document.getElementById('fin-sheet-desc');
     if (descEl && !descEl.value) {
-      descEl.placeholder = isInc ? 'Contoh: Uang saku bulan berjalan' : 'Contoh: Makan siang kantin Menara BNI';
+      descEl.placeholder = isInc ? 'Contoh: Uang saku bulan berjalan' : (isSav ? 'Contoh: Alokasi bulanan iPhone 18' : 'Contoh: Makan siang kantin Menara BNI');
     }
 
-    const currentCat = document.getElementById('fin-sheet-cat').value;
-    const currentContainer = isInc ? incChips : expChips;
-    let found = false;
-    if (currentContainer) {
-      currentContainer.querySelectorAll('.fin-sheet-chip').forEach(c => {
-        const oc = c.getAttribute('onclick') || '';
-        const match = oc.match(/selectSheetCat\('([^']+)'/);
-        if (match && match[1] === currentCat) {
-          c.classList.add('active');
-          found = true;
-        } else {
-          c.classList.remove('active');
-        }
+    const defaultCat = isInc ? 'saku_bni' : (isSav ? 'goal_iphone18' : 'makan');
+    document.getElementById('fin-sheet-cat').value = defaultCat;
+
+    const targetContainer = isInc ? incChips : (isSav ? savChips : expChips);
+    if (targetContainer) {
+      targetContainer.querySelectorAll('.fin-sheet-chip').forEach((c, idx) => {
+        c.classList.toggle('active', idx === 0);
       });
-      if (!found) {
-        const defaultCat = isInc ? 'saku_bni' : 'makan';
-        document.getElementById('fin-sheet-cat').value = defaultCat;
-        const firstChip = currentContainer.querySelector('.fin-sheet-chip');
-        if (firstChip) firstChip.classList.add('active');
-      }
     }
   }
 
@@ -15072,7 +16098,24 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     if (catEl) catEl.value = cat;
     if (typeEl) typeEl.value = isInc ? 'income' : 'expense';
 
-    switchQuickSheetType(isInc ? 'income' : 'expense');
+    switchQuickSheetType(presetType || (isInc ? 'income' : 'expense'));
+
+    // Initialize account chips
+    const defaultAccId = 'acc_bni';
+    const accInput = document.getElementById('fin-sheet-account-id');
+    if (accInput) accInput.value = defaultAccId;
+    const chipsContainer = document.getElementById('fin-sheet-accounts');
+    if (chipsContainer) {
+      chipsContainer.querySelectorAll('.fin-account-select-chip').forEach(c => {
+        c.classList.toggle('active', c.getAttribute('data-acc') === defaultAccId);
+      });
+    }
+    const accounts = FinOS.getAccounts();
+    const bniAcc = accounts.find(a => a.id === defaultAccId);
+    const hintEl = document.getElementById('fin-sheet-acc-balance-hint');
+    if (hintEl && bniAcc) {
+      hintEl.textContent = `Saldo: ${formatRupiah(bniAcc.balance)}`;
+    }
 
     const targetContainer = isInc
       ? document.getElementById('fin-sheet-chips-income')
@@ -15121,8 +16164,9 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     const amountRaw = document.getElementById('fin-sheet-amount').value;
     const cat = document.getElementById('fin-sheet-cat').value;
     const desc = document.getElementById('fin-sheet-desc').value || '';
-    const date = document.getElementById('fin-sheet-date').value;
-    const type = document.getElementById('fin-sheet-type').value;
+    const date = document.getElementById('fin-sheet-date').value || getWibDateString();
+    const type = document.getElementById('fin-sheet-type').value || 'expense';
+    const accountId = (document.getElementById('fin-sheet-account-id') && document.getElementById('fin-sheet-account-id').value) || 'acc_bni';
 
     const amount = parseMoney(amountRaw);
     if (!amount || amount <= 0) {
@@ -15130,23 +16174,62 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       return;
     }
 
-    const tx = {
-      id: 'fin_' + Date.now(),
+    const txId = 'fin_' + Date.now();
+    const accounts = FinOS.getAccounts();
+    const sourceAcc = accounts.find(a => a.id === accountId) || accounts[0];
+
+    if (type === 'expense') {
+      sourceAcc.balance = Math.max(0, (sourceAcc.balance || 0) - amount);
+    } else if (type === 'income') {
+      sourceAcc.balance = (sourceAcc.balance || 0) + amount;
+    } else if (type === 'saving') {
+      sourceAcc.balance = Math.max(0, (sourceAcc.balance || 0) - amount);
+      const savingsAcc = accounts.find(a => a.id === 'acc_savings') || accounts[accounts.length - 1];
+      if (savingsAcc) savingsAcc.balance = (savingsAcc.balance || 0) + amount;
+
+      const goals = FinOS.getGoals();
+      const targetGoal = goals.find(g => g.id === cat || (cat.includes('iphone') && g.id.includes('iphone'))) || goals[0];
+      if (targetGoal) {
+        targetGoal.saved = (targetGoal.saved || 0) + amount;
+        FinOS.saveGoals(goals, true);
+      }
+    }
+
+    FinOS.saveAccounts(accounts, true);
+
+    const finTxs = FinOS.getTransactions();
+    finTxs.unshift({
+      id: txId,
       type: type,
-      cat: cat,
-      desc: desc || (type === 'expense' ? 'Pengeluaran' : 'Pemasukan'),
+      category: cat,
+      description: desc || (type === 'expense' ? 'Pengeluaran' : (type === 'income' ? 'Pemasukan' : 'Nabung Goal')),
       amount: amount,
-      date: date || getWibDateString(),
-    };
+      date: date,
+      source_account_id: accountId,
+      destination_account_id: type === 'saving' ? 'acc_savings' : null,
+      goal_id: type === 'saving' ? cat : null,
+      commitment_id: null
+    });
+    FinOS.saveTransactions(finTxs, true);
 
     const expenses = getFinanceExpenses();
-    expenses.unshift(tx);
+    expenses.unshift({
+      id: txId,
+      type: type,
+      cat: cat,
+      desc: desc || (type === 'expense' ? 'Pengeluaran' : (type === 'income' ? 'Pemasukan' : 'Nabung Goal')),
+      amount: amount,
+      date: date
+    });
     saveFinanceExpenses(expenses, true);
+
+    renderAccountsStrip();
     renderFinanceExpenses();
+    renderFinanceGoals();
     updateFinanceCalculations(true);
     closeQuickExpenseSheet();
-    showToast(type === 'expense' ? 'Pengeluaran tercatat!' : 'Pemasukan tercatat!');
-    // Also sync to the hidden form if needed
+    showToast(type === 'expense' ? 'Pengeluaran tercatat!' : (type === 'income' ? 'Pemasukan tercatat!' : 'Setoran tabungan goal berhasil!'));
+
     const formCat = document.getElementById('fin-tx-cat');
     const formAmount = document.getElementById('fin-tx-amount');
     const formDesc = document.getElementById('fin-tx-desc');
@@ -15200,6 +16283,19 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     });
     container.innerHTML = html;
   }
+
+
+  window.updateFinanceCalculations = updateFinanceCalculations;
+  window.runWhatIfSimulation = runWhatIfSimulation;
+  window.setWhatIfPreset = setWhatIfPreset;
+  window.selectSheetAccount = selectSheetAccount;
+  window.switchQuickSheetType = switchQuickSheetType;
+  window.openQuickExpenseSheet = openQuickExpenseSheet;
+  window.closeQuickExpenseSheet = closeQuickExpenseSheet;
+  window.selectSheetCat = selectSheetCat;
+  window.submitSheetExpense = submitSheetExpense;
+  window.renderAccountsStrip = renderAccountsStrip;
+  window.promptEditAccountBalance = promptEditAccountBalance;
 
   // --- Initialization ---
   async function initApp() {
