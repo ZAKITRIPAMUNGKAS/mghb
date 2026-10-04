@@ -5227,10 +5227,12 @@
        ========================================================================== */
     @media (min-width: 960px) {
       .app-shell {
-        max-width: 1260px;
+        max-width: 1440px;
+        width: calc(100% - 260px);
         margin-left: 260px;
         margin-right: auto;
         padding: 20px 36px 80px;
+        box-sizing: border-box;
       }
 
       /* Desktop Sidebar Navigation */
@@ -7303,47 +7305,49 @@
       to { transform: scale(1) translateY(0); opacity: 1; }
     }
 
+    /* ── BASE: TWO-COLUMN DASHBOARD CONTAINERS ── */
+    .fin-desktop-columns {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      width: 100%;
+    }
+    .fin-col-left,
+    .fin-col-right {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      width: 100%;
+      min-width: 0;
+    }
+
     /* ── RESPONSIVE: DESKTOP TWO-COLUMN DASHBOARD (>= 960px) ── */
     @media (min-width: 960px) {
       .fin-layout {
         max-width: 100%;
         width: 100%;
-        display: grid;
-        grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
-        grid-auto-flow: dense;
+        display: flex;
+        flex-direction: column;
         gap: 22px;
-        align-items: start;
         padding-bottom: 60px;
         margin: 0;
       }
-      /* Full-width top banner cards */
-      .fin-snapshot,
-      .fin-action,
-      .fin-alerts {
-        grid-column: 1 / -1;
+
+      /* Desktop Two-Column Masonry Flow */
+      .fin-desktop-columns {
+        display: grid;
+        grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+        gap: 22px;
+        align-items: start;
+        width: 100%;
       }
-      /* Column 1 (Left: Financial Plans, Budgets & Bills) */
-      .fin-budget {
-        grid-column: 1;
-      }
-      .fin-bills {
-        grid-column: 1;
-      }
-      .fin-analytics {
-        grid-column: 1;
-      }
-      /* Column 2 (Right: Health, Goals, Recent Transactions, Simulator) */
-      .fin-health {
-        grid-column: 2;
-      }
-      .fin-recent {
-        grid-column: 2;
-      }
-      .fin-goals {
-        grid-column: 2;
-      }
-      .fin-utilities {
-        grid-column: 2;
+
+      .fin-col-left,
+      .fin-col-right {
+        display: flex;
+        flex-direction: column;
+        gap: 22px;
+        min-width: 0;
       }
 
       /* Desktop accounts strip: 4 balanced columns */
@@ -8051,461 +8055,481 @@
       </div>
     </section>
 
-    <!-- ═══════════════════════════════════════════════════
-    SECTION 6 — BUDGET 50/30/20 (LEVEL 1 PRIMARY CARD)
+        <!-- ═══════════════════════════════════════════════════
+
+    TWO-COLUMN MASONRY DASHBOARD (DESKTOP / LAPTOP)
+
     ═══════════════════════════════════════════════════ -->
-    <section class="fin-budget" id="fin-envelopes-section">
-      <div class="fin-budget-head">
-        <div>
-          <span class="fin-budget-title">Alokasi Budget 50/30/20</span>
-        </div>
-        <span class="fin-budget-sub">Siklus Magang</span>
-      </div>
-      <div class="fin-budget-list">
-        <div class="fin-budget-row needs">
-          <div class="fin-budget-row-top">
-            <span class="fin-budget-row-label">
-              <iconify-icon icon="lucide:home" width="16" height="16" aria-hidden="true"></iconify-icon>
-              <span>Needs (50%)</span>
-            </span>
-            <span class="fin-budget-row-status" id="fin-env-needs-status">0%</span>
-          </div>
-          <div class="fin-budget-row-amt">
-            <span class="fin-budget-row-spent" id="fin-env-needs-spent">Rp 0</span>
-            <span class="fin-budget-row-target" id="fin-env-needs-target">Target: Rp 1.750.000</span>
-          </div>
-          <div class="fin-budget-row-track"><div class="fin-budget-row-fill" id="fin-env-needs-fill" style="width:0%;background:#007C89"></div></div>
-        </div>
 
-        <div class="fin-budget-row wants">
-          <div class="fin-budget-row-top">
-            <span class="fin-budget-row-label">
-              <iconify-icon icon="lucide:coffee" width="16" height="16" aria-hidden="true"></iconify-icon>
-              <span>Wants (30%)</span>
-            </span>
-            <span class="fin-budget-row-status" id="fin-env-wants-status">0%</span>
-          </div>
-          <div class="fin-budget-row-amt">
-            <span class="fin-budget-row-spent" id="fin-env-wants-spent">Rp 0</span>
-            <span class="fin-budget-row-target" id="fin-env-wants-target">Target: Rp 1.050.000</span>
-          </div>
-          <div class="fin-budget-row-track"><div class="fin-budget-row-fill" id="fin-env-wants-fill" style="width:0%;background:#F59E0B"></div></div>
-        </div>
+    <div class="fin-desktop-columns">
 
-        <div class="fin-budget-row savings">
-          <div class="fin-budget-row-top">
-            <span class="fin-budget-row-label">
-              <iconify-icon icon="lucide:wallet" width="16" height="16" aria-hidden="true"></iconify-icon>
-              <span>Savings (20%)</span>
-            </span>
-            <span class="fin-budget-row-status" id="fin-env-savings-status">0%</span>
-          </div>
-          <div class="fin-budget-row-amt">
-            <span class="fin-budget-row-spent" id="fin-env-savings-spent">Rp 0</span>
-            <span class="fin-budget-row-target" id="fin-env-savings-target">Target: Rp 700.000</span>
-          </div>
-          <div class="fin-budget-row-track"><div class="fin-budget-row-fill" id="fin-env-savings-fill" style="width:0%;background:#10B981"></div></div>
-        </div>
-      </div>
-    </section>
+      <!-- ═══ LEFT COLUMN: Budget, Bills, Analytics ═══ -->
 
-    <!-- ═══════════════════════════════════════════════════
-    SECTION 3 — KESEHATAN FINANSIAL (HEALTH)
-    ═══════════════════════════════════════════════════ -->
-    <section class="fin-health" id="fin-health-section">
-      <div class="fin-health-top">
-        <div>
-          <span class="fin-health-title">Kesehatan Finansial</span>
-          <div class="fin-health-score-wrap">
-            <span class="fin-health-score-num" id="fin-score-num">—</span>
-            <span class="fin-health-score-total">/ 100</span>
-          </div>
-        </div>
-        <span class="fin-health-badge warning" id="fin-score-grade">Perlu Perhatian</span>
-      </div>
+      <div class="fin-col-left">
 
-      <!-- Metric dots -->
-      <div class="fin-health-submetrics">
-        <div class="fin-health-metric-row">
-          <span class="fin-health-metric-label">Arus Kas &amp; Jatah</span>
-          <div class="fin-health-dots" id="fin-dots-daily">
-            <span class="fin-health-dot"></span><span class="fin-health-dot"></span><span class="fin-health-dot"></span><span class="fin-health-dot"></span><span class="fin-health-dot"></span>
-          </div>
-        </div>
-        <div class="fin-health-metric-row">
-          <span class="fin-health-metric-label">Budget 50/30/20</span>
-          <div class="fin-health-dots" id="fin-dots-envelope">
-            <span class="fin-health-dot"></span><span class="fin-health-dot"></span><span class="fin-health-dot"></span><span class="fin-health-dot"></span><span class="fin-health-dot"></span>
-          </div>
-        </div>
-        <div class="fin-health-metric-row">
-          <span class="fin-health-metric-label">Disiplin Tagihan</span>
-          <div class="fin-health-dots" id="fin-dots-bills">
-            <span class="fin-health-dot"></span><span class="fin-health-dot"></span><span class="fin-health-dot"></span><span class="fin-health-dot"></span><span class="fin-health-dot"></span>
-          </div>
-        </div>
-        <div class="fin-health-metric-row">
-          <span class="fin-health-metric-label">Tabungan &amp; Wondr</span>
-          <div class="fin-health-dots" id="fin-dots-savings">
-            <span class="fin-health-dot"></span><span class="fin-health-dot"></span><span class="fin-health-dot"></span><span class="fin-health-dot"></span><span class="fin-health-dot"></span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Actionable Advice Strip -->
-      <div class="fin-health-action">
-        <svg class="ic ic-14 fin-health-action-icon" aria-hidden="true"><use href="#i-bulb"/></svg>
-        <span class="fin-health-action-text" id="fin-health-action-text">Pertahankan pola konsumsi agar runway keuangan aman hingga tanggal gajian 22.</span>
-      </div>
-
-      <!-- Legacy hidden references so any old JS doesn't throw null error -->
-      <span id="fin-score-ring-val" style="display:none"></span>
-      <span id="fin-score-savings" style="display:none"></span>
-      <span id="fin-score-savings-val" style="display:none"></span>
-      <span id="fin-score-daily" style="display:none"></span>
-      <span id="fin-score-daily-val" style="display:none"></span>
-      <span id="fin-score-bills" style="display:none"></span>
-      <span id="fin-score-bills-val" style="display:none"></span>
-      <span id="fin-score-envelope" style="display:none"></span>
-      <span id="fin-score-envelope-val" style="display:none"></span>
-    </section>
-
-    <!-- ═══════════════════════════════════════════════════
-    SECTION 7 — KALENDER & JADWAL TAGIHAN (LEVEL 1 PRIMARY CARD)
-    ═══════════════════════════════════════════════════ -->
-    <section class="fin-bills" id="fin-bills-section">
-      <div class="fin-bills-head">
-        <div>
-          <span class="fin-bills-title">Tagihan &amp; Kalender</span>
-          <span class="fin-calendar-period" id="fin-heatmap-period" style="font-size:11px;color:var(--text-tertiary);margin-top:2px;display:block"></span>
-        </div>
-        <button type="button" class="fin-bills-link" onclick="openAddBillModal()">+ Tagihan</button>
-      </div>
-
-      <div class="fin-bills-summary">
-        <div class="fin-bills-stat">
-          <span class="fin-bills-stat-label">Total Tagihan</span>
-          <span class="fin-bills-stat-val" id="fin-bills-total">Rp 0</span>
-        </div>
-        <div class="fin-bills-stat">
-          <span class="fin-bills-stat-label" style="color:#10B981">Sudah Dibayar</span>
-          <span class="fin-bills-stat-val" style="color:#10B981" id="fin-bills-paid">Rp 0</span>
-        </div>
-        <div class="fin-bills-stat">
-          <span class="fin-bills-stat-label" style="color:#F59E0B">Belum Lunas</span>
-          <span class="fin-bills-stat-val" style="color:#F59E0B" id="fin-bills-unpaid">Rp 0</span>
-        </div>
-      </div>
-
-      <!-- Urgent bill alert strip -->
-      <div class="fin-bills-due" id="fin-due-strip"></div>
-
-      <!-- Clean Agenda Tagihan List (Upcoming / Priority) -->
-      <div class="fin-bills-list" id="finance-bills-container"></div>
-
-      <!-- Collapsible Calendar with Progressive Disclosure -->
-      <details class="fin-calendar-details" id="fin-calendar-accordion">
-        <summary class="fin-calendar-summary">
-          <svg class="ic ic-14" aria-hidden="true"><use href="#i-calendar"/></svg>
-          <span>Lihat Kalender Tagihan &amp; Gajian ▾</span>
-        </summary>
-        <div class="fin-calendar-body">
-          <div class="fin-calendar-box" id="fin-heatmap-section">
-            <div class="fin-heatmap" id="fin-heatmap"></div>
-            <div class="fin-heatmap-legend">
-              <div class="fin-legend-pill"><span class="fin-heat-bill-dot unpaid"></span> Tagihan Belum Lunas</div>
-              <div class="fin-legend-pill"><span class="fin-heat-bill-dot paid"></span> Tagihan Lunas</div>
-              <div class="fin-legend-pill"><iconify-icon icon="lucide:banknote" width="13" height="13" aria-hidden="true" style="vertical-align:middle;display:inline-flex;"></iconify-icon> Gajian BNI</div>
-            </div>
-          </div>
-        </div>
-      </details>
-    </section>
-
-    <!-- ═══════════════════════════════════════════════════
-    SECTION 5 — RECENT TRANSACTIONS (HISTORY)
-    ═══════════════════════════════════════════════════ -->
-    <section class="fin-recent" id="fin-history-section">
-      <div class="fin-recent-head">
-        <span class="fin-recent-title">Transaksi Terbaru</span>
-        <button type="button" class="fin-recent-link" onclick="openFullTransactionHistory()">Lihat Semua →</button>
-      </div>
-
-      <!-- Finance filter bar for full history view (toggled by Lihat Semua) -->
-      <div class="finance-filter-bar" id="fin-filter-bar" style="display:none;margin-bottom:12px">
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
-          <div style="display:flex;align-items:center;gap:6px">
-            <div class="finance-type-pills">
-              <button type="button" class="fin-type-pill active" id="fin-view-all" onclick="setFinanceTypeFilter('all')">Semua</button>
-              <button type="button" class="fin-type-pill" id="fin-view-expense" onclick="setFinanceTypeFilter('expense')">Pengeluaran</button>
-              <button type="button" class="fin-type-pill" id="fin-view-income" onclick="setFinanceTypeFilter('income')">Pemasukan</button>
-            </div>
-            <button type="button" class="fin-add-income-btn" onclick="openIncomeModal()">+ Pemasukan</button>
-          </div>
-          <span id="fin-filter-count" style="font-size:0.68rem;color:var(--text-tertiary);font-weight:600">0 transaksi</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap;margin-top:8px">
-          <div class="finance-filter-chips">
-            <button type="button" class="finance-filter-btn active" id="fin-filter-all" onclick="setFinanceFilter('all')">Semua Waktu</button>
-            <button type="button" class="finance-filter-btn" id="fin-filter-today" onclick="setFinanceFilter('today')">Hari Ini</button>
-            <button type="button" class="finance-filter-btn" id="fin-filter-week" onclick="setFinanceFilter('week')">7 Hari</button>
-            <button type="button" class="finance-filter-btn" id="fin-filter-month" onclick="setFinanceFilter('month')">Siklus Aktif</button>
-          </div>
-          <div id="fin-stream-summary" style="font-size:0.7rem;font-weight:700"></div>
-        </div>
-      </div>
-
-      <div class="fin-recent-list" id="finance-tx-container">
-        <div style="font-size:0.78rem;color:var(--text-secondary);text-align:center;padding:16px;border:1px dashed var(--border);border-radius:6px;background:var(--surface-hover)">
-          Belum ada transaksi tercatat. Gunakan <strong>+ Catat Pengeluaran</strong> di atas.
-        </div>
-      </div>
-      <!-- Hidden full form (moved out of main dashboard) -->
-      <div style="display:none">
-        <div class="fin-tx-type-toggle">
-          <button type="button" class="fin-type-btn active expense" id="fin-tab-expense" onclick="setFinanceTxType('expense')">Pengeluaran</button>
-          <button type="button" class="fin-type-btn" id="fin-tab-income" onclick="setFinanceTxType('income')">Pemasukan</button>
-        </div>
-        <div class="finance-quick-chips" id="fin-chips-expense">
-          <span class="finance-chip" onclick="quickFillExpense('makan',15000,'Kantin Basement Menara BNI','expense')">+15rb Kantin</span>
-          <span class="finance-chip" onclick="quickFillExpense('makan',20000,'Warteg Penjernihan Benhil','expense')">+20rb Warteg</span>
-          <span class="finance-chip" onclick="quickFillExpense('transport',3000,'KRL St. Palmerah','expense')">+3rb KRL</span>
-          <span class="finance-chip" onclick="quickFillExpense('transport',10000,'Ojek Online Stasiun - Kantor','expense')">+10rb Ojol</span>
-          <span class="finance-chip" onclick="quickFillExpense('laundry',25000,'Laundry Kiloan','expense')">+25rb Laundry</span>
-          <span class="finance-chip" onclick="quickFillExpense('kopi',18000,'Kopi Sore / Hangout','expense')">+18rb Kopi</span>
-        </div>
-        <div class="finance-quick-chips" id="fin-chips-income" style="display:none">
-          <span class="finance-chip income-chip" onclick="quickFillExpense('saku_bni',3500000,'Uang Saku Magang BNI','income')">+3.5jt Saku BNI</span>
-          <span class="finance-chip income-chip" onclick="quickFillExpense('maganghub',500000,'Insentif Kemnaker MagangHub','income')">+500rb MagangHub</span>
-          <span class="finance-chip income-chip" onclick="quickFillExpense('freelance',250000,'Honor Proyek Freelance','income')">+250rb Freelance</span>
-          <span class="finance-chip income-chip" onclick="quickFillExpense('ortu',300000,'Kiriman Keluarga / Ortu','income')">+300rb Ortu</span>
-          <span class="finance-chip income-chip" onclick="quickFillExpense('hadiah',100000,'Bonus / Reward','income')">+100rb Bonus</span>
-          <span class="finance-chip income-chip" onclick="quickFillExpense('lainnya_inc',50000,'Pemasukan Lain-lain','income')">+50rb Lainnya</span>
-        </div>
-        <form id="finance-form" onsubmit="handleNewExpense(event)">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
-            <div class="form-group"><label class="form-label" id="fin-cat-label">Kategori</label>
-              <select class="form-control" id="fin-tx-cat" required>
-                <option value="makan">Makan &amp; Minum</option>
-                <option value="transport">Transportasi</option>
-                <option value="kos">Kos &amp; Listrik</option>
-                <option value="laundry">Laundry</option>
-                <option value="kopi">Kopi &amp; Sosialisasi</option>
-                <option value="wisuda">Wisuda UMS &amp; Solo</option>
-                <option value="lainnya">Lain-lain</option>
-              </select>
-            </div>
-            <div class="form-group"><label class="form-label">Nominal (Rp)</label>
-              <input type="text" inputmode="numeric" class="form-control" id="fin-tx-amount" placeholder="Contoh: 15.000" oninput="formatMoneyInput(this)" required>
-            </div>
-          </div>
-          <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:10px;margin-bottom:12px">
-            <div class="form-group"><label class="form-label">Deskripsi</label>
-              <input type="text" class="form-control" id="fin-tx-desc" placeholder="Contoh: Makan siang">
-            </div>
-            <div class="form-group">
-              <label class="form-label">Tanggal</label>
-              <div class="fin-date-shortcut">
-                <button type="button" class="fin-date-shortcut-btn" onclick="setQuickTxDate('today')">Hari Ini</button>
-                <button type="button" class="fin-date-shortcut-btn" onclick="setQuickTxDate('payday')" style="color:#10b981;font-weight:700">Tgl 22</button>
-                <button type="button" class="fin-date-shortcut-btn" onclick="setQuickTxDate('start')">Tgl 21</button>
+        <!-- ═══════════════════════════════════════════════════
+            SECTION 6 — BUDGET 50/30/20 (LEVEL 1 PRIMARY CARD)
+            ═══════════════════════════════════════════════════ -->
+            <section class="fin-budget" id="fin-envelopes-section">
+              <div class="fin-budget-head">
+                <div>
+                  <span class="fin-budget-title">Alokasi Budget 50/30/20</span>
+                </div>
+                <span class="fin-budget-sub">Siklus Magang</span>
               </div>
-              <input type="date" class="form-control" id="fin-tx-date">
-            </div>
-          </div>
-          <button type="submit" class="btn-block" id="fin-tx-submit" style="height:42px;font-size:0.84rem">
-            <span id="fin-tx-submit-label">Simpan Pengeluaran</span>
-          </button>
-        </form>
-      </div>
-    </section>
+              <div class="fin-budget-list">
+                <div class="fin-budget-row needs">
+                  <div class="fin-budget-row-top">
+                    <span class="fin-budget-row-label">
+                      <iconify-icon icon="lucide:home" width="16" height="16" aria-hidden="true"></iconify-icon>
+                      <span>Needs (50%)</span>
+                    </span>
+                    <span class="fin-budget-row-status" id="fin-env-needs-status">0%</span>
+                  </div>
+                  <div class="fin-budget-row-amt">
+                    <span class="fin-budget-row-spent" id="fin-env-needs-spent">Rp 0</span>
+                    <span class="fin-budget-row-target" id="fin-env-needs-target">Target: Rp 1.750.000</span>
+                  </div>
+                  <div class="fin-budget-row-track"><div class="fin-budget-row-fill" id="fin-env-needs-fill" style="width:0%;background:#007C89"></div></div>
+                </div>
+        
+                <div class="fin-budget-row wants">
+                  <div class="fin-budget-row-top">
+                    <span class="fin-budget-row-label">
+                      <iconify-icon icon="lucide:coffee" width="16" height="16" aria-hidden="true"></iconify-icon>
+                      <span>Wants (30%)</span>
+                    </span>
+                    <span class="fin-budget-row-status" id="fin-env-wants-status">0%</span>
+                  </div>
+                  <div class="fin-budget-row-amt">
+                    <span class="fin-budget-row-spent" id="fin-env-wants-spent">Rp 0</span>
+                    <span class="fin-budget-row-target" id="fin-env-wants-target">Target: Rp 1.050.000</span>
+                  </div>
+                  <div class="fin-budget-row-track"><div class="fin-budget-row-fill" id="fin-env-wants-fill" style="width:0%;background:#F59E0B"></div></div>
+                </div>
+        
+                <div class="fin-budget-row savings">
+                  <div class="fin-budget-row-top">
+                    <span class="fin-budget-row-label">
+                      <iconify-icon icon="lucide:wallet" width="16" height="16" aria-hidden="true"></iconify-icon>
+                      <span>Savings (20%)</span>
+                    </span>
+                    <span class="fin-budget-row-status" id="fin-env-savings-status">0%</span>
+                  </div>
+                  <div class="fin-budget-row-amt">
+                    <span class="fin-budget-row-spent" id="fin-env-savings-spent">Rp 0</span>
+                    <span class="fin-budget-row-target" id="fin-env-savings-target">Target: Rp 700.000</span>
+                  </div>
+                  <div class="fin-budget-row-track"><div class="fin-budget-row-fill" id="fin-env-savings-fill" style="width:0%;background:#10B981"></div></div>
+                </div>
+              </div>
+            </section>
 
-    <!-- ═══════════════════════════════════════════════════
-    SECTION 9 — SPENDING ANALYTICS (ANALYSIS)
-    ═══════════════════════════════════════════════════ -->
-    <section class="fin-analytics" id="fin-breakdown-section">
-      <div class="fin-analytics-head">
-        <span class="fin-analytics-title">Analisis Pengeluaran</span>
-        <span class="fin-analytics-total" id="fin-cat-total-label">Total: Rp 0</span>
-      </div>
-      <div class="fin-analytics-track" id="fin-stacked-track"></div>
-      <div class="fin-analytics-legend" id="fin-cat-legend"></div>
-    </section>
+        <!-- ═══════════════════════════════════════════════════
+            SECTION 7 — KALENDER & JADWAL TAGIHAN (LEVEL 1 PRIMARY CARD)
+            ═══════════════════════════════════════════════════ -->
+            <section class="fin-bills" id="fin-bills-section">
+              <div class="fin-bills-head">
+                <div>
+                  <span class="fin-bills-title">Tagihan &amp; Kalender</span>
+                  <span class="fin-calendar-period" id="fin-heatmap-period" style="font-size:11px;color:var(--text-tertiary);margin-top:2px;display:block"></span>
+                </div>
+                <button type="button" class="fin-bills-link" onclick="openAddBillModal()">+ Tagihan</button>
+              </div>
+        
+              <div class="fin-bills-summary">
+                <div class="fin-bills-stat">
+                  <span class="fin-bills-stat-label">Total Tagihan</span>
+                  <span class="fin-bills-stat-val" id="fin-bills-total">Rp 0</span>
+                </div>
+                <div class="fin-bills-stat">
+                  <span class="fin-bills-stat-label" style="color:#10B981">Sudah Dibayar</span>
+                  <span class="fin-bills-stat-val" style="color:#10B981" id="fin-bills-paid">Rp 0</span>
+                </div>
+                <div class="fin-bills-stat">
+                  <span class="fin-bills-stat-label" style="color:#F59E0B">Belum Lunas</span>
+                  <span class="fin-bills-stat-val" style="color:#F59E0B" id="fin-bills-unpaid">Rp 0</span>
+                </div>
+              </div>
+        
+              <!-- Urgent bill alert strip -->
+              <div class="fin-bills-due" id="fin-due-strip"></div>
+        
+              <!-- Clean Agenda Tagihan List (Upcoming / Priority) -->
+              <div class="fin-bills-list" id="finance-bills-container"></div>
+        
+              <!-- Collapsible Calendar with Progressive Disclosure -->
+              <details class="fin-calendar-details" id="fin-calendar-accordion">
+                <summary class="fin-calendar-summary">
+                  <svg class="ic ic-14" aria-hidden="true"><use href="#i-calendar"/></svg>
+                  <span>Lihat Kalender Tagihan &amp; Gajian ▾</span>
+                </summary>
+                <div class="fin-calendar-body">
+                  <div class="fin-calendar-box" id="fin-heatmap-section">
+                    <div class="fin-heatmap" id="fin-heatmap"></div>
+                    <div class="fin-heatmap-legend">
+                      <div class="fin-legend-pill"><span class="fin-heat-bill-dot unpaid"></span> Tagihan Belum Lunas</div>
+                      <div class="fin-legend-pill"><span class="fin-heat-bill-dot paid"></span> Tagihan Lunas</div>
+                      <div class="fin-legend-pill"><iconify-icon icon="lucide:banknote" width="13" height="13" aria-hidden="true" style="vertical-align:middle;display:inline-flex;"></iconify-icon> Gajian BNI</div>
+                    </div>
+                  </div>
+                </div>
+              </details>
+            </section>
 
-    <!-- ═══════════════════════════════════════════════════
-    SECTION 8 — SAVINGS & GOALS (PLAN)
-    ═══════════════════════════════════════════════════ -->
-    <section class="fin-goals" id="fin-goals-card">
-      <div class="fin-goals-head">
-        <span class="fin-goals-title">Tujuan Keuangan</span>
-        <button type="button" class="fin-goals-add" onclick="promptAddGoal()">+ Tujuan</button>
-      </div>
-      <div class="finance-goals-grid" id="finance-goals-container"></div>
-    </section>
+        <!-- ═══════════════════════════════════════════════════
+            SECTION 9 — SPENDING ANALYTICS (ANALYSIS)
+            ═══════════════════════════════════════════════════ -->
+            <section class="fin-analytics" id="fin-breakdown-section">
+              <div class="fin-analytics-head">
+                <span class="fin-analytics-title">Analisis Pengeluaran</span>
+                <span class="fin-analytics-total" id="fin-cat-total-label">Total: Rp 0</span>
+              </div>
+              <div class="fin-analytics-track" id="fin-stacked-track"></div>
+              <div class="fin-analytics-legend" id="fin-cat-legend"></div>
+            </section>
 
-    <!-- ═══════════════════════════════════════════════════
-    SECTION 10 — EKSPLORASI & UTILITIES (LEVEL 3)
-    ═══════════════════════════════════════════════════ -->
-    <section class="fin-utilities" id="fin-utilities-card">
-      <div class="fin-utilities-tabs" role="tablist">
-        <button type="button" class="fin-util-tab active" id="tab-util-ai" onclick="switchFinUtility('ai')">
-          <svg class="ic ic-14" aria-hidden="true"><use href="#i-sparkles"/></svg>
-          <span>Asisten AI</span>
-        </button>
-        <button type="button" class="fin-util-tab" id="tab-util-sim" onclick="switchFinUtility('sim')">
-          <svg class="ic ic-14" aria-hidden="true"><use href="#i-chart"/></svg>
-          <span>Simulator</span>
-        </button>
-        <button type="button" class="fin-util-tab" id="tab-util-guide" onclick="switchFinUtility('guide')">
-          <svg class="ic ic-14" aria-hidden="true"><use href="#i-book"/></svg>
-          <span>Panduan</span>
-        </button>
-      </div>
-
-      <!-- Panel AI -->
-      <div class="fin-util-panel active" id="panel-util-ai">
-        <div class="fin-ai-actions">
-          <button type="button" class="fin-ai-btn" id="btn-fin-ai" onclick="requestFinanceAdvice('quick')">
-            <svg class="ic ic-14" aria-hidden="true"><use href="#i-sparkles"/></svg>
-            <span>Tanya AI</span>
-          </button>
-          <button type="button" class="fin-ai-btn" onclick="requestFinanceAdvice('saving')">
-            <svg class="ic ic-14" aria-hidden="true"><use href="#i-bulb"/></svg>
-            <span>Kiat Hemat</span>
-          </button>
-          <button type="button" class="fin-ai-btn" onclick="requestFinanceAdvice('leakage')">
-            <svg class="ic ic-14" aria-hidden="true"><use href="#i-shield"/></svg>
-            <span>Cek Bocor</span>
-          </button>
-        </div>
-        <div id="fin-ai-output" class="fin-ai-output-box">Pilih opsi untuk saran batas aman belanja dan rekomendasi hemat.</div>
-        <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
-          <button type="button" class="btn-action btn-xs" onclick="openFinanceReportModal()">
-            <svg class="ic ic-12" aria-hidden="true"><use href="#i-chart"/></svg>
-            <span>Raport Bulanan</span>
-          </button>
-          <button type="button" class="btn-action btn-xs" onclick="exportFinanceCSV()">
-            <svg class="ic ic-12" aria-hidden="true"><use href="#i-file"/></svg>
-            <span>CSV</span>
-          </button>
-          <button type="button" class="btn-action btn-xs" onclick="exportFinanceSummaryText()">
-            <svg class="ic ic-12" aria-hidden="true"><use href="#i-copy"/></svg>
-            <span>Salin WA</span>
-          </button>
-          <button type="button" class="utility-btn btn-xs" onclick="clearFinanceHistory()" style="color:#ef4444;border-color:rgba(239,68,68,0.3)">
-            <svg class="ic ic-12" aria-hidden="true"><use href="#i-trash"/></svg>
-            <span>Reset</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Panel Simulator: What-If Decision Support Engine -->
-      <div class="fin-util-panel" id="panel-util-sim">
-        <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:14px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-            <span style="font-size:12px;font-weight:700;color:var(--text-primary);display:flex;align-items:center;gap:5px;">
-              <iconify-icon icon="lucide:sparkles" width="16" height="16"></iconify-icon>
-              Simulasi Beli Sesuatu (What-If)
-            </span>
-            <span id="fin-sim-rec-badge" class="fin-health-badge success" style="font-size:10px;padding:2px 7px;">Aman</span>
-          </div>
-          <div style="font-size:11px;color:var(--text-secondary);margin-bottom:10px;line-height:1.4;">
-            Ketahui dampak pengeluaran sebelum transaksi: apakah aman, seberapa turun limit harian, dan apakah target iPhone 18 tertunda.
-          </div>
-          
-          <div style="display:flex;gap:6px;margin-bottom:8px;">
-            <input type="text" inputmode="numeric" id="fin-sim-purchase-amount" class="form-control" placeholder="Nominal belanja (mis. 500.000)" value="500.000" oninput="formatMoneyInput(this); runWhatIfSimulation();" style="font-size:13px;font-weight:700;height:38px;">
-          </div>
-          <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;">
-            <button type="button" class="fin-action-chip" style="height:28px;padding:2px 10px;font-size:11px;" onclick="setWhatIfPreset(50000)">+50rb</button>
-            <button type="button" class="fin-action-chip" style="height:28px;padding:2px 10px;font-size:11px;" onclick="setWhatIfPreset(150000)">+150rb</button>
-            <button type="button" class="fin-action-chip" style="height:28px;padding:2px 10px;font-size:11px;" onclick="setWhatIfPreset(500000)">+500rb</button>
-            <button type="button" class="fin-action-chip" style="height:28px;padding:2px 10px;font-size:11px;" onclick="setWhatIfPreset(1200000)">+1.2jt</button>
-          </div>
-
-          <!-- Dynamic Impact Metrics Grid -->
-          <div class="fin-sim-impact-grid" id="fin-sim-impact-grid">
-            <div class="fin-sim-impact-card">
-              <span class="fin-sim-impact-title">Aman Dibelanjakan</span>
-              <span class="fin-sim-impact-val" id="sim-impact-sts">Rp —</span>
-              <span class="fin-sim-impact-sub" id="sim-impact-sts-delta">Sisa aman baru</span>
-            </div>
-            <div class="fin-sim-impact-card">
-              <span class="fin-sim-impact-title">Limit Harian Baru</span>
-              <span class="fin-sim-impact-val" id="sim-impact-daily">Rp — / hari</span>
-              <span class="fin-sim-impact-sub" id="sim-impact-daily-delta">Penurunan limit</span>
-            </div>
-            <div class="fin-sim-impact-card">
-              <span class="fin-sim-impact-title">Target iPhone 18</span>
-              <span class="fin-sim-impact-val" id="sim-impact-goal">Mundur ~0 hr</span>
-              <span class="fin-sim-impact-sub" id="sim-impact-goal-sub">Estimasi penundaan</span>
-            </div>
-            <div class="fin-sim-impact-card">
-              <span class="fin-sim-impact-title">Proyeksi Saldo Akhir</span>
-              <span class="fin-sim-impact-val" id="sim-impact-eom">Rp —</span>
-              <span class="fin-sim-impact-sub" id="sim-impact-eom-sub">Saat gajian tgl 22</span>
-            </div>
-          </div>
-          <div id="fin-sim-verdict-box" style="margin-top:10px;padding:8px 10px;background:var(--surface-hover);border-radius:6px;font-size:11px;line-height:1.45;color:var(--text-secondary);">
-            Ketik nominal di atas untuk melihat analisis keputusan.
-          </div>
-        </div>
-
-        <div style="font-size:11px;font-weight:700;color:var(--text-secondary);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.04em;">
-          Simulasi Rutinitas Harian
-        </div>
-        <div class="fin-sim-row">
-          <div class="fin-sim-head"><span>Makan siang rata-rata / hari</span><b id="sim-makan-val">Rp 15.000</b></div>
-          <input type="range" class="fin-sim-range" id="sim-makan" min="5000" max="40000" step="1000" value="15000" oninput="updateSimulator()">
-        </div>
-        <div class="fin-sim-row">
-          <div class="fin-sim-head"><span>Kopi / hangout per minggu</span><b id="sim-kopi-val">Rp 18.000</b></div>
-          <input type="range" class="fin-sim-range" id="sim-kopi" min="0" max="100000" step="1000" value="18000" oninput="updateSimulator()">
-        </div>
-        <div class="fin-sim-row">
-          <div class="fin-sim-head"><span>Ojol per minggu</span><b id="sim-ojol-val">Rp 10.000</b></div>
-          <input type="range" class="fin-sim-range" id="sim-ojol" min="0" max="100000" step="1000" value="10000" oninput="updateSimulator()">
-        </div>
-        <div class="fin-sim-result" id="fin-sim-result">Geser slider untuk melihat potensi penghematan bulanan.</div>
       </div>
 
-      <!-- Panel Panduan -->
-      <div class="fin-util-panel" id="panel-util-guide">
-        <div class="guide-card">
-          <div class="guide-card-head">
-            <span class="guide-card-title">Pola Alokasi Anggaran 50/30/20</span>
-            <span class="badge badge-accent">Standar Magang</span>
-          </div>
-          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px">
-            <div style="background:var(--surface-hover);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:10px">
-              <div style="font-weight:700;font-size:0.75rem;color:var(--text-primary);margin-bottom:3px">Needs (50%)</div>
-              <div style="font-size:0.7rem;color:var(--text-secondary);line-height:1.4">~Rp1.750.000: Kos, listrik, makan pokok.</div>
-            </div>
-            <div style="background:var(--surface-hover);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:10px">
-              <div style="font-weight:700;font-size:0.75rem;color:var(--text-primary);margin-bottom:3px">Wants (30%)</div>
-              <div style="font-size:0.7rem;color:var(--text-secondary);line-height:1.4">~Rp1.050.000: KRL, kuota, laundry, hangout.</div>
-            </div>
-            <div style="background:var(--surface-hover);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:10px">
-              <div style="font-weight:700;font-size:0.75rem;color:var(--text-primary);margin-bottom:3px">Savings (20%)</div>
-              <div style="font-size:0.7rem;color:var(--text-secondary);line-height:1.4">~Rp700.000: Amankan ke rekening BNI.</div>
-            </div>
-          </div>
-        </div>
-        <div class="guide-card" style="margin-top:10px">
-          <div class="guide-card-head">
-            <span class="guide-card-title">Trik Hemat Menara BNI &amp; Benhil</span>
-            <span class="badge">Tips Praktis</span>
-          </div>
-          <ul class="guide-list" style="margin-top:6px">
-            <li><span class="guide-bullet">•</span><div><strong>Kantin Basement Menara BNI:</strong> Rp15.000–20.000, higienis &amp; ber-AC. Hindari ojol saat jam kerja.</div></li>
-            <li><span class="guide-bullet">•</span><div><strong>Refill Tumbler Gratis:</strong> Bawa tumbler dan isi di pantry SSE BNI. Menghemat ±Rp150.000/bln.</div></li>
-            <li><span class="guide-bullet">•</span><div><strong>Transportasi Nol Rupiah:</strong> JakLingko (JAK.08/JAK.14) tarif Rp 0 (gratis) Stasiun Palmerah - Bendungan Hilir.</div></li>
-          </ul>
-        </div>
+      <!-- ═══ RIGHT COLUMN: Health, Transactions, Goals, Utilities ═══ -->
+
+      <div class="fin-col-right">
+
+        <!-- ═══════════════════════════════════════════════════
+            SECTION 3 — KESEHATAN FINANSIAL (HEALTH)
+            ═══════════════════════════════════════════════════ -->
+            <section class="fin-health" id="fin-health-section">
+              <div class="fin-health-top">
+                <div>
+                  <span class="fin-health-title">Kesehatan Finansial</span>
+                  <div class="fin-health-score-wrap">
+                    <span class="fin-health-score-num" id="fin-score-num">—</span>
+                    <span class="fin-health-score-total">/ 100</span>
+                  </div>
+                </div>
+                <span class="fin-health-badge warning" id="fin-score-grade">Perlu Perhatian</span>
+              </div>
+        
+              <!-- Metric dots -->
+              <div class="fin-health-submetrics">
+                <div class="fin-health-metric-row">
+                  <span class="fin-health-metric-label">Arus Kas &amp; Jatah</span>
+                  <div class="fin-health-dots" id="fin-dots-daily">
+                    <span class="fin-health-dot"></span><span class="fin-health-dot"></span><span class="fin-health-dot"></span><span class="fin-health-dot"></span><span class="fin-health-dot"></span>
+                  </div>
+                </div>
+                <div class="fin-health-metric-row">
+                  <span class="fin-health-metric-label">Budget 50/30/20</span>
+                  <div class="fin-health-dots" id="fin-dots-envelope">
+                    <span class="fin-health-dot"></span><span class="fin-health-dot"></span><span class="fin-health-dot"></span><span class="fin-health-dot"></span><span class="fin-health-dot"></span>
+                  </div>
+                </div>
+                <div class="fin-health-metric-row">
+                  <span class="fin-health-metric-label">Disiplin Tagihan</span>
+                  <div class="fin-health-dots" id="fin-dots-bills">
+                    <span class="fin-health-dot"></span><span class="fin-health-dot"></span><span class="fin-health-dot"></span><span class="fin-health-dot"></span><span class="fin-health-dot"></span>
+                  </div>
+                </div>
+                <div class="fin-health-metric-row">
+                  <span class="fin-health-metric-label">Tabungan &amp; Wondr</span>
+                  <div class="fin-health-dots" id="fin-dots-savings">
+                    <span class="fin-health-dot"></span><span class="fin-health-dot"></span><span class="fin-health-dot"></span><span class="fin-health-dot"></span><span class="fin-health-dot"></span>
+                  </div>
+                </div>
+              </div>
+        
+              <!-- Actionable Advice Strip -->
+              <div class="fin-health-action">
+                <svg class="ic ic-14 fin-health-action-icon" aria-hidden="true"><use href="#i-bulb"/></svg>
+                <span class="fin-health-action-text" id="fin-health-action-text">Pertahankan pola konsumsi agar runway keuangan aman hingga tanggal gajian 22.</span>
+              </div>
+        
+              <!-- Legacy hidden references so any old JS doesn't throw null error -->
+              <span id="fin-score-ring-val" style="display:none"></span>
+              <span id="fin-score-savings" style="display:none"></span>
+              <span id="fin-score-savings-val" style="display:none"></span>
+              <span id="fin-score-daily" style="display:none"></span>
+              <span id="fin-score-daily-val" style="display:none"></span>
+              <span id="fin-score-bills" style="display:none"></span>
+              <span id="fin-score-bills-val" style="display:none"></span>
+              <span id="fin-score-envelope" style="display:none"></span>
+              <span id="fin-score-envelope-val" style="display:none"></span>
+            </section>
+
+        <!-- ═══════════════════════════════════════════════════
+            SECTION 5 — RECENT TRANSACTIONS (HISTORY)
+            ═══════════════════════════════════════════════════ -->
+            <section class="fin-recent" id="fin-history-section">
+              <div class="fin-recent-head">
+                <span class="fin-recent-title">Transaksi Terbaru</span>
+                <button type="button" class="fin-recent-link" onclick="openFullTransactionHistory()">Lihat Semua →</button>
+              </div>
+        
+              <!-- Finance filter bar for full history view (toggled by Lihat Semua) -->
+              <div class="finance-filter-bar" id="fin-filter-bar" style="display:none;margin-bottom:12px">
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+                  <div style="display:flex;align-items:center;gap:6px">
+                    <div class="finance-type-pills">
+                      <button type="button" class="fin-type-pill active" id="fin-view-all" onclick="setFinanceTypeFilter('all')">Semua</button>
+                      <button type="button" class="fin-type-pill" id="fin-view-expense" onclick="setFinanceTypeFilter('expense')">Pengeluaran</button>
+                      <button type="button" class="fin-type-pill" id="fin-view-income" onclick="setFinanceTypeFilter('income')">Pemasukan</button>
+                    </div>
+                    <button type="button" class="fin-add-income-btn" onclick="openIncomeModal()">+ Pemasukan</button>
+                  </div>
+                  <span id="fin-filter-count" style="font-size:0.68rem;color:var(--text-tertiary);font-weight:600">0 transaksi</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap;margin-top:8px">
+                  <div class="finance-filter-chips">
+                    <button type="button" class="finance-filter-btn active" id="fin-filter-all" onclick="setFinanceFilter('all')">Semua Waktu</button>
+                    <button type="button" class="finance-filter-btn" id="fin-filter-today" onclick="setFinanceFilter('today')">Hari Ini</button>
+                    <button type="button" class="finance-filter-btn" id="fin-filter-week" onclick="setFinanceFilter('week')">7 Hari</button>
+                    <button type="button" class="finance-filter-btn" id="fin-filter-month" onclick="setFinanceFilter('month')">Siklus Aktif</button>
+                  </div>
+                  <div id="fin-stream-summary" style="font-size:0.7rem;font-weight:700"></div>
+                </div>
+              </div>
+        
+              <div class="fin-recent-list" id="finance-tx-container">
+                <div style="font-size:0.78rem;color:var(--text-secondary);text-align:center;padding:16px;border:1px dashed var(--border);border-radius:6px;background:var(--surface-hover)">
+                  Belum ada transaksi tercatat. Gunakan <strong>+ Catat Pengeluaran</strong> di atas.
+                </div>
+              </div>
+              <!-- Hidden full form (moved out of main dashboard) -->
+              <div style="display:none">
+                <div class="fin-tx-type-toggle">
+                  <button type="button" class="fin-type-btn active expense" id="fin-tab-expense" onclick="setFinanceTxType('expense')">Pengeluaran</button>
+                  <button type="button" class="fin-type-btn" id="fin-tab-income" onclick="setFinanceTxType('income')">Pemasukan</button>
+                </div>
+                <div class="finance-quick-chips" id="fin-chips-expense">
+                  <span class="finance-chip" onclick="quickFillExpense('makan',15000,'Kantin Basement Menara BNI','expense')">+15rb Kantin</span>
+                  <span class="finance-chip" onclick="quickFillExpense('makan',20000,'Warteg Penjernihan Benhil','expense')">+20rb Warteg</span>
+                  <span class="finance-chip" onclick="quickFillExpense('transport',3000,'KRL St. Palmerah','expense')">+3rb KRL</span>
+                  <span class="finance-chip" onclick="quickFillExpense('transport',10000,'Ojek Online Stasiun - Kantor','expense')">+10rb Ojol</span>
+                  <span class="finance-chip" onclick="quickFillExpense('laundry',25000,'Laundry Kiloan','expense')">+25rb Laundry</span>
+                  <span class="finance-chip" onclick="quickFillExpense('kopi',18000,'Kopi Sore / Hangout','expense')">+18rb Kopi</span>
+                </div>
+                <div class="finance-quick-chips" id="fin-chips-income" style="display:none">
+                  <span class="finance-chip income-chip" onclick="quickFillExpense('saku_bni',3500000,'Uang Saku Magang BNI','income')">+3.5jt Saku BNI</span>
+                  <span class="finance-chip income-chip" onclick="quickFillExpense('maganghub',500000,'Insentif Kemnaker MagangHub','income')">+500rb MagangHub</span>
+                  <span class="finance-chip income-chip" onclick="quickFillExpense('freelance',250000,'Honor Proyek Freelance','income')">+250rb Freelance</span>
+                  <span class="finance-chip income-chip" onclick="quickFillExpense('ortu',300000,'Kiriman Keluarga / Ortu','income')">+300rb Ortu</span>
+                  <span class="finance-chip income-chip" onclick="quickFillExpense('hadiah',100000,'Bonus / Reward','income')">+100rb Bonus</span>
+                  <span class="finance-chip income-chip" onclick="quickFillExpense('lainnya_inc',50000,'Pemasukan Lain-lain','income')">+50rb Lainnya</span>
+                </div>
+                <form id="finance-form" onsubmit="handleNewExpense(event)">
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+                    <div class="form-group"><label class="form-label" id="fin-cat-label">Kategori</label>
+                      <select class="form-control" id="fin-tx-cat" required>
+                        <option value="makan">Makan &amp; Minum</option>
+                        <option value="transport">Transportasi</option>
+                        <option value="kos">Kos &amp; Listrik</option>
+                        <option value="laundry">Laundry</option>
+                        <option value="kopi">Kopi &amp; Sosialisasi</option>
+                        <option value="wisuda">Wisuda UMS &amp; Solo</option>
+                        <option value="lainnya">Lain-lain</option>
+                      </select>
+                    </div>
+                    <div class="form-group"><label class="form-label">Nominal (Rp)</label>
+                      <input type="text" inputmode="numeric" class="form-control" id="fin-tx-amount" placeholder="Contoh: 15.000" oninput="formatMoneyInput(this)" required>
+                    </div>
+                  </div>
+                  <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:10px;margin-bottom:12px">
+                    <div class="form-group"><label class="form-label">Deskripsi</label>
+                      <input type="text" class="form-control" id="fin-tx-desc" placeholder="Contoh: Makan siang">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Tanggal</label>
+                      <div class="fin-date-shortcut">
+                        <button type="button" class="fin-date-shortcut-btn" onclick="setQuickTxDate('today')">Hari Ini</button>
+                        <button type="button" class="fin-date-shortcut-btn" onclick="setQuickTxDate('payday')" style="color:#10b981;font-weight:700">Tgl 22</button>
+                        <button type="button" class="fin-date-shortcut-btn" onclick="setQuickTxDate('start')">Tgl 21</button>
+                      </div>
+                      <input type="date" class="form-control" id="fin-tx-date">
+                    </div>
+                  </div>
+                  <button type="submit" class="btn-block" id="fin-tx-submit" style="height:42px;font-size:0.84rem">
+                    <span id="fin-tx-submit-label">Simpan Pengeluaran</span>
+                  </button>
+                </form>
+              </div>
+            </section>
+
+        <!-- ═══════════════════════════════════════════════════
+            SECTION 8 — SAVINGS & GOALS (PLAN)
+            ═══════════════════════════════════════════════════ -->
+            <section class="fin-goals" id="fin-goals-card">
+              <div class="fin-goals-head">
+                <span class="fin-goals-title">Tujuan Keuangan</span>
+                <button type="button" class="fin-goals-add" onclick="promptAddGoal()">+ Tujuan</button>
+              </div>
+              <div class="finance-goals-grid" id="finance-goals-container"></div>
+            </section>
+
+        <!-- ═══════════════════════════════════════════════════
+            SECTION 10 — EKSPLORASI & UTILITIES (LEVEL 3)
+            ═══════════════════════════════════════════════════ -->
+            <section class="fin-utilities" id="fin-utilities-card">
+              <div class="fin-utilities-tabs" role="tablist">
+                <button type="button" class="fin-util-tab active" id="tab-util-ai" onclick="switchFinUtility('ai')">
+                  <svg class="ic ic-14" aria-hidden="true"><use href="#i-sparkles"/></svg>
+                  <span>Asisten AI</span>
+                </button>
+                <button type="button" class="fin-util-tab" id="tab-util-sim" onclick="switchFinUtility('sim')">
+                  <svg class="ic ic-14" aria-hidden="true"><use href="#i-chart"/></svg>
+                  <span>Simulator</span>
+                </button>
+                <button type="button" class="fin-util-tab" id="tab-util-guide" onclick="switchFinUtility('guide')">
+                  <svg class="ic ic-14" aria-hidden="true"><use href="#i-book"/></svg>
+                  <span>Panduan</span>
+                </button>
+              </div>
+        
+              <!-- Panel AI -->
+              <div class="fin-util-panel active" id="panel-util-ai">
+                <div class="fin-ai-actions">
+                  <button type="button" class="fin-ai-btn" id="btn-fin-ai" onclick="requestFinanceAdvice('quick')">
+                    <svg class="ic ic-14" aria-hidden="true"><use href="#i-sparkles"/></svg>
+                    <span>Tanya AI</span>
+                  </button>
+                  <button type="button" class="fin-ai-btn" onclick="requestFinanceAdvice('saving')">
+                    <svg class="ic ic-14" aria-hidden="true"><use href="#i-bulb"/></svg>
+                    <span>Kiat Hemat</span>
+                  </button>
+                  <button type="button" class="fin-ai-btn" onclick="requestFinanceAdvice('leakage')">
+                    <svg class="ic ic-14" aria-hidden="true"><use href="#i-shield"/></svg>
+                    <span>Cek Bocor</span>
+                  </button>
+                </div>
+                <div id="fin-ai-output" class="fin-ai-output-box">Pilih opsi untuk saran batas aman belanja dan rekomendasi hemat.</div>
+                <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+                  <button type="button" class="btn-action btn-xs" onclick="openFinanceReportModal()">
+                    <svg class="ic ic-12" aria-hidden="true"><use href="#i-chart"/></svg>
+                    <span>Raport Bulanan</span>
+                  </button>
+                  <button type="button" class="btn-action btn-xs" onclick="exportFinanceCSV()">
+                    <svg class="ic ic-12" aria-hidden="true"><use href="#i-file"/></svg>
+                    <span>CSV</span>
+                  </button>
+                  <button type="button" class="btn-action btn-xs" onclick="exportFinanceSummaryText()">
+                    <svg class="ic ic-12" aria-hidden="true"><use href="#i-copy"/></svg>
+                    <span>Salin WA</span>
+                  </button>
+                  <button type="button" class="utility-btn btn-xs" onclick="clearFinanceHistory()" style="color:#ef4444;border-color:rgba(239,68,68,0.3)">
+                    <svg class="ic ic-12" aria-hidden="true"><use href="#i-trash"/></svg>
+                    <span>Reset</span>
+                  </button>
+                </div>
+              </div>
+        
+              <!-- Panel Simulator: What-If Decision Support Engine -->
+              <div class="fin-util-panel" id="panel-util-sim">
+                <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:14px;">
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                    <span style="font-size:12px;font-weight:700;color:var(--text-primary);display:flex;align-items:center;gap:5px;">
+                      <iconify-icon icon="lucide:sparkles" width="16" height="16"></iconify-icon>
+                      Simulasi Beli Sesuatu (What-If)
+                    </span>
+                    <span id="fin-sim-rec-badge" class="fin-health-badge success" style="font-size:10px;padding:2px 7px;">Aman</span>
+                  </div>
+                  <div style="font-size:11px;color:var(--text-secondary);margin-bottom:10px;line-height:1.4;">
+                    Ketahui dampak pengeluaran sebelum transaksi: apakah aman, seberapa turun limit harian, dan apakah target iPhone 18 tertunda.
+                  </div>
+                  
+                  <div style="display:flex;gap:6px;margin-bottom:8px;">
+                    <input type="text" inputmode="numeric" id="fin-sim-purchase-amount" class="form-control" placeholder="Nominal belanja (mis. 500.000)" value="500.000" oninput="formatMoneyInput(this); runWhatIfSimulation();" style="font-size:13px;font-weight:700;height:38px;">
+                  </div>
+                  <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;">
+                    <button type="button" class="fin-action-chip" style="height:28px;padding:2px 10px;font-size:11px;" onclick="setWhatIfPreset(50000)">+50rb</button>
+                    <button type="button" class="fin-action-chip" style="height:28px;padding:2px 10px;font-size:11px;" onclick="setWhatIfPreset(150000)">+150rb</button>
+                    <button type="button" class="fin-action-chip" style="height:28px;padding:2px 10px;font-size:11px;" onclick="setWhatIfPreset(500000)">+500rb</button>
+                    <button type="button" class="fin-action-chip" style="height:28px;padding:2px 10px;font-size:11px;" onclick="setWhatIfPreset(1200000)">+1.2jt</button>
+                  </div>
+        
+                  <!-- Dynamic Impact Metrics Grid -->
+                  <div class="fin-sim-impact-grid" id="fin-sim-impact-grid">
+                    <div class="fin-sim-impact-card">
+                      <span class="fin-sim-impact-title">Aman Dibelanjakan</span>
+                      <span class="fin-sim-impact-val" id="sim-impact-sts">Rp —</span>
+                      <span class="fin-sim-impact-sub" id="sim-impact-sts-delta">Sisa aman baru</span>
+                    </div>
+                    <div class="fin-sim-impact-card">
+                      <span class="fin-sim-impact-title">Limit Harian Baru</span>
+                      <span class="fin-sim-impact-val" id="sim-impact-daily">Rp — / hari</span>
+                      <span class="fin-sim-impact-sub" id="sim-impact-daily-delta">Penurunan limit</span>
+                    </div>
+                    <div class="fin-sim-impact-card">
+                      <span class="fin-sim-impact-title">Target iPhone 18</span>
+                      <span class="fin-sim-impact-val" id="sim-impact-goal">Mundur ~0 hr</span>
+                      <span class="fin-sim-impact-sub" id="sim-impact-goal-sub">Estimasi penundaan</span>
+                    </div>
+                    <div class="fin-sim-impact-card">
+                      <span class="fin-sim-impact-title">Proyeksi Saldo Akhir</span>
+                      <span class="fin-sim-impact-val" id="sim-impact-eom">Rp —</span>
+                      <span class="fin-sim-impact-sub" id="sim-impact-eom-sub">Saat gajian tgl 22</span>
+                    </div>
+                  </div>
+                  <div id="fin-sim-verdict-box" style="margin-top:10px;padding:8px 10px;background:var(--surface-hover);border-radius:6px;font-size:11px;line-height:1.45;color:var(--text-secondary);">
+                    Ketik nominal di atas untuk melihat analisis keputusan.
+                  </div>
+                </div>
+        
+                <div style="font-size:11px;font-weight:700;color:var(--text-secondary);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.04em;">
+                  Simulasi Rutinitas Harian
+                </div>
+                <div class="fin-sim-row">
+                  <div class="fin-sim-head"><span>Makan siang rata-rata / hari</span><b id="sim-makan-val">Rp 15.000</b></div>
+                  <input type="range" class="fin-sim-range" id="sim-makan" min="5000" max="40000" step="1000" value="15000" oninput="updateSimulator()">
+                </div>
+                <div class="fin-sim-row">
+                  <div class="fin-sim-head"><span>Kopi / hangout per minggu</span><b id="sim-kopi-val">Rp 18.000</b></div>
+                  <input type="range" class="fin-sim-range" id="sim-kopi" min="0" max="100000" step="1000" value="18000" oninput="updateSimulator()">
+                </div>
+                <div class="fin-sim-row">
+                  <div class="fin-sim-head"><span>Ojol per minggu</span><b id="sim-ojol-val">Rp 10.000</b></div>
+                  <input type="range" class="fin-sim-range" id="sim-ojol" min="0" max="100000" step="1000" value="10000" oninput="updateSimulator()">
+                </div>
+                <div class="fin-sim-result" id="fin-sim-result">Geser slider untuk melihat potensi penghematan bulanan.</div>
+              </div>
+        
+              <!-- Panel Panduan -->
+              <div class="fin-util-panel" id="panel-util-guide">
+                <div class="guide-card">
+                  <div class="guide-card-head">
+                    <span class="guide-card-title">Pola Alokasi Anggaran 50/30/20</span>
+                    <span class="badge badge-accent">Standar Magang</span>
+                  </div>
+                  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px">
+                    <div style="background:var(--surface-hover);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:10px">
+                      <div style="font-weight:700;font-size:0.75rem;color:var(--text-primary);margin-bottom:3px">Needs (50%)</div>
+                      <div style="font-size:0.7rem;color:var(--text-secondary);line-height:1.4">~Rp1.750.000: Kos, listrik, makan pokok.</div>
+                    </div>
+                    <div style="background:var(--surface-hover);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:10px">
+                      <div style="font-weight:700;font-size:0.75rem;color:var(--text-primary);margin-bottom:3px">Wants (30%)</div>
+                      <div style="font-size:0.7rem;color:var(--text-secondary);line-height:1.4">~Rp1.050.000: KRL, kuota, laundry, hangout.</div>
+                    </div>
+                    <div style="background:var(--surface-hover);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:10px">
+                      <div style="font-weight:700;font-size:0.75rem;color:var(--text-primary);margin-bottom:3px">Savings (20%)</div>
+                      <div style="font-size:0.7rem;color:var(--text-secondary);line-height:1.4">~Rp700.000: Amankan ke rekening BNI.</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="guide-card" style="margin-top:10px">
+                  <div class="guide-card-head">
+                    <span class="guide-card-title">Trik Hemat Menara BNI &amp; Benhil</span>
+                    <span class="badge">Tips Praktis</span>
+                  </div>
+                  <ul class="guide-list" style="margin-top:6px">
+                    <li><span class="guide-bullet">•</span><div><strong>Kantin Basement Menara BNI:</strong> Rp15.000–20.000, higienis &amp; ber-AC. Hindari ojol saat jam kerja.</div></li>
+                    <li><span class="guide-bullet">•</span><div><strong>Refill Tumbler Gratis:</strong> Bawa tumbler dan isi di pantry SSE BNI. Menghemat ±Rp150.000/bln.</div></li>
+                    <li><span class="guide-bullet">•</span><div><strong>Transportasi Nol Rupiah:</strong> JakLingko (JAK.08/JAK.14) tarif Rp 0 (gratis) Stasiun Palmerah - Bendungan Hilir.</div></li>
+                  </ul>
+                </div>
+              </div>
+            </section>
+
       </div>
-    </section>
 
-
+    </div>
 
     <!-- ═══════════════════════════════════════════════════
     QUICK EXPENSE & INCOME BOTTOM SHEET (Mobile-first)
