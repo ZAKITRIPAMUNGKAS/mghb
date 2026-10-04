@@ -2867,6 +2867,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 8px;
+      flex-wrap: nowrap;
     }
 
     .fin-ai-title-wrap {
@@ -2874,6 +2875,7 @@
       align-items: center;
       gap: 6px;
       min-width: 0;
+      flex-shrink: 0;
     }
 
     .fin-ai-title {
@@ -6396,24 +6398,19 @@
           <div class="fin-ai-head">
             <div class="fin-ai-title-wrap">
               <span class="fin-ai-title">
-                <svg class="ic ic-16" aria-hidden="true" style="color: var(--accent);"><use href="#i-sparkles"/></svg>
+                <svg class="ic ic-16" aria-hidden="true" style="color: var(--accent); flex-shrink: 0;"><use href="#i-sparkles"/></svg>
                 Asisten Finansial AI
               </span>
               <span class="fin-ai-badge">Claude</span>
             </div>
-            <div style="display: flex; align-items: center; gap: 6px;">
-              <button type="button" class="btn-action btn-xs" id="btn-fin-ai" onclick="requestFinanceAdvice('quick')" style="padding: 3px 9px; font-weight: 700; font-size: 0.72rem;">
-                Tanya AI
-              </button>
-              <button type="button" class="btn-action btn-xs" onclick="openFinanceReportModal()" style="background: var(--accent-subtle); color: var(--accent); border: 1px solid var(--accent); font-weight: 600; padding: 3px 8px; font-size: 0.7rem;" title="Buka Raport Bulanan">
-                📊 Raport
-              </button>
-            </div>
+            <button type="button" class="btn-action btn-xs" onclick="openFinanceReportModal()" style="background: var(--accent-subtle); color: var(--accent); border: 1px solid rgba(0, 124, 137, 0.3); font-weight: 600; padding: 4px 10px; font-size: 0.72rem; white-space: nowrap; display: inline-flex; align-items: center; gap: 5px; flex-shrink: 0; border-radius: 6px;" title="Buka Raport Bulanan">
+              <span>📊</span> <span>Raport</span>
+            </button>
           </div>
 
           <div class="fin-ai-actions">
-            <button type="button" class="fin-ai-btn" onclick="requestFinanceAdvice('quick')">
-              <span>⚡</span> <span>Analisis</span>
+            <button type="button" class="fin-ai-btn" id="btn-fin-ai" onclick="requestFinanceAdvice('quick')">
+              <span>✨</span> <span>Tanya AI</span>
             </button>
             <button type="button" class="fin-ai-btn" onclick="requestFinanceAdvice('saving')">
               <span>💡</span> <span>Kiat Hemat</span>
@@ -6424,7 +6421,7 @@
           </div>
 
           <div id="fin-ai-output" class="fin-ai-output-box">
-            Pilih analisis di atas atau <em>Tanya AI</em> untuk penilaian batas aman belanja dan strategi hemat Menara BNI.
+            Pilih opsi di atas untuk saran batas aman belanja dan rekomendasi hemat Menara BNI.
           </div>
         </div>
       </div>
