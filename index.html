@@ -2544,6 +2544,85 @@
       box-shadow: 0 2px 6px rgba(0, 94, 106, 0.15);
     }
 
+    /* Transaction Type Toggle (Pengeluaran vs Pemasukan) */
+    .fin-tx-type-toggle {
+      display: flex;
+      background: var(--surface-hover);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-pill);
+      padding: 3px;
+      gap: 4px;
+      margin-bottom: 12px;
+    }
+    .fin-type-btn {
+      flex: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 6px 12px;
+      font-family: inherit;
+      font-size: 0.76rem;
+      font-weight: 700;
+      border: none;
+      border-radius: var(--radius-pill);
+      background: transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.18s ease;
+    }
+    .fin-type-btn.active.expense {
+      background: var(--surface);
+      color: #ef4444;
+      box-shadow: var(--shadow-sm);
+    }
+    .fin-type-btn.active.income {
+      background: var(--surface);
+      color: #10b981;
+      box-shadow: var(--shadow-sm);
+    }
+    .finance-chip.income-chip:hover {
+      background: rgba(16, 185, 129, 0.12);
+      border-color: #10b981;
+      color: #10b981;
+      box-shadow: 0 2px 6px rgba(16, 185, 129, 0.2);
+    }
+    .finance-type-pills {
+      display: flex;
+      gap: 4px;
+      background: var(--surface-hover);
+      padding: 2px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border);
+    }
+    .fin-type-pill {
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: var(--radius-pill);
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      font-family: inherit;
+    }
+    .fin-type-pill.active {
+      background: var(--surface);
+      color: var(--text-primary);
+      font-weight: 700;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .fin-type-pill#fin-view-income.active {
+      color: #10b981;
+    }
+    .fin-type-pill#fin-view-expense.active {
+      color: #ef4444;
+    }
+    .fin-income-detail-btn:hover {
+      text-decoration: underline;
+    }
+
     .finance-tx-list {
       display: flex;
       flex-direction: column;
@@ -2624,6 +2703,19 @@
       font-size: 0.86rem;
       color: #ef4444;
       font-feature-settings: "tnum";
+    }
+
+    .finance-tx-amount.income {
+      color: #10b981;
+    }
+
+    .finance-tx-item.income-item {
+      border-left: 3.5px solid #10b981;
+    }
+
+    .finance-tx-badge.income {
+      background: rgba(16, 185, 129, 0.12);
+      border-color: rgba(16, 185, 129, 0.35);
     }
 
     .finance-tx-del {
@@ -6180,12 +6272,15 @@
         <div class="finance-summary-grid">
           <!-- Bento 1: Income -->
           <div class="finance-metric finance-bento-col" id="fin-metric-income">
-            <span class="finance-metric-label">Pemasukan / Saku</span>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span class="finance-metric-label">Pemasukan / Saku</span>
+              <button type="button" class="fin-income-detail-btn" onclick="scrollToIncomeDetail()" title="Lihat detail sumber pemasukan" style="background: none; border: none; font-size: 0.65rem; font-weight: 700; color: #10b981; cursor: pointer; padding: 0;">Detail &rarr;</button>
+            </div>
             <div style="display: flex; align-items: baseline; gap: 4px; margin: 3px 0 2px;">
               <span style="font-size: 0.88rem; font-weight: 700; color: var(--text-tertiary);">Rp</span>
               <input type="text" inputmode="numeric" id="fin-income-input" value="3.500.000" oninput="handleIncomeInput(this)" onchange="handleIncomeChange(this)" onblur="handleIncomeBlur(this)" onkeydown="if(event.key==='Enter'){this.blur();}" style="font-size: 1.12rem; font-weight: 800; color: var(--text-primary); background: transparent; border: none; border-bottom: 1.5px dashed var(--border-strong); width: 100%; outline: none; padding: 0 0 2px;">
             </div>
-            <span class="finance-metric-sub" title="BNI / Kemnaker / tambahan (tersimpan otomatis)">Tersimpan otomatis</span>
+            <span class="finance-metric-sub" id="fin-income-sources-label" title="Total pemasukan tercatat">Tersimpan otomatis</span>
           </div>
 
           <!-- Bento 2: Total Spent -->
@@ -6298,11 +6393,23 @@
         </div>
       </div>
 
-      <!-- Quick Expense Logger Card -->
+      <!-- Quick Expense & Income Logger Card -->
       <div class="feature-card" id="fin-input-section">
-        <div class="feature-head">
+        <!-- Transaction Type Switcher -->
+        <div class="fin-tx-type-toggle">
+          <button type="button" class="fin-type-btn active expense" id="fin-tab-expense" onclick="setFinanceTxType('expense')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line></svg>
+            Catat Pengeluaran
+          </button>
+          <button type="button" class="fin-type-btn" id="fin-tab-income" onclick="setFinanceTxType('income')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Catat Pemasukan
+          </button>
+        </div>
+
+        <div class="feature-head" style="margin-bottom: 8px;">
           <div>
-            <div class="feature-title">
+            <div class="feature-title" id="fin-input-title">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
                 <circle cx="12" cy="12" r="10"></circle>
                 <line x1="12" y1="8" x2="12" y2="16"></line>
@@ -6310,7 +6417,7 @@
               </svg>
               Catat Pengeluaran Cepat
             </div>
-            <p style="font-size: 0.74rem; color: var(--text-secondary); margin-top: 2px;">
+            <p style="font-size: 0.74rem; color: var(--text-secondary); margin-top: 2px;" id="fin-input-subtitle">
               Pilih tombol pintas 1-klik untuk pengeluaran rutin, atau isi form manual.
             </p>
           </div>
@@ -6318,21 +6425,33 @@
 
         <!-- Quick 1-Click Preset Chips -->
         <div style="margin-bottom: 14px;">
-          <span style="font-size: 0.7rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.04em;">Pintas 1-Klik Rutin:</span>
-          <div class="finance-quick-chips">
-            <span class="finance-chip" onclick="quickFillExpense('makan', 15000, 'Kantin Basement Menara BNI')"><svg class="ic ic-14" aria-hidden="true"><use href="#i-utensils"/></svg> +15rb Kantin</span>
-            <span class="finance-chip" onclick="quickFillExpense('makan', 20000, 'Warteg Penjernihan Benhil')"><svg class="ic ic-14" aria-hidden="true"><use href="#i-utensils"/></svg> +20rb Warteg</span>
-            <span class="finance-chip" onclick="quickFillExpense('transport', 3000, 'KRL St. Palmerah')"><svg class="ic ic-14" aria-hidden="true"><use href="#i-train"/></svg> +3rb KRL</span>
-            <span class="finance-chip" onclick="quickFillExpense('transport', 10000, 'Ojek Online Stasiun - Kantor')"><svg class="ic ic-14" aria-hidden="true"><use href="#i-car"/></svg> +10rb Ojol</span>
-            <span class="finance-chip" onclick="quickFillExpense('laundry', 25000, 'Laundry Kiloan')"><svg class="ic ic-14" aria-hidden="true"><use href="#i-droplet"/></svg> +25rb Laundry</span>
-            <span class="finance-chip" onclick="quickFillExpense('kopi', 18000, 'Kopi Sore / Hangout')"><svg class="ic ic-14" aria-hidden="true"><use href="#i-coffee"/></svg> +18rb Kopi</span>
+          <span style="font-size: 0.7rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.04em;" id="fin-chips-title">Pintas 1-Klik Rutin:</span>
+          
+          <!-- Expense Chips -->
+          <div class="finance-quick-chips" id="fin-chips-expense">
+            <span class="finance-chip" onclick="quickFillExpense('makan', 15000, 'Kantin Basement Menara BNI', 'expense')"><svg class="ic ic-14" aria-hidden="true"><use href="#i-utensils"/></svg> +15rb Kantin</span>
+            <span class="finance-chip" onclick="quickFillExpense('makan', 20000, 'Warteg Penjernihan Benhil', 'expense')"><svg class="ic ic-14" aria-hidden="true"><use href="#i-utensils"/></svg> +20rb Warteg</span>
+            <span class="finance-chip" onclick="quickFillExpense('transport', 3000, 'KRL St. Palmerah', 'expense')"><svg class="ic ic-14" aria-hidden="true"><use href="#i-train"/></svg> +3rb KRL</span>
+            <span class="finance-chip" onclick="quickFillExpense('transport', 10000, 'Ojek Online Stasiun - Kantor', 'expense')"><svg class="ic ic-14" aria-hidden="true"><use href="#i-car"/></svg> +10rb Ojol</span>
+            <span class="finance-chip" onclick="quickFillExpense('laundry', 25000, 'Laundry Kiloan', 'expense')"><svg class="ic ic-14" aria-hidden="true"><use href="#i-droplet"/></svg> +25rb Laundry</span>
+            <span class="finance-chip" onclick="quickFillExpense('kopi', 18000, 'Kopi Sore / Hangout', 'expense')"><svg class="ic ic-14" aria-hidden="true"><use href="#i-coffee"/></svg> +18rb Kopi</span>
+          </div>
+
+          <!-- Income Chips -->
+          <div class="finance-quick-chips" id="fin-chips-income" style="display: none;">
+            <span class="finance-chip income-chip" onclick="quickFillExpense('saku_bni', 3500000, 'Uang Saku Magang BNI', 'income')">🏦 +3.5jt Saku BNI</span>
+            <span class="finance-chip income-chip" onclick="quickFillExpense('maganghub', 500000, 'Insentif Kemnaker MagangHub', 'income')">💼 +500rb MagangHub</span>
+            <span class="finance-chip income-chip" onclick="quickFillExpense('freelance', 250000, 'Honor Proyek Freelance', 'income')">💻 +250rb Freelance</span>
+            <span class="finance-chip income-chip" onclick="quickFillExpense('ortu', 300000, 'Kiriman Keluarga / Ortu', 'income')">👨‍👩‍👧 +300rb Ortu</span>
+            <span class="finance-chip income-chip" onclick="quickFillExpense('hadiah', 100000, 'Bonus / Reward', 'income')">🎁 +100rb Bonus</span>
+            <span class="finance-chip income-chip" onclick="quickFillExpense('lainnya_inc', 50000, 'Pemasukan Lain-lain', 'income')">💵 +50rb Lainnya</span>
           </div>
         </div>
 
         <form id="finance-form" onsubmit="handleNewExpense(event)">
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
             <div class="form-group" style="margin-bottom: 0;">
-              <label class="form-label">Kategori</label>
+              <label class="form-label" id="fin-cat-label">Kategori Pengeluaran</label>
               <select class="form-control" id="fin-tx-cat" required>
                 <option value="makan"><svg class="ic ic-16" aria-hidden="true"><use href="#i-utensils"/></svg> Makan &amp; Minum</option>
                 <option value="transport"><svg class="ic ic-16" aria-hidden="true"><use href="#i-bus"/></svg> Transportasi (KRL/Ojol/JakLingko)</option>
@@ -6360,17 +6479,17 @@
             </div>
           </div>
 
-          <button type="submit" class="btn-block" style="height: 42px; font-size: 0.84rem;">
+          <button type="submit" class="btn-block" id="fin-tx-submit" style="height: 42px; font-size: 0.84rem;">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <line x1="12" y1="5" x2="12" y2="19"></line>
               <line x1="5" y1="12" x2="19" y2="12"></line>
             </svg>
-            Simpan Pengeluaran
+            <span id="fin-tx-submit-label">Simpan Pengeluaran</span>
           </button>
         </form>
       </div>
 
-      <!-- Expense History Log -->
+      <!-- Expense & Income History Log -->
       <div class="feature-card" id="fin-history-section">
         <div class="feature-head">
           <div class="feature-title">
@@ -6399,14 +6518,25 @@
         </div>
 
         <!-- Filter Bar -->
-        <div class="finance-filter-bar">
-          <div class="finance-filter-chips">
-            <button type="button" class="finance-filter-btn active" id="fin-filter-all" onclick="setFinanceFilter('all')">Semua</button>
-            <button type="button" class="finance-filter-btn" id="fin-filter-today" onclick="setFinanceFilter('today')">Hari Ini</button>
-            <button type="button" class="finance-filter-btn" id="fin-filter-week" onclick="setFinanceFilter('week')">Minggu Ini</button>
-            <button type="button" class="finance-filter-btn" id="fin-filter-month" onclick="setFinanceFilter('month')">Bulan Ini</button>
+        <div class="finance-filter-bar" style="flex-direction: column; align-items: stretch; gap: 8px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <div class="finance-type-pills">
+              <button type="button" class="fin-type-pill active" id="fin-view-all" onclick="setFinanceTypeFilter('all')">Semua</button>
+              <button type="button" class="fin-type-pill" id="fin-view-expense" onclick="setFinanceTypeFilter('expense')">🔴 Pengeluaran</button>
+              <button type="button" class="fin-type-pill" id="fin-view-income" onclick="setFinanceTypeFilter('income')">🟢 Pemasukan</button>
+            </div>
+            <span id="fin-filter-count" style="font-size: 0.68rem; color: var(--text-tertiary); font-weight: 600;">0 transaksi</span>
           </div>
-          <span id="fin-filter-count" style="font-size: 0.68rem; color: var(--text-tertiary);">0 transaksi</span>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 6px; flex-wrap: wrap;">
+            <div class="finance-filter-chips">
+              <button type="button" class="finance-filter-btn active" id="fin-filter-all" onclick="setFinanceFilter('all')">Semua Waktu</button>
+              <button type="button" class="finance-filter-btn" id="fin-filter-today" onclick="setFinanceFilter('today')">Hari Ini</button>
+              <button type="button" class="finance-filter-btn" id="fin-filter-week" onclick="setFinanceFilter('week')">7 Hari</button>
+              <button type="button" class="finance-filter-btn" id="fin-filter-month" onclick="setFinanceFilter('month')">Siklus Aktif</button>
+            </div>
+            <div id="fin-stream-summary" style="font-size: 0.7rem; font-weight: 700;"></div>
+          </div>
         </div>
 
         <div class="finance-tx-list" id="finance-tx-container">
@@ -10942,7 +11072,19 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     lainnya: { label: 'Lain-lain / Darurat', badge: '', color: '#64748b' }
   };
 
+  const FIN_INCOME_META = {
+    saku_bni: { label: 'Uang Saku BNI', badge: '🏦', color: '#10b981' },
+    maganghub: { label: 'Insentif Kemnaker MagangHub', badge: '💼', color: '#0284c7' },
+    freelance: { label: 'Freelance & Jasa', badge: '💻', color: '#6366f1' },
+    ortu: { label: 'Kiriman Keluarga / Ortu', badge: '👨‍👩‍👧', color: '#ec4899' },
+    hadiah: { label: 'Bonus & Reward', badge: '🎁', color: '#f59e0b' },
+    investasi: { label: 'Dividen & Bunga', badge: '📈', color: '#14b8a6' },
+    lainnya_inc: { label: 'Pemasukan Lainnya', badge: '💵', color: '#10b981' }
+  };
+
   let currentFinanceFilter = 'all';
+  let currentFinanceTypeFilter = 'all'; // 'all', 'expense', 'income'
+  let currentTxType = 'expense'; // 'expense' or 'income'
 
   function getFinanceIncome() {
     const val = localStorage.getItem(FIN_INCOME_KEY);
@@ -11585,6 +11727,105 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     renderFinanceExpenses();
   }
 
+  function setFinanceTypeFilter(type) {
+    currentFinanceTypeFilter = type;
+    ['all', 'expense', 'income'].forEach(t => {
+      const btn = document.getElementById(`fin-view-${t}`);
+      if (btn) btn.classList.toggle('active', t === type);
+    });
+    renderFinanceExpenses();
+  }
+
+  function setFinanceTxType(type) {
+    currentTxType = type;
+    const isIncome = type === 'income';
+
+    const tabExp = document.getElementById('fin-tab-expense');
+    const tabInc = document.getElementById('fin-tab-income');
+    if (tabExp) {
+      tabExp.classList.toggle('active', !isIncome);
+      tabExp.classList.toggle('expense', !isIncome);
+    }
+    if (tabInc) {
+      tabInc.classList.toggle('active', isIncome);
+      tabInc.classList.toggle('income', isIncome);
+    }
+
+    const titleEl = document.getElementById('fin-input-title');
+    const subtitleEl = document.getElementById('fin-input-subtitle');
+    const chipsTitleEl = document.getElementById('fin-chips-title');
+    const chipsExp = document.getElementById('fin-chips-expense');
+    const chipsInc = document.getElementById('fin-chips-income');
+    const catLabel = document.getElementById('fin-cat-label');
+    const catSelect = document.getElementById('fin-tx-cat');
+    const descInput = document.getElementById('fin-tx-desc');
+    const submitBtn = document.getElementById('fin-tx-submit');
+    const submitLabel = document.getElementById('fin-tx-submit-label');
+
+    if (chipsExp) chipsExp.style.display = isIncome ? 'none' : 'grid';
+    if (chipsInc) chipsInc.style.display = isIncome ? 'grid' : 'none';
+
+    if (isIncome) {
+      if (titleEl) {
+        titleEl.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #10b981;"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg> Catat Pemasukan / Uang Saku`;
+      }
+      if (subtitleEl) subtitleEl.textContent = 'Pilih tombol pintas pemasukan rutin (Saku BNI/Kemnaker/Freelance), atau isi form.';
+      if (chipsTitleEl) chipsTitleEl.textContent = 'Pintas 1-Klik Pemasukan:';
+      if (catLabel) catLabel.textContent = 'Kategori Pemasukan';
+      if (descInput) descInput.placeholder = 'Contoh: Uang saku BNI SSE Pejompongan Okt';
+      if (submitBtn) {
+        submitBtn.style.background = '#10b981';
+        submitBtn.style.borderColor = '#10b981';
+      }
+      if (submitLabel) submitLabel.textContent = 'Simpan Pemasukan';
+
+      if (catSelect) {
+        catSelect.innerHTML = `
+          <option value="saku_bni">🏦 Uang Saku Magang BNI</option>
+          <option value="maganghub">💼 Insentif Kemnaker MagangHub</option>
+          <option value="freelance">💻 Freelance &amp; Jasa</option>
+          <option value="ortu">👨‍👩‍👧 Kiriman Keluarga / Ortu</option>
+          <option value="hadiah">🎁 Bonus &amp; Hadiah</option>
+          <option value="investasi">📈 Dividen &amp; Bunga</option>
+          <option value="lainnya_inc">💵 Pemasukan Lainnya</option>
+        `;
+      }
+    } else {
+      if (titleEl) {
+        titleEl.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg> Catat Pengeluaran Cepat`;
+      }
+      if (subtitleEl) subtitleEl.textContent = 'Pilih tombol pintas 1-klik untuk pengeluaran rutin, atau isi form manual.';
+      if (chipsTitleEl) chipsTitleEl.textContent = 'Pintas 1-Klik Rutin:';
+      if (catLabel) catLabel.textContent = 'Kategori Pengeluaran';
+      if (descInput) descInput.placeholder = 'Contoh: Makan siang kantin basement BNI';
+      if (submitBtn) {
+        submitBtn.style.background = '';
+        submitBtn.style.borderColor = '';
+      }
+      if (submitLabel) submitLabel.textContent = 'Simpan Pengeluaran';
+
+      if (catSelect) {
+        catSelect.innerHTML = `
+          <option value="makan">Makan &amp; Minum</option>
+          <option value="transport">Transportasi (KRL/Ojol/JakLingko)</option>
+          <option value="kos">Kos &amp; Listrik</option>
+          <option value="laundry">Laundry &amp; Perlengkapan Pribadi</option>
+          <option value="kopi">Kopi &amp; Sosialisasi</option>
+          <option value="wisuda">Wisuda UMS &amp; Solo</option>
+          <option value="lainnya">Lain-lain / Dana Darurat</option>
+        `;
+      }
+    }
+  }
+
+  function scrollToIncomeDetail() {
+    const historySec = document.getElementById('fin-history-section');
+    if (historySec) {
+      historySec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setFinanceTypeFilter('income');
+    }
+  }
+
   function initFinanceManager() {
     const savedFilter = localStorage.getItem('mghb_finance_filter');
     if (savedFilter && ['all', 'today', 'week', 'month'].includes(savedFilter)) currentFinanceFilter = savedFilter;
@@ -11681,13 +11922,36 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   }
 
   function updateFinanceCalculations(syncInputField = true) {
+    const cycle = getFinanceCycleRange();
+    const allTxs = getFinanceExpenses();
+
+    // Rincian pemasukan siklus aktif
+    const cycleIncomes = allTxs.filter(t => t.type === 'income' && t.date >= cycle.startStr && t.date <= cycle.endStr);
+    const totalRecordedIncome = cycleIncomes.reduce((s, i) => s + (Number(i.amount) || 0), 0);
+
     const incomeInput = document.getElementById('fin-income-input');
-    let income = incomeInput ? parseMoney(incomeInput.value) : getFinanceIncome();
-    if (income <= 0) income = getFinanceIncome();
-    localStorage.setItem(FIN_INCOME_KEY, income.toString());
-    if (syncInputField && incomeInput && document.activeElement !== incomeInput) {
-      incomeInput.value = income.toLocaleString('id-ID');
+    let income;
+    if (totalRecordedIncome > 0) {
+      income = totalRecordedIncome;
+      localStorage.setItem(FIN_INCOME_KEY, income.toString());
+      if (syncInputField && incomeInput && document.activeElement !== incomeInput) {
+        incomeInput.value = income.toLocaleString('id-ID');
+      }
+      const sourceEl = document.getElementById('fin-income-sources-label');
+      if (sourceEl) {
+        sourceEl.textContent = `${cycleIncomes.length} sumber pemasukan (${formatRupiah(totalRecordedIncome)})`;
+      }
+    } else {
+      income = incomeInput ? parseMoney(incomeInput.value) : getFinanceIncome();
+      if (income <= 0) income = getFinanceIncome();
+      localStorage.setItem(FIN_INCOME_KEY, income.toString());
+      if (syncInputField && incomeInput && document.activeElement !== incomeInput) {
+        incomeInput.value = income.toLocaleString('id-ID');
+      }
+      const sourceEl = document.getElementById('fin-income-sources-label');
+      if (sourceEl) sourceEl.textContent = 'Baseline otomatis · klik untuk edit';
     }
+
     if (supabaseClient) {
       supabaseClient.from('mghb_settings').upsert({ key: 'finance_income', value: income, updated_at: new Date().toISOString() })
         .then(() => {}, err => console.warn('Supabase income sync error:', err));
@@ -11698,7 +11962,8 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     const paidBills = bills.filter(b => b.paid).reduce((s, b) => s + (Number(b.amount) || 0), 0);
     const unpaidBills = totalBills - paidBills;
 
-    const expenses = getFinanceExpenses();
+    // Filter ke pengeluaran saja (bukan pemasukan) dalam siklus aktif
+    const expenses = allTxs.filter(item => item.type !== 'income' && item.date >= cycle.startStr && item.date <= cycle.endStr);
     const totalSpent = expenses.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
 
     // effectiveTotalSpent = pengeluaran manual + tagihan yang sudah dibayar (dicentang)
@@ -11712,7 +11977,6 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     const percentSpent = income > 0 ? Math.min(Math.round((effectiveTotalSpent / income) * 100), 100) : 100;
 
     // Days left in current cycle (starts 21st, payday 22nd)
-    const cycle = getFinanceCycleRange();
     const now = new Date();
     const todayWibStr = getWibDateString(now);
     const msDiff = cycle.payday.getTime() - new Date(todayWibStr).getTime();
@@ -11987,22 +12251,27 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     const amountEl = document.getElementById('fin-tx-amount');
     const descEl = document.getElementById('fin-tx-desc');
     const dateEl = document.getElementById('fin-tx-date');
+    const type = currentTxType || 'expense';
 
-    const cat = catEl ? catEl.value : 'makan';
+    const cat = catEl ? catEl.value : (type === 'income' ? 'saku_bni' : 'makan');
     const amount = amountEl ? parseMoney(amountEl.value) : 0;
     const desc = descEl ? descEl.value.trim() : '';
     const date = dateEl && dateEl.value ? dateEl.value : getWibDateString();
 
     if (!amount || amount <= 0) {
-      showToast('Masukkan nominal pengeluaran yang valid');
+      showToast(`Masukkan nominal ${type === 'income' ? 'pemasukan' : 'pengeluaran'} yang valid`);
       return;
     }
 
-    const catMeta = FIN_CATEGORY_META[cat] || { label: 'Lainnya', badge: '' };
+    const meta = type === 'income'
+      ? (FIN_INCOME_META[cat] || { label: 'Pemasukan', badge: '💵' })
+      : (FIN_CATEGORY_META[cat] || { label: 'Lainnya', badge: '💡' });
+
     const newTx = {
       id: 'fin_' + Date.now(),
+      type: type,
       cat: cat,
-      desc: desc || catMeta.label,
+      desc: desc || meta.label,
       amount: amount,
       date: date
     };
@@ -12017,18 +12286,21 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     renderFinanceExpenses();
     renderFinanceHeatmap();
     updateFinanceCalculations(false);
-    showToast(`Pengeluaran ${formatRupiah(amount)} berhasil dicatat & disimpan!`);
+    showToast(`${type === 'income' ? 'Pemasukan' : 'Pengeluaran'} ${formatRupiah(amount)} berhasil dicatat & disimpan!`);
   }
 
-  function quickFillExpense(cat, amount, desc) {
+  function quickFillExpense(cat, amount, desc, type = 'expense') {
+    if (type !== currentTxType) {
+      setFinanceTxType(type);
+    }
     const catEl = document.getElementById('fin-tx-cat');
     const amountEl = document.getElementById('fin-tx-amount');
     const descEl = document.getElementById('fin-tx-desc');
     const dateEl = document.getElementById('fin-tx-date');
 
     if (catEl) catEl.value = cat;
-    if (amountEl) amountEl.value = amount;
-    if (descEl) descEl.value = desc;
+    if (amountEl) amountEl.value = Number(amount).toLocaleString('id-ID');
+    if (descEl) descEl.value = desc || '';
     if (dateEl && !dateEl.value) dateEl.value = getWibDateString();
 
     handleNewExpense();
@@ -12036,12 +12308,14 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
 
   function deleteExpense(id) {
     let expenses = getFinanceExpenses();
+    const item = expenses.find(i => i.id === id);
+    const isInc = item && item.type === 'income';
     expenses = expenses.filter(item => item.id !== id);
     saveFinanceExpenses(expenses);
     renderFinanceExpenses();
     renderFinanceHeatmap();
     updateFinanceCalculations(false);
-    showToast('Transaksi pengeluaran dihapus');
+    showToast(`Transaksi ${isInc ? 'pemasukan' : 'pengeluaran'} dihapus`);
 
     if (supabaseClient) {
       supabaseClient.from('mghb_expenses').delete().eq('id', id)
@@ -12050,7 +12324,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   }
 
   function clearFinanceHistory() {
-    if (confirm('Hapus seluruh riwayat pengeluaran yang tersimpan?')) {
+    if (confirm('Hapus seluruh riwayat transaksi (pengeluaran & pemasukan) yang tersimpan?')) {
       const ids = getFinanceExpenses().map(e => e.id);
       saveFinanceExpenses([]);
       if (supabaseClient && ids.length > 0) {
@@ -12059,7 +12333,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       renderFinanceExpenses();
       renderFinanceHeatmap();
       updateFinanceCalculations(false);
-      showToast('Seluruh riwayat pengeluaran berhasil di-reset');
+      showToast('Seluruh riwayat transaksi berhasil di-reset');
     }
   }
 
@@ -12067,17 +12341,19 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     const container = document.getElementById('finance-tx-container');
     if (!container) return;
 
-    const allExpenses = getFinanceExpenses();
+    const allTxs = getFinanceExpenses();
     const todayStr = getWibDateString();
-    const currentYearMonth = todayStr.slice(0, 7);
 
-    // Hitung tanggal 7 hari lalu dalam zona WIB
     const nowWib = new Date();
     nowWib.setDate(nowWib.getDate() - 7);
     const sevenDaysAgoStr = getWibDateString(nowWib);
 
     const cycle = getFinanceCycleRange();
-    const filteredExpenses = allExpenses.filter(item => {
+    const filteredTxs = allTxs.filter(item => {
+      const isInc = item.type === 'income';
+      if (currentFinanceTypeFilter === 'expense' && isInc) return false;
+      if (currentFinanceTypeFilter === 'income' && !isInc) return false;
+
       if (currentFinanceFilter === 'today') return item.date === todayStr;
       if (currentFinanceFilter === 'week') return item.date >= sevenDaysAgoStr;
       if (currentFinanceFilter === 'month') return item.date >= cycle.startStr && item.date <= cycle.endStr;
@@ -12085,32 +12361,68 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     });
 
     const countEl = document.getElementById('fin-filter-count');
-    if (countEl) countEl.textContent = `${filteredExpenses.length} transaksi`;
+    if (countEl) countEl.textContent = `${filteredTxs.length} transaksi`;
 
-    if (filteredExpenses.length === 0) {
+    let totalStreamIncome = 0;
+    let totalStreamExpense = 0;
+    allTxs.forEach(item => {
+      let inPeriod = true;
+      if (currentFinanceFilter === 'today') inPeriod = item.date === todayStr;
+      else if (currentFinanceFilter === 'week') inPeriod = item.date >= sevenDaysAgoStr;
+      else if (currentFinanceFilter === 'month') inPeriod = item.date >= cycle.startStr && item.date <= cycle.endStr;
+
+      if (inPeriod) {
+        if (item.type === 'income') totalStreamIncome += (Number(item.amount) || 0);
+        else totalStreamExpense += (Number(item.amount) || 0);
+      }
+    });
+
+    const summaryEl = document.getElementById('fin-stream-summary');
+    if (summaryEl) {
+      if (currentFinanceTypeFilter === 'income') {
+        summaryEl.innerHTML = `<span style="color:#10b981;">Total Pemasukan: +${formatRupiah(totalStreamIncome)}</span>`;
+      } else if (currentFinanceTypeFilter === 'expense') {
+        summaryEl.innerHTML = `<span style="color:#ef4444;">Total Belanja: -${formatRupiah(totalStreamExpense)}</span>`;
+      } else {
+        summaryEl.innerHTML = `<span style="color:#10b981;">+${formatRupiah(totalStreamIncome)}</span> <span style="opacity:0.35;">|</span> <span style="color:#ef4444;">-${formatRupiah(totalStreamExpense)}</span>`;
+      }
+    }
+
+    if (filteredTxs.length === 0) {
+      const emptyLabel = currentFinanceTypeFilter === 'income'
+        ? 'Belum ada pemasukan tercatat pada filter ini.<br><span style="font-size: 0.7rem; color: var(--text-secondary); margin-top: 4px; display: inline-block;">Gunakan tombol "Catat Pemasukan" di atas untuk menambah sumber pemasukan.</span>'
+        : 'Tidak ada catatan transaksi pada filter ini.<br><span style="font-size: 0.7rem; color: var(--text-secondary); margin-top: 4px; display: inline-block;">Gunakan tombol cepat di atas untuk mencatat dalam 1-klik!</span>';
       container.innerHTML = `
-        <div style="font-size: 0.76rem; color: var(--text-tertiary); text-align: center; padding: 18px 12px;">
-          Tidak ada catatan transaksi pada filter ini.<br>
-          <span style="font-size: 0.7rem; color: var(--text-secondary); margin-top: 4px; display: inline-block;">Gunakan tombol cepat di atas untuk mencatat dalam 1-klik!</span>
+        <div style="font-size: 0.76rem; color: var(--text-tertiary); text-align: center; padding: 22px 12px;">
+          ${emptyLabel}
         </div>
       `;
       return;
     }
 
     let html = '';
-    filteredExpenses.forEach(item => {
-      const meta = FIN_CATEGORY_META[item.cat] || { label: 'Lainnya', badge: '' };
+    filteredTxs.forEach(item => {
+      const isInc = item.type === 'income';
+      const meta = isInc 
+        ? (FIN_INCOME_META[item.cat] || { label: 'Pemasukan', badge: '💵' })
+        : (FIN_CATEGORY_META[item.cat] || { label: 'Lainnya', badge: '💡' });
+
       html += `
-        <div class="finance-tx-item">
+        <div class="finance-tx-item ${isInc ? 'income-item' : ''}">
           <div class="finance-tx-left">
-            <span class="finance-tx-badge">${escHtml(meta.badge)}</span>
+            <span class="finance-tx-badge ${isInc ? 'income' : ''}">${escHtml(meta.badge || (isInc ? '💵' : '💡'))}</span>
             <div class="finance-tx-info">
               <span class="finance-tx-desc">${escHtml(item.desc)}</span>
-              <span class="finance-tx-date">${escHtml(item.date)} • ${escHtml(meta.label)}</span>
+              <span class="finance-tx-date">
+                ${escHtml(item.date)} • ${escHtml(meta.label)}
+                ${isInc ? ' • <span style="color:#10b981;font-weight:700;">Pemasukan</span>' : ''}
+              </span>
             </div>
           </div>
           <div class="finance-tx-right">
-            <span class="finance-tx-amount">${formatRupiah(item.amount)}</span>
+            <span class="finance-tx-amount ${isInc ? 'income' : ''}">
+              ${isInc ? '+' : '-'} ${formatRupiah(item.amount)}
+            </span>
             <button type="button" class="finance-tx-del" title="Hapus transaksi" onclick="deleteExpense('${escHtml(item.id)}')">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </button>
@@ -12192,17 +12504,19 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   }
 
   function exportFinanceCSV() {
-    const expenses = getFinanceExpenses();
-    if (expenses.length === 0) {
+    const allTxs = getFinanceExpenses();
+    if (allTxs.length === 0) {
       showToast('Belum ada riwayat transaksi untuk diekspor');
       return;
     }
 
-    let csvContent = 'Tanggal,Kategori,Deskripsi,Nominal\r\n';
-    expenses.forEach(item => {
-      const meta = FIN_CATEGORY_META[item.cat] || { label: item.cat || 'Lainnya' };
+    let csvContent = 'Tanggal,Tipe,Kategori,Deskripsi,Nominal\r\n';
+    allTxs.forEach(item => {
+      const isInc = item.type === 'income';
+      const meta = isInc ? (FIN_INCOME_META[item.cat] || { label: item.cat || 'Pemasukan' }) : (FIN_CATEGORY_META[item.cat] || { label: item.cat || 'Pengeluaran' });
+      const typeLabel = isInc ? 'Pemasukan' : 'Pengeluaran';
       const safeDesc = `"${(item.desc || '').replace(/"/g, '""')}"`;
-      csvContent += `${item.date},"${meta.label}",${safeDesc},${item.amount}\r\n`;
+      csvContent += `${item.date},"${typeLabel}","${meta.label}",${safeDesc},${item.amount}\r\n`;
     });
 
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -12217,13 +12531,18 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   }
 
   function exportFinanceSummaryText() {
-    const income = getFinanceIncome();
+    const allTxs = getFinanceExpenses();
+    const cycle = getFinanceCycleRange();
+    const cycleIncomes = allTxs.filter(t => t.type === 'income' && t.date >= cycle.startStr && t.date <= cycle.endStr);
+    const recordedIncome = cycleIncomes.reduce((s, t) => s + (Number(t.amount) || 0), 0);
+    const income = recordedIncome > 0 ? recordedIncome : getFinanceIncome();
+
     const bills = getFinanceBills();
     const totalBills = bills.reduce((s, b) => s + (Number(b.amount) || 0), 0);
     const paidBills = bills.filter(b => b.paid).reduce((s, b) => s + (Number(b.amount) || 0), 0);
     const unpaidBills = totalBills - paidBills;
 
-    const expenses = getFinanceExpenses();
+    const expenses = allTxs.filter(item => item.type !== 'income');
     const totalSpent = expenses.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
     const remaining = income - totalSpent - unpaidBills;
 
@@ -12236,16 +12555,30 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     let text = `*REKAP KEUANGAN MAGANG BNI - JAKARTA*\n`;
     text += `Tanggal Rekap: ${new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}\n`;
     text += `━━━━━━━━━━━━━━━━━━━━━\n`;
-    text += ` Pemasukan / Uang Saku : ${formatRupiah(income)}\n`;
-    text += `Total Pengeluaran    : ${formatRupiah(totalSpent)}\n`;
-    text += ` Tagihan Tetap (Lunas) : ${formatRupiah(paidBills)}\n`;
-    if (unpaidBills > 0) {
-      text += `Tagihan Belum Lunas  : ${formatRupiah(unpaidBills)}\n`;
+    text += `💵 Total Pemasukan      : ${formatRupiah(income)}`;
+    if (cycleIncomes.length > 0) {
+      text += ` (${cycleIncomes.length} pos pemasukan)\n`;
+    } else {
+      text += ` (Baseline Uang Saku)\n`;
     }
-    text += `Sisa Anggaran Bersih  : ${formatRupiah(remaining)}\n`;
+    text += `🔴 Total Pengeluaran    : ${formatRupiah(totalSpent)}\n`;
+    text += `💳 Tagihan Tetap (Lunas) : ${formatRupiah(paidBills)}\n`;
+    if (unpaidBills > 0) {
+      text += `⚠️ Tagihan Belum Lunas  : ${formatRupiah(unpaidBills)}\n`;
+    }
+    text += `💰 Sisa Anggaran Bersih  : ${formatRupiah(remaining)}\n`;
     text += `━━━━━━━━━━━━━━━━━━━━━\n\n`;
-    text += ` *Rincian per Kategori:*\n`;
 
+    if (cycleIncomes.length > 0) {
+      text += `*Rincian Pemasukan Tercatat:*\n`;
+      cycleIncomes.forEach(inc => {
+        const meta = FIN_INCOME_META[inc.cat] || { label: inc.cat || 'Pemasukan', badge: '💵' };
+        text += `${meta.badge} ${meta.label}: ${formatRupiah(inc.amount)} (${inc.desc || inc.date})\n`;
+      });
+      text += `\n`;
+    }
+
+    text += `*Rincian Pengeluaran per Kategori:*\n`;
     Object.keys(FIN_CATEGORY_META).forEach(key => {
       const amt = breakdown[key] || 0;
       if (amt > 0) {
@@ -12318,8 +12651,12 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     updateFinanceCalculations(true);
     const score = computeHealthScore();
     const goals = getFinanceGoals();
-    const income = getFinanceIncome();
-    const expenses = getFinanceExpenses();
+    const allTxs = getFinanceExpenses();
+    const cycle = getFinanceCycleRange();
+    const cycleIncomes = allTxs.filter(t => t.type === 'income' && t.date >= cycle.startStr && t.date <= cycle.endStr);
+    const recordedIncome = cycleIncomes.reduce((s, t) => s + (Number(t.amount) || 0), 0);
+    const income = recordedIncome > 0 ? recordedIncome : getFinanceIncome();
+    const expenses = allTxs.filter(t => t.type !== 'income' && t.date >= cycle.startStr && t.date <= cycle.endStr);
     const bills = getFinanceBills();
 
     const totalSpent = expenses.reduce((s, e) => s + (Number(e.amount) || 0), 0);
@@ -12357,8 +12694,12 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   }
 
   function generateFinanceReportLocalText() {
-    const income = getFinanceIncome();
-    const expenses = getFinanceExpenses();
+    const allTxs = getFinanceExpenses();
+    const cycle = getFinanceCycleRange();
+    const cycleIncomes = allTxs.filter(t => t.type === 'income' && t.date >= cycle.startStr && t.date <= cycle.endStr);
+    const recordedIncome = cycleIncomes.reduce((s, t) => s + (Number(t.amount) || 0), 0);
+    const income = recordedIncome > 0 ? recordedIncome : getFinanceIncome();
+    const expenses = allTxs.filter(t => t.type !== 'income' && t.date >= cycle.startStr && t.date <= cycle.endStr);
     const bills = getFinanceBills();
     const goals = getFinanceGoals();
     const score = computeHealthScore();
@@ -12371,7 +12712,6 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     const effectiveTotalSpent = totalSpent + paidBills;
     const percentSpent = income > 0 ? Math.min(Math.round((effectiveTotalSpent / income) * 100), 100) : 100;
 
-    const cycle = getFinanceCycleRange();
     const now = new Date();
     const todayWibStr = getWibDateString(now);
     const msDiff = cycle.payday.getTime() - new Date(todayWibStr).getTime();
@@ -12419,7 +12759,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     t += `• Disiplin Amplop      : ${score.envelopeScore}/100\n\n`;
 
     t += `💰 RINGKASAN ARUS KAS (CASH FLOW)\n`;
-    t += `• Pemasukan / Uang Saku : ${formatRupiah(income)}\n`;
+    t += `• Pemasukan / Uang Saku : ${formatRupiah(income)}${cycleIncomes.length > 0 ? ` (${cycleIncomes.length} pos)` : ' (Baseline BNI)'}\n`;
     t += `• Belanja Aktual        : ${formatRupiah(totalSpent)} (${percentSpent}% terpakai)\n`;
     t += `• Tagihan Tetap Lunas   : ${formatRupiah(paidBills)}\n`;
     if (unpaidBills > 0) {
@@ -12432,6 +12772,15 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     t += `• Needs (Pokok 50%)  : ${formatRupiah(spentNeeds)} / Target ${formatRupiah(targetNeeds)} (${targetNeeds > 0 ? Math.round(spentNeeds / targetNeeds * 100) : 0}%)\n`;
     t += `• Wants (Gaya 30%)   : ${formatRupiah(spentWants)} / Target ${formatRupiah(targetWants)} (${targetWants > 0 ? Math.round(spentWants / targetWants * 100) : 0}%)\n`;
     t += `• Savings (Wondr 20%): ${formatRupiah(estimatedSavings)} / Target ${formatRupiah(targetSavings)} (${targetSavings > 0 ? Math.round(estimatedSavings / targetSavings * 100) : 0}%)\n\n`;
+
+    if (cycleIncomes.length > 0) {
+      t += `💵 RINCIAN PEMASUKAN TERCATAT (${cycleIncomes.length} POS)\n`;
+      cycleIncomes.forEach(inc => {
+        const meta = FIN_INCOME_META[inc.cat] || { label: inc.cat || 'Pemasukan' };
+        t += `• [${inc.date}] ${meta.label}: ${formatRupiah(inc.amount)} - ${inc.desc || '-'}\n`;
+      });
+      t += `\n`;
+    }
 
     t += `📌 DISTRIBUSI POS BELANJA AKTUAL\n`;
     const sortedCats = Object.entries(catTotals).sort((a, b) => b[1] - a[1]);
