@@ -2279,33 +2279,126 @@
 
     .finance-summary-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: 1fr 1fr 1.35fr;
       gap: 12px;
       margin: 16px 0;
-    }
-
-    @media (max-width: 640px) {
-      .finance-summary-grid {
-        grid-template-columns: 1fr;
-        gap: 10px;
-      }
     }
 
     .finance-metric {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: var(--radius-md);
+      border-radius: 14px;
       padding: 14px 16px;
       display: flex;
       flex-direction: column;
+      justify-content: space-between;
       gap: 4px;
       box-shadow: var(--shadow-sm);
       transition: all 0.18s ease;
+      min-height: 92px;
     }
 
     .finance-metric:hover {
       border-color: var(--border-strong);
       transform: translateY(-1px);
+    }
+
+    .finance-metric.finance-bento-hero {
+      background: linear-gradient(135deg, rgba(22, 163, 74, 0.07) 0%, rgba(0, 124, 137, 0.04) 100%), var(--surface);
+      border: 1px solid rgba(22, 163, 74, 0.28);
+      position: relative;
+      overflow: hidden;
+    }
+
+    [data-theme="dark"] .finance-metric.finance-bento-hero {
+      background: linear-gradient(135deg, rgba(22, 163, 74, 0.14) 0%, rgba(0, 124, 137, 0.08) 100%), var(--surface);
+      border-color: rgba(22, 163, 74, 0.4);
+    }
+
+    .finance-bento-hero-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 2px;
+    }
+
+    .fin-bento-safe-badge {
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      background: rgba(22, 163, 74, 0.12);
+      color: #16a34a;
+      border: 1px solid rgba(22, 163, 74, 0.28);
+      white-space: nowrap;
+      display: inline-block;
+    }
+
+    .fin-bento-safe-badge.danger {
+      background: rgba(239, 68, 68, 0.12);
+      color: #ef4444;
+      border-color: rgba(239, 68, 68, 0.3);
+    }
+
+    .finance-metric.finance-bento-hero .finance-metric-val {
+      font-size: 1.3rem;
+      letter-spacing: -0.025em;
+    }
+
+    @media (max-width: 768px) {
+      .finance-summary-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin: 14px 0;
+      }
+
+      .finance-metric.finance-bento-hero {
+        grid-column: 1 / -1;
+        order: -1;
+        padding: 13px 15px;
+      }
+
+      .finance-metric.finance-bento-col {
+        padding: 11px 13px;
+        min-height: 84px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .finance-overview-card {
+        padding: 15px 13px;
+      }
+
+      .finance-summary-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin: 12px 0;
+      }
+
+      .finance-metric.finance-bento-hero {
+        grid-column: 1 / -1;
+        order: -1;
+        padding: 12px 14px;
+      }
+
+      .finance-metric.finance-bento-hero .finance-metric-val {
+        font-size: 1.25rem;
+      }
+
+      .finance-metric.finance-bento-col {
+        padding: 10px 11px;
+        min-height: 78px;
+      }
+
+      .finance-metric.finance-bento-col .finance-metric-val,
+      .finance-metric.finance-bento-col input#fin-income-input {
+        font-size: 1.02rem !important;
+      }
+
+      .finance-metric-sub {
+        font-size: 0.67rem;
+      }
     }
 
     .finance-metric-label {
@@ -5794,28 +5887,34 @@
         </div>
 
         <div class="finance-summary-grid">
-          <!-- Metric 1: Income -->
-          <div class="finance-metric">
-            <span class="finance-metric-label">Pemasukan / Uang Saku</span>
-            <div style="display: flex; align-items: baseline; gap: 4px; margin: 4px 0 2px;">
-              <span style="font-size: 0.9rem; font-weight: 700; color: var(--text-tertiary);">Rp</span>
-              <input type="text" inputmode="numeric" id="fin-income-input" value="3.500.000" oninput="handleIncomeInput(this)" onchange="handleIncomeChange(this)" onblur="handleIncomeBlur(this)" onkeydown="if(event.key==='Enter'){this.blur();}" style="font-size: 1.15rem; font-weight: 800; color: var(--text-primary); background: transparent; border: none; border-bottom: 1.5px dashed var(--border-strong); width: 100%; outline: none; padding: 0 0 2px;">
+          <!-- Bento 1: Income -->
+          <div class="finance-metric finance-bento-col" id="fin-metric-income">
+            <span class="finance-metric-label">Pemasukan / Saku</span>
+            <div style="display: flex; align-items: baseline; gap: 4px; margin: 3px 0 2px;">
+              <span style="font-size: 0.88rem; font-weight: 700; color: var(--text-tertiary);">Rp</span>
+              <input type="text" inputmode="numeric" id="fin-income-input" value="3.500.000" oninput="handleIncomeInput(this)" onchange="handleIncomeChange(this)" onblur="handleIncomeBlur(this)" onkeydown="if(event.key==='Enter'){this.blur();}" style="font-size: 1.12rem; font-weight: 800; color: var(--text-primary); background: transparent; border: none; border-bottom: 1.5px dashed var(--border-strong); width: 100%; outline: none; padding: 0 0 2px;">
             </div>
-            <span class="finance-metric-sub">BNI / Kemnaker / tambahan (tersimpan otomatis)</span>
+            <span class="finance-metric-sub" title="BNI / Kemnaker / tambahan (tersimpan otomatis)">Tersimpan otomatis</span>
           </div>
 
-          <!-- Metric 2: Total Spent -->
-          <div class="finance-metric">
+          <!-- Bento 2: Total Spent -->
+          <div class="finance-metric finance-bento-col" id="fin-metric-spent">
             <span class="finance-metric-label">Terpakai Bulan Ini</span>
-            <div class="finance-metric-val" id="fin-total-expense" style="margin: 4px 0 2px;">Rp 0</div>
+            <div class="finance-metric-val" id="fin-total-expense" style="margin: 3px 0 2px;">Rp 0</div>
             <span class="finance-metric-sub" id="fin-expense-percent">0% dari pemasukan</span>
           </div>
 
-          <!-- Metric 3: Remaining Safe Budget -->
-          <div class="finance-metric">
-            <span class="finance-metric-label">Sisa &amp; Batas Aman Harian</span>
-            <div class="finance-metric-val success" id="fin-remaining-budget" style="margin: 4px 0 2px;">Rp 3.500.000</div>
-            <span class="finance-metric-sub" id="fin-daily-safe-limit">Batas aman: Rp — / hari</span>
+          <!-- Bento 3: Hero - Sisa & Batas Aman Harian -->
+          <div class="finance-metric finance-bento-hero" id="fin-metric-remaining">
+            <div class="finance-bento-hero-header">
+              <span class="finance-metric-label">
+                <svg class="ic ic-14" aria-hidden="true" style="margin-right: 3px; vertical-align: -2px;"><use href="#i-shield"/></svg>
+                Sisa &amp; Batas Aman
+              </span>
+              <span class="badge fin-bento-safe-badge" id="fin-daily-safe-limit">Batas aman: Rp — / hari</span>
+            </div>
+            <div class="finance-metric-val success" id="fin-remaining-budget" style="margin: 3px 0 2px;">Rp 3.500.000</div>
+            <span class="finance-metric-sub">Sisa anggaran sampai akhir bulan</span>
           </div>
         </div>
 
@@ -11274,6 +11373,11 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       dailyLimitEl.textContent = remaining > 0 
         ? `Batas aman: ${formatRupiah(safeDailyLimit)}/hari` 
         : 'Anggaran telah habis!';
+      if (remaining <= 0) {
+        dailyLimitEl.classList.add('danger');
+      } else {
+        dailyLimitEl.classList.remove('danger');
+      }
     }
 
     // --- Today's Safe Burn Rate Meter ---
