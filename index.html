@@ -5887,67 +5887,770 @@
     }
 
   
-    /* --- FIN-GRID REDESIGN FOR KEUANGAN --- */
-    .fin-grid {
+    /* ═══════════════════════════════════════════════════════════
+       KEUANGAN REDESIGN — MOBILE-FIRST SINGLE-COLUMN LAYOUT
+       Hierarchy: NOW → ACTION → WARNING → HISTORY → PLAN → ANALYSIS → EXPLORE
+       ═══════════════════════════════════════════════════════════ */
+
+    .fin-layout {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      padding: 0 0 80px; /* bottom pad for mobile nav */
+      max-width: 430px;
+      margin: 0 auto;
+    }
+
+    /* ── SECTION 1: FINANCIAL SNAPSHOT ── */
+    .fin-snapshot {
+      background: var(--surface);
+      border: 1px solid #E1E8E8;
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .fin-snapshot-status-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .fin-snapshot-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+    .fin-snapshot-badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 6px;
+      background: #ECFDF5;
+      color: #059669;
+      border: 1px solid #A7F3D0;
+    }
+    .fin-snapshot-hero {
+      margin-bottom: 16px;
+    }
+    .fin-snapshot-hero-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      display: block;
+    }
+    .fin-snapshot-hero-value {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+    .fin-snapshot-row {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 16px;
+    }
+    .fin-snapshot-metric {
+      flex: 1;
+      min-width: 0;
+    }
+    .fin-snapshot-metric-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      display: block;
+    }
+    .fin-snapshot-metric-value {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.3;
+    }
+    .fin-snapshot-metric-sub {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      display: block;
+    }
+    .fin-snapshot-divider {
+      width: 1px;
+      background: #E1E8E8;
+      flex-shrink: 0;
+    }
+    .fin-snapshot-meter {
+      margin-bottom: 12px;
+    }
+    .fin-snapshot-meter-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+    .fin-snapshot-meter-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-tertiary);
+    }
+    .fin-snapshot-meter-value {
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .fin-snapshot-meter-sub {
+      font-size: 11px;
+      color: var(--text-tertiary);
+    }
+    .fin-snapshot-gauge-track {
+      height: 4px;
+      background: #E1E8E8;
+      border-radius: 2px;
+      margin: 6px 0;
+      overflow: hidden;
+    }
+    .fin-snapshot-gauge-fill {
+      height: 100%;
+      background: #005E6A;
+      border-radius: 2px;
+      transition: width 0.4s ease;
+    }
+    .fin-snapshot-today {
+      border-top: 1px solid #E1E8E8;
+      padding-top: 12px;
+    }
+    .fin-snapshot-today-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: nowrap;
+    }
+    .fin-snapshot-today-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-tertiary);
+    }
+    .fin-snapshot-today-track {
+      height: 3px;
+      background: #E1E8E8;
+      border-radius: 2px;
+      margin: 6px 0;
+      overflow: hidden;
+    }
+    .fin-snapshot-today-fill {
+      height: 100%;
+      background: #10b981;
+      border-radius: 2px;
+      transition: width 0.4s ease;
+    }
+    .fin-snapshot-today-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      color: var(--text-tertiary);
+    }
+
+    /* ── SECTION 2: QUICK ACTION ── */
+    .fin-action {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .fin-action-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      height: 48px;
+      background: #005E6A;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .fin-action-btn:active {
+      background: #004D57;
+    }
+    .fin-action-chips {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .fin-action-chips::-webkit-scrollbar { display: none; }
+    .fin-action-chip {
+      flex-shrink: 0;
+      padding: 8px 14px;
+      background: var(--surface);
+      border: 1px solid #E1E8E8;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-primary);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: border-color 0.15s, background 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .fin-action-chip:active {
+      background: #F0F9FA;
+      border-color: #005E6A;
+    }
+
+    /* ── SECTION 3: FINANCIAL HEALTH ── */
+    .fin-health {
+      background: var(--surface);
+      border: 1px solid #E1E8E8;
+      border-radius: 12px;
+      padding: 16px 20px;
+    }
+    .fin-health-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+    .fin-health-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .fin-score-ring-sm {
+      position: relative;
+      width: 72px;
+      height: 72px;
+      flex-shrink: 0;
+    }
+    .fin-score-center-sm {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .fin-score-num-sm {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1;
+    }
+    .fin-score-grade-sm {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+    .fin-health-bars {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .fin-health-bar {
       display: grid;
-      gap: 14px;
+      grid-template-columns: 100px 1fr 24px;
+      align-items: center;
+      gap: 8px;
+    }
+    .fin-health-bar-label {
+      font-size: 11px;
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+    .fin-health-bar-track {
+      height: 4px;
+      background: #E1E8E8;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .fin-health-bar-fill {
+      height: 100%;
+      background: #005E6A;
+      border-radius: 2px;
+      transition: width 0.4s ease;
+    }
+    .fin-health-bar-val {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-align: right;
     }
 
-    .fin-grid > * {
-      margin-top: 0 !important;
+    /* ── SECTION 4: SMART ALERTS ── */
+    .fin-alerts {
+      /* inline, no card wrapper */
+    }
+    .fin-alerts-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
 
-    @media (min-width: 960px) {
-      .fin-grid {
-        grid-template-columns: 1fr 1fr;
-        align-items: start;
-      }
-
-      /* Full width elements */
-      .finance-overview-card,
-      #fin-health-section,
-      #fin-sim-section,
-      .guide-section-title,
-      .guide-card,
-      #fin-guide-accordion {
-        grid-column: 1 / -1;
-      }
-
-      /* Pairing side-by-side */
-      #fin-input-section {
-        grid-column: 1;
-      }
-      #fin-history-section {
-        grid-column: 2;
-      }
-
-      #fin-envelopes-section {
-        grid-column: 1;
-      }
-      #fin-goals-card {
-        grid-column: 2;
-      }
-
-      #fin-bills-section {
-        grid-column: 1;
-      }
-      #fin-breakdown-section {
-        grid-column: 2;
-      }
-
-      #fin-heatmap-section {
-        grid-column: 1;
-      }
-      #fin-insight-section {
-        grid-column: 2;
-      }
+    /* ── SECTION 5: RECENT TRANSACTIONS ── */
+    .fin-recent-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .fin-recent-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .fin-recent-link {
+      font-size: 12px;
+      font-weight: 600;
+      color: #005E6A;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px 0;
+    }
+    .fin-recent-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
     }
 
-    details#fin-guide-accordion summary::-webkit-details-marker {
+    /* ── SECTION 6: BUDGET 50/30/20 ── */
+    .fin-budget-head {
+      margin-bottom: 10px;
+    }
+    .fin-budget-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .fin-budget-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .fin-budget-card {
+      background: var(--surface);
+      border: 1px solid #E1E8E8;
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+    .fin-budget-card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+    .fin-budget-card-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .fin-budget-card-status {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-tertiary);
+    }
+    .fin-budget-card-amt {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: block;
+    }
+    .fin-budget-card-target {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      display: block;
+      margin-bottom: 6px;
+    }
+    .fin-budget-card-track {
+      height: 4px;
+      background: #E1E8E8;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .fin-budget-card-fill {
+      height: 100%;
+      border-radius: 2px;
+      transition: width 0.4s ease;
+    }
+    .fin-budget-needs { border-left: 3px solid #007C89; }
+    .fin-budget-wants { border-left: 3px solid #F15A24; }
+    .fin-budget-savings { border-left: 3px solid #1D9A6C; }
+
+    /* ── SECTION 7: UPCOMING BILLS ── */
+    .fin-bills-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .fin-bills-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .fin-bills-link {
+      font-size: 12px;
+      font-weight: 600;
+      color: #005E6A;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px 0;
+    }
+    .fin-bills-summary {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 12px;
+    }
+    .fin-bills-stat {
+      flex: 1;
+    }
+    .fin-bills-stat-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .fin-bills-stat-val {
+      font-size: 15px;
+      font-weight: 700;
+    }
+    .fin-bills-due {
+      margin-bottom: 10px;
+    }
+    .fin-bills-list {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    /* ── SECTION 8: SAVINGS & GOALS ── */
+    .fin-goals-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .fin-goals-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .fin-goals-add {
+      font-size: 12px;
+      font-weight: 600;
+      color: #005E6A;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px 0;
+    }
+
+    /* ── SECTION 9: SPENDING ANALYTICS ── */
+    .fin-analytics-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .fin-analytics-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .fin-analytics-total {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-tertiary);
+    }
+    .fin-analytics-track {
+      margin-bottom: 8px;
+    }
+    .fin-analytics-legend {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    /* ── SECTION 10: SPENDING CALENDAR ── */
+    .fin-calendar {
+      background: var(--surface);
+      border: 1px solid #E1E8E8;
+      border-radius: 10px;
+      padding: 14px 16px;
+    }
+    .fin-calendar[open] { padding-bottom: 14px; }
+    .fin-calendar-summary {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      cursor: pointer;
+      list-style: none;
+    }
+    .fin-calendar-summary::-webkit-details-marker { display: none; }
+    .fin-calendar-period {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      font-weight: 500;
+    }
+
+    /* ── SECTION 11: AI ASSISTANT ── */
+    .fin-ai {
+      background: var(--surface);
+      border: 1px solid #E1E8E8;
+      border-radius: 10px;
+      padding: 14px 16px;
+    }
+    .fin-ai[open] { padding-bottom: 14px; }
+    .fin-ai-summary {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      cursor: pointer;
+      list-style: none;
+    }
+    .fin-ai-summary::-webkit-details-marker { display: none; }
+    .fin-ai-badge {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: #F0F9FA;
+      color: #005E6A;
+    }
+    .fin-ai-body {
+      margin-top: 14px;
+      cursor: default;
+    }
+    .fin-ai-actions {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .fin-ai-btn {
+      flex: 1;
+      padding: 8px 0;
+      background: var(--surface-hover);
+      border: 1px solid #E1E8E8;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+    .fin-ai-btn:active {
+      border-color: #005E6A;
+    }
+    .fin-ai-output-box {
+      background: var(--surface-hover);
+      border: 1px solid #E1E8E8;
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      min-height: 48px;
+    }
+
+    /* ── SECTION 12: WHAT-IF SIMULATOR ── */
+    .fin-simulator {
+      background: var(--surface);
+      border: 1px solid #E1E8E8;
+      border-radius: 10px;
+      padding: 14px 16px;
+    }
+    .fin-simulator[open] { padding-bottom: 14px; }
+    .fin-simulator-summary {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      cursor: pointer;
+      list-style: none;
+    }
+    .fin-simulator-summary::-webkit-details-marker { display: none; }
+    .fin-simulator-body {
+      margin-top: 14px;
+      cursor: default;
+    }
+
+    /* ── SECTION 13: FINANCIAL GUIDE ── */
+    .fin-guide {
+      background: var(--surface);
+      border: 1px solid #E1E8E8;
+      border-radius: 10px;
+      padding: 14px 16px;
+    }
+    .fin-guide[open] { padding-bottom: 14px; }
+    .fin-guide-summary {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      cursor: pointer;
+      list-style: none;
+    }
+    .fin-guide-summary::-webkit-details-marker { display: none; }
+    .fin-guide-body {
+      margin-top: 14px;
+      cursor: default;
+    }
+
+    /* ── BOTTOM SHEET (QUICK EXPENSE) ── */
+    .fin-sheet-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15,23,42,0.4);
+      z-index: 10000;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .fin-sheet {
+      background: #fff;
+      border-radius: 16px 16px 0 0;
+      width: 100%;
+      max-width: 430px;
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 8px 16px 24px;
+      animation: finSheetUp 0.25s cubic-bezier(.16,1,.3,1) both;
+    }
+    @keyframes finSheetUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+    .fin-sheet-handle {
+      width: 36px;
+      height: 4px;
+      background: #D0D5D5;
+      border-radius: 2px;
+      margin: 8px auto 14px;
+    }
+    .fin-sheet-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .fin-sheet-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .fin-sheet-close {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--surface-hover);
+      border: 1px solid #E1E8E8;
+      border-radius: 8px;
+      font-size: 18px;
+      color: var(--text-secondary);
+      cursor: pointer;
+    }
+    .fin-sheet-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+    .fin-sheet-chip {
+      padding: 7px 12px;
+      background: var(--surface-hover);
+      border: 1px solid #E1E8E8;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .fin-sheet-chip.active {
+      background: #F0F9FA;
+      border-color: #005E6A;
+      color: #005E6A;
+    }
+
+    /* ── OLD CLASS PRESERVATION (JS renders into these) ── */
+    /* Keep fin-grid for backward compat but it's not used in the new layout */
+    .fin-grid { display: none; }
+
+    details#fin-guide-accordion summary::-webkit-details-marker,
+    details#fin-sim-section summary::-webkit-details-marker,
+    details#fin-heatmap-section summary::-webkit-details-marker,
+    details#fin-ai-card summary::-webkit-details-marker {
       display: none;
     }
-    details#fin-guide-accordion[open] summary span:last-child {
-      transform: rotate(180deg);
+
+    /* ── RESPONSIVE: widen on tablet+ ── */
+    @media (min-width: 640px) {
+      .fin-layout {
+        gap: 28px;
+      }
+      .fin-bills-summary {
+        gap: 24px;
+      }
+    }
+
+    /* ── TRANSACTION ROWS (summary) ── */
+    .fin-tx-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      background: var(--surface);
+      border: 1px solid #E1E8E8;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .fin-tx-row:active { background: #F0F9FA; }
+    .fin-tx-cat {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .fin-tx-desc {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .fin-tx-amt {
+      font-size: 13px;
+      font-weight: 700;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .fin-tx-in { color: #1D9A6C; }
+    .fin-tx-out { color: #D94A45; }
+
+    /* ── FILTER BAR in full history view ── */
+    #fin-filter-bar {
+      display: none;
+      padding: 12px 0;
     }
 
   
@@ -6305,530 +7008,355 @@
 
   
 
-  <!-- TAB: KEUANGAN RAUTAU -->
-  <main id="view-keuangan" class="tab-content">
-    <div class="fin-grid">
-      <!-- Financial Overview Card -->
-      <div class="finance-overview-card">
-        <div class="feature-head">
-          <div class="feature-title">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
-              <line x1="12" y1="1" x2="12" y2="23"></line>
-              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-            </svg>
-            Keuangan Rantau Jakarta · Advanced Fintech Suite
-            <span id="fin-db-dot" title="Koneksi Database" style="display:inline-flex;width:8px;height:8px;border-radius:50%;background:#94a3b8;margin-left:6px;vertical-align:middle;"></span>
-          </div>
-          <span class="badge badge-accent" id="fin-status-badge" style="font-size: 0.72rem; padding: 3px 10px;">Terkendali</span>
+<!-- TAB: KEUANGAN RANTAU JAKARTA — REDESIGNED HIERARCHY -->
+<main id="view-keuangan" class="tab-content">
+  <div class="fin-layout">
+    
+    <!-- ═══════════════════════════════════════════════════
+    SECTION 1 — FINANCIAL SNAPSHOT (NOW)
+    ═══════════════════════════════════════════════════ -->
+    <section class="fin-snapshot" id="fin-snapshot-section">
+      <div class="fin-snapshot-status-row">
+        <span class="fin-snapshot-label">Keuangan Rantau Jakarta</span>
+        <span class="fin-snapshot-badge" id="fin-status-badge">Terkendali</span>
+      </div>
+
+      <div class="fin-snapshot-hero">
+        <span class="fin-snapshot-hero-label">Saldo tersedia</span>
+        <span class="fin-snapshot-hero-value" id="fin-remaining-budget">Rp 3.500.000</span>
+      </div>
+
+      <div class="fin-snapshot-row">
+        <div class="fin-snapshot-metric" id="fin-metric-income" onclick="openIncomeModal()" style="cursor:pointer">
+          <span class="fin-snapshot-metric-label">Pemasukan</span>
+          <span class="fin-snapshot-metric-value" id="fin-total-income-display">Rp 3.500.000</span>
+          <span class="fin-snapshot-metric-sub" id="fin-income-sources-label">1 sumber aktif</span>
+          <input type="hidden" id="fin-income-input" value="3.500.000">
         </div>
-
-        <div class="finance-summary-grid">
-          <!-- Bento 1: Income -->
-          <div class="finance-metric finance-bento-col" id="fin-metric-income">
-            <div style="display: flex; justify-content: space-between; align-items: center; gap: 4px;">
-              <span class="finance-metric-label">Pemasukan</span>
-              <button type="button" class="fin-add-income-btn" onclick="openIncomeModal()" title="Catat sumber pemasukan baru">+ Catat</button>
-            </div>
-            <div class="finance-metric-val" id="fin-total-income-display" onclick="openIncomeModal()" style="margin: 3px 0 2px; cursor: pointer;" title="Klik untuk catat / rincian sumber pemasukan">Rp 3.500.000</div>
-            <input type="hidden" id="fin-income-input" value="3.500.000">
-            <div style="display: flex; justify-content: space-between; align-items: center; gap: 4px;">
-              <span class="finance-metric-sub" id="fin-income-sources-label" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">1 sumber aktif</span>
-              <button type="button" class="fin-income-detail-btn" onclick="scrollToIncomeDetail()" title="Lihat detail sumber pemasukan" style="background: none; border: none; font-size: 0.65rem; font-weight: 700; color: #10b981; cursor: pointer; padding: 0; white-space: nowrap;">Detail &rarr;</button>
-            </div>
-          </div>
-
-          <!-- Bento 2: Total Spent -->
-          <div class="finance-metric finance-bento-col" id="fin-metric-spent">
-            <span class="finance-metric-label">Terpakai Bulan Ini</span>
-            <div class="finance-metric-val" id="fin-total-expense" style="margin: 3px 0 2px;">Rp 0</div>
-            <span class="finance-metric-sub" id="fin-expense-percent">0% dari pemasukan</span>
-          </div>
-
-          <!-- Bento 3: Hero - Sisa & Batas Aman Harian -->
-          <div class="finance-metric finance-bento-hero" id="fin-metric-remaining">
-            <div class="finance-bento-hero-header">
-              <span class="finance-metric-label" style="white-space: nowrap; display: inline-flex; align-items: center; gap: 4px;">
-                <svg class="ic ic-14" aria-hidden="true" style="margin-right: 2px; vertical-align: -2px;"><use href="#i-shield"/></svg>
-                Sisa &amp; Batas Aman
-              </span>
-              <span class="badge fin-bento-safe-badge" id="fin-daily-safe-limit">Batas: Rp — / hari</span>
-            </div>
-            <div class="finance-metric-val success" id="fin-remaining-budget" style="margin: 3px 0 2px;">Rp 3.500.000</div>
-            <span class="finance-metric-sub">Sisa anggaran sampai akhir bulan</span>
-          </div>
-        </div>
-
-        <!-- Today's Safe Burn Meter -->
-        <div class="finance-today-meter">
-          <div class="finance-meter-header" style="display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: nowrap;">
-            <div style="display: inline-flex; align-items: center; gap: 6px; min-width: 0;">
-              <span class="finance-meter-title" style="display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; font-size: 0.76rem; font-weight: 700;">
-                <svg class="ic ic-16" aria-hidden="true" style="color: var(--accent); flex-shrink: 0;"><use href="#i-target"/></svg>
-                Burn Rate Hari Ini
-              </span>
-              <span class="badge" id="fin-today-badge" style="font-size: 0.65rem; padding: 2px 7px; background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); white-space: nowrap; flex-shrink: 0;">Aman</span>
-            </div>
-            <div style="display: inline-flex; align-items: baseline; gap: 3px; font-size: 0.76rem; white-space: nowrap; flex-shrink: 0;">
-              <span id="fin-today-spent" style="font-weight: 800; color: var(--text-primary);">Rp 0</span>
-              <span style="font-size: 0.68rem; color: var(--text-tertiary);">/ batas</span>
-              <span id="fin-today-limit" style="font-weight: 700; color: var(--accent);">Rp —</span>
-            </div>
-          </div>
-          <div class="finance-meter-gauge-track">
-            <div class="finance-meter-gauge-fill" id="fin-today-meter-fill" style="width: 0%; background-color: #10b981;"></div>
-          </div>
-          <div class="finance-meter-details">
-            <span id="fin-today-left-text">Sisa jatah belanja hari ini: Rp —</span>
-            <span id="fin-burn-rate-pace">Kecepatan belanja: Normal</span>
-          </div>
-        </div>
-
-        <!-- Budget Progress Track -->
-        <div class="finance-progress-track" style="margin-top: 14px;">
-          <div class="finance-progress-fill" id="fin-progress-bar" style="width: 0%;"></div>
-        </div>
-        <div class="finance-progress-meta">
-          <span id="fin-progress-label" style="font-weight: 600;">Pengeluaran: 0%</span>
-          <span id="fin-days-left">Sisa hari bulan ini: —</span>
-        </div>
-        <div id="fin-balance-banner" style="margin-top: 10px; display: none; border-radius: 8px; padding: 10px 12px; font-size: 0.76rem; line-height: 1.4;"></div>
-
-        <!-- AI Advisor -->
-        <div id="fin-ai-card" class="fin-ai-box">
-          <div class="fin-ai-head">
-            <div class="fin-ai-title-wrap">
-              <span class="fin-ai-title">
-                <svg class="ic ic-16" aria-hidden="true" style="color: var(--accent); flex-shrink: 0;"><use href="#i-sparkles"/></svg>
-                Asisten Finansial AI
-              </span>
-              <span class="fin-ai-badge">Claude</span>
-            </div>
-            <button type="button" class="btn-action btn-xs" onclick="openFinanceReportModal()" style="background: var(--accent-subtle); color: var(--accent); border: 1px solid rgba(0, 124, 137, 0.3); font-weight: 600; padding: 4px 10px; font-size: 0.72rem; white-space: nowrap; display: inline-flex; align-items: center; gap: 5px; flex-shrink: 0; border-radius: 6px;" title="Buka Raport Bulanan">
-              <span>📊</span> <span>Raport</span>
-            </button>
-          </div>
-
-          <div class="fin-ai-actions">
-            <button type="button" class="fin-ai-btn" id="btn-fin-ai" onclick="requestFinanceAdvice('quick')">
-              <span>✨</span> <span>Tanya AI</span>
-            </button>
-            <button type="button" class="fin-ai-btn" onclick="requestFinanceAdvice('saving')">
-              <span>💡</span> <span>Kiat Hemat</span>
-            </button>
-            <button type="button" class="fin-ai-btn" onclick="requestFinanceAdvice('leakage')">
-              <span>🔍</span> <span>Cek Bocor</span>
-            </button>
-          </div>
-
-          <div id="fin-ai-output" class="fin-ai-output-box">
-            Pilih opsi di atas untuk saran batas aman belanja dan rekomendasi hemat Menara BNI.
-          </div>
+        <div class="fin-snapshot-divider"></div>
+        <div class="fin-snapshot-metric" id="fin-metric-spent">
+          <span class="fin-snapshot-metric-label">Terpakai</span>
+          <span class="fin-snapshot-metric-value" id="fin-total-expense">Rp 0</span>
+          <span class="fin-snapshot-metric-sub" id="fin-expense-percent">0% dari pemasukan</span>
         </div>
       </div>
 
-      <!-- Skor Kesehatan Finansial -->
-      <div class="fin-health-card" id="fin-health-section">
-        <div class="fin-score-ring">
-          <svg viewBox="0 0 96 96">
-            <circle class="ring-bg" cx="48" cy="48" r="42"></circle>
-            <circle class="ring-val" id="fin-score-ring-val" cx="48" cy="48" r="42" stroke="#10b981" stroke-dasharray="263.9" stroke-dashoffset="263.9"></circle>
+      <div class="fin-snapshot-meter">
+        <div class="fin-snapshot-meter-row">
+          <span class="fin-snapshot-meter-label">Burn rate</span>
+          <span class="fin-snapshot-meter-value" id="fin-daily-safe-limit" style="font-size:0.82rem;font-weight:700">Batas: Rp — / hari</span>
+        </div>
+        <div class="fin-snapshot-gauge-track">
+          <div class="fin-snapshot-gauge-fill" id="fin-progress-bar" style="width:0%"></div>
+        </div>
+        <div class="fin-snapshot-meter-row">
+          <span class="fin-snapshot-meter-sub" id="fin-progress-label">Pengeluaran: 0%</span>
+          <span class="fin-snapshot-meter-sub" id="fin-days-left">Sisa hari: —</span>
+        </div>
+      </div>
+
+      <!-- Today burn meter -->
+      <div class="fin-snapshot-today">
+        <div class="fin-snapshot-today-row">
+          <span class="fin-snapshot-today-label">Hari ini</span>
+          <span class="fin-snapshot-badge" id="fin-today-badge">Aman</span>
+          <span style="margin-left:auto;font-size:0.76rem;font-weight:700" id="fin-today-spent">Rp 0</span>
+          <span style="font-size:0.68rem;color:var(--text-tertiary)">/</span>
+          <span style="font-size:0.76rem;font-weight:700;color:var(--accent)" id="fin-today-limit">Rp —</span>
+        </div>
+        <div class="fin-snapshot-today-track">
+          <div class="fin-snapshot-today-fill" id="fin-today-meter-fill" style="width:0%"></div>
+        </div>
+        <div class="fin-snapshot-today-meta">
+          <span id="fin-today-left-text">Sisa jatah: Rp —</span>
+          <span id="fin-burn-rate-pace">Kecepatan: Normal</span>
+        </div>
+      </div>
+
+      <div id="fin-balance-banner" style="display:none;margin-top:10px;padding:10px 12px;border-radius:6px;font-size:0.76rem;line-height:1.4"></div>
+      <input type="hidden" id="fin-fixed-input" value="0">
+      <span id="fin-db-dot" style="display:none"></span>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+    SECTION 2 — QUICK ACTION (ACTION)
+    ═══════════════════════════════════════════════════ -->
+    <section class="fin-action" id="fin-action-section">
+      <button type="button" class="fin-action-btn" onclick="openQuickExpenseSheet()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        <span>Catat Pengeluaran</span>
+      </button>
+      <div class="fin-action-chips" id="fin-action-chips">
+        <span class="fin-action-chip" onclick="quickFillExpense('makan',15000,'Makan Siang','expense')">🍚 Makan</span>
+        <span class="fin-action-chip" onclick="quickFillExpense('transport',10000,'Transport','expense')">🚌 Transport</span>
+        <span class="fin-action-chip" onclick="quickFillExpense('kopi',18000,'Kopi/Hangout','expense')">☕ Kopi</span>
+        <span class="fin-action-chip" onclick="quickFillExpense('laundry',25000,'Laundry','expense')">👕 Laundry</span>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+    SECTION 3 — FINANCIAL HEALTH (NOW)
+    ═══════════════════════════════════════════════════ -->
+    <section class="fin-health" id="fin-health-section">
+      <div class="fin-health-head">
+        <span class="fin-health-title">Skor Sehat Finansial</span>
+        <div class="fin-score-ring-sm">
+          <svg viewBox="0 0 96 96" width="72" height="72">
+            <circle cx="48" cy="48" r="42" fill="none" stroke="#E1E8E8" stroke-width="6"/>
+            <circle cx="48" cy="48" r="42" fill="none" stroke="#005E6A" stroke-width="6" stroke-linecap="round" id="fin-score-ring-val" stroke-dasharray="263.9" stroke-dashoffset="263.9" transform="rotate(-90 48 48)"/>
           </svg>
-          <div class="fin-score-center">
-            <div class="fin-score-num" id="fin-score-num">—</div>
-            <div class="fin-score-grade" id="fin-score-grade">—</div>
+          <div class="fin-score-center-sm">
+            <span class="fin-score-num-sm" id="fin-score-num">—</span>
+            <span class="fin-score-grade-sm" id="fin-score-grade">—</span>
           </div>
-        </div>
-        <div class="fin-health-sub">
-          <div class="feature-title" style="font-size: 0.8rem;"><svg class="ic ic-16" aria-hidden="true"><use href="#i-target"/></svg> Skor Sehat Finansial</div>
-          <div class="fin-sub-row"><span class="fin-sub-label">Sisihan / Tabungan</span><div class="fin-sub-track"><div class="fin-sub-fill" id="fin-score-savings" style="width:0%"></div></div><span class="fin-sub-val" id="fin-score-savings-val">0</span></div>
-          <div class="fin-sub-row"><span class="fin-sub-label">Jatah Harian</span><div class="fin-sub-track"><div class="fin-sub-fill" id="fin-score-daily" style="width:0%"></div></div><span class="fin-sub-val" id="fin-score-daily-val">0</span></div>
-          <div class="fin-sub-row"><span class="fin-sub-label">Tagihan Tepat Waktu</span><div class="fin-sub-track"><div class="fin-sub-fill" id="fin-score-bills" style="width:0%"></div></div><span class="fin-sub-val" id="fin-score-bills-val">0</span></div>
-          <div class="fin-sub-row"><span class="fin-sub-label">Disiplin Amplop</span><div class="fin-sub-track"><div class="fin-sub-fill" id="fin-score-envelope" style="width:0%"></div></div><span class="fin-sub-val" id="fin-score-envelope-val">0</span></div>
         </div>
       </div>
+      <div class="fin-health-bars">
+        <div class="fin-health-bar">
+          <span class="fin-health-bar-label">Sisihan / Tabungan</span>
+          <div class="fin-health-bar-track"><div class="fin-health-bar-fill" id="fin-score-savings" style="width:0%"></div></div>
+          <span class="fin-health-bar-val" id="fin-score-savings-val">0</span>
+        </div>
+        <div class="fin-health-bar">
+          <span class="fin-health-bar-label">Jatah Harian</span>
+          <div class="fin-health-bar-track"><div class="fin-health-bar-fill" id="fin-score-daily" style="width:0%"></div></div>
+          <span class="fin-health-bar-val" id="fin-score-daily-val">0</span>
+        </div>
+        <div class="fin-health-bar">
+          <span class="fin-health-bar-label">Tagihan Tepat Waktu</span>
+          <div class="fin-health-bar-track"><div class="fin-health-bar-fill" id="fin-score-bills" style="width:0%"></div></div>
+          <span class="fin-health-bar-val" id="fin-score-bills-val">0</span>
+        </div>
+        <div class="fin-health-bar">
+          <span class="fin-health-bar-label">Disiplin Amplop</span>
+          <div class="fin-health-bar-track"><div class="fin-health-bar-fill" id="fin-score-envelope" style="width:0%"></div></div>
+          <span class="fin-health-bar-val" id="fin-score-envelope-val">0</span>
+        </div>
+      </div>
+    </section>
 
-      <!-- Quick Expense & Income Logger Card -->
-      <div class="feature-card" id="fin-input-section">
-        <!-- Transaction Type Switcher -->
+    <!-- ═══════════════════════════════════════════════════
+    SECTION 4 — SMART ALERT (WARNING)
+    ═══════════════════════════════════════════════════ -->
+    <section class="fin-alerts" id="fin-insight-section">
+      <div class="fin-alerts-list" id="fin-insight-list">
+        <div style="font-size:0.74rem;color:var(--text-tertiary);text-align:center;padding:8px 0">Insight muncul setelah ada data transaksi.</div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+    SECTION 5 — RECENT TRANSACTIONS (HISTORY)
+    ═══════════════════════════════════════════════════ -->
+    <section class="fin-recent" id="fin-history-section">
+      <div class="fin-recent-head">
+        <span class="fin-recent-title">Transaksi Terbaru</span>
+        <button type="button" class="fin-recent-link" onclick="openFullTransactionHistory()">Lihat Semua →</button>
+      </div>
+      <div class="fin-recent-list" id="finance-tx-container">
+        <div style="font-size:0.78rem;color:var(--text-secondary);text-align:center;padding:16px;border:1px dashed var(--border);border-radius:6px;background:var(--surface-hover)">
+          Belum ada transaksi tercatat. Gunakan <strong>+ Catat Pengeluaran</strong> di atas.
+        </div>
+      </div>
+      <!-- Hidden full form (moved out of main dashboard) -->
+      <div style="display:none">
         <div class="fin-tx-type-toggle">
-          <button type="button" class="fin-type-btn active expense" id="fin-tab-expense" onclick="setFinanceTxType('expense')">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line></svg>
-            Catat Pengeluaran
-          </button>
-          <button type="button" class="fin-type-btn" id="fin-tab-income" onclick="setFinanceTxType('income')">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-            Catat Pemasukan
-          </button>
+          <button type="button" class="fin-type-btn active expense" id="fin-tab-expense" onclick="setFinanceTxType('expense')">Pengeluaran</button>
+          <button type="button" class="fin-type-btn" id="fin-tab-income" onclick="setFinanceTxType('income')">Pemasukan</button>
         </div>
-
-        <div class="feature-head" style="margin-bottom: 8px;">
-          <div>
-            <div class="feature-title" id="fin-input-title">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
-                <circle cx="12" cy="12" r="10"></circle>
-                <line x1="12" y1="8" x2="12" y2="16"></line>
-                <line x1="8" y1="12" x2="16" y2="12"></line>
-              </svg>
-              Catat Pengeluaran Cepat
-            </div>
-            <p style="font-size: 0.74rem; color: var(--text-secondary); margin-top: 2px;" id="fin-input-subtitle">
-              Pilih tombol pintas 1-klik untuk pengeluaran rutin, atau isi form manual.
-            </p>
-          </div>
+        <div class="finance-quick-chips" id="fin-chips-expense">
+          <span class="finance-chip" onclick="quickFillExpense('makan',15000,'Kantin Basement Menara BNI','expense')">+15rb Kantin</span>
+          <span class="finance-chip" onclick="quickFillExpense('makan',20000,'Warteg Penjernihan Benhil','expense')">+20rb Warteg</span>
+          <span class="finance-chip" onclick="quickFillExpense('transport',3000,'KRL St. Palmerah','expense')">+3rb KRL</span>
+          <span class="finance-chip" onclick="quickFillExpense('transport',10000,'Ojek Online Stasiun - Kantor','expense')">+10rb Ojol</span>
+          <span class="finance-chip" onclick="quickFillExpense('laundry',25000,'Laundry Kiloan','expense')">+25rb Laundry</span>
+          <span class="finance-chip" onclick="quickFillExpense('kopi',18000,'Kopi Sore / Hangout','expense')">+18rb Kopi</span>
         </div>
-
-        <!-- Quick 1-Click Preset Chips -->
-        <div style="margin-bottom: 14px;">
-          <span style="font-size: 0.7rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.04em;" id="fin-chips-title">Pintas 1-Klik Rutin:</span>
-          
-          <!-- Expense Chips -->
-          <div class="finance-quick-chips" id="fin-chips-expense">
-            <span class="finance-chip" onclick="quickFillExpense('makan', 15000, 'Kantin Basement Menara BNI', 'expense')"><svg class="ic ic-14" aria-hidden="true"><use href="#i-utensils"/></svg> +15rb Kantin</span>
-            <span class="finance-chip" onclick="quickFillExpense('makan', 20000, 'Warteg Penjernihan Benhil', 'expense')"><svg class="ic ic-14" aria-hidden="true"><use href="#i-utensils"/></svg> +20rb Warteg</span>
-            <span class="finance-chip" onclick="quickFillExpense('transport', 3000, 'KRL St. Palmerah', 'expense')"><svg class="ic ic-14" aria-hidden="true"><use href="#i-train"/></svg> +3rb KRL</span>
-            <span class="finance-chip" onclick="quickFillExpense('transport', 10000, 'Ojek Online Stasiun - Kantor', 'expense')"><svg class="ic ic-14" aria-hidden="true"><use href="#i-car"/></svg> +10rb Ojol</span>
-            <span class="finance-chip" onclick="quickFillExpense('laundry', 25000, 'Laundry Kiloan', 'expense')"><svg class="ic ic-14" aria-hidden="true"><use href="#i-droplet"/></svg> +25rb Laundry</span>
-            <span class="finance-chip" onclick="quickFillExpense('kopi', 18000, 'Kopi Sore / Hangout', 'expense')"><svg class="ic ic-14" aria-hidden="true"><use href="#i-coffee"/></svg> +18rb Kopi</span>
-          </div>
-
-          <!-- Income Chips -->
-          <div class="finance-quick-chips" id="fin-chips-income" style="display: none;">
-            <span class="finance-chip income-chip" onclick="quickFillExpense('saku_bni', 3500000, 'Uang Saku Magang BNI', 'income')">🏦 +3.5jt Saku BNI</span>
-            <span class="finance-chip income-chip" onclick="quickFillExpense('maganghub', 500000, 'Insentif Kemnaker MagangHub', 'income')">💼 +500rb MagangHub</span>
-            <span class="finance-chip income-chip" onclick="quickFillExpense('freelance', 250000, 'Honor Proyek Freelance', 'income')">💻 +250rb Freelance</span>
-            <span class="finance-chip income-chip" onclick="quickFillExpense('ortu', 300000, 'Kiriman Keluarga / Ortu', 'income')">👨‍👩‍👧 +300rb Ortu</span>
-            <span class="finance-chip income-chip" onclick="quickFillExpense('hadiah', 100000, 'Bonus / Reward', 'income')">🎁 +100rb Bonus</span>
-            <span class="finance-chip income-chip" onclick="quickFillExpense('lainnya_inc', 50000, 'Pemasukan Lain-lain', 'income')">💵 +50rb Lainnya</span>
-          </div>
+        <div class="finance-quick-chips" id="fin-chips-income" style="display:none">
+          <span class="finance-chip income-chip" onclick="quickFillExpense('saku_bni',3500000,'Uang Saku Magang BNI','income')">+3.5jt Saku BNI</span>
+          <span class="finance-chip income-chip" onclick="quickFillExpense('maganghub',500000,'Insentif Kemnaker MagangHub','income')">+500rb MagangHub</span>
+          <span class="finance-chip income-chip" onclick="quickFillExpense('freelance',250000,'Honor Proyek Freelance','income')">+250rb Freelance</span>
+          <span class="finance-chip income-chip" onclick="quickFillExpense('ortu',300000,'Kiriman Keluarga / Ortu','income')">+300rb Ortu</span>
+          <span class="finance-chip income-chip" onclick="quickFillExpense('hadiah',100000,'Bonus / Reward','income')">+100rb Bonus</span>
+          <span class="finance-chip income-chip" onclick="quickFillExpense('lainnya_inc',50000,'Pemasukan Lain-lain','income')">+50rb Lainnya</span>
         </div>
-
         <form id="finance-form" onsubmit="handleNewExpense(event)">
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
-            <div class="form-group" style="margin-bottom: 0;">
-              <label class="form-label" id="fin-cat-label">Kategori Pengeluaran</label>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+            <div class="form-group"><label class="form-label" id="fin-cat-label">Kategori</label>
               <select class="form-control" id="fin-tx-cat" required>
-                <option value="makan"><svg class="ic ic-16" aria-hidden="true"><use href="#i-utensils"/></svg> Makan &amp; Minum</option>
-                <option value="transport"><svg class="ic ic-16" aria-hidden="true"><use href="#i-bus"/></svg> Transportasi (KRL/Ojol/JakLingko)</option>
-                <option value="kos"><svg class="ic ic-16" aria-hidden="true"><use href="#i-home"/></svg> Kos &amp; Listrik</option>
-                <option value="laundry"><svg class="ic ic-16" aria-hidden="true"><use href="#i-droplet"/></svg> Laundry &amp; Perlengkapan Pribadi</option>
-                <option value="kopi"><svg class="ic ic-16" aria-hidden="true"><use href="#i-coffee"/></svg> Kopi &amp; Sosialisasi</option>
-                <option value="wisuda"><svg class="ic ic-16" aria-hidden="true"><use href="#i-cap"/></svg> Wisuda UMS &amp; Solo</option>
-                <option value="lainnya"><svg class="ic ic-16" aria-hidden="true"><use href="#i-bulb"/></svg> Lain-lain / Dana Darurat</option>
+                <option value="makan">Makan &amp; Minum</option>
+                <option value="transport">Transportasi</option>
+                <option value="kos">Kos &amp; Listrik</option>
+                <option value="laundry">Laundry</option>
+                <option value="kopi">Kopi &amp; Sosialisasi</option>
+                <option value="wisuda">Wisuda UMS &amp; Solo</option>
+                <option value="lainnya">Lain-lain</option>
               </select>
             </div>
-            <div class="form-group" style="margin-bottom: 0;">
-              <label class="form-label">Nominal (Rp)</label>
+            <div class="form-group"><label class="form-label">Nominal (Rp)</label>
               <input type="text" inputmode="numeric" class="form-control" id="fin-tx-amount" placeholder="Contoh: 15.000" oninput="formatMoneyInput(this)" required>
             </div>
           </div>
-
-          <div style="display: grid; grid-template-columns: 1.4fr 1fr; gap: 10px; margin-bottom: 12px;">
-            <div class="form-group" style="margin-bottom: 0;">
-              <label class="form-label">Deskripsi / Catatan</label>
-              <input type="text" class="form-control" id="fin-tx-desc" placeholder="Contoh: Makan siang kantin basement BNI">
+          <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:10px;margin-bottom:12px">
+            <div class="form-group"><label class="form-label">Deskripsi</label>
+              <input type="text" class="form-control" id="fin-tx-desc" placeholder="Contoh: Makan siang">
             </div>
-            <div class="form-group" style="margin-bottom: 0;">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                <label class="form-label" style="margin-bottom: 0;">Tanggal</label>
-                <div class="fin-date-shortcut">
-                  <button type="button" class="fin-date-shortcut-btn" onclick="setQuickTxDate('today')">Hari Ini</button>
-                  <button type="button" class="fin-date-shortcut-btn" onclick="setQuickTxDate('payday')" style="color: #10b981; font-weight: 700;" title="Pilih tanggal 22 (gajian)">Tgl 22</button>
-                  <button type="button" class="fin-date-shortcut-btn" onclick="setQuickTxDate('start')" title="Pilih tanggal 21 (awal siklus)">Tgl 21</button>
-                </div>
+            <div class="form-group">
+              <label class="form-label">Tanggal</label>
+              <div class="fin-date-shortcut">
+                <button type="button" class="fin-date-shortcut-btn" onclick="setQuickTxDate('today')">Hari Ini</button>
+                <button type="button" class="fin-date-shortcut-btn" onclick="setQuickTxDate('payday')" style="color:#10b981;font-weight:700">Tgl 22</button>
+                <button type="button" class="fin-date-shortcut-btn" onclick="setQuickTxDate('start')">Tgl 21</button>
               </div>
               <input type="date" class="form-control" id="fin-tx-date">
             </div>
           </div>
-
-          <button type="submit" class="btn-block" id="fin-tx-submit" style="height: 42px; font-size: 0.84rem;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="12" y1="5" x2="12" y2="19"></line>
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-            </svg>
+          <button type="submit" class="btn-block" id="fin-tx-submit" style="height:42px;font-size:0.84rem">
             <span id="fin-tx-submit-label">Simpan Pengeluaran</span>
           </button>
         </form>
       </div>
+    </section>
 
-      <!-- Expense & Income History Log -->
-      <div class="feature-card" id="fin-history-section">
-        <div class="feature-head">
-          <div class="feature-title">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
-              <polyline points="12 8 12 12 14 14"></polyline>
-              <path d="M3.05 11a9 9 0 1 1 .5 4m-.5 5v-5h5"></path>
-            </svg>
-            Riwayat Transaksi
+    <!-- ═══════════════════════════════════════════════════
+    SECTION 6 — BUDGET 50/30/20 (PLAN)
+    ═══════════════════════════════════════════════════ -->
+    <section class="fin-budget" id="fin-envelopes-section">
+      <div class="fin-budget-head">
+        <span class="fin-budget-title">Alokasi Budget 50/30/20</span>
+      </div>
+      <div class="fin-budget-cards">
+        <div class="fin-budget-card fin-budget-needs">
+          <div class="fin-budget-card-head">
+            <span class="fin-budget-card-label">Needs (50%)</span>
+            <span class="fin-budget-card-status" id="fin-env-needs-status">0%</span>
           </div>
-          <div style="display: flex; gap: 6px; flex-wrap: wrap;">
-            <button class="btn-action btn-xs" onclick="openFinanceReportModal()" style="background: var(--accent-subtle); color: var(--accent); border: 1px solid var(--accent); font-weight: 600;" title="Buka Raport Keuangan Bulanan Anak Rantau">
-              <svg class="ic ic-14" aria-hidden="true"><use href="#i-chart"/></svg> Raport Bulanan
-            </button>
-            <button class="btn-action btn-xs" onclick="exportFinanceCSV()" title="Download riwayat transaksi ke format CSV / Excel">
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-              CSV
-            </button>
-            <button class="btn-action btn-xs" onclick="exportFinanceSummaryText()" title="Salin rekap siap kirim ke WhatsApp">
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-              WA
-            </button>
-            <button class="utility-btn btn-xs" onclick="clearFinanceHistory()" style="color: #ef4444; border-color: rgba(239, 68, 68, 0.3);">
-              Reset
-            </button>
-          </div>
+          <span class="fin-budget-card-amt" id="fin-env-needs-spent">Rp 0</span>
+          <span class="fin-budget-card-target" id="fin-env-needs-target">Target: Rp 1.750.000</span>
+          <div class="fin-budget-card-track"><div class="fin-budget-card-fill" id="fin-env-needs-fill" style="width:0%;background:#007C89"></div></div>
         </div>
-
-        <!-- Filter Bar -->
-        <div class="finance-filter-bar" style="flex-direction: column; align-items: stretch; gap: 8px;">
-          <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap;">
-            <div style="display: flex; align-items: center; gap: 6px;">
-              <div class="finance-type-pills">
-                <button type="button" class="fin-type-pill active" id="fin-view-all" onclick="setFinanceTypeFilter('all')">Semua</button>
-                <button type="button" class="fin-type-pill" id="fin-view-expense" onclick="setFinanceTypeFilter('expense')">🔴 Pengeluaran</button>
-                <button type="button" class="fin-type-pill" id="fin-view-income" onclick="setFinanceTypeFilter('income')">🟢 Pemasukan</button>
-              </div>
-              <button type="button" class="fin-add-income-btn" onclick="openIncomeModal()" title="Catat sumber pemasukan baru">+ Pemasukan</button>
-            </div>
-            <span id="fin-filter-count" style="font-size: 0.68rem; color: var(--text-tertiary); font-weight: 600;">0 transaksi</span>
+        <div class="fin-budget-card fin-budget-wants">
+          <div class="fin-budget-card-head">
+            <span class="fin-budget-card-label">Wants (30%)</span>
+            <span class="fin-budget-card-status" id="fin-env-wants-status">0%</span>
           </div>
-
-          <div style="display: flex; justify-content: space-between; align-items: center; gap: 6px; flex-wrap: wrap;">
-            <div class="finance-filter-chips">
-              <button type="button" class="finance-filter-btn active" id="fin-filter-all" onclick="setFinanceFilter('all')">Semua Waktu</button>
-              <button type="button" class="finance-filter-btn" id="fin-filter-today" onclick="setFinanceFilter('today')">Hari Ini</button>
-              <button type="button" class="finance-filter-btn" id="fin-filter-week" onclick="setFinanceFilter('week')">7 Hari</button>
-              <button type="button" class="finance-filter-btn" id="fin-filter-month" onclick="setFinanceFilter('month')">Siklus Aktif</button>
-            </div>
-            <div id="fin-stream-summary" style="font-size: 0.7rem; font-weight: 700;"></div>
-          </div>
+          <span class="fin-budget-card-amt" id="fin-env-wants-spent">Rp 0</span>
+          <span class="fin-budget-card-target" id="fin-env-wants-target">Target: Rp 1.050.000</span>
+          <div class="fin-budget-card-track"><div class="fin-budget-card-fill" id="fin-env-wants-fill" style="width:0%;background:#F15A24"></div></div>
         </div>
-
-        <div class="finance-tx-list" id="finance-tx-container">
-          <div style="font-size: 0.78rem; color: var(--text-secondary); text-align: center; padding: 24px 16px; background: var(--surface-hover); border-radius: var(--radius-sm); border: 1px dashed var(--border);">
-            <svg class="ic ic-16" aria-hidden="true"><use href="#i-coins"/></svg> Belum ada pengeluaran tercatat bulan ini. Gunakan tombol pintas di atas untuk mencatat cepat.
+        <div class="fin-budget-card fin-budget-savings">
+          <div class="fin-budget-card-head">
+            <span class="fin-budget-card-label">Savings (20%)</span>
+            <span class="fin-budget-card-status" id="fin-env-savings-status">0%</span>
           </div>
+          <span class="fin-budget-card-amt" id="fin-env-savings-spent">Rp 0</span>
+          <span class="fin-budget-card-target" id="fin-env-savings-target">Target: Rp 700.000</span>
+          <div class="fin-budget-card-track"><div class="fin-budget-card-fill" id="fin-env-savings-fill" style="width:0%;background:#1D9A6C"></div></div>
         </div>
       </div>
+    </section>
 
-      <!-- Live 50/30/20 Digital Envelopes Bento Grid -->
-      <div class="feature-card" id="fin-envelopes-section">
-        <div class="feature-head">
-          <div>
-            <div class="feature-title" style="font-size: 0.84rem;">
-              <svg class="ic ic-16" aria-hidden="true" style="color: var(--accent);"><use href="#i-chart-pie"/></svg>
-              Alokasi Anggaran 50/30/20
-            </div>
-            <p style="font-size: 0.72rem; color: var(--text-secondary); margin-top: 2px;">
-              Pos budgeting otomatis: Pokok (50%), Gaya Hidup (30%), &amp; Tabungan (20%).
-            </p>
-          </div>
-          <span class="badge badge-accent" style="font-size: 0.65rem; padding: 2px 7px;">Smart Envelopes</span>
+    <!-- ═══════════════════════════════════════════════════
+    SECTION 7 — UPCOMING BILLS (PLAN)
+    ═══════════════════════════════════════════════════ -->
+    <section class="fin-bills" id="fin-bills-section">
+      <div class="fin-bills-head">
+        <span class="fin-bills-title">Tagihan Mendatang</span>
+        <button type="button" class="fin-bills-link" onclick="promptAddCustomBill()">+ Tagihan</button>
+      </div>
+      <div class="fin-bills-summary">
+        <div class="fin-bills-stat">
+          <span class="fin-bills-stat-label">Total Tagihan</span>
+          <span class="fin-bills-stat-val" id="fin-bills-total">Rp 0</span>
         </div>
-
-        <div class="finance-envelopes-grid">
-          <!-- Envelope 1: Needs 50% (Hero Bento) -->
-          <div class="finance-envelope-card finance-env-hero">
-            <div class="finance-envelope-head">
-              <span class="finance-envelope-title"><svg class="ic ic-16" aria-hidden="true" style="color: #0284c7;"><use href="#i-home"/></svg> Needs / Pokok (50%)</span>
-              <span class="badge" id="fin-env-needs-status" style="font-size: 0.65rem; padding: 1px 6px;">0%</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap;">
-              <div class="finance-envelope-amt" id="fin-env-needs-spent">Rp 0</div>
-              <div class="finance-envelope-sub" id="fin-env-needs-target">Target: Rp 1.750.000</div>
-            </div>
-            <div class="finance-envelope-track">
-              <div class="finance-envelope-fill" id="fin-env-needs-fill" style="width: 0%; background: #0284c7;"></div>
-            </div>
-          </div>
-
-          <!-- Envelope 2: Wants 30% -->
-          <div class="finance-envelope-card finance-env-wants">
-            <div class="finance-envelope-head">
-              <span class="finance-envelope-title"><svg class="ic ic-16" aria-hidden="true" style="color: #F15A24;"><use href="#i-coffee"/></svg> Wants (30%)</span>
-              <span class="badge" id="fin-env-wants-status" style="font-size: 0.65rem; padding: 1px 6px;">0%</span>
-            </div>
-            <div>
-              <div class="finance-envelope-amt" id="fin-env-wants-spent">Rp 0</div>
-              <div class="finance-envelope-sub" id="fin-env-wants-target">Target: Rp 1.050.000</div>
-            </div>
-            <div class="finance-envelope-track">
-              <div class="finance-envelope-fill" id="fin-env-wants-fill" style="width: 0%; background: #F15A24;"></div>
-            </div>
-          </div>
-
-          <!-- Envelope 3: Savings 20% -->
-          <div class="finance-envelope-card finance-env-savings">
-            <div class="finance-envelope-head">
-              <span class="finance-envelope-title"><svg class="ic ic-16" aria-hidden="true" style="color: #10b981;"><use href="#i-wallet"/></svg> Savings (20%)</span>
-              <span class="badge" id="fin-env-savings-status" style="font-size: 0.65rem; padding: 1px 6px;">0%</span>
-            </div>
-            <div>
-              <div class="finance-envelope-amt" id="fin-env-savings-spent">Rp 0</div>
-              <div class="finance-envelope-sub" id="fin-env-savings-target">Target: Rp 700.000</div>
-            </div>
-            <div class="finance-envelope-track">
-              <div class="finance-envelope-fill" id="fin-env-savings-fill" style="width: 0%; background: #10b981;"></div>
-            </div>
-          </div>
+        <div class="fin-bills-stat">
+          <span class="fin-bills-stat-label" style="color:#1D9A6C">Sudah Dibayar</span>
+          <span class="fin-bills-stat-val" style="color:#1D9A6C" id="fin-bills-paid">Rp 0</span>
+        </div>
+        <div class="fin-bills-stat">
+          <span class="fin-bills-stat-label" style="color:#D9891C">Belum Lunas</span>
+          <span class="fin-bills-stat-val" style="color:#D9891C" id="fin-bills-unpaid">Rp 0</span>
         </div>
       </div>
+      <div class="fin-bills-due" id="fin-due-strip"></div>
+      <div class="fin-bills-list" id="finance-bills-container"></div>
+    </section>
 
-      <!-- Tujuan & Sisihan (Financial Goals) -->
+    <!-- ═══════════════════════════════════════════════════
+    SECTION 8 — SAVINGS & GOALS (PLAN)
+    ═══════════════════════════════════════════════════ -->
+    <section class="fin-goals" id="fin-goals-card">
+      <div class="fin-goals-head">
+        <span class="fin-goals-title">Tujuan Keuangan</span>
+        <button type="button" class="fin-goals-add" onclick="promptAddGoal()">+ Tujuan</button>
+      </div>
+      <div class="finance-goals-grid" id="finance-goals-container"></div>
+    </section>
 
-      <div class="feature-card" id="fin-goals-card">
-        <div class="feature-head">
-          <div>
-            <div class="feature-title" style="font-size: 0.84rem;">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                <polyline points="22 4 12 14.01 9 11.01"></polyline>
-              </svg>
-              Tujuan &amp; Sisihan (Perisai Masa Depan)
-            </div>
-            <p style="font-size: 0.72rem; color: var(--text-secondary); margin-top: 2px;">
-              Sisihkan uang ke tujuan sebelum terpakai. Dana Darurat, Mudik, dan Kirim Orang Tua siap pasang.
-            </p>
-          </div>
-          <button type="button" class="btn-action btn-xs" onclick="promptAddGoal()">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-            Tujuan
-          </button>
+    <!-- ═══════════════════════════════════════════════════
+    SECTION 9 — SPENDING ANALYTICS (ANALYSIS)
+    ═══════════════════════════════════════════════════ -->
+    <section class="fin-analytics" id="fin-breakdown-section">
+      <div class="fin-analytics-head">
+        <span class="fin-analytics-title">Analisis Pengeluaran</span>
+        <span class="fin-analytics-total" id="fin-cat-total-label">Total: Rp 0</span>
+      </div>
+      <div class="fin-analytics-track" id="fin-stacked-track"></div>
+      <div class="fin-analytics-legend" id="fin-cat-legend"></div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+    SECTION 10 — SPENDING CALENDAR (ANALYSIS)
+    ═══════════════════════════════════════════════════ -->
+    <details class="fin-calendar" id="fin-heatmap-section">
+      <summary class="fin-calendar-summary">
+        <span>Kalender Aktivitas Belanja</span>
+        <span class="fin-calendar-period" id="fin-heatmap-period"></span>
+      </summary>
+      <div class="fin-heatmap" id="fin-heatmap"></div>
+      <div class="fin-heatmap-legend" style="display:flex;align-items:center;justify-content:flex-end;gap:4px;margin-top:8px">
+        <span style="font-size:0.66rem;color:var(--text-tertiary)">Hemat</span>
+        <span style="width:10px;height:10px;border-radius:2px;background:#e2e8f0"></span>
+        <span style="width:10px;height:10px;border-radius:2px;background:#b6e6c9"></span>
+        <span style="width:10px;height:10px;border-radius:2px;background:#34d399"></span>
+        <span style="width:10px;height:10px;border-radius:2px;background:#f59e0b"></span>
+        <span style="width:10px;height:10px;border-radius:2px;background:#ef4444"></span>
+        <span style="font-size:0.66rem;color:var(--text-tertiary)">Boros</span>
+      </div>
+    </details>
+
+    <!-- ═══════════════════════════════════════════════════
+    SECTION 11 — AI FINANCIAL ASSISTANT (EXPLORE)
+    ═══════════════════════════════════════════════════ -->
+    <details class="fin-ai" id="fin-ai-card">
+      <summary class="fin-ai-summary">
+        <span>Asisten Finansial AI</span>
+        <span class="fin-ai-badge">Claude</span>
+      </summary>
+      <div class="fin-ai-body">
+        <div class="fin-ai-actions">
+          <button type="button" class="fin-ai-btn" id="btn-fin-ai" onclick="requestFinanceAdvice('quick')">✨ Tanya AI</button>
+          <button type="button" class="fin-ai-btn" onclick="requestFinanceAdvice('saving')">💡 Kiat Hemat</button>
+          <button type="button" class="fin-ai-btn" onclick="requestFinanceAdvice('leakage')">🔍 Cek Bocor</button>
         </div>
-        <div class="finance-goals-grid" id="finance-goals-container">
-          <!-- Rendered dynamically via JS -->
+        <div id="fin-ai-output" class="fin-ai-output-box">Pilih opsi untuk saran batas aman belanja dan rekomendasi hemat.</div>
+        <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+          <button type="button" class="btn-action btn-xs" onclick="openFinanceReportModal()">📊 Raport Bulanan</button>
+          <button type="button" class="btn-action btn-xs" onclick="exportFinanceCSV()">📥 CSV</button>
+          <button type="button" class="btn-action btn-xs" onclick="exportFinanceSummaryText()">📋 Salin WA</button>
+          <button type="button" class="utility-btn btn-xs" onclick="clearFinanceHistory()" style="color:#ef4444;border-color:rgba(239,68,68,0.3)">Reset</button>
         </div>
       </div>
+    </details>
 
-      <!-- Smart Fixed-Bills Checklist & Due Dates -->
-
-      <div class="finance-bills-card" id="fin-bills-section">
-        <div class="feature-head" style="margin-bottom: 12px;">
-          <div>
-            <div class="feature-title" style="font-size: 0.84rem;">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                <polyline points="14 2 14 8 20 8"></polyline>
-                <line x1="16" y1="13" x2="8" y2="13"></line>
-                <line x1="16" y1="17" x2="8" y2="17"></line>
-                <polyline points="10 9 9 9 8 9"></polyline>
-              </svg>
-              Tagihan Bulanan Tetap (Smart Checklist)
-            </div>
-            <p style="font-size: 0.72rem; color: var(--text-secondary); margin-top: 2px;">
-              Centang tagihan yang sudah lunas bulan ini. Tagihan belum bayar otomatis memotong sisa belanja aman.
-            </p>
-          </div>
-          <button type="button" class="btn-action btn-xs" onclick="promptAddCustomBill()">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-            Tagihan
-          </button>
-        </div>
-
-        <div class="finance-bills-summary">
-          <div class="finance-bill-stat">
-            <div class="finance-bill-stat-label">Total Tagihan Tetap</div>
-            <div class="finance-bill-stat-val" id="fin-bills-total">Rp 0</div>
-          </div>
-          <div class="finance-bill-stat">
-            <div class="finance-bill-stat-label" style="color: #10b981;">Sudah Dibayar</div>
-            <div class="finance-bill-stat-val" id="fin-bills-paid" style="color: #10b981;">Rp 0</div>
-          </div>
-          <div class="finance-bill-stat">
-            <div class="finance-bill-stat-label" style="color: #f59e0b;">Belum Lunas</div>
-            <div class="finance-bill-stat-val" id="fin-bills-unpaid" style="color: #f59e0b;">Rp 0</div>
-          </div>
-        </div>
-
-        <!-- Hidden input for backward compatibility with getFinanceFixed() -->
-        <input type="hidden" id="fin-fixed-input" value="0">
-
-        <!-- Jatuh tempo 7 hari ke depan -->
-        <div class="fin-due-strip" id="fin-due-strip">
-          <!-- Rendered dynamically via JS -->
-        </div>
-
-        <!-- Bills List Container -->
-        <div class="finance-bills-list" id="finance-bills-container">
-          <!-- Rendered dynamically via JS -->
-        </div>
-      </div>
-
-      <!-- Category Breakdown Visual Stacked Bar -->
-
-      <div class="finance-cat-breakdown-card" id="fin-breakdown-section">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <span style="font-size: 0.76rem; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 6px;">
-            <svg class="ic ic-16" aria-hidden="true"><use href="#i-chart"/></svg> Komposisi Pengeluaran Aktual
-          </span>
-          <span id="fin-cat-total-label" style="font-size: 0.72rem; color: var(--text-secondary); font-weight: 600;">Total: Rp 0</span>
-        </div>
-        <!-- Multi-color stacked track -->
-        <div class="finance-stacked-track" id="fin-stacked-track">
-          <!-- Populated by JS -->
-        </div>
-        <!-- Legends -->
-        <div class="finance-cat-legend" id="fin-cat-legend">
-          <!-- Populated by JS -->
-        </div>
-      </div>
-
-      <!-- Calendar Heatmap Pengeluaran -->
-      <div class="feature-card" id="fin-heatmap-section">
-        <div class="feature-head">
-          <div class="feature-title" style="font-size: 0.84rem;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
-              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-              <line x1="16" y1="2" x2="16" y2="6"></line>
-              <line x1="8" y1="2" x2="8" y2="6"></line>
-              <line x1="3" y1="10" x2="21" y2="10"></line>
-            </svg>
-            Kalender Aktivitas Belanja
-          </div>
-          <span style="font-size: 0.7rem; color: var(--text-tertiary); font-weight: 600;" id="fin-heatmap-period">Siklus 21 Sep - 21 Okt · Gajian 22 Okt</span>
-        </div>
-        <div class="fin-heatmap" id="fin-heatmap"></div>
-        <div class="fin-heatmap-legend" style="display: flex; align-items: center; justify-content: flex-end; gap: 4px; margin-top: 8px;">
-          <span style="font-size: 0.66rem; color: var(--text-tertiary);">Hemat</span>
-          <span style="width: 10px; height: 10px; border-radius: 2px; background: #e2e8f0;"></span>
-          <span style="width: 10px; height: 10px; border-radius: 2px; background: #b6e6c9;"></span>
-          <span style="width: 10px; height: 10px; border-radius: 2px; background: #34d399;"></span>
-          <span style="width: 10px; height: 10px; border-radius: 2px; background: #f59e0b;"></span>
-          <span style="width: 10px; height: 10px; border-radius: 2px; background: #ef4444;"></span>
-          <span style="font-size: 0.66rem; color: var(--text-tertiary);">Boros</span>
-        </div>
-      </div>
-
-      <!-- Insight Otomatis -->
-      <div class="feature-card" id="fin-insight-section">
-        <div class="feature-head">
-          <div class="feature-title" style="font-size: 0.84rem;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
-              <path d="M12 3l1.9 5.8L20 10l-6.1 1.2L12 17l-1.9-5.8L4 10l6.1-1.2z"></path>
-            </svg>
-            Insight Otomatis Keuanganmu
-          </div>
-        </div>
-        <div class="fin-insight-list" id="fin-insight-list">
-          <div style="font-size: 0.74rem; color: var(--text-tertiary);">Insight muncul otomatis setelah ada pemasukan &amp; transaksi.</div>
-        </div>
-      </div>
-
-      <!-- What-If Simulator -->
-      <div class="feature-card" id="fin-sim-section">
-        <div class="feature-head">
-          <div>
-            <div class="feature-title" style="font-size: 0.84rem;">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
-                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
-              </svg>
-              Simulator Hemat (What-If)
-            </div>
-            <p style="font-size: 0.72rem; color: var(--text-secondary); margin-top: 2px;">
-              Geser untuk lihat dampak perubahan habit harian terhadap sisa uang bulanan.
-            </p>
-          </div>
-        </div>
-
+    <!-- ═══════════════════════════════════════════════════
+    SECTION 12 — WHAT-IF SIMULATOR (EXPLORE)
+    ═══════════════════════════════════════════════════ -->
+    <details class="fin-simulator" id="fin-sim-section">
+      <summary class="fin-simulator-summary">
+        <span>Simulator Hemat (What-If)</span>
+        <span style="font-size:0.72rem;color:var(--accent);font-weight:600">Coba Simulasi ▾</span>
+      </summary>
+      <div class="fin-simulator-body">
         <div class="fin-sim-row">
           <div class="fin-sim-head"><span>Makan siang rata-rata / hari</span><b id="sim-makan-val">Rp 15.000</b></div>
           <input type="range" class="fin-sim-range" id="sim-makan" min="5000" max="40000" step="1000" value="15000" oninput="updateSimulator()">
@@ -6841,66 +7369,122 @@
           <div class="fin-sim-head"><span>Ojol per minggu</span><b id="sim-ojol-val">Rp 10.000</b></div>
           <input type="range" class="fin-sim-range" id="sim-ojol" min="0" max="100000" step="1000" value="10000" oninput="updateSimulator()">
         </div>
+        <div class="fin-sim-result" id="fin-sim-result">Geser slider untuk melihat potensi penghematan bulanan.</div>
+      </div>
+    </details>
 
-        <div class="fin-sim-result" id="fin-sim-result">
-          Geser slider untuk melihat potensi penghematan bulanan.
+    <!-- ═══════════════════════════════════════════════════
+    SECTION 13 — FINANCIAL GUIDE (EXPLORE)
+    ═══════════════════════════════════════════════════ -->
+    <details class="fin-guide" id="fin-guide-accordion">
+      <summary class="fin-guide-summary">
+        <span>Strategi Finansial & Survival Magang Jakarta</span>
+        <span style="font-size:0.72rem;color:var(--accent);font-weight:600">Lihat Panduan ▾</span>
+      </summary>
+      <div class="fin-guide-body">
+        <div class="guide-card">
+          <div class="guide-card-head">
+            <span class="guide-card-title">Pola Alokasi Anggaran Realistis (Metode 50/30/20)</span>
+            <span class="badge badge-accent">Standar Magang</span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px">
+            <div style="background:var(--surface-hover);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:12px">
+              <div style="font-weight:700;font-size:0.78rem;color:var(--text-primary);margin-bottom:4px">Kebutuhan Pokok (50%)</div>
+              <div style="font-size:0.72rem;color:var(--text-secondary);line-height:1.45">~Rp1.750.000: Sewa kamar kos, token listrik, dan makan harian pokok.</div>
+            </div>
+            <div style="background:var(--surface-hover);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:12px">
+              <div style="font-weight:700;font-size:0.78rem;color:var(--text-primary);margin-bottom:4px">Operasional & Harian (30%)</div>
+              <div style="font-size:0.72rem;color:var(--text-secondary);line-height:1.45">~Rp1.050.000: Transportasi KRL/JakLingko/Ojol, kuota internet, laundry kiloan, dan kuliner akhir pekan.</div>
+            </div>
+            <div style="background:var(--surface-hover);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:12px">
+              <div style="font-weight:700;font-size:0.78rem;color:var(--text-primary);margin-bottom:4px">Tabungan & Wondr (20%)</div>
+              <div style="font-size:0.72rem;color:var(--text-secondary);line-height:1.45">~Rp700.000: Amankan ke rekening BNI saat uang saku cair.</div>
+            </div>
+          </div>
+        </div>
+        <div class="guide-card" style="margin-top:12px">
+          <div class="guide-card-head">
+            <span class="guide-card-title">Trik Hemat Khusus Area Menara BNI & Benhil</span>
+            <span class="badge">Tips Praktis</span>
+          </div>
+          <ul class="guide-list">
+            <li><span class="guide-bullet">•</span><div><strong>Makan Siang Hemat:</strong> Manfaatkan kantin basement Menara BNI (Rp15.000–20.000, higienis & ber-AC). Hindari pesan makanan via ojol saat jam kerja.</div></li>
+            <li><span class="guide-bullet">•</span><div><strong>Refill Tumbler Gratis:</strong> Bawa tumbler dan isi ulang air mineral di dispenser pantry SSE. Menghemat ±Rp150.000/bulan.</div></li>
+            <li><span class="guide-bullet">•</span><div><strong>Transportasi Nol Rupiah:</strong> Mikrotrans JakLingko (JAK.08/JAK.14) tarif <strong>Rp 0 (gratis)</strong>. Dari Stasiun Palmerah ke Menara BNI hanya 1.8 km.</div></li>
+            <li><span class="guide-bullet">•</span><div><strong>Aplikasi Wondr by BNI:</strong> Transfer gratis, bebas admin, pantau pengeluaran melalui mutasi digital real-time.</div></li>
+          </ul>
         </div>
       </div>
+    </details>
 
-      <!-- Jakarta Survival & Saving Strategy Guide (Collapsible) -->
-      <details class="guide-accordion feature-card" id="fin-guide-accordion" style="grid-column: 1 / -1; cursor: pointer; padding: 14px 16px;">
-        <summary style="font-weight: 700; font-size: 0.9rem; color: var(--text-primary); display: flex; align-items: center; justify-content: space-between; user-select: none;">
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
-              <circle cx="12" cy="12" r="10"></circle>
-              <path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"></path>
-              <line x1="12" y1="18" x2="12.01" y2="18"></line>
-            </svg>
-            <span>Strategi Finansial &amp; Survival Magang Jakarta</span>
+    <!-- ═══════════════════════════════════════════════════
+    HIDDEN: Full transaction history modal anchor
+    ═══════════════════════════════════════════════════ -->
+    <div style="display:none">
+      <!-- Finance filter bar for full history view -->
+      <div class="finance-filter-bar" id="fin-filter-bar">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+          <div style="display:flex;align-items:center;gap:6px">
+            <div class="finance-type-pills">
+              <button type="button" class="fin-type-pill active" id="fin-view-all" onclick="setFinanceTypeFilter('all')">Semua</button>
+              <button type="button" class="fin-type-pill" id="fin-view-expense" onclick="setFinanceTypeFilter('expense')">Pengeluaran</button>
+              <button type="button" class="fin-type-pill" id="fin-view-income" onclick="setFinanceTypeFilter('income')">Pemasukan</button>
+            </div>
+            <button type="button" class="fin-add-income-btn" onclick="openIncomeModal()">+ Pemasukan</button>
           </div>
-          <span style="font-size: 0.72rem; color: var(--accent); font-weight: 600;">Lihat Panduan ▾</span>
-        </summary>
-        <div style="margin-top: 14px; cursor: default; display: flex; flex-direction: column; gap: 12px;">
-          <div class="guide-card" style="margin-top: 10px;">
-        <div class="guide-card-head">
-          <div class="guide-card-title">Pola Alokasi Anggaran Realistis (Metode 50/30/20)</div>
-          <span class="badge badge-accent">Standar Magang</span>
+          <span id="fin-filter-count" style="font-size:0.68rem;color:var(--text-tertiary);font-weight:600">0 transaksi</span>
         </div>
-        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px;">
-          <div style="background: var(--surface-hover); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 12px;">
-            <div style="font-weight: 700; font-size: 0.78rem; color: var(--text-primary); margin-bottom: 4px;"><svg class="ic ic-16" aria-hidden="true"><use href="#i-home"/></svg> Kebutuhan Pokok (50%)</div>
-            <div style="font-size: 0.72rem; color: var(--text-secondary); line-height: 1.45;">~Rp1.750.000: Sewa kamar kos (kisaran Rp1.000.000 - Rp1.400.000), token listrik, dan makan harian pokok.</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap;margin-top:8px">
+          <div class="finance-filter-chips">
+            <button type="button" class="finance-filter-btn active" id="fin-filter-all" onclick="setFinanceFilter('all')">Semua Waktu</button>
+            <button type="button" class="finance-filter-btn" id="fin-filter-today" onclick="setFinanceFilter('today')">Hari Ini</button>
+            <button type="button" class="finance-filter-btn" id="fin-filter-week" onclick="setFinanceFilter('week')">7 Hari</button>
+            <button type="button" class="finance-filter-btn" id="fin-filter-month" onclick="setFinanceFilter('month')">Siklus Aktif</button>
           </div>
-          <div style="background: var(--surface-hover); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 12px;">
-            <div style="font-weight: 700; font-size: 0.78rem; color: var(--text-primary); margin-bottom: 4px;"><svg class="ic ic-16" aria-hidden="true"><use href="#i-bus"/></svg> Operasional &amp; Harian (30%)</div>
-            <div style="font-size: 0.72rem; color: var(--text-secondary); line-height: 1.45;">~Rp1.050.000: Transportasi KRL/JakLingko/Ojol, kuota internet, laundry kiloan, dan kuliner akhir pekan di Benhil.</div>
-          </div>
-          <div style="background: var(--surface-hover); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 12px;">
-            <div style="font-weight: 700; font-size: 0.78rem; color: var(--text-primary); margin-bottom: 4px;"><svg class="ic ic-16" aria-hidden="true"><use href="#i-wallet"/></svg> Tabungan &amp; Wondr (20%)</div>
-            <div style="font-size: 0.72rem; color: var(--text-secondary); line-height: 1.45;">~Rp700.000: Langsung amankan ke rekening BNI saat uang saku cair agar tidak terpakai impulsif.</div>
-          </div>
+          <div id="fin-stream-summary" style="font-size:0.7rem;font-weight:700"></div>
         </div>
       </div>
-
-      <div class="guide-card">
-        <div class="guide-card-head">
-          <div class="guide-card-title">Trik Hemat Khusus Area Menara BNI &amp; Benhil</div>
-          <span class="badge">Tips Praktis</span>
-        </div>
-        <ul class="guide-list">
-          <li><span class="guide-bullet">•</span><div><strong>Makan Siang Hemat:</strong> Manfaatkan kantin basement Menara BNI (pilihan menu lengkap Rp15.000–20.000, higienis &amp; ber-AC). Hindari pesan makanan via ojol saat jam kerja karena ada ongkir dan biaya layanan.</div></li>
-          <li><span class="guide-bullet">•</span><div><strong>Refill Tumbler Gratis:</strong> Selalu bawa tumbler dan isi ulang air mineral di dispenser pantry lantai SSE Menara BNI. Menghemat ±Rp150.000/bulan dari beli air botol.</div></li>
-          <li><span class="guide-bullet">•</span><div><strong>Transportasi Nol Rupiah:</strong> Gunakan Mikrotrans JakLingko (JAK.08 atau JAK.14) dengan tarif <strong>Rp 0 (gratis)</strong> cukup tap kartu uang elektronik. Dari Stasiun Palmerah ke Menara BNI hanya 1.8 km (bisa jalan kaki pagi jika cuaca cerah).</div></li>
-          <li><span class="guide-bullet">•</span><div><strong>Aplikasi Wondr by BNI:</strong> Manfaatkan fitur transfer gratis, bebas admin, dan pantau pengeluaran bulanan melalui mutasi digital real-time.</div></li>
-        </ul>
-      </div>
-        </div>
-      </details>
     </div>
-  </main>
 
-  
-  <!-- TAB 4: PLAN & WORKFLOW MAGANGHUB (INTEGRATED ROADMAP, LOGBOOK, SOP, CHAT, & TOOLKIT) -->
+    <!-- ═══════════════════════════════════════════════════
+    QUICK EXPENSE BOTTOM SHEET (Mobile-first)
+    ═══════════════════════════════════════════════════ -->
+    <div class="fin-sheet-overlay" id="fin-quick-sheet" style="display:none" onclick="closeQuickExpenseSheet(event)">
+      <div class="fin-sheet" onclick="event.stopPropagation()">
+        <div class="fin-sheet-handle"></div>
+        <div class="fin-sheet-head">
+          <span class="fin-sheet-title" id="fin-sheet-title">Catat Pengeluaran</span>
+          <button type="button" class="fin-sheet-close" onclick="closeQuickExpenseSheet()">&times;</button>
+        </div>
+        <div style="margin-bottom:16px">
+          <label class="form-label">Nominal</label>
+          <input type="text" inputmode="numeric" class="form-control" id="fin-sheet-amount" placeholder="Rp 0" oninput="formatMoneyInput(this)" style="font-size:1.1rem;font-weight:700;height:48px">
+        </div>
+        <div class="fin-sheet-chips" id="fin-sheet-chips-expense">
+          <span class="fin-sheet-chip active" onclick="selectSheetCat('makan',this)">🍚 Makan</span>
+          <span class="fin-sheet-chip" onclick="selectSheetCat('transport',this)">🚌 Transport</span>
+          <span class="fin-sheet-chip" onclick="selectSheetCat('kos',this)">🏠 Kos</span>
+          <span class="fin-sheet-chip" onclick="selectSheetCat('laundry',this)">👕 Laundry</span>
+          <span class="fin-sheet-chip" onclick="selectSheetCat('kopi',this)">☕ Kopi</span>
+          <span class="fin-sheet-chip" onclick="selectSheetCat('lainnya',this)">📦 Lainnya</span>
+        </div>
+        <div style="margin-bottom:12px">
+          <label class="form-label">Deskripsi</label>
+          <input type="text" class="form-control" id="fin-sheet-desc" placeholder="Contoh: Makan siang kantin">
+        </div>
+        <div style="margin-bottom:16px">
+          <label class="form-label">Tanggal</label>
+          <input type="date" class="form-control" id="fin-sheet-date">
+        </div>
+        <button type="button" class="btn-block" onclick="submitSheetExpense()" style="height:44px;font-size:0.88rem;font-weight:700">Simpan Pengeluaran</button>
+      </div>
+    </div>
+    <!-- Hidden sheet category selector -->
+    <input type="hidden" id="fin-sheet-cat" value="makan">
+    <input type="hidden" id="fin-sheet-type" value="expense">
+
+  </div>
+</main>  <!-- TAB 4: PLAN & WORKFLOW MAGANGHUB (INTEGRATED ROADMAP, LOGBOOK, SOP, CHAT, & TOOLKIT) -->
     <!-- TAB 4: ROADMAP LINE & WORKFLOW MAGANGHUB DENGAN JARING-JARING BNI -->
   <main id="view-workflow" class="tab-content">
     <div class="roadmap-container">
@@ -12668,6 +13252,11 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     const countEl = document.getElementById('fin-filter-count');
     if (countEl) countEl.textContent = `${filteredTxs.length} transaksi`;
 
+    // Show only 5 recent on dashboard, full list when filter bar visible
+    const filterBar = document.getElementById('fin-filter-bar');
+    const isFullView = filterBar && filterBar.style.display === 'block';
+    const displayTxs = isFullView ? filteredTxs : filteredTxs.slice(0, 5);
+
     let totalStreamIncome = 0;
     let totalStreamExpense = 0;
     allTxs.forEach(item => {
@@ -12693,7 +13282,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       }
     }
 
-    if (filteredTxs.length === 0) {
+    if (displayTxs.length === 0) {
       const emptyLabel = currentFinanceTypeFilter === 'income'
         ? 'Belum ada pemasukan tercatat pada filter ini.<br><span style="font-size: 0.7rem; color: var(--text-secondary); margin-top: 4px; display: inline-block;">Gunakan tombol "Catat Pemasukan" di atas untuk menambah sumber pemasukan.</span>'
         : 'Tidak ada catatan transaksi pada filter ini.<br><span style="font-size: 0.7rem; color: var(--text-secondary); margin-top: 4px; display: inline-block;">Gunakan tombol cepat di atas untuk mencatat dalam 1-klik!</span>';
@@ -12706,7 +13295,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     }
 
     let html = '';
-    filteredTxs.forEach(item => {
+    displayTxs.forEach(item => {
       const isInc = item.type === 'income';
       const meta = isInc 
         ? (FIN_INCOME_META[item.cat] || { label: 'Pemasukan', badge: '💵' })
@@ -13398,6 +13987,127 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     link.click();
     document.body.removeChild(link);
     showToast('File raport bulanan berhasil diunduh!');
+  }
+
+  // --- Quick Expense Bottom Sheet (Mobile-First) ---
+  function openQuickExpenseSheet() {
+    const sheet = document.getElementById('fin-quick-sheet');
+    if (!sheet) return;
+    const dateInput = document.getElementById('fin-sheet-date');
+    if (dateInput && !dateInput.value) {
+      dateInput.value = getWibDateString();
+    }
+    document.getElementById('fin-sheet-amount').value = '';
+    document.getElementById('fin-sheet-desc').value = '';
+    document.getElementById('fin-sheet-cat').value = 'makan';
+    document.getElementById('fin-sheet-type').value = 'expense';
+    // Reset chip selection
+    document.querySelectorAll('.fin-sheet-chip').forEach((c, i) => {
+      c.classList.toggle('active', i === 0);
+    });
+    document.getElementById('fin-sheet-title').textContent = 'Catat Pengeluaran';
+    sheet.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeQuickExpenseSheet(event) {
+    if (event && event.target !== document.getElementById('fin-quick-sheet')) return;
+    const sheet = document.getElementById('fin-quick-sheet');
+    if (sheet) {
+      sheet.style.display = 'none';
+      document.body.style.overflow = '';
+    }
+  }
+
+  function selectSheetCat(cat, el) {
+    document.getElementById('fin-sheet-cat').value = cat;
+    document.querySelectorAll('.fin-sheet-chip').forEach(c => c.classList.remove('active'));
+    if (el) el.classList.add('active');
+  }
+
+  function submitSheetExpense() {
+    const amountRaw = document.getElementById('fin-sheet-amount').value;
+    const cat = document.getElementById('fin-sheet-cat').value;
+    const desc = document.getElementById('fin-sheet-desc').value || '';
+    const date = document.getElementById('fin-sheet-date').value;
+    const type = document.getElementById('fin-sheet-type').value;
+
+    const amount = parseMoney(amountRaw);
+    if (!amount || amount <= 0) {
+      showToast('Mohon isi nominal yang valid');
+      return;
+    }
+
+    const tx = {
+      id: 'fin_' + Date.now(),
+      type: type,
+      cat: cat,
+      desc: desc || (type === 'expense' ? 'Pengeluaran' : 'Pemasukan'),
+      amount: amount,
+      date: date || getWibDateString(),
+    };
+
+    const expenses = getFinanceExpenses();
+    expenses.unshift(tx);
+    saveFinanceExpenses(expenses, true);
+    renderFinanceExpenses();
+    updateFinanceCalculations(true);
+    closeQuickExpenseSheet();
+    showToast(type === 'expense' ? 'Pengeluaran tercatat!' : 'Pemasukan tercatat!');
+    // Also sync to the hidden form if needed
+    const formCat = document.getElementById('fin-tx-cat');
+    const formAmount = document.getElementById('fin-tx-amount');
+    const formDesc = document.getElementById('fin-tx-desc');
+    const formDate = document.getElementById('fin-tx-date');
+    if (formCat) formCat.value = cat;
+    if (formAmount) formAmount.value = amount.toLocaleString('id-ID');
+    if (formDesc) formDesc.value = desc;
+    if (formDate) formDate.value = date;
+  }
+
+  // --- Full Transaction History (modal-like inline expand) ---
+  function openFullTransactionHistory() {
+    // Show filter bar and render full list
+    const filterBar = document.getElementById('fin-filter-bar');
+    if (filterBar) {
+      filterBar.style.display = filterBar.style.display === 'block' ? 'none' : 'block';
+    }
+    if (filterBar && filterBar.style.display === 'block') {
+      // Scroll to history section
+      document.getElementById('fin-history-section').scrollIntoView({ behavior: 'smooth' });
+      // Render full transaction list
+      const container = document.getElementById('finance-tx-container');
+      if (container) {
+        renderFinanceExpenses();
+      }
+    } else {
+      // Collapsed view: show only 5 recent
+      renderRecentTransactionsSummary();
+    }
+  }
+
+  // Show only 3-5 most recent transactions on dashboard
+  function renderRecentTransactionsSummary() {
+    const container = document.getElementById('finance-tx-container');
+    if (!container) return;
+    const allTxs = getFinanceExpenses();
+    const recent = allTxs.slice(0, 5);
+    if (recent.length === 0) {
+      container.innerHTML = '<div style="font-size:0.78rem;color:var(--text-secondary);text-align:center;padding:16px;border:1px dashed var(--border);border-radius:6px;background:var(--surface-hover)">Belum ada transaksi tercatat. Gunakan <strong>+ Catat Pengeluaran</strong> di atas.</div>';
+      return;
+    }
+    let html = '';
+    recent.forEach(tx => {
+      const isInc = tx.type === 'income';
+      const meta = isInc ? (FIN_INCOME_META[tx.cat] || { label: tx.cat, badge: '💰' }) : (FIN_CATEGORY_META[tx.cat] || { label: tx.cat, badge: '📌' });
+      const amt = formatRupiah(Number(tx.amount) || 0);
+      html += `<div class="fin-tx-row" onclick="deleteExpense('${tx.id}')" title="Tap untuk hapus">
+        <span class="fin-tx-cat">${meta.badge || ''} ${meta.label}</span>
+        <span class="fin-tx-desc">${tx.desc || ''}</span>
+        <span class="fin-tx-amt ${isInc ? 'fin-tx-in' : 'fin-tx-out'}">${isInc ? '+' : '-'} ${amt}</span>
+      </div>`;
+    });
+    container.innerHTML = html;
   }
 
   // --- Initialization ---
