@@ -13916,6 +13916,62 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   };
   window.FinConfig = FinConfig;
 
+  // --- Helper Deduplikasi Transaksi & Auto-Healing Storage ---
+  function deduplicateTransactions(list) {
+    if (!Array.isArray(list)) return [];
+    const seenIds = new Set();
+    const result = [];
+    for (const item of list) {
+      if (!item) continue;
+      const id = String(item.id || '');
+      if (id && seenIds.has(id)) continue;
+
+      // Proteksi double-click / rapid duplicate (nominal, tanggal, deskripsi, & kategori sama dalam rentang 3 detik)
+      const isRapidDuplicate = result.some(existing => {
+        const sameAmount = Number(existing.amount) === Number(item.amount);
+        const sameDate = (existing.date || existing.tx_date || '') === (item.date || item.tx_date || '');
+        const sameDesc = (existing.desc || existing.description || '').trim() === (item.desc || item.description || '').trim();
+        const sameCat = (existing.cat || existing.category || '') === (item.cat || item.category || '');
+        if (sameAmount && sameDate && sameDesc && sameCat) {
+          const ts1 = parseInt(String(existing.id).replace(/\D/g, ''), 10);
+          const ts2 = parseInt(String(item.id).replace(/\D/g, ''), 10);
+          if (ts1 && ts2 && Math.abs(ts1 - ts2) < 3000) return true;
+        }
+        return false;
+      });
+
+      if (isRapidDuplicate) continue;
+      if (id) seenIds.add(id);
+      result.push(item);
+    }
+    return result;
+  }
+  window.deduplicateTransactions = deduplicateTransactions;
+
+  // Self-healing sanitasi otomatis untuk membersihkan duplikasi riwayat di localStorage jika pernah ada
+  try {
+    const rawExp = localStorage.getItem('mghb_fin_expenses');
+    if (rawExp) {
+      const parsed = JSON.parse(rawExp);
+      if (Array.isArray(parsed)) {
+        const cleaned = deduplicateTransactions(parsed);
+        if (cleaned.length !== parsed.length) {
+          localStorage.setItem('mghb_fin_expenses', JSON.stringify(cleaned));
+        }
+      }
+    }
+    const rawTx = localStorage.getItem('mghb_fin_transactions');
+    if (rawTx) {
+      const parsedTx = JSON.parse(rawTx);
+      if (Array.isArray(parsedTx)) {
+        const cleanedTx = deduplicateTransactions(parsedTx);
+        if (cleanedTx.length !== parsedTx.length) {
+          localStorage.setItem('mghb_fin_transactions', JSON.stringify(cleanedTx));
+        }
+      }
+    }
+  } catch (e) {}
+
   // =========================================================================
   // FinOS Engine: Adaptive Goal-Based Budgeting Core (Dual-Mode)
   // =========================================================================
@@ -14158,11 +14214,17 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
         const raw = localStorage.getItem(this.KEYS.TRANSACTIONS);
         if (raw) {
           const parsed = JSON.parse(raw);
-          if (Array.isArray(parsed)) return parsed;
+          if (Array.isArray(parsed)) {
+            const deduped = deduplicateTransactions(parsed);
+            if (deduped.length !== parsed.length) {
+              localStorage.setItem(this.KEYS.TRANSACTIONS, JSON.stringify(deduped));
+            }
+            return deduped;
+          }
         }
       } catch (e) {}
       const legacyExpenses = typeof getFinanceExpenses === 'function' ? getFinanceExpenses() : [];
-      return legacyExpenses.map(e => ({
+      return deduplicateTransactions(legacyExpenses.map(e => ({
         id: e.id,
         type: e.type || 'expense',
         category: e.cat || 'makan',
@@ -14173,14 +14235,15 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
         destination_account_id: e.destination_account_id || (e.type === 'income' ? (e.source_account_id || 'acc_bni') : null),
         goal_id: e.goal_id || null,
         commitment_id: e.commitment_id || null
-      }));
+      })));
     },
 
     saveTransactions(list, syncCloud = true) {
+      const deduped = deduplicateTransactions(list || []);
       try {
-        localStorage.setItem(this.KEYS.TRANSACTIONS, JSON.stringify(list));
+        localStorage.setItem(this.KEYS.TRANSACTIONS, JSON.stringify(deduped));
       } catch (e) {}
-      const legacy = list.map(t => ({
+      const legacy = deduped.map(t => ({
         id: t.id,
         type: t.type || 'expense',
         cat: t.category || 'makan',
@@ -14190,11 +14253,15 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
         source_account_id: t.source_account_id || null,
         destination_account_id: t.destination_account_id || null
       }));
-      try {
-        localStorage.setItem(FIN_EXPENSES_KEY, JSON.stringify(legacy));
-      } catch (e) {}
+      if (typeof saveFinanceExpenses === 'function') {
+        saveFinanceExpenses(legacy, syncCloud);
+      } else {
+        try {
+          localStorage.setItem(FIN_EXPENSES_KEY, JSON.stringify(legacy));
+        } catch (e) {}
+      }
       if (syncCloud && typeof supabaseClient !== 'undefined' && supabaseClient) {
-        list.slice(0, 50).forEach(tx => {
+        deduped.slice(0, 50).forEach(tx => {
           supabaseClient.from('mghb_transactions').upsert({
             id: tx.id,
             tx_type: tx.type || 'expense',
@@ -15710,25 +15777,33 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   function getFinanceExpenses() {
     try {
       const stored = localStorage.getItem(FIN_EXPENSES_KEY);
-      return stored ? JSON.parse(stored) : [];
+      if (!stored) return [];
+      const parsed = JSON.parse(stored);
+      if (!Array.isArray(parsed)) return [];
+      const deduped = typeof deduplicateTransactions === 'function' ? deduplicateTransactions(parsed) : parsed;
+      if (deduped.length !== parsed.length) {
+        localStorage.setItem(FIN_EXPENSES_KEY, JSON.stringify(deduped));
+      }
+      return deduped;
     } catch {
       return [];
     }
   }
 
   function saveFinanceExpenses(expenses, syncToCloud = true) {
-    localStorage.setItem(FIN_EXPENSES_KEY, JSON.stringify(expenses));
+    const deduped = typeof deduplicateTransactions === 'function' ? deduplicateTransactions(expenses || []) : (expenses || []);
+    localStorage.setItem(FIN_EXPENSES_KEY, JSON.stringify(deduped));
     // Background sync to Supabase (fire-and-forget)
     if (supabaseClient && syncToCloud) {
       // 1. Snapshot array lengkap transaksi (termasuk tipe pemasukan) ke settings
       supabaseClient.from('mghb_settings').upsert({
         key: 'finance_expenses_backup',
-        value: expenses || [],
+        value: deduped || [],
         updated_at: new Date().toISOString()
       }).then(() => {}, err => console.warn('Supabase expense backup error:', err));
 
       // 2. Upsert ke tabel mghb_expenses
-      const rows = (expenses || []).map(e => ({
+      const rows = (deduped || []).map(e => ({
         id: e.id,
         tx_date: e.date || e.tx_date,
         category: e.cat || e.category,
@@ -16636,7 +16711,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     const container = document.getElementById('finance-tx-container');
     if (!container) return;
 
-    const allTxs = getFinanceExpenses();
+    const allTxs = typeof deduplicateTransactions === 'function' ? deduplicateTransactions(getFinanceExpenses()) : getFinanceExpenses();
     const todayStr = getWibDateString();
 
     const nowWib = new Date();
@@ -17947,7 +18022,11 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     if (el) el.classList.add('active');
   }
 
+  let isSubmittingSheetExpense = false;
+
   function submitSheetExpense() {
+    if (isSubmittingSheetExpense) return;
+
     const amountRaw = document.getElementById('fin-sheet-amount').value;
     const cat = document.getElementById('fin-sheet-cat').value;
     const desc = document.getElementById('fin-sheet-desc').value || '';
@@ -17961,138 +18040,130 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       return;
     }
 
-    const txId = 'fin_' + Date.now();
-    const accounts = FinOS.getAccounts();
-    const sourceAcc = accounts.find(a => a.id === accountId) || accounts[0];
+    const submitBtn = document.getElementById('fin-sheet-submit-btn');
+    const origBtnText = submitBtn ? submitBtn.textContent : 'Simpan Pengeluaran';
+    isSubmittingSheetExpense = true;
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Menyimpan...';
+    }
 
-    // 1. Eksekusi Transfer Antar Dompet
-    if (type === 'transfer') {
-      const destAccountId = (document.getElementById('fin-sheet-dest-account-id') && document.getElementById('fin-sheet-dest-account-id').value) || 'acc_gopay';
-      if (accountId === destAccountId) {
-        showToast('Rekening asal dan tujuan tidak boleh sama!');
+    try {
+      const txId = 'fin_' + Date.now();
+      const accounts = FinOS.getAccounts();
+      const sourceAcc = accounts.find(a => a.id === accountId) || accounts[0];
+
+      // 1. Eksekusi Transfer Antar Dompet
+      if (type === 'transfer') {
+        const destAccountId = (document.getElementById('fin-sheet-dest-account-id') && document.getElementById('fin-sheet-dest-account-id').value) || 'acc_gopay';
+        if (accountId === destAccountId) {
+          showToast('Rekening asal dan tujuan tidak boleh sama!');
+          return;
+        }
+        const destAcc = accounts.find(a => a.id === destAccountId) || accounts[1];
+        if ((sourceAcc.balance || 0) < amount) {
+          showToast(`Saldo ${sourceAcc.name} (${formatRupiah(sourceAcc.balance)}) tidak mencukupi untuk transfer ${formatRupiah(amount)}!`);
+          return;
+        }
+
+        sourceAcc.balance = Math.max(0, (sourceAcc.balance || 0) - amount);
+        destAcc.balance = (destAcc.balance || 0) + amount;
+        FinOS.saveAccounts(accounts, true);
+
+        const finTxs = FinOS.getTransactions();
+        finTxs.unshift({
+          id: txId,
+          type: 'transfer',
+          category: 'transfer',
+          description: desc || `Transfer ${sourceAcc.name} ke ${destAcc.name}`,
+          amount: amount,
+          date: date,
+          source_account_id: accountId,
+          destination_account_id: destAccountId,
+          goal_id: null,
+          commitment_id: null
+        });
+        FinOS.saveTransactions(finTxs, true);
+
+        renderAccountsStrip();
+        renderFinanceExpenses();
+        updateFinanceCalculations(true);
+        closeQuickExpenseSheet();
+        showToast(`⇄ Transfer ${formatRupiah(amount)} dari ${sourceAcc.name} ke ${destAcc.name} berhasil!`);
         return;
       }
-      const destAcc = accounts.find(a => a.id === destAccountId) || accounts[1];
-      if ((sourceAcc.balance || 0) < amount) {
-        showToast(`Saldo ${sourceAcc.name} (${formatRupiah(sourceAcc.balance)}) tidak mencukupi untuk transfer ${formatRupiah(amount)}!`);
-        return;
+
+      // 2. Transaksi Pengeluaran, Pemasukan, atau Tabungan
+      if (type === 'expense') {
+        sourceAcc.balance = Math.max(0, (sourceAcc.balance || 0) - amount);
+      } else if (type === 'income') {
+        sourceAcc.balance = (sourceAcc.balance || 0) + amount;
+      } else if (type === 'saving') {
+        sourceAcc.balance = Math.max(0, (sourceAcc.balance || 0) - amount);
+        const savingsAcc = accounts.find(a => a.id === 'acc_shopeepay' || a.id === 'acc_savings') || accounts[accounts.length - 1];
+        if (savingsAcc) savingsAcc.balance = (savingsAcc.balance || 0) + amount;
+
+        const goals = FinOS.getGoals();
+        const targetGoal = goals.find(g => g.id === cat || (cat.includes('iphone') && g.id.includes('iphone'))) || goals[0];
+        if (targetGoal) {
+          targetGoal.saved = (targetGoal.saved || 0) + amount;
+          FinOS.saveGoals(goals, true);
+        }
       }
 
-      sourceAcc.balance = Math.max(0, (sourceAcc.balance || 0) - amount);
-      destAcc.balance = (destAcc.balance || 0) + amount;
       FinOS.saveAccounts(accounts, true);
 
       const finTxs = FinOS.getTransactions();
       finTxs.unshift({
         id: txId,
-        type: 'transfer',
-        category: 'transfer',
-        description: desc || `Transfer ${sourceAcc.name} ke ${destAcc.name}`,
+        type: type,
+        category: cat,
+        description: desc || (type === 'expense' ? 'Pengeluaran' : (type === 'income' ? 'Pemasukan' : 'Nabung Goal')),
         amount: amount,
         date: date,
         source_account_id: accountId,
-        destination_account_id: destAccountId,
-        goal_id: null,
+        destination_account_id: type === 'income' ? accountId : (type === 'saving' ? 'acc_shopeepay' : null),
+        goal_id: type === 'saving' ? cat : null,
         commitment_id: null
       });
       FinOS.saveTransactions(finTxs, true);
 
-      const expenses = getFinanceExpenses();
-      expenses.unshift({
-        id: txId,
-        type: 'transfer',
-        cat: 'transfer',
-        desc: desc || `Transfer ${sourceAcc.name} ke ${destAcc.name}`,
-        amount: amount,
-        date: date,
-        source_account_id: accountId,
-        destination_account_id: destAccountId
-      });
-      saveFinanceExpenses(expenses, true);
-
       renderAccountsStrip();
       renderFinanceExpenses();
+      renderFinanceGoals();
       updateFinanceCalculations(true);
       closeQuickExpenseSheet();
-      showToast(`⇄ Transfer ${formatRupiah(amount)} dari ${sourceAcc.name} ke ${destAcc.name} berhasil!`);
-      return;
-    }
+      showToast(type === 'expense' ? 'Pengeluaran tercatat!' : (type === 'income' ? 'Pemasukan tercatat!' : 'Setoran tabungan goal berhasil!'));
 
-    // 2. Transaksi Pengeluaran, Pemasukan, atau Tabungan
-    if (type === 'expense') {
-      sourceAcc.balance = Math.max(0, (sourceAcc.balance || 0) - amount);
-    } else if (type === 'income') {
-      sourceAcc.balance = (sourceAcc.balance || 0) + amount;
-    } else if (type === 'saving') {
-      sourceAcc.balance = Math.max(0, (sourceAcc.balance || 0) - amount);
-      const savingsAcc = accounts.find(a => a.id === 'acc_shopeepay' || a.id === 'acc_savings') || accounts[accounts.length - 1];
-      if (savingsAcc) savingsAcc.balance = (savingsAcc.balance || 0) + amount;
-
-      const goals = FinOS.getGoals();
-      const targetGoal = goals.find(g => g.id === cat || (cat.includes('iphone') && g.id.includes('iphone'))) || goals[0];
-      if (targetGoal) {
-        targetGoal.saved = (targetGoal.saved || 0) + amount;
-        FinOS.saveGoals(goals, true);
-      }
-    }
-
-    FinOS.saveAccounts(accounts, true);
-
-    const finTxs = FinOS.getTransactions();
-    finTxs.unshift({
-      id: txId,
-      type: type,
-      category: cat,
-      description: desc || (type === 'expense' ? 'Pengeluaran' : (type === 'income' ? 'Pemasukan' : 'Nabung Goal')),
-      amount: amount,
-      date: date,
-      source_account_id: accountId,
-      destination_account_id: type === 'income' ? accountId : (type === 'saving' ? 'acc_shopeepay' : null),
-      goal_id: type === 'saving' ? cat : null,
-      commitment_id: null
-    });
-    FinOS.saveTransactions(finTxs, true);
-
-    const expenses = getFinanceExpenses();
-    expenses.unshift({
-      id: txId,
-      type: type,
-      cat: cat,
-      desc: desc || (type === 'expense' ? 'Pengeluaran' : (type === 'income' ? 'Pemasukan' : 'Nabung Goal')),
-      amount: amount,
-      date: date,
-      source_account_id: accountId,
-      destination_account_id: type === 'income' ? accountId : (type === 'saving' ? 'acc_shopeepay' : null)
-    });
-    saveFinanceExpenses(expenses, true);
-
-    renderAccountsStrip();
-    renderFinanceExpenses();
-    renderFinanceGoals();
-    updateFinanceCalculations(true);
-    closeQuickExpenseSheet();
-    showToast(type === 'expense' ? 'Pengeluaran tercatat!' : (type === 'income' ? 'Pemasukan tercatat!' : 'Setoran tabungan goal berhasil!'));
-
-    // Deteksi Gaji Pertama di Mode Pra-Gajian
-    if (type === 'income') {
-      const cfg = FinConfig.get();
-      if (cfg.mode === 'pra_gajian' && !cfg.first_salary_received) {
-        if (cat === 'saku_bni' || (desc && (desc.toLowerCase().includes('gaji') || desc.toLowerCase().includes('saku')))) {
-          setTimeout(() => {
-            openSalaryDetectedModal(amount, sourceAcc.name);
-          }, 350);
+      // Deteksi Gaji Pertama di Mode Pra-Gajian
+      if (type === 'income') {
+        const cfg = FinConfig.get();
+        if (cfg.mode === 'pra_gajian' && !cfg.first_salary_received) {
+          if (cat === 'saku_bni' || (desc && (desc.toLowerCase().includes('gaji') || desc.toLowerCase().includes('saku')))) {
+            setTimeout(() => {
+              openSalaryDetectedModal(amount, sourceAcc.name);
+            }, 350);
+          }
         }
       }
-    }
 
-    const formCat = document.getElementById('fin-tx-cat');
-    const formAmount = document.getElementById('fin-tx-amount');
-    const formDesc = document.getElementById('fin-tx-desc');
-    const formDate = document.getElementById('fin-tx-date');
-    if (formCat) formCat.value = cat;
-    if (formAmount) formAmount.value = amount.toLocaleString('id-ID');
-    if (formDesc) formDesc.value = desc;
-    if (formDate) formDate.value = date;
+      const formCat = document.getElementById('fin-tx-cat');
+      const formAmount = document.getElementById('fin-tx-amount');
+      const formDesc = document.getElementById('fin-tx-desc');
+      const formDate = document.getElementById('fin-tx-date');
+      if (formCat) formCat.value = cat;
+      if (formAmount) formAmount.value = amount.toLocaleString('id-ID');
+      if (formDesc) formDesc.value = desc;
+      if (formDate) formDate.value = date;
+    } finally {
+      setTimeout(() => {
+        isSubmittingSheetExpense = false;
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = origBtnText;
+        }
+      }, 350);
+    }
   }
 
   // --- Modal Controller: Pengaturan Mode Finansial & Parameter ---
