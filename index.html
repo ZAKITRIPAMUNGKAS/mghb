@@ -5227,10 +5227,10 @@
        ========================================================================== */
     @media (min-width: 960px) {
       .app-shell {
-        max-width: 1080px;
+        max-width: 1260px;
         margin-left: 260px;
         margin-right: auto;
-        padding: 0 36px 60px;
+        padding: 20px 36px 80px;
       }
 
       /* Desktop Sidebar Navigation */
@@ -5350,6 +5350,7 @@
       header.sticky-header {
         border-bottom: 1px solid var(--border-subtle);
         padding: 14px 0;
+        margin-bottom: 20px;
       }
 
       .brand-meta .brand-logo {
@@ -7305,12 +7306,15 @@
     /* ── RESPONSIVE: DESKTOP TWO-COLUMN DASHBOARD (>= 960px) ── */
     @media (min-width: 960px) {
       .fin-layout {
-        max-width: 1040px;
+        max-width: 100%;
+        width: 100%;
         display: grid;
         grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
-        gap: 24px;
+        grid-auto-flow: dense;
+        gap: 22px;
         align-items: start;
         padding-bottom: 60px;
+        margin: 0;
       }
       /* Full-width top banner cards */
       .fin-snapshot,
@@ -7332,14 +7336,58 @@
       .fin-health {
         grid-column: 2;
       }
-      .fin-goals {
+      .fin-recent {
         grid-column: 2;
       }
-      .fin-recent {
+      .fin-goals {
         grid-column: 2;
       }
       .fin-utilities {
         grid-column: 2;
+      }
+
+      /* Desktop accounts strip: 4 balanced columns */
+      .fin-accounts-strip {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+        overflow-x: visible;
+      }
+      .fin-account-pill {
+        min-width: 0;
+        justify-content: flex-start;
+        padding: 9px 12px;
+      }
+
+      /* Desktop Action buttons & chips */
+      .fin-action {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .fin-action-buttons {
+        display: flex;
+        gap: 12px;
+        max-width: 480px;
+      }
+      .fin-action-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        overflow-x: visible;
+      }
+      .fin-action-chip {
+        height: 32px;
+        padding: 0 12px;
+        font-size: 12px;
+        border-radius: 8px;
+      }
+
+      /* Desktop Alerts */
+      .fin-alerts-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+        gap: 10px;
       }
     }
 
@@ -7953,7 +8001,7 @@
         </button>
         <button type="button" class="fin-action-btn fin-action-btn-secondary" onclick="openQuickExpenseSheet(null,null,null,'income')">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          <span>+ Pemasukan</span>
+          <span>Catat Pemasukan</span>
         </button>
       </div>
       <div class="fin-action-chips" id="fin-action-chips" role="region" aria-label="Kategori Cepat">
@@ -8000,6 +8048,64 @@
       </div>
       <div class="fin-alerts-list" id="fin-insight-list">
         <div style="font-size:0.75rem;color:var(--text-tertiary);text-align:center;padding:8px 0">Insight muncul setelah ada data transaksi.</div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+    SECTION 6 — BUDGET 50/30/20 (LEVEL 1 PRIMARY CARD)
+    ═══════════════════════════════════════════════════ -->
+    <section class="fin-budget" id="fin-envelopes-section">
+      <div class="fin-budget-head">
+        <div>
+          <span class="fin-budget-title">Alokasi Budget 50/30/20</span>
+        </div>
+        <span class="fin-budget-sub">Siklus Magang</span>
+      </div>
+      <div class="fin-budget-list">
+        <div class="fin-budget-row needs">
+          <div class="fin-budget-row-top">
+            <span class="fin-budget-row-label">
+              <iconify-icon icon="lucide:home" width="16" height="16" aria-hidden="true"></iconify-icon>
+              <span>Needs (50%)</span>
+            </span>
+            <span class="fin-budget-row-status" id="fin-env-needs-status">0%</span>
+          </div>
+          <div class="fin-budget-row-amt">
+            <span class="fin-budget-row-spent" id="fin-env-needs-spent">Rp 0</span>
+            <span class="fin-budget-row-target" id="fin-env-needs-target">Target: Rp 1.750.000</span>
+          </div>
+          <div class="fin-budget-row-track"><div class="fin-budget-row-fill" id="fin-env-needs-fill" style="width:0%;background:#007C89"></div></div>
+        </div>
+
+        <div class="fin-budget-row wants">
+          <div class="fin-budget-row-top">
+            <span class="fin-budget-row-label">
+              <iconify-icon icon="lucide:coffee" width="16" height="16" aria-hidden="true"></iconify-icon>
+              <span>Wants (30%)</span>
+            </span>
+            <span class="fin-budget-row-status" id="fin-env-wants-status">0%</span>
+          </div>
+          <div class="fin-budget-row-amt">
+            <span class="fin-budget-row-spent" id="fin-env-wants-spent">Rp 0</span>
+            <span class="fin-budget-row-target" id="fin-env-wants-target">Target: Rp 1.050.000</span>
+          </div>
+          <div class="fin-budget-row-track"><div class="fin-budget-row-fill" id="fin-env-wants-fill" style="width:0%;background:#F59E0B"></div></div>
+        </div>
+
+        <div class="fin-budget-row savings">
+          <div class="fin-budget-row-top">
+            <span class="fin-budget-row-label">
+              <iconify-icon icon="lucide:wallet" width="16" height="16" aria-hidden="true"></iconify-icon>
+              <span>Savings (20%)</span>
+            </span>
+            <span class="fin-budget-row-status" id="fin-env-savings-status">0%</span>
+          </div>
+          <div class="fin-budget-row-amt">
+            <span class="fin-budget-row-spent" id="fin-env-savings-spent">Rp 0</span>
+            <span class="fin-budget-row-target" id="fin-env-savings-target">Target: Rp 700.000</span>
+          </div>
+          <div class="fin-budget-row-track"><div class="fin-budget-row-fill" id="fin-env-savings-fill" style="width:0%;background:#10B981"></div></div>
+        </div>
       </div>
     </section>
 
@@ -8062,6 +8168,58 @@
       <span id="fin-score-bills-val" style="display:none"></span>
       <span id="fin-score-envelope" style="display:none"></span>
       <span id="fin-score-envelope-val" style="display:none"></span>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+    SECTION 7 — KALENDER & JADWAL TAGIHAN (LEVEL 1 PRIMARY CARD)
+    ═══════════════════════════════════════════════════ -->
+    <section class="fin-bills" id="fin-bills-section">
+      <div class="fin-bills-head">
+        <div>
+          <span class="fin-bills-title">Tagihan &amp; Kalender</span>
+          <span class="fin-calendar-period" id="fin-heatmap-period" style="font-size:11px;color:var(--text-tertiary);margin-top:2px;display:block"></span>
+        </div>
+        <button type="button" class="fin-bills-link" onclick="openAddBillModal()">+ Tagihan</button>
+      </div>
+
+      <div class="fin-bills-summary">
+        <div class="fin-bills-stat">
+          <span class="fin-bills-stat-label">Total Tagihan</span>
+          <span class="fin-bills-stat-val" id="fin-bills-total">Rp 0</span>
+        </div>
+        <div class="fin-bills-stat">
+          <span class="fin-bills-stat-label" style="color:#10B981">Sudah Dibayar</span>
+          <span class="fin-bills-stat-val" style="color:#10B981" id="fin-bills-paid">Rp 0</span>
+        </div>
+        <div class="fin-bills-stat">
+          <span class="fin-bills-stat-label" style="color:#F59E0B">Belum Lunas</span>
+          <span class="fin-bills-stat-val" style="color:#F59E0B" id="fin-bills-unpaid">Rp 0</span>
+        </div>
+      </div>
+
+      <!-- Urgent bill alert strip -->
+      <div class="fin-bills-due" id="fin-due-strip"></div>
+
+      <!-- Clean Agenda Tagihan List (Upcoming / Priority) -->
+      <div class="fin-bills-list" id="finance-bills-container"></div>
+
+      <!-- Collapsible Calendar with Progressive Disclosure -->
+      <details class="fin-calendar-details" id="fin-calendar-accordion">
+        <summary class="fin-calendar-summary">
+          <svg class="ic ic-14" aria-hidden="true"><use href="#i-calendar"/></svg>
+          <span>Lihat Kalender Tagihan &amp; Gajian ▾</span>
+        </summary>
+        <div class="fin-calendar-body">
+          <div class="fin-calendar-box" id="fin-heatmap-section">
+            <div class="fin-heatmap" id="fin-heatmap"></div>
+            <div class="fin-heatmap-legend">
+              <div class="fin-legend-pill"><span class="fin-heat-bill-dot unpaid"></span> Tagihan Belum Lunas</div>
+              <div class="fin-legend-pill"><span class="fin-heat-bill-dot paid"></span> Tagihan Lunas</div>
+              <div class="fin-legend-pill"><iconify-icon icon="lucide:banknote" width="13" height="13" aria-hidden="true" style="vertical-align:middle;display:inline-flex;"></iconify-icon> Gajian BNI</div>
+            </div>
+          </div>
+        </div>
+      </details>
     </section>
 
     <!-- ═══════════════════════════════════════════════════
@@ -8163,113 +8321,15 @@
     </section>
 
     <!-- ═══════════════════════════════════════════════════
-    SECTION 6 — BUDGET 50/30/20 (LEVEL 1 PRIMARY CARD)
+    SECTION 9 — SPENDING ANALYTICS (ANALYSIS)
     ═══════════════════════════════════════════════════ -->
-    <section class="fin-budget" id="fin-envelopes-section">
-      <div class="fin-budget-head">
-        <div>
-          <span class="fin-budget-title">Alokasi Budget 50/30/20</span>
-        </div>
-        <span class="fin-budget-sub">Siklus Magang</span>
+    <section class="fin-analytics" id="fin-breakdown-section">
+      <div class="fin-analytics-head">
+        <span class="fin-analytics-title">Analisis Pengeluaran</span>
+        <span class="fin-analytics-total" id="fin-cat-total-label">Total: Rp 0</span>
       </div>
-      <div class="fin-budget-list">
-        <div class="fin-budget-row needs">
-          <div class="fin-budget-row-top">
-            <span class="fin-budget-row-label">
-              <iconify-icon icon="lucide:home" width="16" height="16" aria-hidden="true"></iconify-icon>
-              <span>Needs (50%)</span>
-            </span>
-            <span class="fin-budget-row-status" id="fin-env-needs-status">0%</span>
-          </div>
-          <div class="fin-budget-row-amt">
-            <span class="fin-budget-row-spent" id="fin-env-needs-spent">Rp 0</span>
-            <span class="fin-budget-row-target" id="fin-env-needs-target">Target: Rp 1.750.000</span>
-          </div>
-          <div class="fin-budget-row-track"><div class="fin-budget-row-fill" id="fin-env-needs-fill" style="width:0%;background:#007C89"></div></div>
-        </div>
-
-        <div class="fin-budget-row wants">
-          <div class="fin-budget-row-top">
-            <span class="fin-budget-row-label">
-              <iconify-icon icon="lucide:coffee" width="16" height="16" aria-hidden="true"></iconify-icon>
-              <span>Wants (30%)</span>
-            </span>
-            <span class="fin-budget-row-status" id="fin-env-wants-status">0%</span>
-          </div>
-          <div class="fin-budget-row-amt">
-            <span class="fin-budget-row-spent" id="fin-env-wants-spent">Rp 0</span>
-            <span class="fin-budget-row-target" id="fin-env-wants-target">Target: Rp 1.050.000</span>
-          </div>
-          <div class="fin-budget-row-track"><div class="fin-budget-row-fill" id="fin-env-wants-fill" style="width:0%;background:#F59E0B"></div></div>
-        </div>
-
-        <div class="fin-budget-row savings">
-          <div class="fin-budget-row-top">
-            <span class="fin-budget-row-label">
-              <iconify-icon icon="lucide:wallet" width="16" height="16" aria-hidden="true"></iconify-icon>
-              <span>Savings (20%)</span>
-            </span>
-            <span class="fin-budget-row-status" id="fin-env-savings-status">0%</span>
-          </div>
-          <div class="fin-budget-row-amt">
-            <span class="fin-budget-row-spent" id="fin-env-savings-spent">Rp 0</span>
-            <span class="fin-budget-row-target" id="fin-env-savings-target">Target: Rp 700.000</span>
-          </div>
-          <div class="fin-budget-row-track"><div class="fin-budget-row-fill" id="fin-env-savings-fill" style="width:0%;background:#10B981"></div></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ═══════════════════════════════════════════════════
-    SECTION 7 — KALENDER & JADWAL TAGIHAN (LEVEL 1 PRIMARY CARD)
-    ═══════════════════════════════════════════════════ -->
-    <section class="fin-bills" id="fin-bills-section">
-      <div class="fin-bills-head">
-        <div>
-          <span class="fin-bills-title">Tagihan &amp; Kalender</span>
-          <span class="fin-calendar-period" id="fin-heatmap-period" style="font-size:11px;color:var(--text-tertiary);margin-top:2px;display:block"></span>
-        </div>
-        <button type="button" class="fin-bills-link" onclick="openAddBillModal()">+ Tagihan</button>
-      </div>
-
-      <div class="fin-bills-summary">
-        <div class="fin-bills-stat">
-          <span class="fin-bills-stat-label">Total Tagihan</span>
-          <span class="fin-bills-stat-val" id="fin-bills-total">Rp 0</span>
-        </div>
-        <div class="fin-bills-stat">
-          <span class="fin-bills-stat-label" style="color:#10B981">Sudah Dibayar</span>
-          <span class="fin-bills-stat-val" style="color:#10B981" id="fin-bills-paid">Rp 0</span>
-        </div>
-        <div class="fin-bills-stat">
-          <span class="fin-bills-stat-label" style="color:#F59E0B">Belum Lunas</span>
-          <span class="fin-bills-stat-val" style="color:#F59E0B" id="fin-bills-unpaid">Rp 0</span>
-        </div>
-      </div>
-
-      <!-- Urgent bill alert strip -->
-      <div class="fin-bills-due" id="fin-due-strip"></div>
-
-      <!-- Clean Agenda Tagihan List (Upcoming / Priority) -->
-      <div class="fin-bills-list" id="finance-bills-container"></div>
-
-      <!-- Collapsible Calendar with Progressive Disclosure -->
-      <details class="fin-calendar-details" id="fin-calendar-accordion">
-        <summary class="fin-calendar-summary">
-          <svg class="ic ic-14" aria-hidden="true"><use href="#i-calendar"/></svg>
-          <span>Lihat Kalender Tagihan &amp; Gajian ▾</span>
-        </summary>
-        <div class="fin-calendar-body">
-          <div class="fin-calendar-box" id="fin-heatmap-section">
-            <div class="fin-heatmap" id="fin-heatmap"></div>
-            <div class="fin-heatmap-legend">
-              <div class="fin-legend-pill"><span class="fin-heat-bill-dot unpaid"></span> Tagihan Belum Lunas</div>
-              <div class="fin-legend-pill"><span class="fin-heat-bill-dot paid"></span> Tagihan Lunas</div>
-              <div class="fin-legend-pill"><iconify-icon icon="lucide:banknote" width="13" height="13" aria-hidden="true" style="vertical-align:middle;display:inline-flex;"></iconify-icon> Gajian BNI</div>
-            </div>
-          </div>
-        </div>
-      </details>
+      <div class="fin-analytics-track" id="fin-stacked-track"></div>
+      <div class="fin-analytics-legend" id="fin-cat-legend"></div>
     </section>
 
     <!-- ═══════════════════════════════════════════════════
@@ -8282,20 +8342,6 @@
       </div>
       <div class="finance-goals-grid" id="finance-goals-container"></div>
     </section>
-
-    <!-- ═══════════════════════════════════════════════════
-    SECTION 9 — SPENDING ANALYTICS (ANALYSIS)
-    ═══════════════════════════════════════════════════ -->
-    <section class="fin-analytics" id="fin-breakdown-section">
-      <div class="fin-analytics-head">
-        <span class="fin-analytics-title">Analisis Pengeluaran</span>
-        <span class="fin-analytics-total" id="fin-cat-total-label">Total: Rp 0</span>
-      </div>
-      <div class="fin-analytics-track" id="fin-stacked-track"></div>
-      <div class="fin-analytics-legend" id="fin-cat-legend"></div>
-    </section>
-
-
 
     <!-- ═══════════════════════════════════════════════════
     SECTION 10 — EKSPLORASI & UTILITIES (LEVEL 3)
@@ -14376,9 +14422,10 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       });
     }
 
-    // 4. Pengeluaran Tunggal Sangat Besar
-    if (totalSpent > 0 && income > 0) {
-      const biggest = [...expenses].sort((a, b) => (Number(b.amount) || 0) - (Number(a.amount) || 0))[0];
+    // 4. Pengeluaran Tunggal Sangat Besar (HANYA pengeluaran, bukan pemasukan)
+    const onlyExpenses = (expenses || []).filter(e => e.type !== 'income');
+    if (totalSpent > 0 && income > 0 && onlyExpenses.length > 0) {
+      const biggest = [...onlyExpenses].sort((a, b) => (Number(b.amount) || 0) - (Number(a.amount) || 0))[0];
       if (biggest && (Number(biggest.amount) || 0) >= income * 0.2) {
         insights.push({
           severity: 'warning',
@@ -14390,9 +14437,9 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     }
 
     // 5. Konsentrasi Kategori Belanja Tinggi (Insight)
-    if (totalSpent > 0) {
+    if (totalSpent > 0 && onlyExpenses.length > 0) {
       const catTotals = {};
-      expenses.forEach(e => { catTotals[e.cat] = (catTotals[e.cat] || 0) + (Number(e.amount) || 0); });
+      onlyExpenses.forEach(e => { catTotals[e.cat] = (catTotals[e.cat] || 0) + (Number(e.amount) || 0); });
       const top = Object.entries(catTotals).sort((a, b) => b[1] - a[1])[0];
       if (top && top[1] > 0) {
         const share = Math.round((top[1] / totalSpent) * 100);

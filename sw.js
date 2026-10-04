@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mghb-pwa-v22';
+const CACHE_NAME = 'mghb-pwa-v23';
 const STATIC_ASSETS = [
   './',
   './index.html',
