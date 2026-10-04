@@ -6169,85 +6169,136 @@
     /* ── SECTION 3: FINANCIAL HEALTH ── */
     .fin-health {
       background: var(--surface);
-      border: 1px solid #E1E8E8;
+      border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 16px 20px;
+      padding: 16px;
     }
-    .fin-health-head {
+    .fin-health-top {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 14px;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 12px;
     }
     .fin-health-title {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--text-primary);
-    }
-    .fin-score-ring-sm {
-      position: relative;
-      width: 72px;
-      height: 72px;
-      flex-shrink: 0;
-    }
-    .fin-score-center-sm {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-    .fin-score-num-sm {
-      font-size: 18px;
+      font-size: 15px;
       font-weight: 700;
       color: var(--text-primary);
+      margin-bottom: 6px;
+      display: block;
+    }
+    .fin-health-score-wrap {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+    }
+    .fin-health-score-num {
+      font-size: 32px;
+      font-weight: 800;
       line-height: 1;
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
     }
-    .fin-score-grade-sm {
-      font-size: 10px;
+    .fin-health-score-total {
+      font-size: 13px;
       font-weight: 600;
-      color: var(--text-secondary);
+      color: var(--text-tertiary);
     }
-    .fin-health-bars {
+    .fin-health-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .fin-health-badge.danger { background: #FEF2F2; color: #DC2626; border: 1px solid #FECACA; }
+    .fin-health-badge.warning { background: #FFFBEB; color: #D97706; border: 1px solid #FDE68A; }
+    .fin-health-badge.info { background: #F0F9FF; color: #0284C7; border: 1px solid #BAE6FD; }
+    .fin-health-badge.success { background: #ECFDF5; color: #059669; border: 1px solid #A7F3D0; }
+    [data-theme="dark"] .fin-health-badge.danger { background: rgba(220,38,38,0.15); border-color: rgba(220,38,38,0.3); }
+    [data-theme="dark"] .fin-health-badge.warning { background: rgba(217,119,6,0.15); border-color: rgba(217,119,6,0.3); }
+    [data-theme="dark"] .fin-health-badge.info { background: rgba(2,132,199,0.15); border-color: rgba(2,132,199,0.3); }
+    [data-theme="dark"] .fin-health-badge.success { background: rgba(5,150,105,0.15); border-color: rgba(5,150,105,0.3); }
+
+    .fin-health-submetrics {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 7px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border-subtle);
+      margin-bottom: 12px;
     }
-    .fin-health-bar {
-      display: grid;
-      grid-template-columns: 100px 1fr 24px;
+    .fin-health-metric-row {
+      display: flex;
+      justify-content: space-between;
       align-items: center;
-      gap: 8px;
+      font-size: 13px;
     }
-    .fin-health-bar-label {
-      font-size: 11px;
+    .fin-health-metric-label {
       color: var(--text-secondary);
-      white-space: nowrap;
+      font-weight: 500;
     }
-    .fin-health-bar-track {
-      height: 4px;
-      background: #E1E8E8;
-      border-radius: 2px;
-      overflow: hidden;
+    .fin-health-dots {
+      display: flex;
+      align-items: center;
+      gap: 4px;
     }
-    .fin-health-bar-fill {
-      height: 100%;
+    .fin-health-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--border, #E2E8F0);
+      display: inline-block;
+      transition: background 0.2s;
+    }
+    .fin-health-dot.active {
       background: #005E6A;
-      border-radius: 2px;
-      transition: width 0.4s ease;
     }
-    .fin-health-bar-val {
-      font-size: 11px;
-      font-weight: 600;
+    .fin-health-dot.active.good { background: #10B981; }
+    .fin-health-dot.active.warn { background: #F59E0B; }
+    .fin-health-dot.active.crit { background: #EF4444; }
+
+    .fin-health-action {
+      background: var(--surface-hover);
+      border-radius: 8px;
+      padding: 9px 12px;
+      font-size: 12px;
       color: var(--text-secondary);
-      text-align: right;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      line-height: 1.4;
+    }
+    .fin-health-action-icon {
+      flex-shrink: 0;
+      color: #005E6A;
+      margin-top: 1px;
+    }
+    .fin-health-action-text {
+      flex: 1;
     }
 
-    /* ── SECTION 4: SMART ALERTS ── */
+    /* ── SECTION 4: SMART ALERTS (PERLU PERHATIAN) ── */
     .fin-alerts {
-      /* inline, no card wrapper */
+      /* level 2 section */
+    }
+    .fin-alerts-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .fin-alerts-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
     .fin-alerts-list {
       display: flex;
@@ -6259,48 +6310,47 @@
       border: 1px solid var(--border);
       border-left: 4px solid var(--border);
       border-radius: 8px;
-      padding: 10px 14px;
+      padding: 10px 12px;
       display: flex;
       flex-direction: column;
       gap: 3px;
     }
     .fin-alert.danger {
-      border-left-color: #D94A45;
+      border-left-color: #EF4444;
       background: #FFF8F8;
     }
     .fin-alert.warning {
-      border-left-color: #D9891C;
-      background: #FFFBF2;
-    }
-    .fin-alert.success {
-      border-left-color: #0E8A5E;
-      background: #F4FBF7;
+      border-left-color: #F59E0B;
+      background: #FFFDF5;
     }
     .fin-alert.info {
-      border-left-color: #005E6A;
-      background: #F4F9FA;
+      border-left-color: #0284C7;
+      background: #F0F9FF;
     }
-    [data-theme="dark"] .fin-alert.danger { background: rgba(217, 74, 69, 0.1); }
-    [data-theme="dark"] .fin-alert.warning { background: rgba(217, 137, 28, 0.1); }
-    [data-theme="dark"] .fin-alert.success { background: rgba(14, 138, 94, 0.1); }
-    [data-theme="dark"] .fin-alert.info { background: rgba(0, 94, 106, 0.1); }
+    .fin-alert.success {
+      border-left-color: #10B981;
+      background: #F0FDF4;
+    }
+    [data-theme="dark"] .fin-alert.danger { background: rgba(239, 68, 68, 0.08); border-left-color: #EF4444; }
+    [data-theme="dark"] .fin-alert.warning { background: rgba(245, 158, 11, 0.08); border-left-color: #F59E0B; }
+    [data-theme="dark"] .fin-alert.info { background: rgba(2, 132, 199, 0.08); border-left-color: #0284C7; }
+    [data-theme="dark"] .fin-alert.success { background: rgba(16, 185, 129, 0.08); border-left-color: #10B981; }
+
     .fin-alert-head {
       display: flex;
       align-items: center;
       gap: 6px;
     }
     .fin-alert-badge {
-      font-size: 10px;
+      font-size: 11px;
       font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      padding: 1px 6px;
-      border-radius: 4px;
+      letter-spacing: 0.02em;
     }
-    .fin-alert.danger .fin-alert-badge { color: #D94A45; background: rgba(217, 74, 69, 0.14); }
-    .fin-alert.warning .fin-alert-badge { color: #D9891C; background: rgba(217, 137, 28, 0.14); }
-    .fin-alert.success .fin-alert-badge { color: #0E8A5E; background: rgba(14, 138, 94, 0.14); }
-    .fin-alert.info .fin-alert-badge { color: #005E6A; background: rgba(0, 94, 106, 0.14); }
+    .fin-alert.danger .fin-alert-badge { color: #DC2626; }
+    .fin-alert.warning .fin-alert-badge { color: #D97706; }
+    .fin-alert.info .fin-alert-badge { color: #0284C7; }
+    .fin-alert.success .fin-alert-badge { color: #059669; }
+
     .fin-alert-body {
       font-size: 12px;
       line-height: 1.45;
@@ -6308,95 +6358,173 @@
       margin: 0;
     }
 
-    /* ── SECTION 5: RECENT TRANSACTIONS ── */
+    /* ── SECTION 5: RECENT TRANSACTIONS (LEVEL 2) ── */
     .fin-recent-head {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
     .fin-recent-title {
-      font-size: 14px;
-      font-weight: 600;
+      font-size: 15px;
+      font-weight: 700;
       color: var(--text-primary);
     }
     .fin-recent-link {
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 600;
       color: #005E6A;
       background: none;
       border: none;
       cursor: pointer;
-      padding: 4px 0;
+      padding: 4px 2px;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      transition: opacity 0.15s;
     }
+    .fin-recent-link:hover { opacity: 0.8; }
     .fin-recent-list {
       display: flex;
       flex-direction: column;
-      gap: 2px;
+      gap: 6px;
     }
-
-    /* ── SECTION 6: BUDGET 50/30/20 ── */
-    .fin-budget-head {
-      margin-bottom: 10px;
+    .fin-tx-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      transition: background 0.15s ease;
     }
-    .fin-budget-title {
-      font-size: 14px;
+    .fin-tx-icon-wrap {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--surface-hover);
+      flex-shrink: 0;
+    }
+    .fin-tx-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .fin-tx-desc {
+      font-size: 13px;
       font-weight: 600;
       color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
-    .fin-budget-cards {
+    .fin-tx-meta {
+      font-size: 11px;
+      color: var(--text-tertiary);
       display: flex;
-      flex-direction: column;
-      gap: 8px;
+      align-items: center;
+      gap: 6px;
+      margin-top: 1px;
     }
-    .fin-budget-card {
+    .fin-tx-amount {
+      font-size: 13px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      flex-shrink: 0;
+      text-align: right;
+    }
+    .fin-tx-amount.expense { color: #DC2626; }
+    .fin-tx-amount.income { color: #059669; }
+
+    /* ── SECTION 6: BUDGET 50/30/20 (LEVEL 1 PRIMARY CARD) ── */
+    .fin-budget {
       background: var(--surface);
-      border: 1px solid #E1E8E8;
-      border-radius: 10px;
-      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
     }
-    .fin-budget-card-head {
+    .fin-budget-head {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 4px;
+      margin-bottom: 12px;
     }
-    .fin-budget-card-label {
-      font-size: 12px;
+    .fin-budget-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .fin-budget-sub {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-tertiary);
+    }
+    .fin-budget-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .fin-budget-row {
+      padding: 10px 12px;
+      background: var(--surface-hover);
+      border-radius: 8px;
+      border-left: 3px solid transparent;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .fin-budget-row.needs { border-left-color: #007C89; }
+    .fin-budget-row.wants { border-left-color: #F59E0B; }
+    .fin-budget-row.savings { border-left-color: #10B981; }
+
+    .fin-budget-row-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .fin-budget-row-label {
+      font-size: 13px;
       font-weight: 600;
       color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
-    .fin-budget-card-status {
+    .fin-budget-row-status {
       font-size: 11px;
       font-weight: 700;
-      color: var(--text-tertiary);
+      color: var(--text-secondary);
+      font-variant-numeric: tabular-nums;
     }
-    .fin-budget-card-amt {
-      font-size: 16px;
+    .fin-budget-row-amt {
+      font-size: 12px;
+      color: var(--text-secondary);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .fin-budget-row-spent {
       font-weight: 700;
       color: var(--text-primary);
-      display: block;
     }
-    .fin-budget-card-target {
-      font-size: 11px;
+    .fin-budget-row-target {
       color: var(--text-tertiary);
-      display: block;
-      margin-bottom: 6px;
     }
-    .fin-budget-card-track {
-      height: 4px;
-      background: #E1E8E8;
-      border-radius: 2px;
+    .fin-budget-row-track {
+      height: 5px;
+      background: var(--border, #E2E8F0);
+      border-radius: 3px;
       overflow: hidden;
+      margin-top: 1px;
     }
-    .fin-budget-card-fill {
+    .fin-budget-row-fill {
       height: 100%;
-      border-radius: 2px;
+      border-radius: 3px;
       transition: width 0.4s ease;
     }
-    .fin-budget-needs { border-left: 3px solid #007C89; }
-    .fin-budget-wants { border-left: 3px solid #F15A24; }
-    .fin-budget-savings { border-left: 3px solid #1D9A6C; }
 
     /* ── SECTION 7: KALENDER & JADWAL TAGIHAN ── */
     .fin-bills {
@@ -6463,12 +6591,41 @@
     .fin-bills-due {
       margin-bottom: 12px;
     }
-    .fin-calendar-box {
-      margin: 12px 0 16px;
-      padding: 12px;
-      background: var(--surface-hover);
-      border: 1px solid var(--border-subtle);
+    .fin-calendar-details {
+      margin: 12px 0 14px;
+      border: 1px dashed var(--border);
       border-radius: 10px;
+      overflow: hidden;
+      background: var(--surface-hover);
+    }
+    .fin-calendar-details[open] {
+      background: var(--surface);
+      border-style: solid;
+    }
+    .fin-calendar-summary {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #005E6A;
+      cursor: pointer;
+      list-style: none;
+      transition: background 0.15s;
+      user-select: none;
+    }
+    .fin-calendar-summary::-webkit-details-marker { display: none; }
+    .fin-calendar-summary:hover {
+      background: rgba(0, 94, 106, 0.06);
+    }
+    .fin-calendar-box {
+      margin: 0;
+      padding: 12px;
+      background: transparent;
+      border: none;
+      border-radius: 0;
     }
     .fin-heatmap-legend {
       display: flex;
@@ -6611,38 +6768,68 @@
       100% { box-shadow: none; }
     }
 
-    /* ── SECTION 8: SAVINGS & GOALS ── */
+    /* ── SECTION 8: SAVINGS & GOALS (LEVEL 2) ── */
     .fin-goals-head {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
     .fin-goals-title {
-      font-size: 14px;
-      font-weight: 600;
+      font-size: 15px;
+      font-weight: 700;
       color: var(--text-primary);
     }
     .fin-goals-add {
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 600;
       color: #005E6A;
       background: none;
       border: none;
       cursor: pointer;
-      padding: 4px 0;
+      padding: 4px 2px;
     }
+    .finance-goal-hero {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 4px solid #10B981;
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 8px;
+    }
+    .finance-goals-more-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .fin-goals-more-toggle {
+      width: 100%;
+      padding: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #005E6A;
+      background: var(--surface-hover);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      transition: background 0.15s;
+    }
+    .fin-goals-more-toggle:hover { background: var(--border-subtle); }
 
-    /* ── SECTION 9: SPENDING ANALYTICS ── */
+    /* ── SECTION 9: SPENDING ANALYTICS (LEVEL 2) ── */
     .fin-analytics-head {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
     .fin-analytics-title {
-      font-size: 14px;
-      font-weight: 600;
+      font-size: 15px;
+      font-weight: 700;
       color: var(--text-primary);
     }
     .fin-analytics-total {
@@ -6664,39 +6851,55 @@
       gap: 6px 12px;
     }
 
-
-
-    /* ── SECTION 11: AI ASSISTANT ── */
-    .fin-ai {
+    /* ── LEVEL 3: UTILITIES & TOOLS (AI, SIMULATOR, PANDUAN) ── */
+    .fin-utilities {
       background: var(--surface);
-      border: 1px solid #E1E8E8;
-      border-radius: 10px;
-      padding: 14px 16px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
     }
-    .fin-ai[open] { padding-bottom: 14px; }
-    .fin-ai-summary {
+    .fin-utilities-tabs {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 14px;
+      gap: 4px;
+      padding: 3px;
+      background: var(--surface-hover);
+      border-radius: 8px;
+      border: 1px solid var(--border-subtle);
+      margin-bottom: 12px;
+    }
+    .fin-util-tab {
+      flex: 1;
+      padding: 7px 4px;
+      border: none;
+      border-radius: 6px;
+      font-size: 12px;
       font-weight: 600;
-      color: var(--text-primary);
+      background: transparent;
+      color: var(--text-secondary);
       cursor: pointer;
-      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      transition: all 0.15s ease;
+      white-space: nowrap;
     }
-    .fin-ai-summary::-webkit-details-marker { display: none; }
-    .fin-ai-badge {
-      font-size: 10px;
-      font-weight: 700;
-      padding: 2px 8px;
-      border-radius: 4px;
-      background: #F0F9FA;
+    .fin-util-tab.active {
+      background: var(--surface);
       color: #005E6A;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
     }
-    .fin-ai-body {
-      margin-top: 14px;
-      cursor: default;
+    [data-theme="dark"] .fin-util-tab.active {
+      background: #005E6A;
+      color: #FFFFFF;
     }
+    .fin-util-panel {
+      display: none;
+    }
+    .fin-util-panel.active {
+      display: block;
+    }
+
     .fin-ai-actions {
       display: flex;
       gap: 8px;
@@ -6706,7 +6909,7 @@
       flex: 1;
       padding: 8px 0;
       background: var(--surface-hover);
-      border: 1px solid #E1E8E8;
+      border: 1px solid var(--border);
       border-radius: 8px;
       font-size: 12px;
       font-weight: 600;
@@ -6719,61 +6922,13 @@
     }
     .fin-ai-output-box {
       background: var(--surface-hover);
-      border: 1px solid #E1E8E8;
+      border: 1px solid var(--border-subtle);
       border-radius: 8px;
       padding: 12px;
       font-size: 12px;
       color: var(--text-secondary);
       line-height: 1.5;
       min-height: 48px;
-    }
-
-    /* ── SECTION 12: WHAT-IF SIMULATOR ── */
-    .fin-simulator {
-      background: var(--surface);
-      border: 1px solid #E1E8E8;
-      border-radius: 10px;
-      padding: 14px 16px;
-    }
-    .fin-simulator[open] { padding-bottom: 14px; }
-    .fin-simulator-summary {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--text-primary);
-      cursor: pointer;
-      list-style: none;
-    }
-    .fin-simulator-summary::-webkit-details-marker { display: none; }
-    .fin-simulator-body {
-      margin-top: 14px;
-      cursor: default;
-    }
-
-    /* ── SECTION 13: FINANCIAL GUIDE ── */
-    .fin-guide {
-      background: var(--surface);
-      border: 1px solid #E1E8E8;
-      border-radius: 10px;
-      padding: 14px 16px;
-    }
-    .fin-guide[open] { padding-bottom: 14px; }
-    .fin-guide-summary {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--text-primary);
-      cursor: pointer;
-      list-style: none;
-    }
-    .fin-guide-summary::-webkit-details-marker { display: none; }
-    .fin-guide-body {
-      margin-top: 14px;
-      cursor: default;
     }
 
     /* ── BOTTOM SHEET (QUICK EXPENSE) ── */
@@ -7451,53 +7606,79 @@
     </section>
 
     <!-- ═══════════════════════════════════════════════════
-    SECTION 3 — FINANCIAL HEALTH (NOW)
+    SECTION 4 — PERLU PERHATIAN (WARNING & ALERTS)
     ═══════════════════════════════════════════════════ -->
-    <section class="fin-health" id="fin-health-section">
-      <div class="fin-health-head">
-        <span class="fin-health-title">Skor Sehat Finansial</span>
-        <div class="fin-score-ring-sm">
-          <svg viewBox="0 0 96 96" width="72" height="72">
-            <circle cx="48" cy="48" r="42" fill="none" stroke="#E1E8E8" stroke-width="6"/>
-            <circle cx="48" cy="48" r="42" fill="none" stroke="#005E6A" stroke-width="6" stroke-linecap="round" id="fin-score-ring-val" stroke-dasharray="263.9" stroke-dashoffset="263.9" transform="rotate(-90 48 48)"/>
-          </svg>
-          <div class="fin-score-center-sm">
-            <span class="fin-score-num-sm" id="fin-score-num">—</span>
-            <span class="fin-score-grade-sm" id="fin-score-grade">—</span>
-          </div>
-        </div>
+    <section class="fin-alerts" id="fin-insight-section">
+      <div class="fin-alerts-head">
+        <span class="fin-alerts-title">
+          <svg class="ic ic-14" style="color:#D97706" aria-hidden="true"><use href="#i-alert"/></svg>
+          <span>Perlu Perhatian</span>
+        </span>
       </div>
-      <div class="fin-health-bars">
-        <div class="fin-health-bar">
-          <span class="fin-health-bar-label">Sisihan / Tabungan</span>
-          <div class="fin-health-bar-track"><div class="fin-health-bar-fill" id="fin-score-savings" style="width:0%"></div></div>
-          <span class="fin-health-bar-val" id="fin-score-savings-val">0</span>
-        </div>
-        <div class="fin-health-bar">
-          <span class="fin-health-bar-label">Jatah Harian</span>
-          <div class="fin-health-bar-track"><div class="fin-health-bar-fill" id="fin-score-daily" style="width:0%"></div></div>
-          <span class="fin-health-bar-val" id="fin-score-daily-val">0</span>
-        </div>
-        <div class="fin-health-bar">
-          <span class="fin-health-bar-label">Tagihan Tepat Waktu</span>
-          <div class="fin-health-bar-track"><div class="fin-health-bar-fill" id="fin-score-bills" style="width:0%"></div></div>
-          <span class="fin-health-bar-val" id="fin-score-bills-val">0</span>
-        </div>
-        <div class="fin-health-bar">
-          <span class="fin-health-bar-label">Disiplin Amplop</span>
-          <div class="fin-health-bar-track"><div class="fin-health-bar-fill" id="fin-score-envelope" style="width:0%"></div></div>
-          <span class="fin-health-bar-val" id="fin-score-envelope-val">0</span>
-        </div>
+      <div class="fin-alerts-list" id="fin-insight-list">
+        <div style="font-size:0.75rem;color:var(--text-tertiary);text-align:center;padding:8px 0">Insight muncul setelah ada data transaksi.</div>
       </div>
     </section>
 
     <!-- ═══════════════════════════════════════════════════
-    SECTION 4 — SMART ALERT (WARNING)
+    SECTION 3 — KESEHATAN FINANSIAL (HEALTH)
     ═══════════════════════════════════════════════════ -->
-    <section class="fin-alerts" id="fin-insight-section">
-      <div class="fin-alerts-list" id="fin-insight-list">
-        <div style="font-size:0.74rem;color:var(--text-tertiary);text-align:center;padding:8px 0">Insight muncul setelah ada data transaksi.</div>
+    <section class="fin-health" id="fin-health-section">
+      <div class="fin-health-top">
+        <div>
+          <span class="fin-health-title">Kesehatan Finansial</span>
+          <div class="fin-health-score-wrap">
+            <span class="fin-health-score-num" id="fin-score-num">—</span>
+            <span class="fin-health-score-total">/ 100</span>
+          </div>
+        </div>
+        <span class="fin-health-badge warning" id="fin-score-grade">Perlu Perhatian</span>
       </div>
+
+      <!-- Metric dots -->
+      <div class="fin-health-submetrics">
+        <div class="fin-health-metric-row">
+          <span class="fin-health-metric-label">Arus Kas &amp; Jatah</span>
+          <div class="fin-health-dots" id="fin-dots-daily">
+            <span class="fin-health-dot"></span><span class="fin-health-dot"></span><span class="fin-health-dot"></span><span class="fin-health-dot"></span><span class="fin-health-dot"></span>
+          </div>
+        </div>
+        <div class="fin-health-metric-row">
+          <span class="fin-health-metric-label">Budget 50/30/20</span>
+          <div class="fin-health-dots" id="fin-dots-envelope">
+            <span class="fin-health-dot"></span><span class="fin-health-dot"></span><span class="fin-health-dot"></span><span class="fin-health-dot"></span><span class="fin-health-dot"></span>
+          </div>
+        </div>
+        <div class="fin-health-metric-row">
+          <span class="fin-health-metric-label">Disiplin Tagihan</span>
+          <div class="fin-health-dots" id="fin-dots-bills">
+            <span class="fin-health-dot"></span><span class="fin-health-dot"></span><span class="fin-health-dot"></span><span class="fin-health-dot"></span><span class="fin-health-dot"></span>
+          </div>
+        </div>
+        <div class="fin-health-metric-row">
+          <span class="fin-health-metric-label">Tabungan &amp; Wondr</span>
+          <div class="fin-health-dots" id="fin-dots-savings">
+            <span class="fin-health-dot"></span><span class="fin-health-dot"></span><span class="fin-health-dot"></span><span class="fin-health-dot"></span><span class="fin-health-dot"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actionable Advice Strip -->
+      <div class="fin-health-action">
+        <svg class="ic ic-14 fin-health-action-icon" aria-hidden="true"><use href="#i-bulb"/></svg>
+        <span class="fin-health-action-text" id="fin-health-action-text">Pertahankan pola konsumsi agar runway keuangan aman hingga tanggal gajian 22.</span>
+      </div>
+
+      <!-- Legacy hidden references so any old JS doesn't throw null error -->
+      <span id="fin-score-ring-val" style="display:none"></span>
+      <span id="fin-score-savings" style="display:none"></span>
+      <span id="fin-score-savings-val" style="display:none"></span>
+      <span id="fin-score-daily" style="display:none"></span>
+      <span id="fin-score-daily-val" style="display:none"></span>
+      <span id="fin-score-bills" style="display:none"></span>
+      <span id="fin-score-bills-val" style="display:none"></span>
+      <span id="fin-score-envelope" style="display:none"></span>
+      <span id="fin-score-envelope-val" style="display:none"></span>
     </section>
 
     <!-- ═══════════════════════════════════════════════════
@@ -7599,50 +7780,70 @@
     </section>
 
     <!-- ═══════════════════════════════════════════════════
-    SECTION 6 — BUDGET 50/30/20 (PLAN)
+    SECTION 6 — BUDGET 50/30/20 (LEVEL 1 PRIMARY CARD)
     ═══════════════════════════════════════════════════ -->
     <section class="fin-budget" id="fin-envelopes-section">
       <div class="fin-budget-head">
-        <span class="fin-budget-title">Alokasi Budget 50/30/20</span>
+        <div>
+          <span class="fin-budget-title">Alokasi Budget 50/30/20</span>
+        </div>
+        <span class="fin-budget-sub">Siklus Magang</span>
       </div>
-      <div class="fin-budget-cards">
-        <div class="fin-budget-card fin-budget-needs">
-          <div class="fin-budget-card-head">
-            <span class="fin-budget-card-label">Needs (50%)</span>
-            <span class="fin-budget-card-status" id="fin-env-needs-status">0%</span>
+      <div class="fin-budget-list">
+        <div class="fin-budget-row needs">
+          <div class="fin-budget-row-top">
+            <span class="fin-budget-row-label">
+              <iconify-icon icon="fluent-emoji-flat:house" width="16" height="16" aria-hidden="true"></iconify-icon>
+              <span>Needs (50%)</span>
+            </span>
+            <span class="fin-budget-row-status" id="fin-env-needs-status">0%</span>
           </div>
-          <span class="fin-budget-card-amt" id="fin-env-needs-spent">Rp 0</span>
-          <span class="fin-budget-card-target" id="fin-env-needs-target">Target: Rp 1.750.000</span>
-          <div class="fin-budget-card-track"><div class="fin-budget-card-fill" id="fin-env-needs-fill" style="width:0%;background:#007C89"></div></div>
+          <div class="fin-budget-row-amt">
+            <span class="fin-budget-row-spent" id="fin-env-needs-spent">Rp 0</span>
+            <span class="fin-budget-row-target" id="fin-env-needs-target">Target: Rp 1.750.000</span>
+          </div>
+          <div class="fin-budget-row-track"><div class="fin-budget-row-fill" id="fin-env-needs-fill" style="width:0%;background:#007C89"></div></div>
         </div>
-        <div class="fin-budget-card fin-budget-wants">
-          <div class="fin-budget-card-head">
-            <span class="fin-budget-card-label">Wants (30%)</span>
-            <span class="fin-budget-card-status" id="fin-env-wants-status">0%</span>
+
+        <div class="fin-budget-row wants">
+          <div class="fin-budget-row-top">
+            <span class="fin-budget-row-label">
+              <iconify-icon icon="fluent-emoji-flat:hot-beverage" width="16" height="16" aria-hidden="true"></iconify-icon>
+              <span>Wants (30%)</span>
+            </span>
+            <span class="fin-budget-row-status" id="fin-env-wants-status">0%</span>
           </div>
-          <span class="fin-budget-card-amt" id="fin-env-wants-spent">Rp 0</span>
-          <span class="fin-budget-card-target" id="fin-env-wants-target">Target: Rp 1.050.000</span>
-          <div class="fin-budget-card-track"><div class="fin-budget-card-fill" id="fin-env-wants-fill" style="width:0%;background:#F15A24"></div></div>
+          <div class="fin-budget-row-amt">
+            <span class="fin-budget-row-spent" id="fin-env-wants-spent">Rp 0</span>
+            <span class="fin-budget-row-target" id="fin-env-wants-target">Target: Rp 1.050.000</span>
+          </div>
+          <div class="fin-budget-row-track"><div class="fin-budget-row-fill" id="fin-env-wants-fill" style="width:0%;background:#F59E0B"></div></div>
         </div>
-        <div class="fin-budget-card fin-budget-savings">
-          <div class="fin-budget-card-head">
-            <span class="fin-budget-card-label">Savings (20%)</span>
-            <span class="fin-budget-card-status" id="fin-env-savings-status">0%</span>
+
+        <div class="fin-budget-row savings">
+          <div class="fin-budget-row-top">
+            <span class="fin-budget-row-label">
+              <iconify-icon icon="fluent-emoji-flat:money-with-wings" width="16" height="16" aria-hidden="true"></iconify-icon>
+              <span>Savings (20%)</span>
+            </span>
+            <span class="fin-budget-row-status" id="fin-env-savings-status">0%</span>
           </div>
-          <span class="fin-budget-card-amt" id="fin-env-savings-spent">Rp 0</span>
-          <span class="fin-budget-card-target" id="fin-env-savings-target">Target: Rp 700.000</span>
-          <div class="fin-budget-card-track"><div class="fin-budget-card-fill" id="fin-env-savings-fill" style="width:0%;background:#1D9A6C"></div></div>
+          <div class="fin-budget-row-amt">
+            <span class="fin-budget-row-spent" id="fin-env-savings-spent">Rp 0</span>
+            <span class="fin-budget-row-target" id="fin-env-savings-target">Target: Rp 700.000</span>
+          </div>
+          <div class="fin-budget-row-track"><div class="fin-budget-row-fill" id="fin-env-savings-fill" style="width:0%;background:#10B981"></div></div>
         </div>
       </div>
     </section>
 
     <!-- ═══════════════════════════════════════════════════
-    SECTION 7 — KALENDER & JADWAL TAGIHAN (PLAN)
+    SECTION 7 — KALENDER & JADWAL TAGIHAN (LEVEL 1 PRIMARY CARD)
     ═══════════════════════════════════════════════════ -->
     <section class="fin-bills" id="fin-bills-section">
       <div class="fin-bills-head">
         <div>
-          <span class="fin-bills-title">Kalender &amp; Jadwal Tagihan</span>
+          <span class="fin-bills-title">Tagihan &amp; Kalender</span>
           <span class="fin-calendar-period" id="fin-heatmap-period" style="font-size:11px;color:var(--text-tertiary);margin-top:2px;display:block"></span>
         </div>
         <button type="button" class="fin-bills-link" onclick="openAddBillModal()">+ Tagihan</button>
@@ -7654,30 +7855,38 @@
           <span class="fin-bills-stat-val" id="fin-bills-total">Rp 0</span>
         </div>
         <div class="fin-bills-stat">
-          <span class="fin-bills-stat-label" style="color:#1D9A6C">Sudah Dibayar</span>
-          <span class="fin-bills-stat-val" style="color:#1D9A6C" id="fin-bills-paid">Rp 0</span>
+          <span class="fin-bills-stat-label" style="color:#10B981">Sudah Dibayar</span>
+          <span class="fin-bills-stat-val" style="color:#10B981" id="fin-bills-paid">Rp 0</span>
         </div>
         <div class="fin-bills-stat">
-          <span class="fin-bills-stat-label" style="color:#D9891C">Belum Lunas</span>
-          <span class="fin-bills-stat-val" style="color:#D9891C" id="fin-bills-unpaid">Rp 0</span>
+          <span class="fin-bills-stat-label" style="color:#F59E0B">Belum Lunas</span>
+          <span class="fin-bills-stat-val" style="color:#F59E0B" id="fin-bills-unpaid">Rp 0</span>
         </div>
       </div>
 
       <!-- Urgent bill alert strip -->
       <div class="fin-bills-due" id="fin-due-strip"></div>
 
-      <!-- Unified Interactive Calendar Grid with Bill Markers -->
-      <div class="fin-calendar-box" id="fin-heatmap-section">
-        <div class="fin-heatmap" id="fin-heatmap"></div>
-        <div class="fin-heatmap-legend">
-          <div class="fin-legend-pill"><span class="fin-heat-bill-dot unpaid"></span> Tagihan Belum Lunas</div>
-          <div class="fin-legend-pill"><span class="fin-heat-bill-dot paid"></span> Tagihan Lunas</div>
-          <div class="fin-legend-pill"><iconify-icon icon="fluent-emoji-flat:money-bag" width="13" height="13" aria-hidden="true" style="vertical-align:middle;display:inline-flex;"></iconify-icon> Gajian BNI</div>
-        </div>
-      </div>
-
-      <!-- Clean Agenda Tagihan List -->
+      <!-- Clean Agenda Tagihan List (Upcoming / Priority) -->
       <div class="fin-bills-list" id="finance-bills-container"></div>
+
+      <!-- Collapsible Calendar with Progressive Disclosure -->
+      <details class="fin-calendar-details" id="fin-calendar-accordion">
+        <summary class="fin-calendar-summary">
+          <svg class="ic ic-14" aria-hidden="true"><use href="#i-calendar"/></svg>
+          <span>Lihat Kalender Tagihan &amp; Gajian ▾</span>
+        </summary>
+        <div class="fin-calendar-body">
+          <div class="fin-calendar-box" id="fin-heatmap-section">
+            <div class="fin-heatmap" id="fin-heatmap"></div>
+            <div class="fin-heatmap-legend">
+              <div class="fin-legend-pill"><span class="fin-heat-bill-dot unpaid"></span> Tagihan Belum Lunas</div>
+              <div class="fin-legend-pill"><span class="fin-heat-bill-dot paid"></span> Tagihan Lunas</div>
+              <div class="fin-legend-pill"><iconify-icon icon="fluent-emoji-flat:money-bag" width="13" height="13" aria-hidden="true" style="vertical-align:middle;display:inline-flex;"></iconify-icon> Gajian BNI</div>
+            </div>
+          </div>
+        </div>
+      </details>
     </section>
 
     <!-- ═══════════════════════════════════════════════════
@@ -7706,14 +7915,26 @@
 
 
     <!-- ═══════════════════════════════════════════════════
-    SECTION 11 — AI FINANCIAL ASSISTANT (EXPLORE)
+    SECTION 10 — EKSPLORASI & UTILITIES (LEVEL 3)
     ═══════════════════════════════════════════════════ -->
-    <details class="fin-ai" id="fin-ai-card">
-      <summary class="fin-ai-summary">
-        <span>Asisten Finansial AI</span>
-        <span class="fin-ai-badge">Claude</span>
-      </summary>
-      <div class="fin-ai-body">
+    <section class="fin-utilities" id="fin-utilities-card">
+      <div class="fin-utilities-tabs" role="tablist">
+        <button type="button" class="fin-util-tab active" id="tab-util-ai" onclick="switchFinUtility('ai')">
+          <svg class="ic ic-14" aria-hidden="true"><use href="#i-sparkles"/></svg>
+          <span>Asisten AI</span>
+        </button>
+        <button type="button" class="fin-util-tab" id="tab-util-sim" onclick="switchFinUtility('sim')">
+          <svg class="ic ic-14" aria-hidden="true"><use href="#i-chart"/></svg>
+          <span>Simulator</span>
+        </button>
+        <button type="button" class="fin-util-tab" id="tab-util-guide" onclick="switchFinUtility('guide')">
+          <svg class="ic ic-14" aria-hidden="true"><use href="#i-book"/></svg>
+          <span>Panduan</span>
+        </button>
+      </div>
+
+      <!-- Panel AI -->
+      <div class="fin-util-panel active" id="panel-util-ai">
         <div class="fin-ai-actions">
           <button type="button" class="fin-ai-btn" id="btn-fin-ai" onclick="requestFinanceAdvice('quick')">
             <svg class="ic ic-14" aria-hidden="true"><use href="#i-sparkles"/></svg>
@@ -7748,17 +7969,9 @@
           </button>
         </div>
       </div>
-    </details>
 
-    <!-- ═══════════════════════════════════════════════════
-    SECTION 12 — WHAT-IF SIMULATOR (EXPLORE)
-    ═══════════════════════════════════════════════════ -->
-    <details class="fin-simulator" id="fin-sim-section">
-      <summary class="fin-simulator-summary">
-        <span>Simulator Hemat (What-If)</span>
-        <span style="font-size:0.72rem;color:var(--accent);font-weight:600">Coba Simulasi ▾</span>
-      </summary>
-      <div class="fin-simulator-body">
+      <!-- Panel Simulator -->
+      <div class="fin-util-panel" id="panel-util-sim">
         <div class="fin-sim-row">
           <div class="fin-sim-head"><span>Makan siang rata-rata / hari</span><b id="sim-makan-val">Rp 15.000</b></div>
           <input type="range" class="fin-sim-range" id="sim-makan" min="5000" max="40000" step="1000" value="15000" oninput="updateSimulator()">
@@ -7773,51 +7986,42 @@
         </div>
         <div class="fin-sim-result" id="fin-sim-result">Geser slider untuk melihat potensi penghematan bulanan.</div>
       </div>
-    </details>
 
-    <!-- ═══════════════════════════════════════════════════
-    SECTION 13 — FINANCIAL GUIDE (EXPLORE)
-    ═══════════════════════════════════════════════════ -->
-    <details class="fin-guide" id="fin-guide-accordion">
-      <summary class="fin-guide-summary">
-        <span>Strategi Finansial & Survival Magang Jakarta</span>
-        <span style="font-size:0.72rem;color:var(--accent);font-weight:600">Lihat Panduan ▾</span>
-      </summary>
-      <div class="fin-guide-body">
+      <!-- Panel Panduan -->
+      <div class="fin-util-panel" id="panel-util-guide">
         <div class="guide-card">
           <div class="guide-card-head">
-            <span class="guide-card-title">Pola Alokasi Anggaran Realistis (Metode 50/30/20)</span>
+            <span class="guide-card-title">Pola Alokasi Anggaran 50/30/20</span>
             <span class="badge badge-accent">Standar Magang</span>
           </div>
-          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px">
-            <div style="background:var(--surface-hover);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:12px">
-              <div style="font-weight:700;font-size:0.78rem;color:var(--text-primary);margin-bottom:4px">Kebutuhan Pokok (50%)</div>
-              <div style="font-size:0.72rem;color:var(--text-secondary);line-height:1.45">~Rp1.750.000: Sewa kamar kos, token listrik, dan makan harian pokok.</div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px">
+            <div style="background:var(--surface-hover);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:10px">
+              <div style="font-weight:700;font-size:0.75rem;color:var(--text-primary);margin-bottom:3px">Needs (50%)</div>
+              <div style="font-size:0.7rem;color:var(--text-secondary);line-height:1.4">~Rp1.750.000: Kos, listrik, makan pokok.</div>
             </div>
-            <div style="background:var(--surface-hover);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:12px">
-              <div style="font-weight:700;font-size:0.78rem;color:var(--text-primary);margin-bottom:4px">Operasional & Harian (30%)</div>
-              <div style="font-size:0.72rem;color:var(--text-secondary);line-height:1.45">~Rp1.050.000: Transportasi KRL/JakLingko/Ojol, kuota internet, laundry kiloan, dan kuliner akhir pekan.</div>
+            <div style="background:var(--surface-hover);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:10px">
+              <div style="font-weight:700;font-size:0.75rem;color:var(--text-primary);margin-bottom:3px">Wants (30%)</div>
+              <div style="font-size:0.7rem;color:var(--text-secondary);line-height:1.4">~Rp1.050.000: KRL, kuota, laundry, hangout.</div>
             </div>
-            <div style="background:var(--surface-hover);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:12px">
-              <div style="font-weight:700;font-size:0.78rem;color:var(--text-primary);margin-bottom:4px">Tabungan & Wondr (20%)</div>
-              <div style="font-size:0.72rem;color:var(--text-secondary);line-height:1.45">~Rp700.000: Amankan ke rekening BNI saat uang saku cair.</div>
+            <div style="background:var(--surface-hover);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:10px">
+              <div style="font-weight:700;font-size:0.75rem;color:var(--text-primary);margin-bottom:3px">Savings (20%)</div>
+              <div style="font-size:0.7rem;color:var(--text-secondary);line-height:1.4">~Rp700.000: Amankan ke rekening BNI.</div>
             </div>
           </div>
         </div>
-        <div class="guide-card" style="margin-top:12px">
+        <div class="guide-card" style="margin-top:10px">
           <div class="guide-card-head">
-            <span class="guide-card-title">Trik Hemat Khusus Area Menara BNI & Benhil</span>
+            <span class="guide-card-title">Trik Hemat Menara BNI &amp; Benhil</span>
             <span class="badge">Tips Praktis</span>
           </div>
-          <ul class="guide-list">
-            <li><span class="guide-bullet">•</span><div><strong>Makan Siang Hemat:</strong> Manfaatkan kantin basement Menara BNI (Rp15.000–20.000, higienis & ber-AC). Hindari pesan makanan via ojol saat jam kerja.</div></li>
-            <li><span class="guide-bullet">•</span><div><strong>Refill Tumbler Gratis:</strong> Bawa tumbler dan isi ulang air mineral di dispenser pantry SSE. Menghemat ±Rp150.000/bulan.</div></li>
-            <li><span class="guide-bullet">•</span><div><strong>Transportasi Nol Rupiah:</strong> Mikrotrans JakLingko (JAK.08/JAK.14) tarif <strong>Rp 0 (gratis)</strong>. Dari Stasiun Palmerah ke Menara BNI hanya 1.8 km.</div></li>
-            <li><span class="guide-bullet">•</span><div><strong>Aplikasi Wondr by BNI:</strong> Transfer gratis, bebas admin, pantau pengeluaran melalui mutasi digital real-time.</div></li>
+          <ul class="guide-list" style="margin-top:6px">
+            <li><span class="guide-bullet">•</span><div><strong>Kantin Basement Menara BNI:</strong> Rp15.000–20.000, higienis &amp; ber-AC. Hindari ojol saat jam kerja.</div></li>
+            <li><span class="guide-bullet">•</span><div><strong>Refill Tumbler Gratis:</strong> Bawa tumbler dan isi di pantry SSE BNI. Menghemat ±Rp150.000/bln.</div></li>
+            <li><span class="guide-bullet">•</span><div><strong>Transportasi Nol Rupiah:</strong> JakLingko (JAK.08/JAK.14) tarif Rp 0 (gratis) Stasiun Palmerah - Bendungan Hilir.</div></li>
           </ul>
         </div>
       </div>
-    </details>
+    </section>
 
 
 
@@ -12814,6 +13018,45 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     }
   }
 
+  let isAllGoalsExpanded = false;
+  function toggleMoreGoals() {
+    isAllGoalsExpanded = !isAllGoalsExpanded;
+    const el = document.getElementById('fin-other-goals');
+    const btn = document.getElementById('fin-goals-more-btn');
+    if (el) el.style.display = isAllGoalsExpanded ? 'flex' : 'none';
+    if (btn) btn.innerHTML = isAllGoalsExpanded ? 'Tutup tujuan lainnya ▴' : `${el ? el.children.length : ''} tujuan lainnya · Lihat semua ▾`;
+  }
+
+  function renderGoalHtml(g, isHero = false) {
+    const icn = (g.icon && String(g.icon).startsWith('i-')) ? g.icon : ('i-' + (g.icon || 'target'));
+    const pct = g.target > 0 ? Math.min(100, Math.round((g.saved / g.target) * 100)) : 0;
+    const remaining = Math.max(0, (Number(g.target) || 0) - (Number(g.saved) || 0));
+    const monthsLeft = g.deadline ? Math.max(1, Math.ceil((new Date(g.deadline + '-01') - new Date()) / (30 * 24 * 3600 * 1000))) : 3;
+    const monthly = g.deadline ? Math.round(remaining / monthsLeft) : Math.round(remaining / 3);
+    return `
+      <div class="finance-goal-card ${isHero ? 'finance-goal-hero' : ''}">
+        <div class="finance-goal-head">
+          <span class="finance-goal-name">
+            <span class="finance-goal-icon" style="background:${g.color || '#10b981'}"><svg class="ic ic-14" aria-hidden="true"><use href="#${escHtml(icn)}"/></svg></span>
+            ${escHtml(g.name)} ${isHero ? '<span style="font-size:10px;font-weight:700;color:#10b981;background:rgba(16,185,129,0.12);padding:2px 6px;border-radius:4px;margin-left:4px">Utama</span>' : ''}
+          </span>
+          <button type="button" class="finance-tx-del" title="Hapus tujuan" onclick="deleteGoal('${escHtml(g.id)}')"><svg class="ic ic-14" aria-hidden="true"><use href="#i-trash"/></svg></button>
+        </div>
+        <div class="finance-goal-amt">${formatRupiah(g.saved)} <span style="opacity:.55;font-weight:500;">/ ${formatRupiah(g.target)}</span></div>
+        <div class="finance-goal-meta">Selisih ${formatRupiah(remaining)} · sisihkan ~${formatRupiah(monthly)}/bln</div>
+        <div class="finance-goal-track"><div class="finance-goal-fill" style="width:${pct}%;background:${g.color || '#10b981'}"></div></div>
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">
+          <input type="text" inputmode="numeric" class="finance-goal-input" style="flex:1;font-family:inherit;font-size:0.72rem;color:var(--text-primary);background:var(--surface-hover);border:1px solid var(--border);border-radius:6px;padding:4px 8px;" value="${Number(g.saved || 0).toLocaleString('id-ID')}" oninput="formatMoneyInput(this)" onchange="adjustGoalSaved('${escHtml(g.id)}', this.value)" title="Jumlah tersimpan (klik untuk edit)">
+        </div>
+        <div class="finance-goal-actions">
+          <button type="button" class="finance-goal-chip" onclick="depositToGoal('${escHtml(g.id)}', 25000)">+25rb</button>
+          <button type="button" class="finance-goal-chip" onclick="depositToGoal('${escHtml(g.id)}', 50000)">+50rb</button>
+          <button type="button" class="finance-goal-chip" onclick="depositToGoal('${escHtml(g.id)}', 100000)">+100rb</button>
+        </div>
+      </div>
+    `;
+  }
+
   function renderFinanceGoals() {
     const container = document.getElementById('finance-goals-container');
     if (!container) return;
@@ -12822,35 +13065,22 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       container.innerHTML = '<div style="font-size:0.74rem;color:var(--text-tertiary);text-align:center;padding:12px;grid-column:1/-1;">Belum ada tujuan. Klik "+ Tujuan" di atas.</div>';
       return;
     }
-    container.innerHTML = goals.map(g => {
-      const icn = (g.icon && String(g.icon).startsWith('i-')) ? g.icon : ('i-' + (g.icon || 'target'));
-      const pct = g.target > 0 ? Math.min(100, Math.round((g.saved / g.target) * 100)) : 0;
-      const remaining = Math.max(0, (Number(g.target) || 0) - (Number(g.saved) || 0));
-      const monthsLeft = g.deadline ? Math.max(1, Math.ceil((new Date(g.deadline + '-01') - new Date()) / (30 * 24 * 3600 * 1000))) : 3;
-      const monthly = g.deadline ? Math.round(remaining / monthsLeft) : Math.round(remaining / 3);
-      return `
-        <div class="finance-goal-card">
-          <div class="finance-goal-head">
-            <span class="finance-goal-name">
-              <span class="finance-goal-icon" style="background:${g.color || '#10b981'}"><svg class="ic ic-14" aria-hidden="true"><use href="#${escHtml(icn)}"/></svg></span>
-              ${escHtml(g.name)}
-            </span>
-            <button type="button" class="finance-tx-del" title="Hapus tujuan" onclick="deleteGoal('${escHtml(g.id)}')"><svg class="ic ic-14" aria-hidden="true"><use href="#i-trash"/></svg></button>
-          </div>
-          <div class="finance-goal-amt">${formatRupiah(g.saved)} <span style="opacity:.55;font-weight:500;">/ ${formatRupiah(g.target)}</span></div>
-          <div class="finance-goal-meta">Selisih ${formatRupiah(remaining)} · sisihkan ~${formatRupiah(monthly)}/bln</div>
-          <div class="finance-goal-track"><div class="finance-goal-fill" style="width:${pct}%;background:${g.color || '#10b981'}"></div></div>
-          <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">
-            <input type="text" inputmode="numeric" class="finance-goal-input" style="flex:1;font-family:inherit;font-size:0.72rem;color:var(--text-primary);background:var(--surface-hover);border:1px solid var(--border);border-radius:6px;padding:4px 8px;" value="${Number(g.saved || 0).toLocaleString('id-ID')}" oninput="formatMoneyInput(this)" onchange="adjustGoalSaved('${escHtml(g.id)}', this.value)" title="Jumlah tersimpan (klik untuk edit)">
-          </div>
-          <div class="finance-goal-actions">
-            <button type="button" class="finance-goal-chip" onclick="depositToGoal('${escHtml(g.id)}', 25000)">+25rb</button>
-            <button type="button" class="finance-goal-chip" onclick="depositToGoal('${escHtml(g.id)}', 50000)">+50rb</button>
-            <button type="button" class="finance-goal-chip" onclick="depositToGoal('${escHtml(g.id)}', 100000)">+100rb</button>
+    const heroGoal = goals[0];
+    const otherGoals = goals.slice(1);
+    let out = renderGoalHtml(heroGoal, true);
+    if (otherGoals.length > 0) {
+      out += `
+        <div class="finance-goals-more-wrap" style="grid-column:1/-1">
+          <button type="button" class="fin-goals-more-toggle" id="fin-goals-more-btn" onclick="toggleMoreGoals()">
+            ${isAllGoalsExpanded ? 'Tutup tujuan lainnya ▴' : `${otherGoals.length} tujuan lainnya · Lihat semua ▾`}
+          </button>
+          <div id="fin-other-goals" style="display:${isAllGoalsExpanded ? 'flex' : 'none'};flex-direction:column;gap:8px">
+            ${otherGoals.map(g => renderGoalHtml(g, false)).join('')}
           </div>
         </div>
       `;
-    }).join('');
+    }
+    container.innerHTML = out;
   }
 
   // ===== Pengingat Jatuh Tempo =====
@@ -12937,7 +13167,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       }
     }
 
-    // 5. Konsentrasi Kategori Belanja Tinggi
+    // 5. Konsentrasi Kategori Belanja Tinggi (Insight)
     if (totalSpent > 0) {
       const catTotals = {};
       expenses.forEach(e => { catTotals[e.cat] = (catTotals[e.cat] || 0) + (Number(e.amount) || 0); });
@@ -12947,7 +13177,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
         if (share >= 40) {
           const meta = FIN_CATEGORY_META[top[0]] || { label: 'Lainnya' };
           insights.push({
-            severity: 'warning',
+            severity: 'info',
             title: 'Dominasi Belanja',
             text: `Pengeluaran ${meta.label} mendominasi ${share}% dari seluruh belanja (${formatRupiah(top[1])}). Pertimbangkan rasionalisasi.`,
             weight: 75
@@ -13012,9 +13242,9 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       });
     }
 
-    // Sort by weight descending & take top 1-3 priority insights
+    // Sort by weight descending & take top 1-2 priority insights to avoid dominating
     insights.sort((a, b) => b.weight - a.weight);
-    const topInsights = insights.slice(0, 3);
+    const topInsights = insights.slice(0, 2);
 
     if (topInsights.length === 0) {
       container.innerHTML = '<div style="font-size:0.75rem;color:var(--text-tertiary);text-align:center;padding:10px 0">Insight finansial akan tampil otomatis setelah ada aktivitas transaksi.</div>';
@@ -13072,29 +13302,81 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     const score = computeHealthScore();
     const numEl = document.getElementById('fin-score-num');
     const gradeEl = document.getElementById('fin-score-grade');
-    const ringEl = document.getElementById('fin-score-ring-val');
+    const actionEl = document.getElementById('fin-health-action-text');
+
     if (numEl) numEl.textContent = score.total;
-    let grade = 'C', color = '#f59e0b';
-    if (score.total >= 85) { grade = 'A'; color = '#10b981'; }
-    else if (score.total >= 70) { grade = 'B'; color = '#0284c7'; }
-    else if (score.total >= 55) { grade = 'C'; color = '#f59e0b'; }
-    else { grade = 'D'; color = '#ef4444'; }
-    if (gradeEl) { gradeEl.textContent = 'Grade ' + grade; gradeEl.style.color = color; }
+
+    // Status badge: A (>=85), B (>=70), C (>=55), D (<55)
+    let gradeLabel = 'Perlu Perhatian', gradeClass = 'danger';
+    if (score.total >= 85) { gradeLabel = 'Sangat Sehat'; gradeClass = 'success'; }
+    else if (score.total >= 70) { gradeLabel = 'Sehat & Stabil'; gradeClass = 'info'; }
+    else if (score.total >= 55) { gradeLabel = 'Cukup Terkendali'; gradeClass = 'warning'; }
+    else { gradeLabel = 'Perlu Perhatian'; gradeClass = 'danger'; }
+
+    if (gradeEl) {
+      gradeEl.textContent = gradeLabel;
+      gradeEl.className = 'fin-health-badge ' + gradeClass;
+    }
+
+    // Dot indicators (5 dots each)
+    const renderDots = (id, val) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const count = Math.max(1, Math.min(5, Math.round(val / 20)));
+      const cls = val >= 70 ? 'active good' : (val >= 40 ? 'active warn' : 'active crit');
+      let dots = '';
+      for (let i = 1; i <= 5; i++) {
+        dots += `<span class="fin-health-dot ${i <= count ? cls : ''}"></span>`;
+      }
+      el.innerHTML = dots;
+    };
+
+    renderDots('fin-dots-daily', score.dailyScore);
+    renderDots('fin-dots-envelope', score.envelopeScore);
+    renderDots('fin-dots-bills', score.billScore);
+    renderDots('fin-dots-savings', score.savingsScore);
+
+    // Actionable advice text based on lowest submetrics
+    if (actionEl) {
+      const issues = [];
+      if (score.billScore < 100) issues.push('lunasi tagihan belum lunas');
+      if (score.dailyScore < 60) issues.push('kendalikan burn rate harian');
+      if (score.envelopeScore < 70) issues.push('rasionalisasi belanja wants');
+      if (score.savingsScore < 50) issues.push('sisihkan pos tabungan');
+
+      if (issues.length === 0) {
+        actionEl.textContent = 'Kondisi finansial prima! Disiplin anggaran dan arus kas harian terjaga dengan sangat baik.';
+      } else if (issues.length === 1) {
+        actionEl.textContent = `1 fokus perbaikan: ${issues[0]} agar cashflow aman hingga tanggal gajian 22.`;
+      } else {
+        actionEl.textContent = `${issues.length} hal perlu diperbaiki: ${issues.slice(0, 2).join(' & ')}.`;
+      }
+    }
+
+    // Legacy sync
+    const ringEl = document.getElementById('fin-score-ring-val');
     if (ringEl) {
       const CIRC = 263.9;
       ringEl.style.strokeDashoffset = String(CIRC - (CIRC * score.total / 100));
-      ringEl.style.stroke = color;
     }
-    const setBar = (id, idVal, v) => {
-      const bar = document.getElementById(id);
-      const val = document.getElementById(idVal);
-      if (bar) { bar.style.width = v + '%'; bar.style.backgroundColor = v >= 70 ? '#10b981' : v >= 40 ? '#f59e0b' : '#ef4444'; }
-      if (val) val.textContent = v;
+  }
+
+  // ===== Level 3: Utilities Switcher =====
+  function switchFinUtility(tool) {
+    const tabs = {
+      ai: document.getElementById('tab-util-ai'),
+      sim: document.getElementById('tab-util-sim'),
+      guide: document.getElementById('tab-util-guide')
     };
-    setBar('fin-score-savings', 'fin-score-savings-val', score.savingsScore);
-    setBar('fin-score-daily', 'fin-score-daily-val', score.dailyScore);
-    setBar('fin-score-bills', 'fin-score-bills-val', score.billScore);
-    setBar('fin-score-envelope', 'fin-score-envelope-val', score.envelopeScore);
+    const panels = {
+      ai: document.getElementById('panel-util-ai'),
+      sim: document.getElementById('panel-util-sim'),
+      guide: document.getElementById('panel-util-guide')
+    };
+    Object.keys(tabs).forEach(k => {
+      if (tabs[k]) tabs[k].classList.toggle('active', k === tool);
+      if (panels[k]) panels[k].classList.toggle('active', k === tool);
+    });
   }
 
   // ===== Simulator What-If =====
