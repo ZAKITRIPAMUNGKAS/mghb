@@ -9096,6 +9096,7 @@
 
   function renderLogbookHistory() {
     const container = document.getElementById('lb-history-list');
+    if (!container) return;
     const records = JSON.parse(localStorage.getItem(LOGBOOK_STORAGE_KEY) || '[]');
 
     if (records.length === 0) {
