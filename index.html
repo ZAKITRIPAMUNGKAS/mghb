@@ -1589,9 +1589,14 @@
     }
     .finance-bill-edit-day {
       font-size: 0.7rem;
-      width: 46px;
+      width: 28px;
       text-align: center;
-      color: var(--text-secondary);
+      color: var(--text-primary);
+      font-weight: 700;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1px 2px;
+      background: var(--surface);
     }
     .finance-bill-edit-amount {
       font-size: 0.79rem;
@@ -1643,34 +1648,47 @@
     .fin-sub-fill { height: 100%; border-radius: 99px; transition: width .5s cubic-bezier(.16,1,.3,1); }
     .fin-sub-val { width: 34px; text-align: right; font-size: 0.68rem; font-weight: 700; color: var(--text-primary); font-variant-numeric: tabular-nums; }
 
-    /* ===== Goals & Sisihan ===== */
+    /* ===== Goals & Sisihan (Bento Grid) ===== */
     .finance-goals-grid {
       display: grid;
-      grid-template-columns: 1fr;
+      grid-template-columns: 1fr 1fr;
       gap: 10px;
-      margin-top: 14px;
+      margin-top: 10px;
     }
-    @media (min-width: 640px) { .finance-goals-grid { grid-template-columns: 1fr 1fr; } }
     .finance-goal-card {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 14px 16px;
-      box-shadow: var(--shadow-card);
+      border-radius: 12px;
+      padding: 12px 14px;
+      box-shadow: var(--shadow-sm);
       transition: transform .2s cubic-bezier(.16,1,.3,1), box-shadow .2s ease, border-color .18s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 6px;
     }
     .finance-goal-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px -8px rgb(0 0 0 / .18); }
-    .finance-goal-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
-    .finance-goal-name { display: flex; align-items: center; gap: 6px; font-size: 0.82rem; font-weight: 700; color: var(--text-primary); }
-    .finance-goal-icon { width: 26px; height: 26px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; color: #fff; flex-shrink: 0; }
-    .finance-goal-amt { font-size: 0.78rem; font-weight: 700; color: var(--text-primary); margin-bottom: 2px; }
-    .finance-goal-meta { font-size: 0.68rem; color: var(--text-tertiary); margin-bottom: 8px; }
-    .finance-goal-track { height: 8px; background: var(--surface-hover); border-radius: 99px; overflow: hidden; margin-bottom: 6px; }
+    .finance-goal-card:first-child {
+      grid-column: 1 / -1;
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, var(--surface) 100%);
+      border: 1px solid rgba(16, 185, 129, 0.32);
+    }
+    [data-theme="dark"] .finance-goal-card:first-child {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.14) 0%, var(--surface) 100%);
+      border-color: rgba(16, 185, 129, 0.4);
+    }
+    .finance-goal-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .finance-goal-name { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; font-weight: 700; color: var(--text-primary); }
+    .finance-goal-icon { width: 24px; height: 24px; border-radius: 7px; display: inline-flex; align-items: center; justify-content: center; color: #fff; flex-shrink: 0; }
+    .finance-goal-amt { font-size: 0.82rem; font-weight: 800; color: var(--text-primary); }
+    .finance-goal-card:first-child .finance-goal-amt { font-size: 0.95rem; }
+    .finance-goal-meta { font-size: 0.67rem; color: var(--text-secondary); line-height: 1.35; }
+    .finance-goal-track { height: 7px; background: var(--surface-hover); border-radius: 99px; overflow: hidden; margin: 2px 0 4px; }
     .finance-goal-fill { height: 100%; border-radius: 99px; transition: width .5s cubic-bezier(.16,1,.3,1); }
-    .finance-goal-actions { display: flex; gap: 5px; flex-wrap: wrap; }
+    .finance-goal-actions { display: flex; gap: 4px; flex-wrap: wrap; }
     .finance-goal-chip {
-      background: var(--surface-hover); border: 1px solid var(--border); border-radius: var(--radius-pill);
-      padding: 3px 9px; font-size: 0.68rem; font-weight: 600; color: var(--text-secondary); cursor: pointer;
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-pill);
+      padding: 3px 8px; font-size: 0.67rem; font-weight: 600; color: var(--text-secondary); cursor: pointer;
       transition: all .15s ease;
     }
     .finance-goal-chip:hover { background: var(--accent-subtle); border-color: var(--accent); color: var(--accent); }
@@ -1695,27 +1713,49 @@
     }
     .fin-insight .ic { margin-top: 1px; color: var(--accent); }
 
-    /* ===== Calendar Heatmap ===== */
+    /* ===== Calendar Heatmap (Siklus Bulanan) ===== */
     .fin-heatmap {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
-      gap: 4px;
+      gap: 5px;
       margin-top: 10px;
     }
     .fin-heatmap-cell {
       aspect-ratio: 1;
-      border-radius: 4px;
-      background: #e2e8f0;
+      border-radius: 6px;
+      background: var(--surface-hover);
       position: relative;
       cursor: default;
-      transition: transform 0.1s;
+      transition: transform 0.1s, box-shadow 0.1s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2px;
+      border: 1px solid var(--border-subtle);
     }
-    .fin-heatmap-cell:hover { transform: scale(1.25); z-index: 1; outline: 2px solid var(--accent); }
-    .fin-heatmap-cell.empty { background: transparent; }
+    .fin-heatmap-cell:hover { transform: scale(1.15); z-index: 2; box-shadow: var(--shadow-sm); }
+    .fin-heatmap-cell.empty { background: transparent; border-color: transparent; }
+    .fin-heatmap-cell.payday {
+      border: 1.5px solid #10b981;
+      box-shadow: 0 0 6px rgba(16, 185, 129, 0.35);
+    }
+    .fin-heat-date {
+      font-size: 0.62rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      line-height: 1;
+    }
+    .fin-heat-payday {
+      font-size: 0.65rem;
+      line-height: 1;
+      margin-top: 1px;
+    }
     .fin-heatmap-label {
       display: flex; justify-content: center; align-items: center;
-      font-size: 0.6rem; font-weight: 700; color: var(--text-tertiary);
-      text-transform: uppercase; /* 7 day labels: S S R K J S M */
+      font-size: 0.62rem; font-weight: 700; color: var(--text-tertiary);
+      text-transform: uppercase;
+      padding-bottom: 2px;
     }
 
     /* ===== Finance Grid Layout (desktop 2-column) ===== */
@@ -2461,18 +2501,18 @@
     }
 
     .finance-quick-chips {
-      display: flex;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
       gap: 6px;
-      margin-top: 10px;
+      margin-top: 8px;
     }
 
     .finance-chip {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius-pill);
-      padding: 5px 11px;
-      font-size: 0.75rem;
+      padding: 6px 6px;
+      font-size: 0.72rem;
       font-weight: 600;
       color: var(--text-secondary);
       cursor: pointer;
@@ -2481,7 +2521,19 @@
       box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 4px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    @media (max-width: 480px) {
+      .finance-chip {
+        font-size: 0.67rem;
+        padding: 5px 3px;
+        gap: 3px;
+      }
     }
 
     .finance-chip:hover {
@@ -2924,7 +2976,18 @@
     }
     @media (max-width: 600px) {
       .finance-bills-summary {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 6px;
+      }
+      .finance-bill-stat {
+        padding: 6px 6px;
+        text-align: center;
+      }
+      .finance-bill-stat-label {
+        font-size: 0.6rem;
+      }
+      .finance-bill-stat-val {
+        font-size: 0.76rem;
       }
     }
     .finance-bill-stat {
@@ -3582,16 +3645,24 @@
 
     /* Bottom Utility Bar */
     .utility-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
       margin-top: 24px;
       padding-top: 14px;
       border-top: 1px solid var(--border);
       font-size: 0.74rem;
       color: var(--text-secondary);
-      flex-wrap: wrap;
+    }
+
+    .utility-group-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      width: 100%;
+    }
+
+    @media (min-width: 640px) {
+      .utility-group-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
     }
 
     .utility-group {
@@ -3603,27 +3674,33 @@
     .utility-btn {
       display: inline-flex;
       align-items: center;
-      gap: 5px;
-      background: transparent;
-      border: none;
+      justify-content: center;
+      gap: 6px;
+      background: var(--surface);
+      border: 1px solid var(--border);
       color: var(--text-secondary);
       font-family: inherit;
       font-size: 0.74rem;
-      font-weight: 500;
+      font-weight: 600;
       cursor: pointer;
-      padding: 5px 8px;
+      padding: 8px 10px;
       border-radius: var(--radius-sm);
       transition: all 0.15s ease;
+      box-shadow: var(--shadow-sm);
+      white-space: nowrap;
     }
 
     .utility-btn:hover {
       background: var(--surface-hover);
       color: var(--text-primary);
+      border-color: var(--accent);
+      transform: translateY(-1px);
     }
 
     .utility-btn svg {
       width: 13px;
       height: 13px;
+      flex-shrink: 0;
     }
 
     /* Modal Backdrop & Dialog */
@@ -6243,7 +6320,7 @@
         <div style="margin-bottom: 14px;">
           <span style="font-size: 0.7rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.04em;">Pintas 1-Klik Rutin:</span>
           <div class="finance-quick-chips">
-            <span class="finance-chip" onclick="quickFillExpense('makan', 15000, 'Kantin Basement Menara BNI')"><svg class="ic ic-14" aria-hidden="true"><use href="#i-utensils"/></svg> +15rb Kantin BNI</span>
+            <span class="finance-chip" onclick="quickFillExpense('makan', 15000, 'Kantin Basement Menara BNI')"><svg class="ic ic-14" aria-hidden="true"><use href="#i-utensils"/></svg> +15rb Kantin</span>
             <span class="finance-chip" onclick="quickFillExpense('makan', 20000, 'Warteg Penjernihan Benhil')"><svg class="ic ic-14" aria-hidden="true"><use href="#i-utensils"/></svg> +20rb Warteg</span>
             <span class="finance-chip" onclick="quickFillExpense('transport', 3000, 'KRL St. Palmerah')"><svg class="ic ic-14" aria-hidden="true"><use href="#i-train"/></svg> +3rb KRL</span>
             <span class="finance-chip" onclick="quickFillExpense('transport', 10000, 'Ojek Online Stasiun - Kantor')"><svg class="ic ic-14" aria-hidden="true"><use href="#i-car"/></svg> +10rb Ojol</span>
@@ -6420,7 +6497,7 @@
           </div>
           <button type="button" class="btn-action btn-xs" onclick="promptAddGoal()">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-            + Tujuan
+            Tujuan
           </button>
         </div>
         <div class="finance-goals-grid" id="finance-goals-container">
@@ -6449,7 +6526,7 @@
           </div>
           <button type="button" class="btn-action btn-xs" onclick="promptAddCustomBill()">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-            + Tagihan
+            Tagihan
           </button>
         </div>
 
@@ -6513,7 +6590,7 @@
             </svg>
             Kalender Aktivitas Belanja
           </div>
-          <span style="font-size: 0.7rem; color: var(--text-tertiary); font-weight: 600;">4 minggu terakhir</span>
+          <span style="font-size: 0.7rem; color: var(--text-tertiary); font-weight: 600;" id="fin-heatmap-period">Siklus 21 Sep - 21 Okt · Gajian 22 Okt</span>
         </div>
         <div class="fin-heatmap" id="fin-heatmap"></div>
         <div class="fin-heatmap-legend" style="display: flex; align-items: center; justify-content: flex-end; gap: 4px; margin-top: 8px;">
@@ -7029,14 +7106,8 @@
 
   <!-- Bottom Utility Bar -->
   <div class="utility-bar">
-    <div class="utility-group">
-      <button class="utility-btn" onclick="copyInventarisList()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-        </svg>
-        Salin Inventaris
-      </button>
-            <button class="utility-btn" onclick="triggerPwaInstall()" style="color: var(--accent); font-weight: 700; border-color: var(--accent);">
+    <div class="utility-group-grid">
+      <button class="utility-btn" onclick="triggerPwaInstall()" style="color: var(--accent); font-weight: 700; border-color: var(--accent);">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
           <polyline points="7 10 12 15 17 10"></polyline>
@@ -7049,10 +7120,14 @@
           <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
           <line x1="12" y1="18" x2="12.01" y2="18"></line>
         </svg>
-        Buka di HP / Cadangan
+        Buka di HP
       </button>
-    </div>
-    <div class="utility-group">
+      <button class="utility-btn" onclick="copyInventarisList()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+        </svg>
+        Salin Inventaris
+      </button>
       <button class="utility-btn" onclick="window.location.reload()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
@@ -11013,8 +11088,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
             <div class="finance-bill-info">
               <input type="text" class="finance-bill-edit-name" value="${String(bill.name).replace(/"/g, '&quot;')}" onchange="updateBillField('${bill.id}','name',this.value)" oninput="updateBillField('${bill.id}','name',this.value)" title="Klik untuk edit nama" maxlength="40">
               <span class="finance-bill-due" style="${isPastDue ? 'color:#ef4444; font-weight:600;' : ''}">
-                <input type="number" min="1" max="31" class="finance-bill-edit-day" value="${bill.dueDay}" onchange="updateBillField('${bill.id}','dueDay',this.value)" title="Tanggal jatuh tempo (1-31)">
-                ${bill.paid ? 'tgl' : 'tiap bulan'}${isPastDue ? ' \u00b7 lewat' : ''}
+                Tgl <input type="number" min="1" max="31" class="finance-bill-edit-day" value="${bill.dueDay}" onchange="updateBillField('${bill.id}','dueDay',this.value)" title="Tanggal jatuh tempo (1-31)"> tiap bulan${isPastDue ? ' · lewat' : ''}
               </span>
             </div>
           </div>
@@ -11408,6 +11482,47 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     }
   }
 
+  // Siklus keuangan bulanan: mulai tanggal 21, gajian tanggal 22
+  function getFinanceCycleRange(refDate = new Date()) {
+    try {
+      const dt = typeof refDate === 'string' || typeof refDate === 'number' ? new Date(refDate) : new Date(refDate);
+      const dateStr = getWibDateString(dt);
+      const parts = dateStr.split('-').map(Number);
+      const y = parts[0];
+      const m = parts[1]; // 1-12
+      const day = parts[2];
+
+      let start, end, payday;
+      if (day >= 21) {
+        start = new Date(y, m - 1, 21);
+        end = new Date(y, m, 21);
+        payday = new Date(y, m, 22);
+      } else {
+        start = new Date(y, m - 2, 21);
+        end = new Date(y, m - 1, 21);
+        payday = new Date(y, m - 1, 22);
+      }
+      return {
+        start,
+        end,
+        payday,
+        startStr: getWibDateString(start),
+        endStr: getWibDateString(end),
+        paydayStr: getWibDateString(payday)
+      };
+    } catch {
+      const now = new Date();
+      return {
+        start: new Date(now.getFullYear(), now.getMonth(), 21),
+        end: new Date(now.getFullYear(), now.getMonth() + 1, 21),
+        payday: new Date(now.getFullYear(), now.getMonth() + 1, 22),
+        startStr: '',
+        endStr: '',
+        paydayStr: ''
+      };
+    }
+  }
+
   // Format ribuan otomatis saat mengetik (2.000.000)
   function formatMoneyInput(el) {
     if (!el) return;
@@ -11596,11 +11711,12 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
 
     const percentSpent = income > 0 ? Math.min(Math.round((effectiveTotalSpent / income) * 100), 100) : 100;
 
-    // Days left in current month
+    // Days left in current cycle (starts 21st, payday 22nd)
+    const cycle = getFinanceCycleRange();
     const now = new Date();
-    const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-    const currentDay = now.getDate();
-    const daysLeft = Math.max(daysInMonth - currentDay + 1, 1);
+    const todayWibStr = getWibDateString(now);
+    const msDiff = cycle.payday.getTime() - new Date(todayWibStr).getTime();
+    const daysLeft = Math.max(1, Math.round(msDiff / (24 * 3600 * 1000)));
 
     const safeDailyLimit = remaining > 0 ? Math.round(remaining / daysLeft) : 0;
 
@@ -11831,8 +11947,9 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     const progressLabel = document.getElementById('fin-progress-label');
     if (progressLabel) progressLabel.textContent = `Pengeluaran: ${percentSpent}%`;
 
+    const monthNamesShort = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
     const daysLeftEl = document.getElementById('fin-days-left');
-    if (daysLeftEl) daysLeftEl.textContent = `Sisa ${daysLeft} hari bulan ini`;
+    if (daysLeftEl) daysLeftEl.textContent = `Sisa ${daysLeft} hari ke gajian (${cycle.payday.getDate()} ${monthNamesShort[cycle.payday.getMonth()]})`;
 
     const statusBadge = document.getElementById('fin-status-badge');
     if (statusBadge) {
@@ -11959,10 +12076,11 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     nowWib.setDate(nowWib.getDate() - 7);
     const sevenDaysAgoStr = getWibDateString(nowWib);
 
+    const cycle = getFinanceCycleRange();
     const filteredExpenses = allExpenses.filter(item => {
       if (currentFinanceFilter === 'today') return item.date === todayStr;
       if (currentFinanceFilter === 'week') return item.date >= sevenDaysAgoStr;
-      if (currentFinanceFilter === 'month') return item.date.startsWith(currentYearMonth);
+      if (currentFinanceFilter === 'month') return item.date >= cycle.startStr && item.date <= cycle.endStr;
       return true;
     });
 
@@ -12003,32 +12121,43 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     container.innerHTML = html;
   }
 
-function renderFinanceHeatmap() {
+  function renderFinanceHeatmap() {
     const container = document.getElementById('fin-heatmap');
     if (!container) return;
 
     const expenses = getFinanceExpenses();
-    const now = new Date();
+    const cycle = getFinanceCycleRange();
+    const todayStr = getWibDateString();
 
-    const dayNames = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
-    const startDate = new Date(now);
-    startDate.setDate(startDate.getDate() - 27);
-
-    const padBefore = startDate.getDay();
-
-    let maxDaily = 0;
-    const dailyTotals = {};
-    for (let i = 0; i < 28; i++) {
-      const d = new Date(startDate);
-      d.setDate(d.getDate() + i);
-      const key = getWibDateString(d);
-      const total = expenses.filter(e => e.date === key).reduce((s, e) => s + (Number(e.amount) || 0), 0);
-      dailyTotals[key] = total;
-      if (total > maxDaily) maxDaily = total;
+    const monthNamesShort = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+    const periodEl = document.getElementById('fin-heatmap-period');
+    if (periodEl) {
+      const sDate = `${cycle.start.getDate()} ${monthNamesShort[cycle.start.getMonth()]}`;
+      const eDate = `${cycle.end.getDate()} ${monthNamesShort[cycle.end.getMonth()]}`;
+      const pDate = `${cycle.payday.getDate()} ${monthNamesShort[cycle.payday.getMonth()]}`;
+      periodEl.textContent = `Siklus ${sDate} - ${eDate} · Gajian ${pDate}`;
     }
 
-    function heatColor(amount) {
-      if (amount === 0) return '#e2e8f0';
+    const dayNames = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
+    const padBefore = cycle.start.getDay();
+
+    const dailyTotals = {};
+    let maxDaily = 0;
+    expenses.forEach(e => {
+      if (e.date) {
+        dailyTotals[e.date] = (dailyTotals[e.date] || 0) + (Number(e.amount) || 0);
+      }
+    });
+
+    let curr = new Date(cycle.start);
+    while (curr <= cycle.payday) {
+      const key = getWibDateString(curr);
+      if ((dailyTotals[key] || 0) > maxDaily) maxDaily = dailyTotals[key];
+      curr.setDate(curr.getDate() + 1);
+    }
+
+    function heatColor(amount, isPayday) {
+      if (amount === 0) return isPayday ? 'rgba(16, 185, 129, 0.15)' : 'var(--surface-hover)';
       const ratio = maxDaily > 0 ? amount / maxDaily : 0;
       if (ratio <= 0.25) return '#b6e6c9';
       if (ratio <= 0.5) return '#34d399';
@@ -12041,14 +12170,22 @@ function renderFinanceHeatmap() {
     for (let i = 0; i < padBefore; i++) {
       html += '<div class="fin-heatmap-cell empty"></div>';
     }
-    for (let i = 0; i < 28; i++) {
-      const d = new Date(startDate);
-      d.setDate(d.getDate() + i);
-      const key = getWibDateString(d);
+
+    curr = new Date(cycle.start);
+    while (curr <= cycle.payday) {
+      const key = getWibDateString(curr);
       const amount = dailyTotals[key] || 0;
-      const bg = heatColor(amount);
-      const isToday = key === getWibDateString();
-      html += '<div class="fin-heatmap-cell" style="background: ' + bg + ';' + (isToday ? ' outline: 2px solid var(--accent); outline-offset: -1px;' : '') + '" title="' + key + ': ' + formatRupiah(amount) + '"></div>';
+      const isToday = key === todayStr;
+      const isPayday = key === cycle.paydayStr;
+      const bg = heatColor(amount, isPayday);
+      const dNum = curr.getDate();
+      const tip = `${dNum} ${monthNamesShort[curr.getMonth()]}: ${amount > 0 ? formatRupiah(amount) : 'Rp 0'}${isPayday ? ' (Hari Gajian \ud83d\udcb0)' : ''}${isToday ? ' [Hari Ini]' : ''}`;
+
+      html += `<div class="fin-heatmap-cell ${isPayday ? 'payday' : ''}" style="background: ${bg};${isToday ? ' outline: 2px solid var(--accent); outline-offset: -1px;' : ''}" title="${tip}">
+        <span class="fin-heat-date">${dNum}</span>
+        ${isPayday ? '<span class="fin-heat-payday" title="Gajian!">💰</span>' : ''}
+      </div>`;
+      curr.setDate(curr.getDate() + 1);
     }
 
     container.innerHTML = html;
@@ -12234,14 +12371,15 @@ function renderFinanceHeatmap() {
     const effectiveTotalSpent = totalSpent + paidBills;
     const percentSpent = income > 0 ? Math.min(Math.round((effectiveTotalSpent / income) * 100), 100) : 100;
 
+    const cycle = getFinanceCycleRange();
     const now = new Date();
-    const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-    const currentDay = now.getDate();
-    const daysLeft = Math.max(daysInMonth - currentDay + 1, 1);
+    const todayWibStr = getWibDateString(now);
+    const msDiff = cycle.payday.getTime() - new Date(todayWibStr).getTime();
+    const daysLeft = Math.max(1, Math.round(msDiff / (24 * 3600 * 1000)));
     const safeDaily = remaining > 0 ? Math.round(remaining / daysLeft) : 0;
 
     const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-    const currentPeriod = `${monthNames[now.getMonth()]} ${now.getFullYear()}`;
+    const currentPeriod = `Siklus ${cycle.start.getDate()} ${monthNames[cycle.start.getMonth()]} - ${cycle.end.getDate()} ${monthNames[cycle.end.getMonth()]} ${cycle.end.getFullYear()} (Gajian ${cycle.payday.getDate()} ${monthNames[cycle.payday.getMonth()]})`;
 
     let grade = 'C';
     if (score.total >= 85) grade = 'A (Sangat Sehat)';
