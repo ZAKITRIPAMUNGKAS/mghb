@@ -7320,6 +7320,107 @@
       margin-top: 1px;
     }
 
+    /* ── DUAL FINANCIAL MODE & METRICS GRID ── */
+    .fin-mode-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      user-select: none;
+    }
+    .fin-mode-badge.pra-gajian {
+      background: rgba(224, 83, 21, 0.12);
+      color: #E05315;
+      border: 1px solid rgba(224, 83, 21, 0.3);
+    }
+    .fin-mode-badge.pra-gajian:hover {
+      background: rgba(224, 83, 21, 0.2);
+    }
+    .fin-mode-badge.siklus-gajian {
+      background: rgba(0, 94, 106, 0.12);
+      color: #005E6A;
+      border: 1px solid rgba(0, 94, 106, 0.3);
+    }
+    .fin-mode-badge.siklus-gajian:hover {
+      background: rgba(0, 94, 106, 0.2);
+    }
+    [data-theme="dark"] .fin-mode-badge.pra-gajian {
+      background: rgba(249, 115, 22, 0.18);
+      color: #fb923c;
+      border-color: rgba(249, 115, 22, 0.35);
+    }
+    [data-theme="dark"] .fin-mode-badge.siklus-gajian {
+      background: rgba(45, 212, 191, 0.18);
+      color: #2dd4bf;
+      border-color: rgba(45, 212, 191, 0.35);
+    }
+
+    .fin-metrics-grid-4 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+    @media (min-width: 640px) {
+      .fin-metrics-grid-4 {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+    .fin-metric-stat-box {
+      background: var(--surface-hover);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 9px 11px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      transition: background 0.15s ease;
+    }
+    .fin-metric-stat-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .fin-metric-stat-val {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text-primary);
+      line-height: 1.25;
+      font-variant-numeric: tabular-nums;
+    }
+    .fin-metric-stat-sub {
+      font-size: 10px;
+      color: var(--text-secondary);
+    }
+
+    .fin-mode-card-option {
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      background: var(--surface);
+      cursor: pointer;
+      transition: all 0.18s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      text-align: left;
+      width: 100%;
+    }
+    .fin-mode-card-option.active {
+      border-color: #005E6A;
+      background: rgba(0, 94, 106, 0.05);
+    }
+    [data-theme="dark"] .fin-mode-card-option.active {
+      border-color: #2dd4bf;
+      background: rgba(45, 212, 191, 0.08);
+    }
+
     /* ── OLD CLASS PRESERVATION (JS renders into these) ── */
     /* Keep fin-grid for backward compat but it's not used in the new layout */
     .fin-grid { display: none; }
@@ -7957,103 +8058,164 @@
     ═══════════════════════════════════════════════════ -->
     <section class="fin-snapshot" id="fin-snapshot-section">
       <div class="fin-snapshot-status-row">
-        <span class="fin-snapshot-label">Keuangan Rantau Jakarta</span>
+        <div>
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+            <span class="fin-snapshot-label">Keuangan Rantau Jakarta</span>
+            <span class="fin-mode-badge pra-gajian" id="fin-mode-badge" onclick="openFinanceModeModal()" role="button" tabindex="0" title="Klik untuk pengaturan mode keuangan">
+              🛡️ Pra-Gajian
+            </span>
+          </div>
+          <span class="fin-mode-sub" id="fin-mode-sub-text" style="font-size:11px;color:var(--text-tertiary);font-weight:600;display:block;margin-top:2px;">
+            18 hari menuju gaji pertama • 22 Oktober
+          </span>
+        </div>
         <div style="display:flex;align-items:center;gap:6px;">
+          <button type="button" class="fin-reset-hdr-btn" onclick="openFinanceModeModal()" title="Pengaturan Mode & Parameter Keuangan">
+            <iconify-icon icon="lucide:sliders-horizontal" width="13" height="13" style="vertical-align:middle;margin-right:2px;"></iconify-icon>
+            Atur Mode
+          </button>
           <button type="button" class="fin-reset-hdr-btn" onclick="openResetFinanceModal()" title="Reset data keuangan, transaksi, atau pemasukan">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:2px;"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
-            Reset Data
+            Reset
           </button>
           <span class="fin-snapshot-badge" id="fin-status-badge">Terkendali</span>
         </div>
       </div>
 
+      <!-- Hero Split: Saldo Likuid & Boleh Digunakan -->
       <div class="fin-hero-split">
+        <div class="fin-snapshot-hero" style="margin-bottom:0;padding:12px 14px;background:var(--surface-hover);border:1px solid var(--border);border-radius:12px;">
+          <span class="fin-snapshot-hero-label" id="fin-hero-liquid-label">Total Saldo Likuid</span>
+          <span class="fin-snapshot-hero-value" id="fin-remaining-budget" style="font-size:22px;">Rp 515.000</span>
+          <span class="fin-snapshot-metric-sub" id="fin-liquid-sub-desc" style="margin-top:2px;">BNI + GoPay + Tunai + ShopeePay</span>
+        </div>
         <div class="fin-hero-card-sts">
           <span class="fin-hero-sts-label">
-            <span>Aman Dibelanjakan</span>
+            <span id="fin-hero-sts-title">Boleh Digunakan</span>
             <span class="fin-snapshot-badge" id="fin-sts-status-badge" style="font-size:10px;padding:2px 7px;">Real-Time</span>
           </span>
-          <span class="fin-hero-sts-val" id="fin-safe-to-spend-val">Rp 0</span>
-          <span class="fin-hero-sts-sub" id="fin-sts-sub-desc">Setelah tagihan, pos iPhone 18 &amp; buffer</span>
-        </div>
-        <div class="fin-snapshot-hero" style="margin-bottom:0;padding:12px 14px;background:var(--surface-hover);border:1px solid var(--border);border-radius:12px;">
-          <span class="fin-snapshot-hero-label">Total Saldo Likuid</span>
-          <span class="fin-snapshot-hero-value" id="fin-remaining-budget" style="font-size:22px;">Rp 0</span>
-          <span class="fin-snapshot-metric-sub" id="fin-liquid-sub-desc" style="margin-top:2px;">Rekening operasional + Tunai</span>
+          <span class="fin-hero-sts-val" id="fin-safe-to-spend-val">Rp 315.000</span>
+          <span class="fin-hero-sts-sub" id="fin-sts-sub-desc">Setelah Buffer (Rp 200rb) &amp; Tagihan</span>
         </div>
       </div>
 
-      <!-- Multi-Account Balance Quick Strip -->
+      <!-- 4-Stat Dual Indicators Grid -->
+      <div class="fin-metrics-grid-4" id="fin-key-params-grid" style="margin:12px 0;">
+        <div class="fin-metric-stat-box">
+          <span class="fin-metric-stat-label" id="fin-param-target-title">Target Harian</span>
+          <span class="fin-metric-stat-val" id="fin-param-target-val" style="color:#005E6A;">Rp 15.000</span>
+          <span class="fin-metric-stat-sub" id="fin-param-target-sub">Ideal rekomendasi</span>
+        </div>
+        <div class="fin-metric-stat-box">
+          <span class="fin-metric-stat-label" id="fin-param-safe-title">Batas Aman Harian</span>
+          <span class="fin-metric-stat-val" id="fin-param-safe-val" style="color:#D97706;">Rp 17.500/hr</span>
+          <span class="fin-metric-stat-sub" id="fin-param-safe-sub">Maksimum cashflow</span>
+        </div>
+        <div class="fin-metric-stat-box">
+          <span class="fin-metric-stat-label" id="fin-param-buffer-title">Safety Buffer</span>
+          <span class="fin-metric-stat-val" id="fin-param-buffer-val" style="color:#10B981;">Rp 200.000</span>
+          <span class="fin-metric-stat-sub" id="fin-param-buffer-sub">Dana cadangan survival</span>
+        </div>
+        <div class="fin-metric-stat-box">
+          <span class="fin-metric-stat-label" id="fin-param-days-title">Menuju Gajian</span>
+          <span class="fin-metric-stat-val" id="fin-param-days-val" style="color:var(--text-primary);">18 Hari</span>
+          <span class="fin-metric-stat-sub" id="fin-param-days-sub">Target: 22 Oktober</span>
+        </div>
+      </div>
+
+      <!-- Contextual Intelligence Forecast Banner -->
+      <div id="fin-balance-banner" style="display:none;margin-top:10px;padding:10px 12px;border-radius:8px;font-size:0.78rem;line-height:1.45;"></div>
+
+      <!-- Multi-Account Balance Quick Strip Header & Row -->
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px;margin-bottom:6px;">
+        <span style="font-size:11px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.04em;">
+          Saldo Dompet &amp; Rekening
+        </span>
+        <div style="display:flex;gap:6px;">
+          <button type="button" class="fin-reset-hdr-btn" onclick="openQuickExpenseSheet(null,null,null,'transfer')" title="Transfer saldo antar dompet">
+            <iconify-icon icon="lucide:arrow-left-right" width="12" height="12" style="vertical-align:middle;margin-right:2px;color:#005E6A;"></iconify-icon>
+            Transfer
+          </button>
+          <button type="button" class="fin-reset-hdr-btn" onclick="openAccountModal('acc_bni')" title="Sesuaikan saldo">
+            <iconify-icon icon="lucide:pencil" width="12" height="12" style="vertical-align:middle;margin-right:2px;"></iconify-icon>
+            Atur Saldo
+          </button>
+        </div>
+      </div>
       <div class="fin-accounts-strip" id="fin-accounts-strip">
         <div class="fin-account-pill" onclick="promptEditAccountBalance('acc_bni')" role="button" tabindex="0" title="Klik untuk rekonsiliasi saldo BNI">
           <img src="bni-logo.svg" alt="BNI" class="fin-pill-brand-logo">
-          <span>BNI:</span> <strong class="fin-account-pill-amt" id="fin-acc-bni-val">Rp 0</strong>
+          <span>BNI:</span> <strong class="fin-account-pill-amt" id="fin-acc-bni-val">Rp 340.000</strong>
         </div>
         <div class="fin-account-pill" onclick="promptEditAccountBalance('acc_gopay')" role="button" tabindex="0" title="Klik untuk rekonsiliasi saldo GoPay">
           <iconify-icon icon="simple-icons:gojek" width="13" height="13" style="color:#00AA13;vertical-align:middle;"></iconify-icon>
-          <span>GoPay:</span> <strong class="fin-account-pill-amt" id="fin-acc-gopay-val">Rp 0</strong>
+          <span>GoPay:</span> <strong class="fin-account-pill-amt" id="fin-acc-gopay-val">Rp 12.000</strong>
         </div>
         <div class="fin-account-pill" onclick="promptEditAccountBalance('acc_cash')" role="button" tabindex="0" title="Klik untuk rekonsiliasi uang Tunai">
           <iconify-icon icon="lucide:wallet" width="13" height="13" style="color:#10B981;vertical-align:middle;"></iconify-icon>
-          <span>Tunai:</span> <strong class="fin-account-pill-amt" id="fin-acc-cash-val">Rp 0</strong>
+          <span>Tunai:</span> <strong class="fin-account-pill-amt" id="fin-acc-cash-val">Rp 155.000</strong>
         </div>
         <div class="fin-account-pill" onclick="promptEditAccountBalance('acc_shopeepay')" role="button" tabindex="0" title="Klik untuk rekonsiliasi saldo ShopeePay">
           <iconify-icon icon="simple-icons:shopee" width="13" height="13" style="color:#EE4D2D;vertical-align:middle;"></iconify-icon>
-          <span>ShopeePay:</span> <strong class="fin-account-pill-amt" id="fin-acc-shopeepay-val">Rp 0</strong>
+          <span>ShopeePay:</span> <strong class="fin-account-pill-amt" id="fin-acc-shopeepay-val">Rp 8.000</strong>
         </div>
       </div>
 
-      <div class="fin-snapshot-row">
-        <div class="fin-snapshot-metric" id="fin-metric-income" onclick="handleIncomeMetricClick()" style="cursor:pointer" title="Klik untuk ubah pemasukan atau reset">
+      <!-- Snapshot Row: Dana Awal & Pengeluaran -->
+      <div class="fin-snapshot-row" style="margin-top:6px;">
+        <div class="fin-snapshot-metric" id="fin-metric-income" onclick="handleIncomeMetricClick()" style="cursor:pointer" title="Klik untuk ubah modal awal / pemasukan">
           <div style="display:flex;justify-content:space-between;align-items:center;width:100%;">
-            <span class="fin-snapshot-metric-label">Pemasukan</span>
+            <span class="fin-snapshot-metric-label" id="fin-income-metric-header">Modal Awal Periode</span>
             <span style="font-size:10px;font-weight:700;color:#10b981;background:rgba(16,185,129,0.12);padding:1px 6px;border-radius:6px;">Ubah ✎</span>
           </div>
-          <span class="fin-snapshot-metric-value" id="fin-total-income-display">Rp 0</span>
-          <span class="fin-snapshot-metric-sub" id="fin-income-sources-label">Belum ada pemasukan</span>
-          <input type="hidden" id="fin-income-input" value="0">
+          <span class="fin-snapshot-metric-value" id="fin-total-income-display">Rp 2.500.000</span>
+          <span class="fin-snapshot-metric-sub" id="fin-income-sources-label">Modal hidup pra-gajian</span>
+          <input type="hidden" id="fin-income-input" value="2500000">
         </div>
         <div class="fin-snapshot-divider"></div>
         <div class="fin-snapshot-metric" id="fin-metric-spent">
-          <span class="fin-snapshot-metric-label">Terpakai</span>
+          <span class="fin-snapshot-metric-label" id="fin-spent-metric-header">Pengeluaran Fleksibel</span>
           <span class="fin-snapshot-metric-value" id="fin-total-expense">Rp 0</span>
-          <span class="fin-snapshot-metric-sub" id="fin-expense-percent">0% dari pemasukan</span>
+          <span class="fin-snapshot-metric-sub" id="fin-expense-percent">Burn rate: Rp 0/hari</span>
         </div>
       </div>
 
+      <!-- Burn Rate Meter & Progress -->
       <div class="fin-snapshot-meter">
         <div class="fin-snapshot-meter-row">
-          <span class="fin-snapshot-meter-label">Burn rate</span>
-          <span class="fin-snapshot-meter-value" id="fin-daily-safe-limit" style="font-size:0.82rem;font-weight:700">Batas: Rp — / hari</span>
+          <span class="fin-snapshot-meter-label" id="fin-burn-rate-meter-label">Burn Rate Harian</span>
+          <span class="fin-snapshot-meter-value" id="fin-daily-safe-limit" style="font-size:0.82rem;font-weight:700">Batas: Rp 17.500 / hari</span>
         </div>
         <div class="fin-snapshot-gauge-track">
           <div class="fin-snapshot-gauge-fill" id="fin-progress-bar" style="width:0%"></div>
         </div>
         <div class="fin-snapshot-meter-row">
-          <span class="fin-snapshot-meter-sub" id="fin-progress-label">Pengeluaran: 0%</span>
-          <span class="fin-snapshot-meter-sub" id="fin-days-left">Sisa hari: —</span>
+          <span class="fin-snapshot-meter-sub" id="fin-progress-label">Laju Terpakai: 0%</span>
+          <span class="fin-snapshot-meter-sub" id="fin-days-left">Sisa 18 hari ke gajian (22 Okt)</span>
         </div>
       </div>
 
       <!-- Today burn meter -->
       <div class="fin-snapshot-today">
         <div class="fin-snapshot-today-row">
-          <span class="fin-snapshot-today-label">Hari ini</span>
+          <span class="fin-snapshot-today-label">Hari Ini</span>
           <span class="fin-snapshot-badge" id="fin-today-badge">Aman</span>
           <span style="margin-left:auto;font-size:0.76rem;font-weight:700" id="fin-today-spent">Rp 0</span>
           <span style="font-size:0.68rem;color:var(--text-tertiary)">/</span>
-          <span style="font-size:0.76rem;font-weight:700;color:var(--accent)" id="fin-today-limit">Rp —</span>
+          <span style="font-size:0.76rem;font-weight:700;color:var(--accent)" id="fin-today-limit">Rp 17.500</span>
         </div>
         <div class="fin-snapshot-today-track">
           <div class="fin-snapshot-today-fill" id="fin-today-meter-fill" style="width:0%"></div>
         </div>
         <div class="fin-snapshot-today-meta">
-          <span id="fin-today-left-text">Sisa jatah: Rp —</span>
-          <span id="fin-burn-rate-pace">Kecepatan: Normal</span>
+          <span id="fin-today-left-text">Sisa jatah: Rp 15.000 (Target)</span>
+          <span id="fin-burn-rate-pace">Status: Disiplin</span>
+        </div>
+        <div style="font-size:10px;color:var(--text-tertiary);margin-top:6px;line-height:1.35;">
+          * Sisa target yang tidak dibelanjakan hari ini otomatis menjadi buffer pengaman (tidak otomatis dihabiskan besok).
         </div>
       </div>
 
-      <div id="fin-balance-banner" style="display:none;margin-top:10px;padding:10px 12px;border-radius:6px;font-size:0.76rem;line-height:1.4"></div>
       <input type="hidden" id="fin-fixed-input" value="0">
       <span id="fin-db-dot" style="display:none"></span>
     </section>
@@ -8101,6 +8263,10 @@
           <img src="bni-logo.svg" alt="BNI" class="fin-pill-brand-logo">
           <span>Uang Saku</span>
         </button>
+        <button type="button" class="fin-action-chip" onclick="openQuickExpenseSheet(null,null,null,'transfer')" aria-label="Transfer Saldo Antar Dompet">
+          <iconify-icon icon="lucide:arrow-left-right" width="18" height="18" aria-hidden="true" style="color:#005E6A;"></iconify-icon>
+          <span>Transfer</span>
+        </button>
       </div>
     </section>
 
@@ -8135,56 +8301,115 @@
             SECTION 6 — BUDGET 50/30/20 (LEVEL 1 PRIMARY CARD)
             ═══════════════════════════════════════════════════ -->
             <section class="fin-budget" id="fin-envelopes-section">
-              <div class="fin-budget-head">
-                <div>
-                  <span class="fin-budget-title">Alokasi Budget 50/30/20</span>
+              <!-- Mode Pra-Gajian Callout Card -->
+              <div id="fin-envelopes-pra-card" style="display:block;">
+                <div class="fin-budget-head">
+                  <div>
+                    <span class="fin-budget-title">Alokasi Budget 50/30/20</span>
+                    <span class="fin-calendar-period" style="font-size:11px;color:var(--text-tertiary);margin-top:2px;display:block">
+                      Panduan Siklus Gaji
+                    </span>
+                  </div>
+                  <span class="fin-snapshot-badge" style="background:rgba(0, 94, 106, 0.1);color:#005E6A;border-color:rgba(0, 94, 106, 0.2);">
+                    Aktif Pasca-Gajian
+                  </span>
                 </div>
-                <span class="fin-budget-sub">Siklus Magang</span>
+                <div style="background:var(--surface-hover);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:12px;line-height:1.45;">
+                  <div style="font-size:13px;font-weight:700;color:var(--text-primary);margin-bottom:4px;display:flex;align-items:center;gap:6px;">
+                    <iconify-icon icon="lucide:info" width="16" height="16" style="color:#005E6A;"></iconify-icon>
+                    Budget 50/30/20 akan aktif setelah gaji pertama diterima.
+                  </div>
+                  <div style="font-size:11px;color:var(--text-secondary);">
+                    Saat ini kamu berada dalam <strong>Mode Pra-Gajian</strong>. Fokus utama adalah <strong>survival cashflow</strong> menjaga ketersediaan dana likuid sampai 22 Oktober tanpa mengorbankan dana cadangan.
+                  </div>
+                </div>
+                <!-- Proyeksi Rencana Gaji Pertama -->
+                <div style="border:1px dashed var(--border);border-radius:10px;padding:12px;background:var(--surface);">
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                    <span style="font-size:11px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.03em;">
+                      Simulasi Gaji Pertama (Est. Rp 3.500.000)
+                    </span>
+                    <span style="font-size:10px;color:#005E6A;font-weight:700;background:rgba(0,94,106,0.08);padding:2px 6px;border-radius:4px;">Guideline</span>
+                  </div>
+                  <div style="display:flex;flex-direction:column;gap:8px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;">
+                      <span style="display:flex;align-items:center;gap:5px;font-weight:600;color:var(--text-primary);">
+                        <iconify-icon icon="lucide:home" width="14" height="14" style="color:#007C89;"></iconify-icon>
+                        Needs (50%): Kos, Listrik, Makan Pokok
+                      </span>
+                      <strong style="color:var(--text-primary);font-variant-numeric:tabular-nums;">Rp 1.750.000</strong>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;">
+                      <span style="display:flex;align-items:center;gap:5px;font-weight:600;color:var(--text-primary);">
+                        <iconify-icon icon="lucide:coffee" width="14" height="14" style="color:#F59E0B;"></iconify-icon>
+                        Wants (30%): KRL, Kuota, Laundry, Kopi
+                      </span>
+                      <strong style="color:var(--text-primary);font-variant-numeric:tabular-nums;">Rp 1.050.000</strong>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;">
+                      <span style="display:flex;align-items:center;gap:5px;font-weight:600;color:var(--text-primary);">
+                        <iconify-icon icon="lucide:wallet" width="14" height="14" style="color:#10B981;"></iconify-icon>
+                        Savings (20%): Tabungan iPhone 18 &amp; Darurat
+                      </span>
+                      <strong style="color:var(--text-primary);font-variant-numeric:tabular-nums;">Rp 700.000</strong>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div class="fin-budget-list">
-                <div class="fin-budget-row needs">
-                  <div class="fin-budget-row-top">
-                    <span class="fin-budget-row-label">
-                      <iconify-icon icon="lucide:home" width="16" height="16" aria-hidden="true"></iconify-icon>
-                      <span>Needs (50%)</span>
-                    </span>
-                    <span class="fin-budget-row-status" id="fin-env-needs-status">0%</span>
+
+              <!-- Mode Siklus Gajian Interactive Envelopes -->
+              <div id="fin-envelopes-active" style="display:none;">
+                <div class="fin-budget-head">
+                  <div>
+                    <span class="fin-budget-title">Alokasi Budget 50/30/20</span>
                   </div>
-                  <div class="fin-budget-row-amt">
-                    <span class="fin-budget-row-spent" id="fin-env-needs-spent">Rp 0</span>
-                    <span class="fin-budget-row-target" id="fin-env-needs-target">Target: Rp 1.750.000</span>
-                  </div>
-                  <div class="fin-budget-row-track"><div class="fin-budget-row-fill" id="fin-env-needs-fill" style="width:0%;background:#007C89"></div></div>
+                  <span class="fin-budget-sub">Siklus Magang Aktif</span>
                 </div>
-        
-                <div class="fin-budget-row wants">
-                  <div class="fin-budget-row-top">
-                    <span class="fin-budget-row-label">
-                      <iconify-icon icon="lucide:coffee" width="16" height="16" aria-hidden="true"></iconify-icon>
-                      <span>Wants (30%)</span>
-                    </span>
-                    <span class="fin-budget-row-status" id="fin-env-wants-status">0%</span>
+                <div class="fin-budget-list">
+                  <div class="fin-budget-row needs">
+                    <div class="fin-budget-row-top">
+                      <span class="fin-budget-row-label">
+                        <iconify-icon icon="lucide:home" width="16" height="16" aria-hidden="true"></iconify-icon>
+                        <span>Needs (50%)</span>
+                      </span>
+                      <span class="fin-budget-row-status" id="fin-env-needs-status">0%</span>
+                    </div>
+                    <div class="fin-budget-row-amt">
+                      <span class="fin-budget-row-spent" id="fin-env-needs-spent">Rp 0</span>
+                      <span class="fin-budget-row-target" id="fin-env-needs-target">Target: Rp 1.750.000</span>
+                    </div>
+                    <div class="fin-budget-row-track"><div class="fin-budget-row-fill" id="fin-env-needs-fill" style="width:0%;background:#007C89"></div></div>
                   </div>
-                  <div class="fin-budget-row-amt">
-                    <span class="fin-budget-row-spent" id="fin-env-wants-spent">Rp 0</span>
-                    <span class="fin-budget-row-target" id="fin-env-wants-target">Target: Rp 1.050.000</span>
+          
+                  <div class="fin-budget-row wants">
+                    <div class="fin-budget-row-top">
+                      <span class="fin-budget-row-label">
+                        <iconify-icon icon="lucide:coffee" width="16" height="16" aria-hidden="true"></iconify-icon>
+                        <span>Wants (30%)</span>
+                      </span>
+                      <span class="fin-budget-row-status" id="fin-env-wants-status">0%</span>
+                    </div>
+                    <div class="fin-budget-row-amt">
+                      <span class="fin-budget-row-spent" id="fin-env-wants-spent">Rp 0</span>
+                      <span class="fin-budget-row-target" id="fin-env-wants-target">Target: Rp 1.050.000</span>
+                    </div>
+                    <div class="fin-budget-row-track"><div class="fin-budget-row-fill" id="fin-env-wants-fill" style="width:0%;background:#F59E0B"></div></div>
                   </div>
-                  <div class="fin-budget-row-track"><div class="fin-budget-row-fill" id="fin-env-wants-fill" style="width:0%;background:#F59E0B"></div></div>
-                </div>
-        
-                <div class="fin-budget-row savings">
-                  <div class="fin-budget-row-top">
-                    <span class="fin-budget-row-label">
-                      <iconify-icon icon="lucide:wallet" width="16" height="16" aria-hidden="true"></iconify-icon>
-                      <span>Savings (20%)</span>
-                    </span>
-                    <span class="fin-budget-row-status" id="fin-env-savings-status">0%</span>
+          
+                  <div class="fin-budget-row savings">
+                    <div class="fin-budget-row-top">
+                      <span class="fin-budget-row-label">
+                        <iconify-icon icon="lucide:wallet" width="16" height="16" aria-hidden="true"></iconify-icon>
+                        <span>Savings (20%)</span>
+                      </span>
+                      <span class="fin-budget-row-status" id="fin-env-savings-status">0%</span>
+                    </div>
+                    <div class="fin-budget-row-amt">
+                      <span class="fin-budget-row-spent" id="fin-env-savings-spent">Rp 0</span>
+                      <span class="fin-budget-row-target" id="fin-env-savings-target">Target: Rp 700.000</span>
+                    </div>
+                    <div class="fin-budget-row-track"><div class="fin-budget-row-fill" id="fin-env-savings-fill" style="width:0%;background:#10B981"></div></div>
                   </div>
-                  <div class="fin-budget-row-amt">
-                    <span class="fin-budget-row-spent" id="fin-env-savings-spent">Rp 0</span>
-                    <span class="fin-budget-row-target" id="fin-env-savings-target">Target: Rp 700.000</span>
-                  </div>
-                  <div class="fin-budget-row-track"><div class="fin-budget-row-fill" id="fin-env-savings-fill" style="width:0%;background:#10B981"></div></div>
                 </div>
               </div>
             </section>
@@ -8606,8 +8831,8 @@
           <button type="button" class="fin-sheet-close" onclick="closeQuickExpenseSheet()">&times;</button>
         </div>
 
-        <!-- Segmented Type Switcher -->
-        <div class="fin-sheet-type-tabs" role="tablist" style="grid-template-columns: 1fr 1fr 1fr;">
+        <!-- Segmented Type Switcher (4 Tabs: Pengeluaran, Pemasukan, Transfer, Nabung/Goal) -->
+        <div class="fin-sheet-type-tabs" role="tablist" style="display:grid;grid-template-columns: repeat(4, 1fr);gap:4px;">
           <button type="button" class="fin-sheet-type-tab active" id="fin-tab-expense" onclick="switchQuickSheetType('expense')">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             <span>Pengeluaran</span>
@@ -8616,13 +8841,17 @@
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             <span>Pemasukan</span>
           </button>
+          <button type="button" class="fin-sheet-type-tab" id="fin-tab-transfer" onclick="switchQuickSheetType('transfer')">
+            <iconify-icon icon="lucide:arrow-left-right" width="14" height="14" aria-hidden="true"></iconify-icon>
+            <span>Transfer</span>
+          </button>
           <button type="button" class="fin-sheet-type-tab" id="fin-tab-saving" onclick="switchQuickSheetType('saving')">
             <iconify-icon icon="lucide:piggy-bank" width="14" height="14" aria-hidden="true"></iconify-icon>
             <span>Nabung/Goal</span>
           </button>
         </div>
 
-        <!-- Account / Wallet Selector -->
+        <!-- Account / Wallet Selector (Source) -->
         <div style="margin-bottom:12px">
           <label class="form-label" style="display:flex;justify-content:space-between;align-items:center;">
             <span id="fin-sheet-acc-label">Rekening / Sumber Dana</span>
@@ -8647,6 +8876,33 @@
             </button>
           </div>
           <input type="hidden" id="fin-sheet-account-id" value="acc_bni">
+        </div>
+
+        <!-- Destination Account Selector (Transfer Mode Only) -->
+        <div id="fin-sheet-dest-acc-container" style="display:none;margin-bottom:12px;">
+          <label class="form-label" style="display:flex;justify-content:space-between;align-items:center;">
+            <span>Ke Rekening / Dompet Tujuan</span>
+            <span id="fin-sheet-dest-balance-hint" style="font-size:11px;color:var(--text-tertiary);font-weight:600">Saldo: Rp —</span>
+          </label>
+          <div class="fin-account-select-chips" id="fin-sheet-dest-accounts">
+            <button type="button" class="fin-account-select-chip" data-acc="acc_bni" onclick="selectSheetDestAccount('acc_bni', this)">
+              <img src="bni-logo.svg" alt="BNI" class="fin-pill-brand-logo">
+              <span>BNI</span>
+            </button>
+            <button type="button" class="fin-account-select-chip active" data-acc="acc_gopay" onclick="selectSheetDestAccount('acc_gopay', this)">
+              <iconify-icon icon="simple-icons:gojek" width="14" height="14" style="color:#00AA13;"></iconify-icon>
+              <span>GoPay</span>
+            </button>
+            <button type="button" class="fin-account-select-chip" data-acc="acc_cash" onclick="selectSheetDestAccount('acc_cash', this)">
+              <iconify-icon icon="lucide:wallet" width="14" height="14" style="color:#10B981;"></iconify-icon>
+              <span>Tunai</span>
+            </button>
+            <button type="button" class="fin-account-select-chip" data-acc="acc_shopeepay" onclick="selectSheetDestAccount('acc_shopeepay', this)">
+              <iconify-icon icon="simple-icons:shopee" width="14" height="14" style="color:#EE4D2D;"></iconify-icon>
+              <span>ShopeePay</span>
+            </button>
+          </div>
+          <input type="hidden" id="fin-sheet-dest-account-id" value="acc_gopay">
         </div>
 
         <div style="margin-bottom:14px">
@@ -9842,6 +10098,144 @@
 
     <div class="modal-foot" style="display: flex; justify-content: flex-end; padding: 12px 20px; border-top: 1px solid var(--border); background: var(--surface);">
       <button type="button" class="btn-action btn-secondary" onclick="closeResetFinanceModal()" style="padding: 8px 18px;">Tutup</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Pengaturan Mode Keuangan & Parameter (Dual-Mode FinOS) -->
+<div class="modal-overlay" id="finance-mode-modal" onclick="handleModeModalBackdrop(event)">
+  <div class="modal-box" style="max-width: 440px; border-radius: 16px; overflow: hidden;">
+    <div class="modal-head" style="padding: 16px 20px 12px; border-bottom: 1px solid var(--border);">
+      <h3 style="display: flex; align-items: center; gap: 8px; font-size: 1.05rem; font-weight: 700; margin: 0; color: var(--text-primary);">
+        <span style="display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 8px; background: rgba(0, 94, 106, 0.1); color: #005E6A;">
+          <iconify-icon icon="lucide:sliders-horizontal" width="18" height="18"></iconify-icon>
+        </span>
+        <span>Pengaturan Mode Keuangan</span>
+      </h3>
+      <button class="btn-close" onclick="closeFinanceModeModal()" title="Tutup">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <form id="finance-mode-form" onsubmit="handleFinanceModeSubmit(event)">
+      <div class="modal-body" style="padding: 18px 20px 14px; max-height: 75vh; overflow-y: auto;">
+        
+        <!-- Pilihan Mode Keuangan -->
+        <label class="form-label" style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 8px;">
+          Mode Finansial Aktif
+        </label>
+        <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px;">
+          <div class="fin-mode-card-option active" id="mode-opt-pra" onclick="selectModeFormOption('pra_gajian')">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <strong style="font-size: 13px; color: #E05315; display: flex; align-items: center; gap: 5px;">
+                <span>🛡️ Mode Pra-Gajian</span>
+                <span style="font-size: 9px; padding: 1px 6px; background: rgba(224,83,21,0.12); border-radius: 4px;">Rekomendasi</span>
+              </strong>
+              <input type="radio" name="fin_mode_radio" value="pra_gajian" checked style="accent-color: #E05315;">
+            </div>
+            <span style="font-size: 11px; color: var(--text-secondary); line-height: 1.4;">
+              Fokus <strong>survival cashflow</strong> sebelum gaji pertama. Menjaga saldo likuid & dana cadangan sampai tanggal gajian tiba.
+            </span>
+          </div>
+
+          <div class="fin-mode-card-option" id="mode-opt-siklus" onclick="selectModeFormOption('siklus_gajian')">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <strong style="font-size: 13px; color: #005E6A; display: flex; align-items: center; gap: 5px;">
+                <span>🏛️ Mode Siklus Gajian</span>
+              </strong>
+              <input type="radio" name="fin_mode_radio" value="siklus_gajian" style="accent-color: #005E6A;">
+            </div>
+            <span style="font-size: 11px; color: var(--text-secondary); line-height: 1.4;">
+              Gaji reguler sudah diterima. Mengaktifkan alokasi anggaran <strong>50/30/20</strong> dan manajemen pengeluaran bulanan normal.
+            </span>
+          </div>
+        </div>
+        <input type="hidden" id="fin-cfg-mode" value="pra_gajian">
+
+        <!-- Dana Awal / Modal Hidup Sebelum Gajian -->
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label class="form-label" for="fin-cfg-starting-fund" style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px;">
+            Modal Hidup / Dana Awal Pra-Gajian (Rp)
+          </label>
+          <input type="text" inputmode="numeric" class="form-control" id="fin-cfg-starting-fund" placeholder="Contoh: 2.500.000" oninput="formatMoneyInput(this)" style="font-size: 1rem; font-weight: 700;">
+          <span style="font-size: 10px; color: var(--text-tertiary); margin-top: 3px; display: block;">
+            Dana pegangan sebelum gajian (bukan gaji/pendapatan bulanan).
+          </span>
+        </div>
+
+        <!-- Safety Buffer / Dana Cadangan -->
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label class="form-label" for="fin-cfg-buffer" style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px;">
+            Dana Cadangan / Safety Buffer (Rp)
+          </label>
+          <input type="text" inputmode="numeric" class="form-control" id="fin-cfg-buffer" placeholder="Contoh: 200.000" oninput="formatMoneyInput(this)" style="font-size: 1rem; font-weight: 700;">
+          <span style="font-size: 10px; color: var(--text-tertiary); margin-top: 3px; display: block;">
+            Dana darurat yang dikunci agar tidak terpakai belanja harian.
+          </span>
+        </div>
+
+        <!-- Target Belanja Harian -->
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label class="form-label" for="fin-cfg-target-daily" style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px;">
+            Target Belanja Harian Ideal (Rp)
+          </label>
+          <input type="text" inputmode="numeric" class="form-control" id="fin-cfg-target-daily" placeholder="Contoh: 15.000" oninput="formatMoneyInput(this)" style="font-size: 1rem; font-weight: 700;">
+          <span style="font-size: 10px; color: var(--text-tertiary); margin-top: 3px; display: block;">
+            Target ideal harian yang dijaga (sisa unspent tetap jadi buffer).
+          </span>
+        </div>
+
+        <!-- Tanggal Gajian Pertama / Berikutnya -->
+        <div class="form-group" style="margin-bottom: 8px;">
+          <label class="form-label" for="fin-cfg-payday-date" style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px;">
+            Tanggal Gajian Pertama / Siklus
+          </label>
+          <input type="date" class="form-control" id="fin-cfg-payday-date" required style="font-size: 0.95rem; font-weight: 600;">
+          <span id="fin-cfg-countdown-hint" style="font-size: 10px; color: #005E6A; font-weight: 600; margin-top: 3px; display: block;"></span>
+        </div>
+
+      </div>
+
+      <div class="modal-foot" style="display: flex; justify-content: flex-end; gap: 8px; padding: 14px 20px; border-top: 1px solid var(--border); background: var(--surface);">
+        <button type="button" class="btn-action btn-secondary" onclick="closeFinanceModeModal()" style="padding: 8px 16px;">Batal</button>
+        <button type="submit" class="btn-action" style="background: #005E6A; border: none; color: #fff; font-weight: 700; padding: 8px 22px; border-radius: var(--radius-sm); box-shadow: 0 2px 8px rgba(0, 94, 106, 0.25);">
+          Simpan Parameter
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal: Prompt Deteksi Gaji Pertama -->
+<div class="modal-overlay" id="finance-salary-prompt-modal" onclick="handleSalaryPromptBackdrop(event)">
+  <div class="modal-box" style="max-width: 420px; border-radius: 16px; overflow: hidden; text-align: center;">
+    <div style="padding: 24px 20px 16px;">
+      <div style="width: 52px; height: 52px; border-radius: 50%; background: rgba(16, 185, 129, 0.12); color: #10B981; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 12px;">
+        <iconify-icon icon="lucide:party-popper" width="28" height="28"></iconify-icon>
+      </div>
+      <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--text-primary); margin: 0 0 6px;">
+        Gaji Pertama Terdeteksi! 🎉
+      </h3>
+      <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5; margin: 0 0 16px;">
+        Pemasukan gaji sebesar <strong id="prompt-salary-amt" style="color: #10B981;">Rp 0</strong> telah dicatat. Apakah kamu ingin beralih ke <strong>Mode Siklus Gajian</strong> sekarang?
+      </p>
+      <div style="background: var(--surface-hover); border: 1px dashed var(--border); border-radius: 10px; padding: 10px 12px; font-size: 11px; color: var(--text-secondary); text-align: left; line-height: 1.45; margin-bottom: 18px;">
+        ✨ <strong>Fitur yang akan aktif:</strong><br>
+        • Alokasi budget 50/30/20 otomatis aktif<br>
+        • Perhitungan cashflow bulanan berbasis gaji<br>
+        • Target belanja harian disesuaikan ke siklus 30 hari
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <button type="button" class="btn-action" onclick="confirmSwitchToSiklusGajian()" style="height: 42px; background: #005E6A; border: none; color: #fff; font-weight: 700; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 94, 106, 0.25);">
+          🏛️ Ya, Mulai Siklus Gajian
+        </button>
+        <button type="button" class="btn-action btn-secondary" onclick="closeSalaryPromptModal()" style="height: 38px; border-radius: 8px;">
+          🛡️ Tetap di Mode Pra-Gajian
+        </button>
+      </div>
     </div>
   </div>
 </div>
@@ -13478,7 +13872,52 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   }
 
   // =========================================================================
-  // FinOS Engine: Adaptive Goal-Based Budgeting Core
+  // FinConfig: Dual-Mode Architecture & Parameter State
+  // =========================================================================
+  const FinConfig = {
+    KEY: 'mghb_fin_config',
+    getDefaults() {
+      return {
+        mode: 'pra_gajian', // 'pra_gajian' | 'siklus_gajian'
+        first_salary_received: false,
+        starting_fund: 2500000,
+        safety_buffer: 200000,
+        target_daily: 15000,
+        payday_date: '2026-10-22',
+        needs_pct: 50,
+        wants_pct: 30,
+        savings_pct: 20
+      };
+    },
+    get() {
+      try {
+        const raw = localStorage.getItem(this.KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          return Object.assign(this.getDefaults(), parsed);
+        }
+      } catch (e) {
+        console.warn('FinConfig get error:', e);
+      }
+      return this.getDefaults();
+    },
+    save(cfg, syncCloud = true) {
+      try {
+        localStorage.setItem(this.KEY, JSON.stringify(cfg));
+      } catch (e) {}
+      if (syncCloud && typeof supabaseClient !== 'undefined' && supabaseClient) {
+        supabaseClient.from('mghb_settings').upsert({
+          key: 'fin_config',
+          value: cfg,
+          updated_at: new Date().toISOString()
+        }).then(() => {}, err => console.warn('Supabase fin_config sync error:', err));
+      }
+    }
+  };
+  window.FinConfig = FinConfig;
+
+  // =========================================================================
+  // FinOS Engine: Adaptive Goal-Based Budgeting Core (Dual-Mode)
   // =========================================================================
   const FinOS = {
     KEYS: {
@@ -13490,10 +13929,10 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     },
 
     DEFAULT_ACCOUNTS: [
-      { id: 'acc_bni', name: 'Rekening BNI', type: 'checking', balance: 0, is_liquid: true, icon: 'bni-logo.svg', color: '#007C89' },
-      { id: 'acc_gopay', name: 'GoPay', type: 'wallet', balance: 0, is_liquid: true, icon: 'simple-icons:gojek', color: '#00AED6' },
-      { id: 'acc_cash', name: 'Uang Tunai', type: 'cash', balance: 0, is_liquid: true, icon: 'lucide:wallet', color: '#10B981' },
-      { id: 'acc_shopeepay', name: 'ShopeePay', type: 'wallet', balance: 0, is_liquid: true, icon: 'simple-icons:shopee', color: '#EE4D2D' }
+      { id: 'acc_bni', name: 'Rekening BNI', type: 'checking', balance: 340000, is_liquid: true, icon: 'bni-logo.svg', color: '#007C89' },
+      { id: 'acc_gopay', name: 'GoPay', type: 'wallet', balance: 12000, is_liquid: true, icon: 'simple-icons:gojek', color: '#00AED6' },
+      { id: 'acc_cash', name: 'Uang Tunai', type: 'cash', balance: 155000, is_liquid: true, icon: 'lucide:wallet', color: '#10B981' },
+      { id: 'acc_shopeepay', name: 'ShopeePay', type: 'wallet', balance: 8000, is_liquid: true, icon: 'simple-icons:shopee', color: '#EE4D2D' }
     ],
 
     DEFAULT_GOALS: [
@@ -13504,10 +13943,10 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     ],
 
     DEFAULT_COMMITMENTS: [
-      { id: 'bill_kos', name: 'Sewa Kos Benhil', amount: 1200000, due_day: 1, category: 'kos', is_mandatory: true, is_active: true, is_paid: false, preferred_account_id: 'acc_bni' },
-      { id: 'bill_listrik', name: 'Token Listrik Kos', amount: 150000, due_day: 5, category: 'kos', is_mandatory: true, is_active: true, is_paid: false, preferred_account_id: 'acc_bni' },
-      { id: 'bill_kuota', name: 'Paket Data / Kuota', amount: 100000, due_day: 10, category: 'tagihan', is_mandatory: true, is_active: true, is_paid: false, preferred_account_id: 'acc_bni' },
-      { id: 'bill_laundry', name: 'Langganan Laundry Kiloan', amount: 150000, due_day: 15, category: 'laundry', is_mandatory: true, is_active: true, is_paid: false, preferred_account_id: 'acc_cash' }
+      { id: 'bill_kos', name: 'Sewa Kos Benhil', amount: 1200000, due_day: 1, category: 'kos', is_mandatory: true, is_active: true, is_paid: true, preferred_account_id: 'acc_bni' },
+      { id: 'bill_listrik', name: 'Token Listrik Kos', amount: 150000, due_day: 5, category: 'kos', is_mandatory: true, is_active: true, is_paid: true, preferred_account_id: 'acc_bni' },
+      { id: 'bill_kuota', name: 'Paket Data / Kuota', amount: 100000, due_day: 10, category: 'tagihan', is_mandatory: true, is_active: true, is_paid: true, preferred_account_id: 'acc_bni' },
+      { id: 'bill_laundry', name: 'Langganan Laundry Kiloan', amount: 150000, due_day: 15, category: 'laundry', is_mandatory: true, is_active: true, is_paid: true, preferred_account_id: 'acc_cash' }
     ],
 
     getAccounts() {
@@ -13528,6 +13967,17 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
                 migrated = true;
               }
             });
+            // Bila semua saldo masih 0 (state default awal belum diisi pengguna), semai nilai aktual pengguna
+            const totalBal = parsed.reduce((s, a) => s + (Number(a.balance) || 0), 0);
+            if (totalBal === 0) {
+              parsed.forEach(acc => {
+                if (acc.id === 'acc_bni') acc.balance = 340000;
+                else if (acc.id === 'acc_gopay') acc.balance = 12000;
+                else if (acc.id === 'acc_cash') acc.balance = 155000;
+                else if (acc.id === 'acc_shopeepay') acc.balance = 8000;
+              });
+              migrated = true;
+            }
             if (migrated) this.saveAccounts(parsed, false);
             return parsed;
           }
@@ -13565,7 +14015,17 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
         const raw = localStorage.getItem(this.KEYS.COMMITMENTS);
         if (raw) {
           const parsed = JSON.parse(raw);
-          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            let migrated = false;
+            parsed.forEach(c => {
+              if (c.id === 'bill_kos' && !c.is_paid) {
+                c.is_paid = true;
+                migrated = true;
+              }
+            });
+            if (migrated) this.saveCommitments(parsed, false);
+            return parsed;
+          }
         }
       } catch (e) {}
       const legacyBills = typeof getFinanceBills === 'function' ? getFinanceBills() : [];
@@ -13753,66 +14213,163 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     },
 
     computeMetrics(refDate = new Date()) {
+      const cfg = typeof FinConfig !== 'undefined' ? FinConfig.get() : {
+        mode: 'pra_gajian',
+        starting_fund: 2500000,
+        safety_buffer: 200000,
+        target_daily: 15000,
+        payday_date: '2026-10-22'
+      };
+      const isPraGajian = cfg.mode === 'pra_gajian';
       const cycle = getFinanceCycleRange(refDate);
       const accounts = this.getAccounts();
       const commitments = this.getCommitments();
       const goals = this.getGoals();
       const txs = this.getTransactions();
 
+      // 1. Total Saldo Likuid (BNI + GoPay + Tunai + ShopeePay)
       const liquidBalance = accounts.filter(a => a.is_liquid !== false).reduce((s, a) => s + (Number(a.balance) || 0), 0);
       const savingsBalance = accounts.filter(a => a.is_liquid === false).reduce((s, a) => s + (Number(a.balance) || 0), 0);
       const totalAssets = accounts.reduce((s, a) => s + (Number(a.balance) || 0), 0);
 
+      // 2. Countdown Tanggal Gajian
       const now = new Date();
       const todayWibStr = getWibDateString(now);
-      const msDiff = cycle.payday.getTime() - new Date(todayWibStr).getTime();
-      const remainingDays = Math.max(1, Math.round(msDiff / (24 * 3600 * 1000)));
+      let paydayTargetDate;
+      if (isPraGajian && cfg.payday_date) {
+        paydayTargetDate = new Date(cfg.payday_date + 'T00:00:00');
+      } else {
+        paydayTargetDate = cycle.payday;
+      }
+      const msDiff = paydayTargetDate.getTime() - new Date(todayWibStr + 'T00:00:00').getTime();
+      const remainingDays = Math.max(1, Math.ceil(msDiff / (24 * 3600 * 1000)));
 
-      const maxCycleDate = cycle.paydayStr > cycle.endStr ? cycle.paydayStr : cycle.endStr;
+      // 3. Filter Transaksi dalam Siklus
+      const maxCycleDate = isPraGajian ? (cfg.payday_date || cycle.paydayStr) : (cycle.paydayStr > cycle.endStr ? cycle.paydayStr : cycle.endStr);
       const cycleTxs = txs.filter(t => t.date >= cycle.startStr && t.date <= maxCycleDate);
       const cycleExpenses = cycleTxs.filter(t => t.type === 'expense');
       const cycleIncomes = cycleTxs.filter(t => t.type === 'income');
       const cycleSavings = cycleTxs.filter(t => t.type === 'saving');
 
+      // 4. Modal Awal atau Pemasukan Reguler
       const totalRecordedIncome = cycleIncomes.reduce((s, t) => s + (Number(t.amount) || 0), 0);
       const baselineIncome = typeof getFinanceIncome === 'function' ? getFinanceIncome() : 0;
-      const totalIncome = cycleIncomes.length > 0 ? totalRecordedIncome : baselineIncome;
+      const totalIncome = isPraGajian 
+        ? (Number(cfg.starting_fund) || 2500000) 
+        : (cycleIncomes.length > 0 ? totalRecordedIncome : (baselineIncome || 0));
 
+      // 5. Tagihan Wajib yang Belum Lunas dan Jatuh Tempo Sebelum Gajian
+      const todayDay = now.getDate();
+      const paydayDay = paydayTargetDate ? paydayTargetDate.getDate() : 22;
       const unpaidMandatoryBills = commitments
-        .filter(c => c.is_mandatory && c.is_active && !c.is_paid)
+        .filter(c => {
+          if (!c.is_mandatory || !c.is_active || c.is_paid) return false;
+          if (isPraGajian) {
+            const dueDay = Number(c.due_day || c.dueDay) || 1;
+            if (todayDay <= paydayDay) {
+              return dueDay >= todayDay && dueDay <= paydayDay;
+            } else {
+              return dueDay >= todayDay || dueDay <= paydayDay;
+            }
+          }
+          return true;
+        })
         .reduce((s, c) => s + (Number(c.amount) || 0), 0);
 
       const paidBills = commitments
         .filter(c => c.is_paid)
         .reduce((s, c) => s + (Number(c.amount) || 0), 0);
 
+      // 6. Total Pengeluaran Aktual
       const totalSpent = cycleExpenses.reduce((s, t) => s + (Number(t.amount) || 0), 0);
       const effectiveSpent = totalSpent + paidBills;
 
-      const protectedGoalAllocations = goals.reduce((s, g) => s + (Number(g.monthly_allocation) || 0), 0);
-      const safetyBuffer = Math.min(Math.floor(liquidBalance * 0.05), 150000);
+      // 7. Safety Buffer & Available Spending (Boleh Digunakan)
+      const safetyBuffer = isPraGajian 
+        ? (Number(cfg.safety_buffer) || 200000)
+        : Math.min(Math.floor(liquidBalance * 0.05), 150000);
 
-      const rawSTS = liquidBalance - unpaidMandatoryBills - protectedGoalAllocations - safetyBuffer;
-      const safeToSpend = Math.max(0, rawSTS);
+      const protectedGoalAllocations = isPraGajian 
+        ? 0 
+        : goals.reduce((s, g) => s + (Number(g.monthly_allocation) || 0), 0);
 
+      // Rumus Boleh Digunakan = Saldo Likuid - Safety Buffer - Tagihan Belum Lunas
+      const safeToSpend = Math.max(0, liquidBalance - safetyBuffer - unpaidMandatoryBills - protectedGoalAllocations);
+
+      // 8. Dual Indikator: Batas Aman Harian & Target Belanja Harian
       const dynamicDailyLimit = remainingDays > 0 ? Math.floor(safeToSpend / remainingDays) : 0;
+      const targetDaily = isPraGajian ? (Number(cfg.target_daily) || 15000) : (remainingDays > 0 ? Math.floor(safeToSpend / remainingDays) : 0);
 
+      // 9. Projected Balance Saat Gajian
+      // Formula: Saldo Likuid - (Target Belanja Harian * Sisa Hari) - Tagihan Belum Lunas
+      const projectedBalance = liquidBalance - (targetDaily * remainingDays) - unpaidMandatoryBills;
+
+      // 10. Pengeluaran Hari Ini
       const todaySpent = cycleExpenses
         .filter(e => e.date === todayWibStr)
         .reduce((s, e) => s + (Number(e.amount) || 0), 0);
 
-      const primaryGoal = goals.find(g => g.is_primary) || goals[0] || { name: 'iPhone 18', target: 18000000, saved: 0, monthly_allocation: 500000 };
+      // 11. Daily Burn Rate
+      const cycleStartWib = new Date(cycle.startStr + 'T00:00:00').getTime();
+      const todayTime = new Date(todayWibStr + 'T00:00:00').getTime();
+      const daysPassed = Math.max(1, Math.round((todayTime - cycleStartWib) / (24 * 3600 * 1000)));
+      const dailyBurnRate = Math.round(totalSpent / daysPassed);
+
+      // 12. Penentuan Status Cashflow
+      let cashflowStatus = 'AMAN';
+      let cashflowClass = 'success';
+      let cashflowDesc = '';
+
+      if (safeToSpend <= 0 || projectedBalance <= 0) {
+        cashflowStatus = 'KRITIS';
+        cashflowClass = 'danger';
+        cashflowDesc = 'Projected balance habis sebelum gajian atau dana aman Rp 0!';
+      } else if (isPraGajian && (dynamicDailyLimit < 25000 || dailyBurnRate > dynamicDailyLimit || projectedBalance < safetyBuffer * 1.5)) {
+        cashflowStatus = 'WASPADA';
+        cashflowClass = 'warning';
+        cashflowDesc = `Pengeluaran rata-rata mulai mendekati/melebihi batas aman (${formatRupiah(dynamicDailyLimit)}/hari).`;
+      } else if (remainingDays > 14 || projectedBalance < safetyBuffer * 2) {
+        cashflowStatus = 'CUKUP TERKENDALI';
+        cashflowClass = 'warning';
+        cashflowDesc = 'Cashflow cukup, jaga pengeluaran harian mendekati target ideal.';
+      } else {
+        cashflowStatus = 'AMAN';
+        cashflowClass = 'success';
+        cashflowDesc = 'Saldo likuid memadai dan memiliki cadangan buffer aman sampai gajian.';
+      }
+
+      // Contextual Insight Card Banner
+      let contextualInsight = '';
+      if (isPraGajian) {
+        if (cashflowStatus === 'KRITIS') {
+          contextualInsight = `<strong>🚨 Status Kritis:</strong> Dana yang boleh digunakan saat ini Rp 0 atau projected balance defisit. Segera tahan seluruh pengeluaran non-primer hingga tanggal gajian (${paydayTargetDate.getDate()} Okt).`;
+        } else if (cashflowStatus === 'WASPADA') {
+          contextualInsight = `<strong>⚠️ Status Waspada:</strong> Cashflow masih cukup sampai gajian. Sisa dana yang dapat digunakan <strong>${formatRupiah(safeToSpend)}</strong> untuk <strong>${remainingDays} hari</strong> (batas aman <strong>${formatRupiah(dynamicDailyLimit)}/hari</strong>). Pertahankan pengeluaran di sekitar target ideal <strong>${formatRupiah(targetDaily)}/hari</strong>. Jika mempertahankan pola ini, saldo diperkirakan <strong>${formatRupiah(projectedBalance)}</strong> saat gajian tiba.`;
+        } else {
+          contextualInsight = `<strong>🛡️ Cashflow Mode Pra-Gajian Cukup:</strong> Sisa dana yang dapat digunakan <strong>${formatRupiah(safeToSpend)}</strong> untuk <strong>${remainingDays} hari</strong> ke depan. Jika mempertahankan target belanja di sekitar <strong>${formatRupiah(targetDaily)}/hari</strong>, saldo diperkirakan <strong>${formatRupiah(projectedBalance)}</strong> saat gajian tiba.`;
+        }
+      } else {
+        if (safeToSpend <= 0) {
+          contextualInsight = `<strong>🚨 Anggaran Habis:</strong> Sisa Safe-to-Spend Rp 0. Tunda belanja diskresioner hingga siklus berikutnya.`;
+        } else if (dynamicDailyLimit < 35000) {
+          contextualInsight = `<strong>⚠️ Anggaran Ketat:</strong> Sisa Safe-to-Spend ${formatRupiah(safeToSpend)}. Batasi pengeluaran ke ${formatRupiah(dynamicDailyLimit)}/hari untuk sisa ${remainingDays} hari.`;
+        } else {
+          contextualInsight = `<strong>✅ Siklus Gajian Sehat:</strong> Cashflow aman dengan Safe-to-Spend ${formatRupiah(safeToSpend)} (${formatRupiah(dynamicDailyLimit)}/hari untuk ${remainingDays} hari).`;
+        }
+      }
+
+      // 13. Goal metrics & Envelopes (untuk siklus normal)
+      const primaryGoal = goals.find(g => g.is_primary) || goals[0] || { name: 'iPhone 18', target: 30000000, saved: 0, monthly_allocation: 1000000 };
       const goalRemaining = Math.max(0, (primaryGoal.target || 0) - (primaryGoal.saved || 0));
-      const dailySavingRate = Math.max(1, Math.floor((primaryGoal.monthly_allocation || 500000) / 30));
+      const dailySavingRate = Math.max(1, Math.floor((primaryGoal.monthly_allocation || 1000000) / 30));
       const daysToGoal = Math.ceil(goalRemaining / dailySavingRate);
 
-      const targetNeeds = Math.round(totalIncome * 0.50);
-      const targetWants = Math.round(totalIncome * 0.30);
-      const targetSavings = Math.round(totalIncome * 0.20);
+      const targetNeeds = Math.round(totalIncome * (cfg.needs_pct || 50) / 100);
+      const targetWants = Math.round(totalIncome * (cfg.wants_pct || 30) / 100);
+      const targetSavings = Math.round(totalIncome * (cfg.savings_pct || 20) / 100);
 
       let spentNeeds = 0;
       let spentWants = 0;
-
       commitments.filter(c => c.is_paid).forEach(c => {
         const cCat = (c.category || (c.id && c.id.includes('laundry') ? 'laundry' : (c.id && (c.id.includes('kos') || c.id.includes('listrik')) ? 'kos' : 'tagihan'))).toLowerCase();
         const cAmt = Number(c.amount) || 0;
@@ -13822,7 +14379,6 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
           spentWants += cAmt;
         }
       });
-
       cycleExpenses.forEach(e => {
         const amt = Number(e.amount) || 0;
         const cat = (e.category || e.cat || 'lainnya').toLowerCase();
@@ -13833,28 +14389,26 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
         }
       });
 
+      // Savings: eksklusif dari transaksi tipe saving atau tabungan goal nyata
       const totalGoalsSaved = goals.reduce((s, g) => s + (Number(g.saved) || 0), 0);
       const cycleSavingsTotal = cycleSavings.reduce((s, t) => s + (Number(t.amount) || 0), 0);
       const spentSavings = Math.max(cycleSavingsTotal, totalGoalsSaved);
 
-      const savingsScore = totalIncome > 0 ? Math.min(100, Math.round(((spentSavings + savingsBalance) / Math.max(targetSavings, 1)) * 100)) : 0;
-      const remainingBudget = totalIncome - effectiveSpent - unpaidMandatoryBills;
-      const dailyScore = Math.min(100, Math.round(Math.max(0, remainingBudget / Math.max(totalIncome, 1)) * 100));
-      const billScore = commitments.length > 0 ? Math.round((commitments.filter(c => c.is_paid).length / commitments.length) * 100) : 100;
-      let envelopeScore = 100;
-      if (targetWants > 0 && spentWants > targetWants) {
-        envelopeScore = Math.max(0, 100 - Math.round(((spentWants - targetWants) / targetWants) * 100));
-      }
-      const healthScoreTotal = Math.round(savingsScore * 0.30 + dailyScore * 0.40 + billScore * 0.20 + envelopeScore * 0.10);
+      const remainingBudget = totalIncome - effectiveSpent - unpaidMandatoryBills - spentSavings;
 
       return {
+        mode: cfg.mode,
+        isPraGajian,
+        cfg,
         cycle,
         remainingDays,
+        paydayTargetDate,
         accounts,
         liquidBalance,
         savingsBalance,
         totalAssets,
         totalIncome,
+        startingFund: Number(cfg.starting_fund) || 2500000,
         unpaidMandatoryBills,
         paidBills,
         totalSpent,
@@ -13863,7 +14417,14 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
         safetyBuffer,
         safeToSpend,
         dynamicDailyLimit,
+        targetDaily,
+        projectedBalance,
         todaySpent,
+        dailyBurnRate,
+        cashflowStatus,
+        cashflowClass,
+        cashflowDesc,
+        contextualInsight,
         remainingBudget,
         primaryGoal,
         goalRemaining,
@@ -13875,34 +14436,35 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
           targetSavings, spentSavings
         },
         healthScore: {
-          total: healthScoreTotal,
-          savingsScore,
-          dailyScore,
-          billScore,
-          envelopeScore
+          total: isPraGajian 
+            ? (cashflowStatus === 'AMAN' ? 92 : (cashflowStatus === 'CUKUP TERKENDALI' ? 78 : (cashflowStatus === 'WASPADA' ? 58 : 32)))
+            : Math.round(75),
+          savingsScore: 70,
+          dailyScore: 80,
+          billScore: 90,
+          envelopeScore: 80
         },
         whatIfSimulation(amount) {
           const amt = Math.max(0, parseInt(amount, 10) || 0);
           const newSTS = Math.max(0, safeToSpend - amt);
           const newDailyLimit = remainingDays > 0 ? Math.floor(newSTS / remainingDays) : 0;
           const dailyDiff = Math.max(0, dynamicDailyLimit - newDailyLimit);
+          const newProjected = projectedBalance - amt;
           const goalDelayDays = amt > 0 ? Math.ceil(amt / dailySavingRate) : 0;
-          const projectedEom = Math.max(0, (liquidBalance - amt) - unpaidMandatoryBills);
-          const runwayDays = Math.max(1, Math.floor((liquidBalance - amt) / Math.max(dynamicDailyLimit, 35000)));
 
           let status = 'success';
           let badgeText = 'Aman';
-          let verdict = `Pengeluaran ${formatRupiah(amt)} aman dilakukan. Sisa Safe-to-Spend Anda menjadi ${formatRupiah(newSTS)} dan limit harian disesuaikan menjadi ${formatRupiah(newDailyLimit)}/hari.`;
+          let verdict = `Pengeluaran ${formatRupiah(amt)} aman dilakukan. Sisa Safe-to-Spend menjadi ${formatRupiah(newSTS)} dan limit harian disesuaikan menjadi ${formatRupiah(newDailyLimit)}/hari.`;
 
           if (amt > safeToSpend) {
             status = 'danger';
             badgeText = 'Kritis';
             const deficit = amt - safeToSpend;
-            verdict = `Peringatan: Pengeluaran ini melebihi Safe-to-Spend sebesar ${formatRupiah(deficit)}. Jika dipaksakan, alokasi tagihan wajib atau tabungan ${primaryGoal.name} akan terpakai!`;
-          } else if (newDailyLimit < 30000) {
+            verdict = `Peringatan: Pengeluaran ini melebihi Safe-to-Spend sebesar ${formatRupiah(deficit)}. Safety buffer atau dana tagihan akan tergerus!`;
+          } else if (newDailyLimit < targetDaily) {
             status = 'warning';
             badgeText = 'Ketat';
-            verdict = `Dapat dilakukan, namun limit harian menyempit menjadi ${formatRupiah(newDailyLimit)}/hari sampai gajian. Tunda jika ada kebutuhan makan/transport mendesak.`;
+            verdict = `Dapat dilakukan, namun batas aman harian turun menjadi ${formatRupiah(newDailyLimit)}/hari (di bawah target ideal ${formatRupiah(targetDaily)}). Disarankan hemat untuk hari berikutnya.`;
           }
 
           return {
@@ -13910,9 +14472,9 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
             newSafeToSpend: newSTS,
             newDailyLimit,
             dailyDiff,
+            newProjected,
+            projectedEom: newProjected,
             goalDelayDays,
-            projectedEom,
-            runwayDays,
             status,
             badgeText,
             verdict,
@@ -14243,13 +14805,31 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     }
   }
 
+  function selectSheetDestAccount(accId, el) {
+    const destInput = document.getElementById('fin-sheet-dest-account-id');
+    if (destInput) destInput.value = accId;
+    const chipsContainer = document.getElementById('fin-sheet-dest-accounts');
+    if (chipsContainer) {
+      chipsContainer.querySelectorAll('.fin-account-select-chip').forEach(c => {
+        c.classList.toggle('active', c.getAttribute('data-acc') === accId);
+      });
+    }
+    const accounts = FinOS.getAccounts();
+    const destAcc = accounts.find(a => a.id === accId);
+    const hintEl = document.getElementById('fin-sheet-dest-balance-hint');
+    if (hintEl && destAcc) {
+      hintEl.textContent = `Saldo: ${formatRupiah(destAcc.balance)}`;
+    }
+  }
+  window.selectSheetDestAccount = selectSheetDestAccount;
+
 
 
   const DEFAULT_BILLS = [
-    { id: 'bill_kos', name: 'Sewa Kos Benhil', amount: 1200000, dueDay: 1, paid: false, icon: '', custom: false },
-    { id: 'bill_listrik', name: 'Token Listrik Kos', amount: 150000, dueDay: 5, paid: false, icon: '', custom: false },
-    { id: 'bill_kuota', name: 'Paket Data / Kuota', amount: 100000, dueDay: 10, paid: false, icon: '', custom: false },
-    { id: 'bill_laundry', name: 'Langganan Laundry Kiloan', amount: 150000, dueDay: 15, paid: false, icon: '', custom: false }
+    { id: 'bill_kos', name: 'Sewa Kos Benhil', amount: 1200000, dueDay: 1, paid: true, icon: '', custom: false },
+    { id: 'bill_listrik', name: 'Token Listrik Kos', amount: 150000, dueDay: 5, paid: true, icon: '', custom: false },
+    { id: 'bill_kuota', name: 'Paket Data / Kuota', amount: 100000, dueDay: 10, paid: true, icon: '', custom: false },
+    { id: 'bill_laundry', name: 'Langganan Laundry Kiloan', amount: 150000, dueDay: 15, paid: true, icon: '', custom: false }
   ];
 
   // Centralized Icon Mapping (Fluent Emoji Flat via Iconify)
@@ -15499,135 +16079,206 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   }
 
   function updateFinanceCalculations(syncInputField = true) {
-    const cycle = getFinanceCycleRange();
+    const cfg = typeof FinConfig !== 'undefined' ? FinConfig.get() : {
+      mode: 'pra_gajian',
+      starting_fund: 2500000,
+      safety_buffer: 200000,
+      target_daily: 15000,
+      payday_date: '2026-10-22'
+    };
+    const isPraGajian = cfg.mode === 'pra_gajian';
+    const finMetrics = FinOS.computeMetrics();
+    const cycle = finMetrics.cycle;
     const allTxs = getFinanceExpenses();
-    const maxCycleDate = cycle.paydayStr > cycle.endStr ? cycle.paydayStr : cycle.endStr;
+    const maxCycleDate = isPraGajian ? (cfg.payday_date || cycle.paydayStr) : (cycle.paydayStr > cycle.endStr ? cycle.paydayStr : cycle.endStr);
 
-    // Rincian pemasukan siklus aktif
-    const cycleIncomes = allTxs.filter(t => t.type === 'income' && t.date >= cycle.startStr && t.date <= maxCycleDate);
-    const totalRecordedIncome = cycleIncomes.reduce((s, i) => s + (Number(i.amount) || 0), 0);
+    const monthNamesShort = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
 
-    const incomeInput = document.getElementById('fin-income-input');
-    const incomeDisplay = document.getElementById('fin-total-income-display');
-    const storedIncome = localStorage.getItem(FIN_INCOME_KEY);
+    // 1. Sinkronisasi Header & Mode Badge
+    const modeBadge = document.getElementById('fin-mode-badge');
+    if (modeBadge) {
+      modeBadge.className = 'fin-mode-badge ' + (isPraGajian ? 'pra-gajian' : 'siklus-gajian');
+      modeBadge.innerHTML = isPraGajian ? '🛡️ Pra-Gajian' : '🏛️ Siklus Gajian';
+    }
 
-    let income;
-    if (cycleIncomes.length > 0) {
-      income = totalRecordedIncome;
-      localStorage.setItem(FIN_INCOME_KEY, income.toString());
-      if (syncInputField && incomeInput && document.activeElement !== incomeInput) {
-        incomeInput.value = income.toLocaleString('id-ID');
-      }
-      if (incomeDisplay) {
-        incomeDisplay.textContent = formatRupiah(income);
-      }
-      const sourceEl = document.getElementById('fin-income-sources-label');
-      if (sourceEl) {
-        sourceEl.textContent = `${cycleIncomes.length} sumber aktif`;
-        sourceEl.title = `${cycleIncomes.length} sumber pemasukan (${formatRupiah(totalRecordedIncome)})`;
-      }
-    } else if (storedIncome !== null && !isNaN(parseInt(storedIncome, 10))) {
-      income = Math.max(0, parseInt(storedIncome, 10));
-      if (syncInputField && incomeInput && document.activeElement !== incomeInput) {
-        incomeInput.value = income.toLocaleString('id-ID');
-      }
-      if (incomeDisplay) {
-        incomeDisplay.textContent = formatRupiah(income);
-      }
-      const sourceEl = document.getElementById('fin-income-sources-label');
-      if (sourceEl) {
-        sourceEl.textContent = income === 0 ? 'Belum ada pemasukan' : 'Nilai tersimpan';
-        sourceEl.title = 'Pemasukan tersimpan (klik untuk ubah atau reset)';
-      }
-    } else {
-      income = 0;
-      localStorage.setItem(FIN_INCOME_KEY, '0');
-      if (syncInputField && incomeInput && document.activeElement !== incomeInput) {
-        incomeInput.value = '0';
-      }
-      if (incomeDisplay) {
-        incomeDisplay.textContent = formatRupiah(0);
-      }
-      const sourceEl = document.getElementById('fin-income-sources-label');
-      if (sourceEl) {
-        sourceEl.textContent = 'Belum ada pemasukan';
-        sourceEl.title = 'Belum ada pemasukan (klik untuk catat pemasukan)';
+    const modeSub = document.getElementById('fin-mode-sub-text');
+    if (modeSub) {
+      if (isPraGajian) {
+        modeSub.textContent = `${finMetrics.remainingDays} hari menuju gaji pertama • 22 Oktober`;
+      } else {
+        modeSub.textContent = `Siklus Bulanan Normal • Payday ${cycle.payday.getDate()} ${monthNamesShort[cycle.payday.getMonth()]}`;
       }
     }
 
-    if (supabaseClient) {
-      supabaseClient.from('mghb_settings').upsert({ key: 'finance_income', value: income, updated_at: new Date().toISOString() })
-        .then(() => {}, err => console.warn('Supabase income sync error:', err));
+    const statusBadge = document.getElementById('fin-status-badge');
+    if (statusBadge) {
+      statusBadge.textContent = finMetrics.cashflowStatus;
+      statusBadge.className = 'fin-snapshot-badge ' + finMetrics.cashflowClass;
     }
 
-    const bills = getFinanceBills();
-    const totalBills = bills.reduce((s, b) => s + (Number(b.amount) || 0), 0);
-    const paidBills = bills.filter(b => b.paid).reduce((s, b) => s + (Number(b.amount) || 0), 0);
-    const unpaidBills = totalBills - paidBills;
-
-    // Filter ke transaksi pengeluaran (belanja) & tabungan dalam siklus aktif
-    const cycleExpenses = allTxs.filter(item => item.type !== 'income' && item.type !== 'saving' && item.date >= cycle.startStr && item.date <= maxCycleDate);
-    const cycleSavings = allTxs.filter(item => item.type === 'saving' && item.date >= cycle.startStr && item.date <= maxCycleDate);
-    const totalSpent = cycleExpenses.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
-    const totalCycleSavings = cycleSavings.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
-
-    const goals = typeof FinOS !== 'undefined' && FinOS.getGoals ? FinOS.getGoals() : [];
-    const totalGoalsSaved = goals.reduce((s, g) => s + (Number(g.saved) || 0), 0);
-    const realSavings = Math.max(totalCycleSavings, totalGoalsSaved);
-
-    // effectiveTotalSpent = pengeluaran manual + tagihan yang sudah dibayar (dicentang)
-    // Ini adalah total uang yang sudah benar-benar keluar / dikunci bulan ini
-    const effectiveTotalSpent = totalSpent + paidBills;
-
-    // Remaining = income - semua yang sudah keluar/dikunci - tagihan belum lunas - tabungan yang sudah disisihkan
-    // Tagihan belum lunas (unpaidBills) masih "wajib dibayar" jadi harus dikurangi dari sisa
-    const remaining = income - effectiveTotalSpent - unpaidBills - realSavings;
-
-    const percentSpent = income > 0 ? Math.min(Math.round((effectiveTotalSpent / income) * 100), 100) : 100;
-
-    // Days left in current cycle (starts 21st, payday 22nd)
-    const now = new Date();
-    const todayWibStr = getWibDateString(now);
-    const msDiff = cycle.payday.getTime() - new Date(todayWibStr).getTime();
-    const daysLeft = Math.max(1, Math.round(msDiff / (24 * 3600 * 1000)));
-
-    const safeDailyLimit = remaining > 0 ? Math.round(remaining / daysLeft) : 0;
-
-    // Anggaran variabel (uang yang benar-benar bisa dipakai, sudah di luar tagihan belum lunas)
-    const variableBudget = Math.max(remaining, 0);
-
-    // Update Overview DOM
-    const totalEl = document.getElementById('fin-total-expense');
-    // Tampilkan effectiveTotalSpent (pengeluaran + tagihan lunas) sebagai "Terpakai Bulan Ini"
-    if (totalEl) totalEl.textContent = formatRupiah(effectiveTotalSpent);
-
-    const percentEl = document.getElementById('fin-expense-percent');
-    if (percentEl) percentEl.textContent = `${percentSpent}% dari pemasukan`;
-
+    // 2. Hero Split: Total Saldo Likuid & Boleh Digunakan
     const remEl = document.getElementById('fin-remaining-budget');
     if (remEl) {
-      remEl.textContent = formatRupiah(remaining);
-      remEl.className = 'fin-snapshot-hero-value ' + (remaining < 0 ? 'danger' : (percentSpent > 80 ? 'warning' : 'success'));
+      remEl.textContent = formatRupiah(finMetrics.liquidBalance);
+      remEl.className = 'fin-snapshot-hero-value ' + (finMetrics.liquidBalance < 200000 ? 'danger' : (finMetrics.liquidBalance < 400000 ? 'warning' : 'success'));
     }
 
-    const dailyLimitEl = document.getElementById('fin-daily-safe-limit');
-    if (dailyLimitEl) {
-      dailyLimitEl.textContent = remaining > 0 
-        ? `Batas: ${formatRupiah(safeDailyLimit)}/hari` 
-        : 'Anggaran telah habis!';
-      if (remaining <= 0) {
-        dailyLimitEl.classList.add('danger');
+    const heroLiquidLabel = document.getElementById('fin-hero-liquid-label');
+    if (heroLiquidLabel) {
+      heroLiquidLabel.textContent = isPraGajian ? 'Total Saldo Likuid' : 'Saldo Kas Likuid';
+    }
+
+    const stsValEl = document.getElementById('fin-safe-to-spend-val');
+    if (stsValEl) stsValEl.textContent = formatRupiah(finMetrics.safeToSpend);
+
+    const stsTitleEl = document.getElementById('fin-hero-sts-title');
+    if (stsTitleEl) {
+      stsTitleEl.textContent = isPraGajian ? 'Boleh Digunakan' : 'Safe-to-Spend';
+    }
+
+    const stsSubEl = document.getElementById('fin-sts-sub-desc');
+    if (stsSubEl) {
+      if (isPraGajian) {
+        stsSubEl.textContent = `Setelah Buffer (${formatRupiah(finMetrics.safetyBuffer)}) & Tagihan`;
       } else {
-        dailyLimitEl.classList.remove('danger');
+        stsSubEl.textContent = `Limit: ${formatRupiah(finMetrics.dynamicDailyLimit)}/hari • Sisa ${finMetrics.remainingDays} hari`;
       }
     }
 
-    // --- Today's Safe Burn Rate Meter ---
-    const todayStr = getWibDateString();
-    const todaySpent = cycleExpenses
-      .filter(e => e.date === todayStr)
-      .reduce((s, e) => s + (Number(e.amount) || 0), 0);
+    const stsBadge = document.getElementById('fin-sts-status-badge');
+    if (stsBadge) {
+      stsBadge.textContent = finMetrics.cashflowStatus;
+      stsBadge.className = 'fin-snapshot-badge ' + finMetrics.cashflowClass;
+    }
 
+    // 3. 4-Stat Dual Indicators Grid
+    const pTgtVal = document.getElementById('fin-param-target-val');
+    if (pTgtVal) pTgtVal.textContent = formatRupiah(finMetrics.targetDaily);
+
+    const pSafeVal = document.getElementById('fin-param-safe-val');
+    if (pSafeVal) pSafeVal.textContent = `${formatRupiah(finMetrics.dynamicDailyLimit)}/hr`;
+
+    const pBufVal = document.getElementById('fin-param-buffer-val');
+    if (pBufVal) pBufVal.textContent = formatRupiah(finMetrics.safetyBuffer);
+
+    const pDaysVal = document.getElementById('fin-param-days-val');
+    if (pDaysVal) pDaysVal.textContent = `${finMetrics.remainingDays} Hari`;
+
+    const pDaysSub = document.getElementById('fin-param-days-sub');
+    if (pDaysSub) {
+      pDaysSub.textContent = isPraGajian ? 'Target: 22 Oktober' : `Gajian: ${cycle.payday.getDate()} ${monthNamesShort[cycle.payday.getMonth()]}`;
+    }
+
+    // 4. Contextual Intelligence Forecast Banner
+    const banner = document.getElementById('fin-balance-banner');
+    if (banner) {
+      banner.style.display = 'block';
+      if (finMetrics.cashflowStatus === 'KRITIS') {
+        banner.style.background = 'rgba(239,68,68,.08)';
+        banner.style.border = '1px solid rgba(239,68,68,.35)';
+        banner.style.color = '#dc2626';
+      } else if (finMetrics.cashflowStatus === 'WASPADA') {
+        banner.style.background = 'rgba(245,158,11,.10)';
+        banner.style.border = '1px solid rgba(245,158,11,.4)';
+        banner.style.color = '#b45309';
+      } else if (finMetrics.cashflowStatus === 'CUKUP TERKENDALI') {
+        banner.style.background = 'rgba(2,132,199,.08)';
+        banner.style.border = '1px solid rgba(2,132,199,.35)';
+        banner.style.color = '#0284c7';
+      } else {
+        banner.style.background = 'rgba(16,185,129,.08)';
+        banner.style.border = '1px solid rgba(16,185,129,.35)';
+        banner.style.color = '#15803d';
+      }
+      banner.innerHTML = finMetrics.contextualInsight;
+    }
+
+    // 5. Pemasukan / Modal Awal & Pengeluaran Fleksibel
+    const cycleIncomes = allTxs.filter(t => t.type === 'income' && t.date >= cycle.startStr && t.date <= maxCycleDate);
+    const totalRecordedIncome = cycleIncomes.reduce((s, i) => s + (Number(i.amount) || 0), 0);
+    const incomeInput = document.getElementById('fin-income-input');
+    const incomeDisplay = document.getElementById('fin-total-income-display');
+    const incomeHeader = document.getElementById('fin-income-metric-header');
+    const incomeSources = document.getElementById('fin-income-sources-label');
+
+    if (incomeHeader) {
+      incomeHeader.textContent = isPraGajian ? 'Modal Awal Periode' : 'Pemasukan Siklus';
+    }
+
+    if (isPraGajian) {
+      const fund = finMetrics.startingFund;
+      if (incomeDisplay) incomeDisplay.textContent = formatRupiah(fund);
+      if (syncInputField && incomeInput && document.activeElement !== incomeInput) {
+        incomeInput.value = fund.toLocaleString('id-ID');
+      }
+      if (incomeSources) {
+        incomeSources.textContent = 'Modal hidup pra-gajian';
+        incomeSources.title = 'Modal pegangan sebelum gajian (klik untuk ubah)';
+      }
+    } else {
+      const incVal = finMetrics.totalIncome;
+      if (incomeDisplay) incomeDisplay.textContent = formatRupiah(incVal);
+      if (syncInputField && incomeInput && document.activeElement !== incomeInput) {
+        incomeInput.value = incVal.toLocaleString('id-ID');
+      }
+      if (incomeSources) {
+        incomeSources.textContent = cycleIncomes.length > 0 ? `${cycleIncomes.length} sumber aktif` : 'Nilai tersimpan';
+      }
+    }
+
+    const spentHeader = document.getElementById('fin-spent-metric-header');
+    if (spentHeader) {
+      spentHeader.textContent = isPraGajian ? 'Pengeluaran Fleksibel' : 'Terpakai Siklus';
+    }
+
+    const totalEl = document.getElementById('fin-total-expense');
+    if (totalEl) totalEl.textContent = formatRupiah(finMetrics.effectiveSpent);
+
+    const percentEl = document.getElementById('fin-expense-percent');
+    if (percentEl) {
+      if (isPraGajian) {
+        percentEl.textContent = `Burn rate: ${formatRupiah(finMetrics.dailyBurnRate)}/hari`;
+      } else {
+        const pct = finMetrics.totalIncome > 0 ? Math.min(Math.round((finMetrics.effectiveSpent / finMetrics.totalIncome) * 100), 100) : 100;
+        percentEl.textContent = `${pct}% dari pemasukan`;
+      }
+    }
+
+    // 6. Burn Rate Meter
+    const dailyLimitEl = document.getElementById('fin-daily-safe-limit');
+    if (dailyLimitEl) {
+      dailyLimitEl.textContent = finMetrics.safeToSpend > 0 
+        ? `Batas: ${formatRupiah(finMetrics.dynamicDailyLimit)} / hari` 
+        : 'Anggaran aman habis!';
+      dailyLimitEl.classList.toggle('danger', finMetrics.safeToSpend <= 0);
+    }
+
+    const progressFill = document.getElementById('fin-progress-bar');
+    const progressLabel = document.getElementById('fin-progress-label');
+    if (progressFill && progressLabel) {
+      if (isPraGajian) {
+        const paceRatio = finMetrics.dynamicDailyLimit > 0 
+          ? Math.min(Math.round((finMetrics.dailyBurnRate / finMetrics.dynamicDailyLimit) * 100), 100)
+          : (finMetrics.dailyBurnRate > 0 ? 100 : 0);
+        progressFill.style.width = paceRatio + '%';
+        progressFill.style.backgroundColor = finMetrics.dailyBurnRate > finMetrics.dynamicDailyLimit ? '#ef4444' : (paceRatio > 80 ? '#f59e0b' : '#10b981');
+        progressLabel.textContent = `Burn: ${formatRupiah(finMetrics.dailyBurnRate)}/hr (${paceRatio}% batas aman)`;
+      } else {
+        const pctSpent = finMetrics.totalIncome > 0 ? Math.min(Math.round((finMetrics.effectiveSpent / finMetrics.totalIncome) * 100), 100) : 100;
+        progressFill.style.width = pctSpent + '%';
+        progressFill.style.backgroundColor = finMetrics.remainingBudget < 0 || pctSpent > 90 ? '#ef4444' : (pctSpent > 70 ? '#f59e0b' : '#10b981');
+        progressLabel.textContent = `Pengeluaran: ${pctSpent}%`;
+      }
+    }
+
+    const daysLeftEl = document.getElementById('fin-days-left');
+    if (daysLeftEl) {
+      daysLeftEl.textContent = isPraGajian 
+        ? `Sisa ${finMetrics.remainingDays} hari ke gajian (22 Okt)`
+        : `Sisa ${finMetrics.remainingDays} hari ke gajian (${cycle.payday.getDate()} ${monthNamesShort[cycle.payday.getMonth()]})`;
+    }
+
+    // 7. Today Burn Tracker (dengan Target Belanja vs Batas Aman)
     const todaySpentEl = document.getElementById('fin-today-spent');
     const todayLimitEl = document.getElementById('fin-today-limit');
     const todayBadge = document.getElementById('fin-today-badge');
@@ -15635,80 +16286,58 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     const todayLeftText = document.getElementById('fin-today-left-text');
     const burnRatePace = document.getElementById('fin-burn-rate-pace');
 
-    if (todaySpentEl) todaySpentEl.textContent = formatRupiah(todaySpent);
-    if (todayLimitEl) todayLimitEl.textContent = formatRupiah(safeDailyLimit);
+    if (todaySpentEl) todaySpentEl.textContent = formatRupiah(finMetrics.todaySpent);
+    if (todayLimitEl) todayLimitEl.textContent = formatRupiah(isPraGajian ? finMetrics.targetDaily : finMetrics.dynamicDailyLimit);
 
     if (todayFill) {
-      const todayRatio = safeDailyLimit > 0 ? Math.round((todaySpent / safeDailyLimit) * 100) : (todaySpent > 0 ? 100 : 0);
+      const refLimit = isPraGajian ? finMetrics.targetDaily : finMetrics.dynamicDailyLimit;
+      const todayRatio = refLimit > 0 ? Math.round((finMetrics.todaySpent / refLimit) * 100) : (finMetrics.todaySpent > 0 ? 100 : 0);
       todayFill.style.width = Math.min(todayRatio, 100) + '%';
-      if (todaySpent > safeDailyLimit) {
-        todayFill.style.backgroundColor = '#ef4444';
-        if (todayBadge) {
-          todayBadge.textContent = 'Over Limit';
-          todayBadge.style.cssText = 'font-size: 0.68rem; padding: 2px 8px; background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3);';
-        }
-        if (todayLeftText) todayLeftText.textContent = `Melebihi jatah harian sebesar ${formatRupiah(todaySpent - safeDailyLimit)}`;
-        if (burnRatePace) burnRatePace.textContent = 'Kecepatan belanja: Agresif';
-      } else if (todayRatio > 75) {
-        todayFill.style.backgroundColor = '#f59e0b';
-        if (todayBadge) {
-          todayBadge.textContent = 'Mendekati Batas';
-          todayBadge.style.cssText = 'font-size: 0.68rem; padding: 2px 8px; background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3);';
-        }
-        if (todayLeftText) todayLeftText.textContent = `Sisa jatah hari ini: ${formatRupiah(safeDailyLimit - todaySpent)}`;
-        if (burnRatePace) burnRatePace.textContent = 'Kecepatan belanja: Cepat';
-      } else {
+
+      if (finMetrics.todaySpent <= finMetrics.targetDaily) {
         todayFill.style.backgroundColor = '#10b981';
         if (todayBadge) {
           todayBadge.textContent = 'Aman';
           todayBadge.style.cssText = 'font-size: 0.68rem; padding: 2px 8px; background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3);';
         }
-        if (todayLeftText) todayLeftText.textContent = `Sisa jatah hari ini: ${formatRupiah(Math.max(safeDailyLimit - todaySpent, 0))}`;
-        if (burnRatePace) burnRatePace.textContent = 'Kecepatan belanja: Terkendali';
+        if (todayLeftText) todayLeftText.textContent = `Sisa target hari ini: ${formatRupiah(Math.max(finMetrics.targetDaily - finMetrics.todaySpent, 0))} (Sisa unspent jadi buffer)`;
+        if (burnRatePace) burnRatePace.textContent = 'Status: Disiplin & Terkendali';
+      } else if (finMetrics.todaySpent <= finMetrics.dynamicDailyLimit) {
+        todayFill.style.backgroundColor = '#f59e0b';
+        if (todayBadge) {
+          todayBadge.textContent = 'Mendekati Batas';
+          todayBadge.style.cssText = 'font-size: 0.68rem; padding: 2px 8px; background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3);';
+        }
+        if (todayLeftText) todayLeftText.textContent = `Lewat target Rp ${(finMetrics.todaySpent - finMetrics.targetDaily).toLocaleString('id-ID')}, sisa batas aman: ${formatRupiah(finMetrics.dynamicDailyLimit - finMetrics.todaySpent)}`;
+        if (burnRatePace) burnRatePace.textContent = 'Status: Waspada / Mendekati Batas';
+      } else {
+        todayFill.style.backgroundColor = '#ef4444';
+        if (todayBadge) {
+          todayBadge.textContent = 'Melebihi Batas';
+          todayBadge.style.cssText = 'font-size: 0.68rem; padding: 2px 8px; background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3);';
+        }
+        if (todayLeftText) todayLeftText.textContent = `Melebihi batas aman sebesar ${formatRupiah(finMetrics.todaySpent - finMetrics.dynamicDailyLimit)}`;
+        if (burnRatePace) burnRatePace.textContent = 'Status: Perlu Penyesuaian Besok';
       }
     }
 
-    // --- 50/30/20 Digital Envelopes Calculation ---
-    const targetNeeds = Math.round(income * 0.50);
-    const targetWants = Math.round(income * 0.30);
-    const targetSavings = Math.round(income * 0.20);
+    // 8. Tampilan Amplop 50/30/20 (Pra-Gajian vs Siklus Gajian)
+    const praCard = document.getElementById('fin-envelopes-pra-card');
+    const activeEnvelopes = document.getElementById('fin-envelopes-active');
+    if (praCard && activeEnvelopes) {
+      praCard.style.display = isPraGajian ? 'block' : 'none';
+      activeEnvelopes.style.display = isPraGajian ? 'none' : 'block';
+    }
 
-    let spentNeeds = 0;
-    let spentWants = 0;
-
-    // 1. Tagihan tetap lunas dipetakan ke Needs vs Wants sesuai kategorinya
-    bills.filter(b => b.paid).forEach(b => {
-      const bCat = (b.category || (b.id && b.id.includes('laundry') ? 'laundry' : (b.id && (b.id.includes('kos') || b.id.includes('listrik')) ? 'kos' : 'tagihan'))).toLowerCase();
-      const bAmt = Number(b.amount) || 0;
-      if (['makan', 'transport', 'kos', 'tagihan', 'kesehatan', 'pendidikan', 'listrik', 'kuota'].includes(bCat)) {
-        spentNeeds += bAmt;
-      } else {
-        spentWants += bAmt;
-      }
-    });
-
-    // 2. Transaksi belanja aktual dipetakan ke Needs vs Wants
-    cycleExpenses.forEach(e => {
-      const amt = Number(e.amount) || 0;
-      const cat = (e.cat || e.category || 'lainnya').toLowerCase();
-      if (['makan', 'transport', 'kos', 'tagihan', 'kesehatan', 'pendidikan'].includes(cat)) {
-        spentNeeds += amt;
-      } else {
-        spentWants += amt;
-      }
-    });
-
-    // 3. Tabungan aktual yang sudah benar-benar disisihkan/ditabung (Real Savings)
-    const spentSavings = realSavings;
-
-    // Envelope Needs 50%
-    const needsPct = targetNeeds > 0 ? Math.round((spentNeeds / targetNeeds) * 100) : 0;
+    // Jika di mode Siklus Gajian, perbarui angka progress amplop 50/30/20
+    const env = finMetrics.envelopes;
+    const needsPct = env.targetNeeds > 0 ? Math.round((env.spentNeeds / env.targetNeeds) * 100) : 0;
     const needsAmtEl = document.getElementById('fin-env-needs-spent');
     const needsTgtEl = document.getElementById('fin-env-needs-target');
     const needsStatEl = document.getElementById('fin-env-needs-status');
     const needsFillEl = document.getElementById('fin-env-needs-fill');
-    if (needsAmtEl) needsAmtEl.textContent = formatRupiah(spentNeeds);
-    if (needsTgtEl) needsTgtEl.textContent = `Target: ${formatRupiah(targetNeeds)}`;
+    if (needsAmtEl) needsAmtEl.textContent = formatRupiah(env.spentNeeds);
+    if (needsTgtEl) needsTgtEl.textContent = `Target: ${formatRupiah(env.targetNeeds)}`;
     if (needsStatEl) {
       needsStatEl.textContent = `${needsPct}%`;
       needsStatEl.style.cssText = needsPct > 100 
@@ -15716,17 +16345,16 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     }
     if (needsFillEl) {
       needsFillEl.style.width = Math.min(needsPct, 100) + '%';
-      needsFillEl.style.backgroundColor = needsPct > 100 ? '#ef4444' : '#0284c7';
+      needsFillEl.style.backgroundColor = needsPct > 100 ? '#ef4444' : '#007C89';
     }
 
-    // Envelope Wants 30%
-    const wantsPct = targetWants > 0 ? Math.round((spentWants / targetWants) * 100) : 0;
+    const wantsPct = env.targetWants > 0 ? Math.round((env.spentWants / env.targetWants) * 100) : 0;
     const wantsAmtEl = document.getElementById('fin-env-wants-spent');
     const wantsTgtEl = document.getElementById('fin-env-wants-target');
     const wantsStatEl = document.getElementById('fin-env-wants-status');
     const wantsFillEl = document.getElementById('fin-env-wants-fill');
-    if (wantsAmtEl) wantsAmtEl.textContent = formatRupiah(spentWants);
-    if (wantsTgtEl) wantsTgtEl.textContent = `Target: ${formatRupiah(targetWants)}`;
+    if (wantsAmtEl) wantsAmtEl.textContent = formatRupiah(env.spentWants);
+    if (wantsTgtEl) wantsTgtEl.textContent = `Target: ${formatRupiah(env.targetWants)}`;
     if (wantsStatEl) {
       wantsStatEl.textContent = `${wantsPct}%`;
       wantsStatEl.style.cssText = wantsPct > 100 
@@ -15737,19 +16365,18 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       wantsFillEl.style.backgroundColor = wantsPct > 100 ? '#ef4444' : '#F15A24';
     }
 
-    // Envelope Savings 20% (Realisasi Tabungan Nyata)
-    const savingsPct = targetSavings > 0 ? Math.round((spentSavings / targetSavings) * 100) : 0;
+    const savingsPct = env.targetSavings > 0 ? Math.round((env.spentSavings / env.targetSavings) * 100) : 0;
     const savingsAmtEl = document.getElementById('fin-env-savings-spent');
     const savingsTgtEl = document.getElementById('fin-env-savings-target');
     const savingsStatEl = document.getElementById('fin-env-savings-status');
     const savingsFillEl = document.getElementById('fin-env-savings-fill');
-    if (savingsAmtEl) savingsAmtEl.textContent = formatRupiah(spentSavings);
-    if (savingsTgtEl) savingsTgtEl.textContent = `Target: ${formatRupiah(targetSavings)}`;
+    if (savingsAmtEl) savingsAmtEl.textContent = formatRupiah(env.spentSavings);
+    if (savingsTgtEl) savingsTgtEl.textContent = `Target: ${formatRupiah(env.targetSavings)}`;
     if (savingsStatEl) {
       savingsStatEl.textContent = `${savingsPct}%`;
-      savingsStatEl.style.cssText = spentSavings >= targetSavings
+      savingsStatEl.style.cssText = env.spentSavings >= env.targetSavings
         ? 'font-size: 0.65rem; padding: 1px 6px; background: rgba(16, 185, 129, 0.2); color: #059669; border: 1px solid rgba(16,185,129,0.4); font-weight: 700;'
-        : (spentSavings > 0
+        : (env.spentSavings > 0
           ? 'font-size: 0.65rem; padding: 1px 6px; background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16,185,129,0.3);'
           : 'font-size: 0.65rem; padding: 1px 6px; background: rgba(148, 163, 184, 0.15); color: #64748b; border: 1px solid rgba(148,163,184,0.3);');
     }
@@ -15758,41 +16385,39 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       savingsFillEl.style.backgroundColor = '#10b981';
     }
 
-    // --- Category Breakdown Visual Stacked Bar ---
-    // Gabungkan: pengeluaran belanja manual + tagihan yang sudah dibayar
+    // 9. Category Breakdown Stacked Bar
     const catTotals = {};
+    const cycleExpenses = allTxs.filter(item => item.type === 'expense' && item.date >= cycle.startStr && item.date <= maxCycleDate);
     cycleExpenses.forEach(e => {
       const cat = (e.cat || e.category || 'lainnya').toLowerCase();
       catTotals[cat] = (catTotals[cat] || 0) + (Number(e.amount) || 0);
     });
-    // Tagihan yang sudah lunas → dipetakan ke kategorinya
+    const bills = getFinanceBills();
     bills.filter(b => b.paid).forEach(b => {
       const bCat = (b.category || (b.id && b.id.includes('laundry') ? 'laundry' : (b.id && (b.id.includes('kos') || b.id.includes('listrik')) ? 'kos' : 'tagihan'))).toLowerCase();
       catTotals[bCat] = (catTotals[bCat] || 0) + (Number(b.amount) || 0);
     });
 
     const catTotalLabel = document.getElementById('fin-cat-total-label');
-    if (catTotalLabel) catTotalLabel.textContent = `Total: ${formatRupiah(effectiveTotalSpent)}`;
+    if (catTotalLabel) catTotalLabel.textContent = `Total: ${formatRupiah(finMetrics.effectiveSpent)}`;
 
     const trackEl = document.getElementById('fin-stacked-track');
     const legendEl = document.getElementById('fin-cat-legend');
     if (trackEl && legendEl) {
-      if (effectiveTotalSpent === 0) {
+      if (finMetrics.effectiveSpent === 0) {
         trackEl.innerHTML = '<div style="width:100%; height:100%; background:var(--surface-hover);"></div>';
         legendEl.innerHTML = '<span style="font-size:0.7rem; color:var(--text-tertiary);">Belum ada pengeluaran dicatat.</span>';
       } else {
         let segHtml = '';
         let legHtml = '';
-        // Render kategori yang ada di FIN_CATEGORY_META (termasuk 'tagihan' jika ada)
         const allCats = { ...FIN_CATEGORY_META };
-        // Pastikan 'tagihan' ada jika ada paidBills
         if (!allCats['tagihan']) {
           allCats['tagihan'] = { label: 'Tagihan Tetap', icon: 'lucide:receipt', color: '#6366f1' };
         }
         Object.keys(allCats).forEach(k => {
           const amt = catTotals[k] || 0;
           if (amt > 0) {
-            const pct = Math.round((amt / effectiveTotalSpent) * 100);
+            const pct = Math.round((amt / finMetrics.effectiveSpent) * 100);
             const meta = allCats[k];
             segHtml += `<div class="finance-stacked-seg" style="width: ${pct}%; background-color: ${meta.color};" title="${meta.label}: ${formatRupiah(amt)} (${pct}%)"></div>`;
             const iconHtml = renderCategoryIcon(k, 16);
@@ -15809,61 +16434,22 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       }
     }
 
-    // --- Runway & Balance Banner ---
-    const banner = document.getElementById('fin-balance-banner');
-    if (banner) {
-      let html = '', bg = '', bd = '', fg = '';
-      if (remaining < 0) {
-        bg = 'rgba(239,68,68,.08)'; bd = 'rgba(239,68,68,.35)'; fg = '#dc2626';
-        html = `<strong> Defisit — pengeluaran & tagihan melebihi pemasukan.</strong><br>Defisit ${formatRupiah(Math.abs(remaining))}. Tunda non-esensial dan amankan kebutuhan pokok.`;
-      } else if (percentSpent > 80 || (unpaidBills > 0 && remaining < safeDailyLimit * 3)) {
-        bg = 'rgba(245,158,11,.10)'; bd = 'rgba(245,158,11,.4)'; fg = '#b45309';
-        html = `<strong>Waspada — sisa cadangan menipis.</strong><br>Sisa aman ${formatRupiah(remaining)} (${safeDailyLimit > 0 ? formatRupiah(safeDailyLimit) + '/hari' : 'kritis'}) untuk ${daysLeft} hari ke depan.${unpaidBills > 0 ? `<br><em>Catatan: Masih ada tagihan belum lunas ${formatRupiah(unpaidBills)}.</em>` : ''}`;
-      } else {
-        bg = 'rgba(16,185,129,.08)'; bd = 'rgba(16,185,129,.35)'; fg = '#15803d';
-        html = `<strong>Balance — terkendali dan aman.</strong><br>Sisa aman ${formatRupiah(remaining)} (${100 - percentSpent}% tersisa). Batas harian ${formatRupiah(safeDailyLimit)} × ${daysLeft} hari ke depan.${paidBills > 0 ? ` Tagihan lunas: ${formatRupiah(paidBills)}.` : ''}`;
-      }
-      banner.style.display = 'block';
-      banner.style.background = bg;
-      banner.style.border = '1px solid ' + bd;
-      banner.style.color = fg;
-      banner.innerHTML = html;
-    }
-
-    const progressFill = document.getElementById('fin-progress-bar');
-    if (progressFill) {
-      progressFill.style.width = percentSpent + '%';
-      progressFill.style.backgroundColor = remaining < 0 || percentSpent > 90 ? '#ef4444' : (percentSpent > 70 ? '#f59e0b' : '#10b981');
-    }
-
-    const progressLabel = document.getElementById('fin-progress-label');
-    if (progressLabel) progressLabel.textContent = `Pengeluaran: ${percentSpent}%`;
-
-    const monthNamesShort = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
-    const daysLeftEl = document.getElementById('fin-days-left');
-    if (daysLeftEl) daysLeftEl.textContent = `Sisa ${daysLeft} hari ke gajian (${cycle.payday.getDate()} ${monthNamesShort[cycle.payday.getMonth()]})`;
-
-    const statusBadge = document.getElementById('fin-status-badge');
-    if (statusBadge) {
-      if (remaining < 0) {
-        statusBadge.textContent = 'Defisit';
-        statusBadge.style.color = '#ef4444';
-        statusBadge.style.borderColor = 'rgba(239, 68, 68, 0.4)';
-      } else if (percentSpent > 80) {
-        statusBadge.textContent = 'Waspada';
-        statusBadge.style.color = '#f59e0b';
-        statusBadge.style.borderColor = 'rgba(245, 158, 11, 0.4)';
-      } else {
-        statusBadge.textContent = 'Terkendali';
-        statusBadge.style.color = '#10b981';
-        statusBadge.style.borderColor = 'rgba(16, 185, 129, 0.4)';
-      }
-    }
-
-    // Snapshot untuk AI advisor (dibaca requestFinanceAdvice)
+    // 10. AI Advisor Snapshot
     window.__finSnapshot = {
-      income, totalSpent, remaining, percentSpent, safeDailyLimit, daysLeft,
-      fixedMonthly: totalBills, variableBudget, unpaidBills, paidBills, todaySpent,
+      mode: cfg.mode,
+      income: finMetrics.totalIncome,
+      startingFund: finMetrics.startingFund,
+      liquidBalance: finMetrics.liquidBalance,
+      safeToSpend: finMetrics.safeToSpend,
+      targetDaily: finMetrics.targetDaily,
+      dynamicDailyLimit: finMetrics.dynamicDailyLimit,
+      projectedBalance: finMetrics.projectedBalance,
+      totalSpent: finMetrics.totalSpent,
+      effectiveSpent: finMetrics.effectiveSpent,
+      remainingDays: finMetrics.remainingDays,
+      unpaidBills: finMetrics.unpaidMandatoryBills,
+      paidBills: finMetrics.paidBills,
+      todaySpent: finMetrics.todaySpent,
       breakdown: catTotals
     };
 
@@ -15872,36 +16458,6 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     renderFinanceDueStrip();
     renderAccountsStrip();
     renderRecentTransactionsSummary();
-
-    // FinOS Hero & What-If updates
-    const finMetrics = FinOS.computeMetrics();
-    const stsValEl = document.getElementById('fin-safe-to-spend-val');
-    if (stsValEl) stsValEl.textContent = formatRupiah(finMetrics.safeToSpend);
-
-    const stsSubEl = document.getElementById('fin-sts-sub-desc');
-    if (stsSubEl) {
-      stsSubEl.textContent = `Aman hari ini: ${formatRupiah(finMetrics.dynamicDailyLimit)} • Sisa ${finMetrics.remainingDays} hari ke gajian`;
-    }
-
-    const stsBadge = document.getElementById('fin-sts-status-badge');
-    if (stsBadge) {
-      if (finMetrics.safeToSpend <= 0) {
-        stsBadge.textContent = 'Kritis';
-        stsBadge.className = 'fin-snapshot-badge danger';
-      } else if (finMetrics.dynamicDailyLimit < 35000) {
-        stsBadge.textContent = 'Ketat';
-        stsBadge.className = 'fin-snapshot-badge warning';
-      } else {
-        stsBadge.textContent = 'Aman';
-        stsBadge.className = 'fin-snapshot-badge success';
-      }
-    }
-
-    const remLiquidEl = document.getElementById('fin-remaining-budget');
-    if (remLiquidEl) {
-      remLiquidEl.textContent = formatRupiah(finMetrics.liquidBalance);
-    }
-
     runWhatIfSimulation();
     if (document.getElementById('fin-sim-result')) updateSimulator();
   }
@@ -17223,47 +17779,73 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     showToast('File raport bulanan berhasil diunduh!');
   }
 
-  // --- Quick Expense & Income Bottom Sheet (Mobile-First) ---
+  // --- Quick Expense, Income, Transfer & Saving Bottom Sheet (Mobile-First) ---
   function switchQuickSheetType(type) {
     const isInc = type === 'income';
     const isSav = type === 'saving';
+    const isTrf = type === 'transfer';
     const typeEl = document.getElementById('fin-sheet-type');
     if (typeEl) typeEl.value = type;
 
     const tabExp = document.getElementById('fin-tab-expense');
     const tabInc = document.getElementById('fin-tab-income');
+    const tabTrf = document.getElementById('fin-tab-transfer');
     const tabSav = document.getElementById('fin-tab-saving');
-    if (tabExp) tabExp.classList.toggle('active', !isInc && !isSav);
+    if (tabExp) tabExp.classList.toggle('active', type === 'expense');
     if (tabInc) tabInc.classList.toggle('active', isInc);
+    if (tabTrf) tabTrf.classList.toggle('active', isTrf);
     if (tabSav) tabSav.classList.toggle('active', isSav);
 
     const expChips = document.getElementById('fin-sheet-chips-expense');
     const incChips = document.getElementById('fin-sheet-chips-income');
     const savChips = document.getElementById('fin-sheet-chips-saving');
-    if (expChips) expChips.style.display = (!isInc && !isSav) ? 'flex' : 'none';
+    if (expChips) expChips.style.display = type === 'expense' ? 'flex' : 'none';
     if (incChips) incChips.style.display = isInc ? 'flex' : 'none';
     if (savChips) savChips.style.display = isSav ? 'flex' : 'none';
 
+    // Container rekening tujuan khusus mode transfer
+    const destContainer = document.getElementById('fin-sheet-dest-acc-container');
+    if (destContainer) {
+      destContainer.style.display = isTrf ? 'block' : 'none';
+      if (isTrf) {
+        const destId = document.getElementById('fin-sheet-dest-account-id')?.value || 'acc_gopay';
+        selectSheetDestAccount(destId);
+      }
+    }
+
     const titleEl = document.getElementById('fin-sheet-title');
     if (titleEl) {
-      titleEl.textContent = isInc ? 'Catat Pemasukan' : (isSav ? 'Alokasi Tabungan / Goal' : 'Catat Pengeluaran');
+      if (isInc) titleEl.textContent = 'Catat Pemasukan';
+      else if (isSav) titleEl.textContent = 'Alokasi Tabungan / Goal';
+      else if (isTrf) titleEl.textContent = 'Transfer Saldo Antar Dompet';
+      else titleEl.textContent = 'Catat Pengeluaran';
     }
     const accLabelEl = document.getElementById('fin-sheet-acc-label');
     if (accLabelEl) {
-      accLabelEl.textContent = isInc ? 'Masuk ke Rekening / Dompet' : (isSav ? 'Sumber Rekening Penarikan' : 'Rekening / Sumber Dana');
+      if (isInc) accLabelEl.textContent = 'Masuk ke Rekening / Dompet';
+      else if (isSav) accLabelEl.textContent = 'Sumber Rekening Penarikan';
+      else if (isTrf) accLabelEl.textContent = 'Dari Rekening / Dompet Asal';
+      else accLabelEl.textContent = 'Rekening / Sumber Dana';
     }
     const submitBtn = document.getElementById('fin-sheet-submit-btn');
     if (submitBtn) {
-      submitBtn.textContent = isInc ? 'Simpan Pemasukan' : (isSav ? 'Simpan Setoran Tabungan' : 'Simpan Pengeluaran');
+      if (isInc) submitBtn.textContent = 'Simpan Pemasukan';
+      else if (isSav) submitBtn.textContent = 'Simpan Setoran Tabungan';
+      else if (isTrf) submitBtn.textContent = 'Kirim Transfer Saldo';
+      else submitBtn.textContent = 'Simpan Pengeluaran';
     }
 
     const descEl = document.getElementById('fin-sheet-desc');
     if (descEl && !descEl.value) {
-      descEl.placeholder = isInc ? 'Contoh: Uang saku bulan berjalan' : (isSav ? 'Contoh: Alokasi bulanan iPhone 18' : 'Contoh: Makan siang kantin Menara BNI');
+      if (isInc) descEl.placeholder = 'Contoh: Uang saku bulan berjalan';
+      else if (isSav) descEl.placeholder = 'Contoh: Alokasi bulanan iPhone 18';
+      else if (isTrf) descEl.placeholder = 'Contoh: Pindah dana BNI ke GoPay';
+      else descEl.placeholder = 'Contoh: Makan siang kantin Menara BNI';
     }
 
-    const defaultCat = isInc ? 'saku_bni' : (isSav ? 'goal_iphone18' : 'makan');
-    document.getElementById('fin-sheet-cat').value = defaultCat;
+    const defaultCat = isInc ? 'saku_bni' : (isSav ? 'goal_iphone18' : (isTrf ? 'transfer' : 'makan'));
+    const catInput = document.getElementById('fin-sheet-cat');
+    if (catInput) catInput.value = defaultCat;
 
     const targetContainer = isInc ? incChips : (isSav ? savChips : expChips);
     if (targetContainer) {
@@ -17282,7 +17864,9 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     }
 
     const isInc = presetType === 'income';
-    const cat = presetCat || (isInc ? 'saku_bni' : 'makan');
+    const isTrf = presetType === 'transfer';
+    const isSav = presetType === 'saving';
+    const cat = presetCat || (isInc ? 'saku_bni' : (isSav ? 'goal_iphone18' : (isTrf ? 'transfer' : 'makan')));
     const amountVal = presetAmount ? Number(presetAmount).toLocaleString('id-ID') : '';
     const descVal = presetDesc || '';
 
@@ -17294,11 +17878,11 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     if (amtEl) amtEl.value = amountVal;
     if (descEl) descEl.value = descVal;
     if (catEl) catEl.value = cat;
-    if (typeEl) typeEl.value = isInc ? 'income' : 'expense';
+    if (typeEl) typeEl.value = presetType;
 
-    switchQuickSheetType(presetType || (isInc ? 'income' : 'expense'));
+    switchQuickSheetType(presetType);
 
-    // Initialize account chips
+    // Inisialisasi chip akun asal
     const defaultAccId = 'acc_bni';
     const accInput = document.getElementById('fin-sheet-account-id');
     if (accInput) accInput.value = defaultAccId;
@@ -17315,9 +17899,14 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       hintEl.textContent = `Saldo: ${formatRupiah(bniAcc.balance)}`;
     }
 
+    if (isTrf) {
+      const defaultDestId = 'acc_gopay';
+      selectSheetDestAccount(defaultDestId);
+    }
+
     const targetContainer = isInc
       ? document.getElementById('fin-sheet-chips-income')
-      : document.getElementById('fin-sheet-chips-expense');
+      : (isSav ? document.getElementById('fin-sheet-chips-saving') : document.getElementById('fin-sheet-chips-expense'));
 
     if (targetContainer) {
       targetContainer.querySelectorAll('.fin-sheet-chip').forEach(c => {
@@ -17376,6 +17965,60 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     const accounts = FinOS.getAccounts();
     const sourceAcc = accounts.find(a => a.id === accountId) || accounts[0];
 
+    // 1. Eksekusi Transfer Antar Dompet
+    if (type === 'transfer') {
+      const destAccountId = (document.getElementById('fin-sheet-dest-account-id') && document.getElementById('fin-sheet-dest-account-id').value) || 'acc_gopay';
+      if (accountId === destAccountId) {
+        showToast('Rekening asal dan tujuan tidak boleh sama!');
+        return;
+      }
+      const destAcc = accounts.find(a => a.id === destAccountId) || accounts[1];
+      if ((sourceAcc.balance || 0) < amount) {
+        showToast(`Saldo ${sourceAcc.name} (${formatRupiah(sourceAcc.balance)}) tidak mencukupi untuk transfer ${formatRupiah(amount)}!`);
+        return;
+      }
+
+      sourceAcc.balance = Math.max(0, (sourceAcc.balance || 0) - amount);
+      destAcc.balance = (destAcc.balance || 0) + amount;
+      FinOS.saveAccounts(accounts, true);
+
+      const finTxs = FinOS.getTransactions();
+      finTxs.unshift({
+        id: txId,
+        type: 'transfer',
+        category: 'transfer',
+        description: desc || `Transfer ${sourceAcc.name} ke ${destAcc.name}`,
+        amount: amount,
+        date: date,
+        source_account_id: accountId,
+        destination_account_id: destAccountId,
+        goal_id: null,
+        commitment_id: null
+      });
+      FinOS.saveTransactions(finTxs, true);
+
+      const expenses = getFinanceExpenses();
+      expenses.unshift({
+        id: txId,
+        type: 'transfer',
+        cat: 'transfer',
+        desc: desc || `Transfer ${sourceAcc.name} ke ${destAcc.name}`,
+        amount: amount,
+        date: date,
+        source_account_id: accountId,
+        destination_account_id: destAccountId
+      });
+      saveFinanceExpenses(expenses, true);
+
+      renderAccountsStrip();
+      renderFinanceExpenses();
+      updateFinanceCalculations(true);
+      closeQuickExpenseSheet();
+      showToast(`⇄ Transfer ${formatRupiah(amount)} dari ${sourceAcc.name} ke ${destAcc.name} berhasil!`);
+      return;
+    }
+
+    // 2. Transaksi Pengeluaran, Pemasukan, atau Tabungan
     if (type === 'expense') {
       sourceAcc.balance = Math.max(0, (sourceAcc.balance || 0) - amount);
     } else if (type === 'income') {
@@ -17430,6 +18073,18 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     closeQuickExpenseSheet();
     showToast(type === 'expense' ? 'Pengeluaran tercatat!' : (type === 'income' ? 'Pemasukan tercatat!' : 'Setoran tabungan goal berhasil!'));
 
+    // Deteksi Gaji Pertama di Mode Pra-Gajian
+    if (type === 'income') {
+      const cfg = FinConfig.get();
+      if (cfg.mode === 'pra_gajian' && !cfg.first_salary_received) {
+        if (cat === 'saku_bni' || (desc && (desc.toLowerCase().includes('gaji') || desc.toLowerCase().includes('saku')))) {
+          setTimeout(() => {
+            openSalaryDetectedModal(amount, sourceAcc.name);
+          }, 350);
+        }
+      }
+    }
+
     const formCat = document.getElementById('fin-tx-cat');
     const formAmount = document.getElementById('fin-tx-amount');
     const formDesc = document.getElementById('fin-tx-desc');
@@ -17438,6 +18093,138 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     if (formAmount) formAmount.value = amount.toLocaleString('id-ID');
     if (formDesc) formDesc.value = desc;
     if (formDate) formDate.value = date;
+  }
+
+  // --- Modal Controller: Pengaturan Mode Finansial & Parameter ---
+  function openFinanceModeModal() {
+    const modal = document.getElementById('finance-mode-modal');
+    if (!modal) return;
+    const cfg = FinConfig.get();
+
+    selectModeFormOption(cfg.mode || 'pra_gajian');
+
+    const fundInput = document.getElementById('fin-cfg-starting-fund');
+    if (fundInput) fundInput.value = Number(cfg.starting_fund || 2500000).toLocaleString('id-ID');
+
+    const bufferInput = document.getElementById('fin-cfg-buffer');
+    if (bufferInput) bufferInput.value = Number(cfg.safety_buffer || 200000).toLocaleString('id-ID');
+
+    const targetInput = document.getElementById('fin-cfg-target-daily');
+    if (targetInput) targetInput.value = Number(cfg.target_daily || 15000).toLocaleString('id-ID');
+
+    const paydayInput = document.getElementById('fin-cfg-payday-date');
+    if (paydayInput) {
+      paydayInput.value = cfg.payday_date || '2026-10-22';
+      updatePaydayCountdownHint();
+      paydayInput.onchange = updatePaydayCountdownHint;
+    }
+
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+
+  function updatePaydayCountdownHint() {
+    const paydayInput = document.getElementById('fin-cfg-payday-date');
+    const hint = document.getElementById('fin-cfg-countdown-hint');
+    if (!paydayInput || !hint) return;
+    const val = paydayInput.value;
+    if (!val) { hint.textContent = ''; return; }
+    const todayStr = getWibDateString();
+    const ms = new Date(val + 'T00:00:00').getTime() - new Date(todayStr + 'T00:00:00').getTime();
+    const days = Math.max(0, Math.ceil(ms / (24 * 3600 * 1000)));
+    hint.textContent = `📅 ${days} hari dari hari ini menuju tanggal gajian (${val})`;
+  }
+
+  function closeFinanceModeModal() {
+    const modal = document.getElementById('finance-mode-modal');
+    if (modal) {
+      modal.style.display = 'none';
+      document.body.style.overflow = '';
+    }
+  }
+
+  function handleModeModalBackdrop(event) {
+    if (event && event.target === document.getElementById('finance-mode-modal')) {
+      closeFinanceModeModal();
+    }
+  }
+
+  function selectModeFormOption(mode) {
+    const hiddenInput = document.getElementById('fin-cfg-mode');
+    if (hiddenInput) hiddenInput.value = mode;
+
+    const optPra = document.getElementById('mode-opt-pra');
+    const optSiklus = document.getElementById('mode-opt-siklus');
+    if (optPra) {
+      optPra.classList.toggle('active', mode === 'pra_gajian');
+      const radio = optPra.querySelector('input[type="radio"]');
+      if (radio) radio.checked = mode === 'pra_gajian';
+    }
+    if (optSiklus) {
+      optSiklus.classList.toggle('active', mode === 'siklus_gajian');
+      const radio = optSiklus.querySelector('input[type="radio"]');
+      if (radio) radio.checked = mode === 'siklus_gajian';
+    }
+  }
+
+  function handleFinanceModeSubmit(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    const mode = document.getElementById('fin-cfg-mode')?.value || 'pra_gajian';
+    const startingFund = parseMoney(document.getElementById('fin-cfg-starting-fund')?.value) || 2500000;
+    const buffer = parseMoney(document.getElementById('fin-cfg-buffer')?.value) || 200000;
+    const targetDaily = parseMoney(document.getElementById('fin-cfg-target-daily')?.value) || 15000;
+    const paydayDate = document.getElementById('fin-cfg-payday-date')?.value || '2026-10-22';
+
+    const cfg = FinConfig.get();
+    cfg.mode = mode;
+    cfg.starting_fund = startingFund;
+    cfg.safety_buffer = buffer;
+    cfg.target_daily = targetDaily;
+    cfg.payday_date = paydayDate;
+    if (mode === 'siklus_gajian') {
+      cfg.first_salary_received = true;
+    }
+
+    FinConfig.save(cfg, true);
+    closeFinanceModeModal();
+    updateFinanceCalculations(true);
+    showToast(`Mode Keuangan disetel ke: ${mode === 'pra_gajian' ? '🛡️ Pra-Gajian' : '🏛️ Siklus Gajian'}`);
+  }
+
+  // --- Modal Controller: Prompt Deteksi Gaji Pertama ---
+  let pendingSalaryAmount = 0;
+  function openSalaryDetectedModal(amt, accName = 'BNI') {
+    pendingSalaryAmount = amt;
+    const modal = document.getElementById('finance-salary-prompt-modal');
+    if (!modal) return;
+    const amtEl = document.getElementById('prompt-salary-amt');
+    if (amtEl) amtEl.textContent = formatRupiah(amt);
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeSalaryPromptModal() {
+    const modal = document.getElementById('finance-salary-prompt-modal');
+    if (modal) {
+      modal.style.display = 'none';
+      document.body.style.overflow = '';
+    }
+  }
+
+  function handleSalaryPromptBackdrop(event) {
+    if (event && event.target === document.getElementById('finance-salary-prompt-modal')) {
+      closeSalaryPromptModal();
+    }
+  }
+
+  function confirmSwitchToSiklusGajian() {
+    const cfg = FinConfig.get();
+    cfg.mode = 'siklus_gajian';
+    cfg.first_salary_received = true;
+    FinConfig.save(cfg, true);
+    closeSalaryPromptModal();
+    updateFinanceCalculations(true);
+    showToast('🎉 Selamat! Siklus Gajian & Budget 50/30/20 telah aktif.');
   }
 
   // --- Full Transaction History (inline expand/collapse) ---
@@ -17468,6 +18255,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   window.runWhatIfSimulation = runWhatIfSimulation;
   window.setWhatIfPreset = setWhatIfPreset;
   window.selectSheetAccount = selectSheetAccount;
+  window.selectSheetDestAccount = selectSheetDestAccount;
   window.switchQuickSheetType = switchQuickSheetType;
   window.openQuickExpenseSheet = openQuickExpenseSheet;
   window.closeQuickExpenseSheet = closeQuickExpenseSheet;
@@ -17494,6 +18282,15 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   window.closeResetFinanceModal = closeResetFinanceModal;
   window.handleResetModalBackdrop = handleResetModalBackdrop;
   window.executeFinanceReset = executeFinanceReset;
+  window.openFinanceModeModal = openFinanceModeModal;
+  window.closeFinanceModeModal = closeFinanceModeModal;
+  window.handleModeModalBackdrop = handleModeModalBackdrop;
+  window.selectModeFormOption = selectModeFormOption;
+  window.handleFinanceModeSubmit = handleFinanceModeSubmit;
+  window.openSalaryDetectedModal = openSalaryDetectedModal;
+  window.closeSalaryPromptModal = closeSalaryPromptModal;
+  window.handleSalaryPromptBackdrop = handleSalaryPromptBackdrop;
+  window.confirmSwitchToSiklusGajian = confirmSwitchToSiklusGajian;
 
   // --- Initialization ---
   async function initApp() {
