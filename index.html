@@ -2622,6 +2622,50 @@
     .fin-income-detail-btn:hover {
       text-decoration: underline;
     }
+    .fin-add-income-btn {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      color: #10b981;
+      font-size: 0.65rem;
+      font-weight: 700;
+      border-radius: var(--radius-pill);
+      padding: 2px 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-family: inherit;
+      transition: all 0.15s ease;
+    }
+    .fin-add-income-btn:hover {
+      background: #10b981;
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+    }
+    .fin-date-shortcut {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+    .fin-date-shortcut-btn {
+      background: var(--surface-hover);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-size: 0.63rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      padding: 1px 6px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.12s ease;
+    }
+    .fin-date-shortcut-btn:hover,
+    .fin-date-shortcut-btn.active {
+      background: rgba(16, 185, 129, 0.15);
+      border-color: rgba(16, 185, 129, 0.4);
+      color: #10b981;
+    }
 
     .finance-tx-list {
       display: flex;
@@ -6272,15 +6316,21 @@
         <div class="finance-summary-grid">
           <!-- Bento 1: Income -->
           <div class="finance-metric finance-bento-col" id="fin-metric-income">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 4px;">
               <span class="finance-metric-label">Pemasukan / Saku</span>
-              <button type="button" class="fin-income-detail-btn" onclick="scrollToIncomeDetail()" title="Lihat detail sumber pemasukan" style="background: none; border: none; font-size: 0.65rem; font-weight: 700; color: #10b981; cursor: pointer; padding: 0;">Detail &rarr;</button>
+              <div style="display: flex; align-items: center; gap: 5px;">
+                <button type="button" class="fin-add-income-btn" onclick="openIncomeModal()" title="Catat sumber pemasukan baru">+ Catat</button>
+                <button type="button" class="fin-income-detail-btn" onclick="scrollToIncomeDetail()" title="Lihat detail sumber pemasukan" style="background: none; border: none; font-size: 0.65rem; font-weight: 700; color: #10b981; cursor: pointer; padding: 0;">Detail &rarr;</button>
+              </div>
             </div>
             <div style="display: flex; align-items: baseline; gap: 4px; margin: 3px 0 2px;">
               <span style="font-size: 0.88rem; font-weight: 700; color: var(--text-tertiary);">Rp</span>
-              <input type="text" inputmode="numeric" id="fin-income-input" value="3.500.000" oninput="handleIncomeInput(this)" onchange="handleIncomeChange(this)" onblur="handleIncomeBlur(this)" onkeydown="if(event.key==='Enter'){this.blur();}" style="font-size: 1.12rem; font-weight: 800; color: var(--text-primary); background: transparent; border: none; border-bottom: 1.5px dashed var(--border-strong); width: 100%; outline: none; padding: 0 0 2px;">
+              <input type="text" inputmode="numeric" id="fin-income-input" value="3.500.000" oninput="handleIncomeInput(this)" onchange="handleIncomeChange(this)" onblur="handleIncomeBlur(this)" onkeydown="if(event.key==='Enter'){this.blur();}" style="font-size: 1.12rem; font-weight: 800; color: var(--text-primary); background: transparent; border: none; border-bottom: 1.5px dashed var(--border-strong); width: 100%; outline: none; padding: 0 0 2px;" title="Total pemasukan aktif (klik '+ Catat' untuk menambah rincian sumber)">
             </div>
-            <span class="finance-metric-sub" id="fin-income-sources-label" title="Total pemasukan tercatat">Tersimpan otomatis</span>
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 4px;">
+              <span class="finance-metric-sub" id="fin-income-sources-label" title="Total pemasukan tercatat">Tersimpan otomatis</span>
+              <button type="button" onclick="openIncomeModal()" style="background: none; border: none; font-size: 0.65rem; color: #10b981; font-weight: 700; cursor: pointer; padding: 0; text-decoration: underline;" title="Tambah sumber dana baru">+ Sumber</button>
+            </div>
           </div>
 
           <!-- Bento 2: Total Spent -->
@@ -6474,7 +6524,14 @@
               <input type="text" class="form-control" id="fin-tx-desc" placeholder="Contoh: Makan siang kantin basement BNI">
             </div>
             <div class="form-group" style="margin-bottom: 0;">
-              <label class="form-label">Tanggal</label>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                <label class="form-label" style="margin-bottom: 0;">Tanggal</label>
+                <div class="fin-date-shortcut">
+                  <button type="button" class="fin-date-shortcut-btn" onclick="setQuickTxDate('today')">Hari Ini</button>
+                  <button type="button" class="fin-date-shortcut-btn" onclick="setQuickTxDate('payday')" style="color: #10b981; font-weight: 700;" title="Pilih tanggal 22 (gajian)">Tgl 22</button>
+                  <button type="button" class="fin-date-shortcut-btn" onclick="setQuickTxDate('start')" title="Pilih tanggal 21 (awal siklus)">Tgl 21</button>
+                </div>
+              </div>
               <input type="date" class="form-control" id="fin-tx-date">
             </div>
           </div>
@@ -6520,10 +6577,13 @@
         <!-- Filter Bar -->
         <div class="finance-filter-bar" style="flex-direction: column; align-items: stretch; gap: 8px;">
           <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap;">
-            <div class="finance-type-pills">
-              <button type="button" class="fin-type-pill active" id="fin-view-all" onclick="setFinanceTypeFilter('all')">Semua</button>
-              <button type="button" class="fin-type-pill" id="fin-view-expense" onclick="setFinanceTypeFilter('expense')">🔴 Pengeluaran</button>
-              <button type="button" class="fin-type-pill" id="fin-view-income" onclick="setFinanceTypeFilter('income')">🟢 Pemasukan</button>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <div class="finance-type-pills">
+                <button type="button" class="fin-type-pill active" id="fin-view-all" onclick="setFinanceTypeFilter('all')">Semua</button>
+                <button type="button" class="fin-type-pill" id="fin-view-expense" onclick="setFinanceTypeFilter('expense')">🔴 Pengeluaran</button>
+                <button type="button" class="fin-type-pill" id="fin-view-income" onclick="setFinanceTypeFilter('income')">🟢 Pemasukan</button>
+              </div>
+              <button type="button" class="fin-add-income-btn" onclick="openIncomeModal()" title="Catat sumber pemasukan baru">+ Pemasukan</button>
             </div>
             <span id="fin-filter-count" style="font-size: 0.68rem; color: var(--text-tertiary); font-weight: 600;">0 transaksi</span>
           </div>
@@ -7737,6 +7797,99 @@
         </button>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- Modal: Catat Pemasukan / Uang Saku (Detail Sumber & Tracking Tanggal) -->
+<div class="modal-overlay" id="finance-income-modal" onclick="handleIncomeModalBackdrop(event)">
+  <div class="modal-box" style="max-width: 480px;">
+    <div class="modal-head">
+      <div class="modal-title-wrap">
+        <h3 style="display: flex; align-items: center; gap: 8px;">
+          <span style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; background: rgba(16, 185, 129, 0.15); color: #10b981;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          </span>
+          Catat Pemasukan / Uang Saku
+        </h3>
+        <p>Lacak sumber dana dan tanggal penerimaan untuk tracking siklus gajian 21-22.</p>
+      </div>
+      <button class="btn-close" onclick="closeIncomeModal()" title="Tutup">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <form id="income-modal-form" onsubmit="handleIncomeModalSubmit(event)">
+      <div class="modal-body" style="padding: 16px 20px;">
+        <!-- Preset Chips 1-Click Fill -->
+        <div style="margin-bottom: 14px;">
+          <label class="form-label" style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-secondary); margin-bottom: 6px;">Pilih Cepat Sumber Dana:</label>
+          <div class="finance-quick-chips" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;">
+            <button type="button" class="finance-chip income-chip" onclick="fillIncomeModalPreset('saku_bni', 3500000, 'Uang Saku Magang BNI SSE')">🏦 +3.5jt BNI</button>
+            <button type="button" class="finance-chip income-chip" onclick="fillIncomeModalPreset('maganghub', 500000, 'Insentif MagangHub Kemnaker')">💼 +500rb Kemnaker</button>
+            <button type="button" class="finance-chip income-chip" onclick="fillIncomeModalPreset('freelance', 250000, 'Honor Proyek Freelance')">💻 +250rb Freelance</button>
+            <button type="button" class="finance-chip income-chip" onclick="fillIncomeModalPreset('ortu', 300000, 'Kiriman Orang Tua')">👨‍👩‍👧 +300rb Ortu</button>
+            <button type="button" class="finance-chip income-chip" onclick="fillIncomeModalPreset('hadiah', 100000, 'Bonus / Reward')">🎁 +100rb Bonus</button>
+            <button type="button" class="finance-chip income-chip" onclick="fillIncomeModalPreset('lainnya_inc', 50000, 'Pemasukan Tambahan')">💵 +50rb Lainnya</button>
+          </div>
+        </div>
+
+        <!-- Nominal -->
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label class="form-label" for="inc-modal-amount">Nominal Pemasukan (Rp) <span style="color: #ef4444;">*</span></label>
+          <div style="position: relative;">
+            <span style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-weight: 700; color: #10b981; font-size: 0.95rem;">Rp</span>
+            <input type="text" inputmode="numeric" class="form-control" id="inc-modal-amount" placeholder="Contoh: 3.500.000" oninput="formatMoneyInput(this)" required style="padding-left: 40px; font-size: 1.1rem; font-weight: 800; color: #10b981;">
+          </div>
+        </div>
+
+        <!-- Sumber Pemasukan / Kategori -->
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label class="form-label" for="inc-modal-cat">Sumber Pemasukan (Dari Mana?) <span style="color: #ef4444;">*</span></label>
+          <select class="form-control" id="inc-modal-cat" required onchange="handleIncomeModalCatChange(this)">
+            <option value="saku_bni">🏦 Uang Saku Magang BNI (SSE Menara BNI)</option>
+            <option value="maganghub">💼 Insentif Kemnaker MagangHub</option>
+            <option value="freelance">💻 Proyek / Jasa Freelance</option>
+            <option value="ortu">👨‍👩‍👧 Kiriman Keluarga / Orang Tua</option>
+            <option value="hadiah">🎁 Bonus / Hadiah / Reward</option>
+            <option value="investasi">📈 Dividen / Bunga / Investasi</option>
+            <option value="lainnya_inc">💵 Pemasukan Lain-lain</option>
+          </select>
+        </div>
+
+        <!-- Tanggal Penerimaan (Untuk Tracking Siklus) -->
+        <div class="form-group" style="margin-bottom: 12px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+            <label class="form-label" for="inc-modal-date" style="margin-bottom: 0;">Tanggal Diterima (Untuk Tracking) <span style="color: #ef4444;">*</span></label>
+            <div class="fin-date-shortcut">
+              <button type="button" class="fin-date-shortcut-btn" onclick="setIncomeModalDate('today')">Hari Ini</button>
+              <button type="button" class="fin-date-shortcut-btn" onclick="setIncomeModalDate('payday')" style="color: #10b981; font-weight: 700;" title="Pilih tanggal 22 (gajian)">Tgl 22 (Gajian)</button>
+              <button type="button" class="fin-date-shortcut-btn" onclick="setIncomeModalDate('start')" title="Pilih tanggal 21 (awal siklus)">Tgl 21 (Awal)</button>
+            </div>
+          </div>
+          <input type="date" class="form-control" id="inc-modal-date" required onchange="updateIncomeModalCycleHint()">
+          <span style="font-size: 0.68rem; color: var(--text-tertiary); display: block; margin-top: 4px;" id="inc-modal-cycle-hint">
+            📍 Masuk siklus belanja aktif 21 Sep - 21 Okt (Gajian 22 Okt).
+          </span>
+        </div>
+
+        <!-- Keterangan / Deskripsi Rincian -->
+        <div class="form-group" style="margin-bottom: 6px;">
+          <label class="form-label" for="inc-modal-desc">Keterangan / Rincian Sumber</label>
+          <input type="text" class="form-control" id="inc-modal-desc" placeholder="Contoh: Uang saku BNI SSE Pejompongan transfer Wondr">
+        </div>
+      </div>
+
+      <div class="modal-foot" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; background: var(--surface-hover); border-top: 1px solid var(--border);">
+        <button type="button" class="btn-action btn-secondary" onclick="closeIncomeModal()">Batal</button>
+        <button type="submit" class="btn-action" style="background: #10b981; border-color: #10b981; color: #fff; font-weight: 700; padding: 8px 18px; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+          Simpan Pemasukan
+        </button>
+      </div>
+    </form>
   </div>
 </div>
 
@@ -12423,7 +12576,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     showToast(`${type === 'income' ? 'Pemasukan' : 'Pengeluaran'} ${formatRupiah(amount)} berhasil dicatat & disimpan!`);
   }
 
-  function quickFillExpense(cat, amount, desc, type = 'expense') {
+  function quickFillExpense(cat, amount, desc, type = 'expense', autoSubmit = null) {
     if (type !== currentTxType) {
       setFinanceTxType(type);
     }
@@ -12435,9 +12588,25 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     if (catEl) catEl.value = cat;
     if (amountEl) amountEl.value = Number(amount).toLocaleString('id-ID');
     if (descEl) descEl.value = desc || '';
-    if (dateEl && !dateEl.value) dateEl.value = getWibDateString();
 
-    handleNewExpense();
+    const cycle = getFinanceCycleRange();
+    if (dateEl) {
+      if (cat === 'saku_bni') {
+        dateEl.value = cycle.paydayStr; // Tgl 22 hari gajian BNI
+      } else if (!dateEl.value) {
+        dateEl.value = getWibDateString();
+      }
+    }
+
+    // Untuk pengeluaran: cepat 1-klik submit langsung
+    // Untuk pemasukan: isi form & arahkan ke tanggal agar bisa dipilih & di-tracking
+    const shouldSubmit = autoSubmit !== null ? autoSubmit : (type !== 'income');
+    if (shouldSubmit) {
+      handleNewExpense();
+    } else {
+      if (dateEl) dateEl.focus();
+      showToast(`Preset ${desc || 'pemasukan'} terisi! Sesuaikan tanggal jika perlu, lalu klik Simpan Pemasukan.`);
+    }
   }
 
   function deleteExpense(id) {
@@ -12825,6 +12994,164 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     if (e.target === document.getElementById('finance-report-modal')) {
       closeFinanceReportModal();
     }
+  }
+
+  // --- Modal Catat Pemasukan / Uang Saku (Detail Sumber & Tracking Tanggal) ---
+  function openIncomeModal(presetCat, presetAmount, presetDesc) {
+    const modal = document.getElementById('finance-income-modal');
+    if (!modal) return;
+
+    const amountEl = document.getElementById('inc-modal-amount');
+    const catEl = document.getElementById('inc-modal-cat');
+    const dateEl = document.getElementById('inc-modal-date');
+    const descEl = document.getElementById('inc-modal-desc');
+
+    const cycle = getFinanceCycleRange();
+    const todayStr = getWibDateString();
+
+    if (dateEl) {
+      dateEl.value = todayStr;
+    }
+
+    if (presetCat && catEl) catEl.value = presetCat;
+    if (presetAmount && amountEl) amountEl.value = Number(presetAmount).toLocaleString('id-ID');
+    if (presetDesc && descEl) descEl.value = presetDesc;
+
+    updateIncomeModalCycleHint();
+    modal.classList.add('active');
+
+    if (amountEl && !presetAmount) {
+      setTimeout(() => amountEl.focus(), 80);
+    }
+  }
+
+  function closeIncomeModal() {
+    const modal = document.getElementById('finance-income-modal');
+    if (modal) modal.classList.remove('active');
+  }
+
+  function handleIncomeModalBackdrop(e) {
+    if (e.target === document.getElementById('finance-income-modal')) {
+      closeIncomeModal();
+    }
+  }
+
+  function fillIncomeModalPreset(cat, amount, desc) {
+    const catEl = document.getElementById('inc-modal-cat');
+    const amountEl = document.getElementById('inc-modal-amount');
+    const descEl = document.getElementById('inc-modal-desc');
+    const dateEl = document.getElementById('inc-modal-date');
+
+    if (catEl) catEl.value = cat;
+    if (amountEl) amountEl.value = Number(amount).toLocaleString('id-ID');
+    if (descEl) descEl.value = desc;
+
+    // Khusus saku_bni: sarankan tanggal gajian (tgl 22)
+    if (cat === 'saku_bni') {
+      const cycle = getFinanceCycleRange();
+      if (dateEl) dateEl.value = cycle.paydayStr;
+    }
+    updateIncomeModalCycleHint();
+    showToast(`Preset ${desc} dipilih. Sesuaikan tanggal & klik Simpan.`);
+  }
+
+  function handleIncomeModalCatChange(sel) {
+    const descEl = document.getElementById('inc-modal-desc');
+    const dateEl = document.getElementById('inc-modal-date');
+    if (sel.value === 'saku_bni') {
+      if (descEl && !descEl.value) descEl.value = 'Uang Saku Magang BNI SSE Menara BNI';
+      const cycle = getFinanceCycleRange();
+      if (dateEl && !dateEl.value) dateEl.value = cycle.paydayStr;
+    } else if (sel.value === 'maganghub') {
+      if (descEl && !descEl.value) descEl.value = 'Insentif Kemnaker MagangHub';
+    }
+    updateIncomeModalCycleHint();
+  }
+
+  function setIncomeModalDate(mode) {
+    const dateEl = document.getElementById('inc-modal-date');
+    if (!dateEl) return;
+    const cycle = getFinanceCycleRange();
+    if (mode === 'today') {
+      dateEl.value = getWibDateString();
+    } else if (mode === 'payday') {
+      dateEl.value = cycle.paydayStr;
+    } else if (mode === 'start') {
+      dateEl.value = cycle.startStr;
+    }
+    updateIncomeModalCycleHint();
+  }
+
+  function updateIncomeModalCycleHint() {
+    const dateEl = document.getElementById('inc-modal-date');
+    const hintEl = document.getElementById('inc-modal-cycle-hint');
+    if (!hintEl) return;
+    const dateVal = dateEl && dateEl.value ? dateEl.value : getWibDateString();
+    const cycle = getFinanceCycleRange();
+    const inActiveCycle = dateVal >= cycle.startStr && dateVal <= cycle.endStr;
+    const monthNamesShort = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+
+    if (inActiveCycle) {
+      hintEl.innerHTML = `📍 <span style="color:#10b981;font-weight:700;">Masuk Siklus Aktif</span>: ${cycle.start.getDate()} ${monthNamesShort[cycle.start.getMonth()]} - ${cycle.end.getDate()} ${monthNamesShort[cycle.end.getMonth()]} (Gajian ${cycle.payday.getDate()} ${monthNamesShort[cycle.payday.getMonth()]})`;
+    } else {
+      hintEl.innerHTML = `⚠️ <span style="color:#f59e0b;font-weight:700;">Di luar siklus aktif saat ini</span> (${cycle.start.getDate()} ${monthNamesShort[cycle.start.getMonth()]} - ${cycle.end.getDate()} ${monthNamesShort[cycle.end.getMonth()]}). Tetap tersimpan di riwayat.`;
+    }
+  }
+
+  function setQuickTxDate(mode) {
+    const dateEl = document.getElementById('fin-tx-date');
+    if (!dateEl) return;
+    const cycle = getFinanceCycleRange();
+    if (mode === 'today') {
+      dateEl.value = getWibDateString();
+    } else if (mode === 'payday') {
+      dateEl.value = cycle.paydayStr;
+    } else if (mode === 'start') {
+      dateEl.value = cycle.startStr;
+    }
+    showToast(`Tanggal transaksi diatur ke: ${dateEl.value}`);
+  }
+
+  function handleIncomeModalSubmit(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    const amountEl = document.getElementById('inc-modal-amount');
+    const catEl = document.getElementById('inc-modal-cat');
+    const dateEl = document.getElementById('inc-modal-date');
+    const descEl = document.getElementById('inc-modal-desc');
+
+    const amount = amountEl ? parseMoney(amountEl.value) : 0;
+    const cat = catEl ? catEl.value : 'saku_bni';
+    const date = dateEl && dateEl.value ? dateEl.value : getWibDateString();
+    const desc = descEl ? descEl.value.trim() : '';
+
+    if (!amount || amount <= 0) {
+      showToast('Masukkan nominal pemasukan yang valid');
+      return;
+    }
+
+    const meta = FIN_INCOME_META[cat] || { label: 'Pemasukan', badge: '💵' };
+    const newTx = {
+      id: 'fin_inc_' + Date.now(),
+      type: 'income',
+      cat: cat,
+      desc: desc || meta.label,
+      amount: amount,
+      date: date
+    };
+
+    const expenses = getFinanceExpenses();
+    expenses.unshift(newTx);
+    saveFinanceExpenses(expenses);
+
+    if (amountEl) amountEl.value = '';
+    if (descEl) descEl.value = '';
+
+    closeIncomeModal();
+    renderFinanceExpenses();
+    renderFinanceHeatmap();
+    updateFinanceCalculations(true);
+
+    showToast(`✅ Pemasukan ${formatRupiah(amount)} (${meta.label}) tanggal ${date} berhasil dicatat!`);
   }
 
   function generateFinanceReportLocalText() {
