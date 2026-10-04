@@ -8274,7 +8274,7 @@
                       <button type="button" class="fin-type-pill" id="fin-view-expense" onclick="setFinanceTypeFilter('expense')">Pengeluaran</button>
                       <button type="button" class="fin-type-pill" id="fin-view-income" onclick="setFinanceTypeFilter('income')">Pemasukan</button>
                     </div>
-                    <button type="button" class="fin-add-income-btn" onclick="openIncomeModal()">+ Pemasukan</button>
+                    <button type="button" class="fin-add-income-btn" onclick="openIncomeModal()">+ Catat Pemasukan</button>
                   </div>
                   <span id="fin-filter-count" style="font-size:0.68rem;color:var(--text-tertiary);font-weight:600">0 transaksi</span>
                 </div>
@@ -8561,7 +8561,7 @@
         <!-- Account / Wallet Selector -->
         <div style="margin-bottom:12px">
           <label class="form-label" style="display:flex;justify-content:space-between;align-items:center;">
-            <span>Rekening / Sumber Dana</span>
+            <span id="fin-sheet-acc-label">Rekening / Sumber Dana</span>
             <span id="fin-sheet-acc-balance-hint" style="font-size:11px;color:var(--text-tertiary);font-weight:600">Saldo: Rp —</span>
           </label>
           <div class="fin-account-select-chips" id="fin-sheet-accounts">
@@ -9635,6 +9635,37 @@
             <option value="investasi">📈 Investasi / Bunga</option>
             <option value="lainnya_inc">💵 Pemasukan Lainnya</option>
           </select>
+        </div>
+
+        <!-- Rekening / Dompet Tujuan -->
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label class="form-label" style="display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px;">
+            <span>Masuk ke Rekening / Dompet</span>
+            <span id="inc-modal-acc-balance-hint" style="font-size: 11px; color: var(--text-tertiary); font-weight: 600;">Saldo: Rp —</span>
+          </label>
+          <div class="fin-account-select-chips" id="inc-modal-accounts">
+            <button type="button" class="fin-account-select-chip active" data-acc="acc_bni" onclick="selectIncomeModalAccount('acc_bni', this)">
+              <img src="bni-logo.svg" alt="BNI" class="fin-pill-brand-logo">
+              <span>BNI Taplus</span>
+            </button>
+            <button type="button" class="fin-account-select-chip" data-acc="acc_gopay" onclick="selectIncomeModalAccount('acc_gopay', this)">
+              <iconify-icon icon="simple-icons:gojek" width="14" height="14" style="color:#00AA13;"></iconify-icon>
+              <span>GoPay</span>
+            </button>
+            <button type="button" class="fin-account-select-chip" data-acc="acc_cash" onclick="selectIncomeModalAccount('acc_cash', this)">
+              <iconify-icon icon="lucide:wallet" width="14" height="14" style="color:#10B981;"></iconify-icon>
+              <span>Tunai</span>
+            </button>
+            <button type="button" class="fin-account-select-chip" data-acc="acc_savings" onclick="selectIncomeModalAccount('acc_savings', this)">
+              <img src="bni-logo.svg" alt="Wondr by BNI" class="fin-pill-brand-logo">
+              <span>Wondr</span>
+            </button>
+          </div>
+          <input type="hidden" id="inc-modal-account" value="acc_bni">
+          <div style="font-size: 0.72rem; color: var(--text-tertiary); margin-top: 4px; display: flex; align-items: center; gap: 4px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#10b981;flex-shrink:0;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+            <span>Saldo rekening di atas langsung bertambah tanpa duplikasi data.</span>
+          </div>
         </div>
 
         <!-- Tanggal -->
@@ -13436,10 +13467,10 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
         description: e.desc || '',
         amount: Number(e.amount) || 0,
         date: e.date || getWibDateString(),
-        source_account_id: 'acc_bni',
-        destination_account_id: null,
-        goal_id: null,
-        commitment_id: null
+        source_account_id: e.source_account_id || (e.type === 'income' ? (e.destination_account_id || 'acc_bni') : 'acc_bni'),
+        destination_account_id: e.destination_account_id || (e.type === 'income' ? (e.source_account_id || 'acc_bni') : null),
+        goal_id: e.goal_id || null,
+        commitment_id: e.commitment_id || null
       }));
     },
 
@@ -13453,7 +13484,9 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
         cat: t.category || 'makan',
         desc: t.description || '',
         amount: Number(t.amount) || 0,
-        date: t.date || getWibDateString()
+        date: t.date || getWibDateString(),
+        source_account_id: t.source_account_id || null,
+        destination_account_id: t.destination_account_id || null
       }));
       try {
         localStorage.setItem(FIN_EXPENSES_KEY, JSON.stringify(legacy));
@@ -15503,12 +15536,50 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     let expenses = getFinanceExpenses();
     const item = expenses.find(i => i.id === id);
     const isInc = item && item.type === 'income';
+
+    // Reverse account balance adjustment so deleting a transaction reconciles the account
+    if (item && typeof FinOS !== 'undefined' && FinOS.getAccounts) {
+      const accounts = FinOS.getAccounts();
+      const amount = Number(item.amount) || 0;
+      if (item.type === 'income') {
+        const accId = item.destination_account_id || item.source_account_id || 'acc_bni';
+        const acc = accounts.find(a => a.id === accId);
+        if (acc) {
+          acc.balance = Math.max(0, (Number(acc.balance) || 0) - amount);
+          FinOS.saveAccounts(accounts, true);
+        }
+      } else if (item.type === 'expense') {
+        const accId = item.source_account_id || 'acc_bni';
+        const acc = accounts.find(a => a.id === accId);
+        if (acc) {
+          acc.balance = (Number(acc.balance) || 0) + amount;
+          FinOS.saveAccounts(accounts, true);
+        }
+      } else if (item.type === 'saving') {
+        const srcAccId = item.source_account_id || 'acc_bni';
+        const destAccId = item.destination_account_id || 'acc_savings';
+        const srcAcc = accounts.find(a => a.id === srcAccId);
+        const destAcc = accounts.find(a => a.id === destAccId);
+        if (srcAcc) srcAcc.balance = (Number(srcAcc.balance) || 0) + amount;
+        if (destAcc) destAcc.balance = Math.max(0, (Number(destAcc.balance) || 0) - amount);
+        FinOS.saveAccounts(accounts, true);
+      }
+    }
+
     expenses = expenses.filter(item => item.id !== id);
     saveFinanceExpenses(expenses);
+
+    // Sync deletion to FinOS transactions
+    if (typeof FinOS !== 'undefined' && FinOS.getTransactions) {
+      const finTxs = FinOS.getTransactions().filter(t => t.id !== id);
+      FinOS.saveTransactions(finTxs, true);
+    }
+
+    renderAccountsStrip();
     renderFinanceExpenses();
     renderFinanceHeatmap();
     updateFinanceCalculations(false);
-    showToast(`Transaksi ${isInc ? 'pemasukan' : 'pengeluaran'} dihapus`);
+    showToast(`Transaksi ${isInc ? 'pemasukan' : 'pengeluaran'} dihapus & saldo direkonsiliasi`);
 
     if (supabaseClient) {
       supabaseClient.from('mghb_expenses').delete().eq('id', id)
@@ -15659,6 +15730,27 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
         : (FIN_CATEGORY_META[item.cat] || { label: 'Lainnya' });
       const iconHtml = renderCategoryIcon(item.cat, 20, isInc);
 
+      const targetAccId = isInc ? (item.destination_account_id || item.source_account_id) : (item.source_account_id || item.destination_account_id);
+      let accBadgeHtml = '';
+      if (targetAccId) {
+        const accNames = {
+          acc_bni: 'BNI Taplus',
+          acc_gopay: 'GoPay',
+          acc_cash: 'Tunai',
+          acc_savings: 'Wondr'
+        };
+        const accLogos = {
+          acc_bni: '<img src="bni-logo.svg" alt="BNI" style="height:10px;vertical-align:middle;margin-right:3px;">',
+          acc_gopay: '<iconify-icon icon="simple-icons:gojek" width="11" height="11" style="color:#00AA13;vertical-align:middle;margin-right:3px;"></iconify-icon>',
+          acc_cash: '<iconify-icon icon="lucide:wallet" width="11" height="11" style="color:#10B981;vertical-align:middle;margin-right:3px;"></iconify-icon>',
+          acc_savings: '<img src="bni-logo.svg" alt="Wondr" style="height:10px;vertical-align:middle;margin-right:3px;">'
+        };
+        const name = accNames[targetAccId] || targetAccId;
+        const logo = accLogos[targetAccId] || '💳 ';
+        const prefix = isInc ? 'Masuk ke ' : '';
+        accBadgeHtml = ` • <span class="fin-tx-acc-pill" style="display:inline-flex;align-items:center;background:var(--surface-hover);border:1px solid var(--border);border-radius:6px;padding:1px 6px;font-size:10.5px;font-weight:600;color:var(--text-secondary);">${logo}${escHtml(prefix + name)}</span>`;
+      }
+
       html += `
         <div class="finance-tx-item ${isInc ? 'income-item' : ''}">
           <div class="finance-tx-left">
@@ -15666,7 +15758,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
             <div class="finance-tx-info">
               <span class="finance-tx-desc">${escHtml(item.desc)}</span>
               <span class="finance-tx-date">
-                ${escHtml(item.date)} • ${escHtml(meta.label)}
+                ${escHtml(item.date)} • ${escHtml(meta.label)}${accBadgeHtml}
                 ${isInc ? ' • <span style="color:#10b981;font-weight:700;">Pemasukan</span>' : ''}
               </span>
             </div>
@@ -15980,8 +16072,25 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     }
   }
 
-  // --- Modal Catat Pemasukan / Uang Saku (Simple & Clean) ---
-  function openIncomeModal(presetCat, presetAmount, presetDesc) {
+  // --- Modal Catat Pemasukan / Uang Saku (Simple, Clean & Direct Account Tracking) ---
+  function selectIncomeModalAccount(accId, el) {
+    const accInput = document.getElementById('inc-modal-account');
+    if (accInput) accInput.value = accId;
+    const chipsContainer = document.getElementById('inc-modal-accounts');
+    if (chipsContainer) {
+      chipsContainer.querySelectorAll('.fin-account-select-chip').forEach(c => {
+        c.classList.toggle('active', c.getAttribute('data-acc') === accId);
+      });
+    }
+    const accounts = (typeof FinOS !== 'undefined' && FinOS.getAccounts) ? FinOS.getAccounts() : [];
+    const acc = accounts.find(a => a.id === accId);
+    const hintEl = document.getElementById('inc-modal-acc-balance-hint');
+    if (hintEl && acc) {
+      hintEl.textContent = `Saldo saat ini: ${formatRupiah(acc.balance)}`;
+    }
+  }
+
+  function openIncomeModal(presetCat, presetAmount, presetDesc, presetAccount) {
     const modal = document.getElementById('finance-income-modal');
     if (!modal) return;
 
@@ -16015,6 +16124,15 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       dateEl.value = (catEl && catEl.value === 'saku_bni') ? cycle.paydayStr : todayStr;
     }
 
+    // Default account selection: preset or smart match by category
+    let defaultAcc = presetAccount || 'acc_bni';
+    if (!presetAccount && catEl) {
+      if (catEl.value === 'investasi') defaultAcc = 'acc_savings';
+      else if (catEl.value === 'hadiah') defaultAcc = 'acc_gopay';
+      else defaultAcc = 'acc_bni';
+    }
+    selectIncomeModalAccount(defaultAcc);
+
     updateIncomeModalCycleHint();
     modal.classList.add('active');
 
@@ -16037,7 +16155,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     }
   }
 
-  function fillIncomeModalPreset(cat, amount, desc) {
+  function fillIncomeModalPreset(cat, amount, desc, accountId) {
     const catEl = document.getElementById('inc-modal-cat');
     const amountEl = document.getElementById('inc-modal-amount');
     const descEl = document.getElementById('inc-modal-desc');
@@ -16051,6 +16169,9 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     if (cat === 'saku_bni') {
       const cycle = getFinanceCycleRange();
       if (dateEl) dateEl.value = cycle.paydayStr;
+      selectIncomeModalAccount(accountId || 'acc_bni');
+    } else if (accountId) {
+      selectIncomeModalAccount(accountId);
     }
     updateIncomeModalCycleHint();
     showToast(`Preset ${desc} dipilih. Sesuaikan tanggal & klik Simpan.`);
@@ -16066,15 +16187,22 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       if (descEl) descEl.value = 'Uang Saku Magang BNI';
       if (amountEl && (!amountEl.value || parseMoney(amountEl.value) <= 0)) amountEl.value = '3.500.000';
       if (dateEl) dateEl.value = cycle.paydayStr;
+      selectIncomeModalAccount('acc_bni');
     } else if (sel.value === 'maganghub') {
       if (descEl) descEl.value = 'Insentif Kemnaker MagangHub';
       if (amountEl && (!amountEl.value || parseMoney(amountEl.value) <= 0)) amountEl.value = '500.000';
+      selectIncomeModalAccount('acc_bni');
     } else if (sel.value === 'freelance') {
       if (descEl && !descEl.value) descEl.value = 'Honor Freelance';
+      selectIncomeModalAccount('acc_bni');
     } else if (sel.value === 'ortu') {
       if (descEl && !descEl.value) descEl.value = 'Kiriman Keluarga';
+      selectIncomeModalAccount('acc_bni');
     } else if (sel.value === 'hadiah') {
       if (descEl && !descEl.value) descEl.value = 'Bonus / Reward';
+      selectIncomeModalAccount('acc_gopay');
+    } else if (sel.value === 'investasi') {
+      selectIncomeModalAccount('acc_savings');
     }
     updateIncomeModalCycleHint();
   }
@@ -16129,11 +16257,13 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     const catEl = document.getElementById('inc-modal-cat');
     const dateEl = document.getElementById('inc-modal-date');
     const descEl = document.getElementById('inc-modal-desc');
+    const accEl = document.getElementById('inc-modal-account');
 
     const amount = amountEl ? parseMoney(amountEl.value) : 0;
     const cat = catEl ? catEl.value : 'saku_bni';
     const date = dateEl && dateEl.value ? dateEl.value : getWibDateString();
     const desc = descEl ? descEl.value.trim() : '';
+    const targetAccountId = accEl && accEl.value ? accEl.value : 'acc_bni';
 
     if (!amount || amount <= 0) {
       showToast('Masukkan nominal pemasukan yang valid');
@@ -16141,28 +16271,67 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     }
 
     const meta = FIN_INCOME_META[cat] || { label: 'Pemasukan', badge: '💵' };
+    const txId = 'fin_inc_' + Date.now();
+
+    // 1. Langsung kreditkan saldo rekening tujuan di FinOS
+    let targetAccName = 'BNI Taplus';
+    if (typeof FinOS !== 'undefined' && FinOS.getAccounts) {
+      const accounts = FinOS.getAccounts();
+      const targetAcc = accounts.find(a => a.id === targetAccountId) || accounts[0];
+      if (targetAcc) {
+        targetAcc.balance = (Number(targetAcc.balance) || 0) + amount;
+        targetAccName = targetAcc.name || targetAccountId;
+        FinOS.saveAccounts(accounts, true);
+      }
+    }
+
+    // 2. Buat objek transaksi lengkap dengan referensi rekening tujuan
     const newTx = {
-      id: 'fin_inc_' + Date.now(),
+      id: txId,
       type: 'income',
       cat: cat,
       desc: desc || meta.label,
       amount: amount,
-      date: date
+      date: date,
+      source_account_id: targetAccountId,
+      destination_account_id: targetAccountId
     };
 
+    // 3. Simpan ke expenses riwayat
     const expenses = getFinanceExpenses();
     expenses.unshift(newTx);
     saveFinanceExpenses(expenses);
+
+    // 4. Sinkronkan ke FinOS.getTransactions() agar tidak ada duplikasi / disparitas
+    if (typeof FinOS !== 'undefined' && FinOS.getTransactions) {
+      const finTxs = FinOS.getTransactions();
+      if (!finTxs.some(t => t.id === txId)) {
+        finTxs.unshift({
+          id: txId,
+          type: 'income',
+          category: cat,
+          description: newTx.desc,
+          amount: amount,
+          date: date,
+          source_account_id: targetAccountId,
+          destination_account_id: targetAccountId,
+          goal_id: null,
+          commitment_id: null
+        });
+        FinOS.saveTransactions(finTxs, true);
+      }
+    }
 
     if (amountEl) amountEl.value = '';
     if (descEl) descEl.value = '';
 
     closeIncomeModal();
+    renderAccountsStrip();
     renderFinanceExpenses();
     renderFinanceHeatmap();
     updateFinanceCalculations(true);
 
-    showToast(`✅ Pemasukan ${formatRupiah(amount)} (${meta.label}) tanggal ${date} berhasil dicatat!`);
+    showToast(`✅ Pemasukan ${formatRupiah(amount)} (${meta.label}) masuk ke ${targetAccName}!`);
   }
 
   function generateFinanceReportLocalText() {
@@ -16407,6 +16576,10 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     if (titleEl) {
       titleEl.textContent = isInc ? 'Catat Pemasukan' : (isSav ? 'Alokasi Tabungan / Goal' : 'Catat Pengeluaran');
     }
+    const accLabelEl = document.getElementById('fin-sheet-acc-label');
+    if (accLabelEl) {
+      accLabelEl.textContent = isInc ? 'Masuk ke Rekening / Dompet' : (isSav ? 'Sumber Rekening Penarikan' : 'Rekening / Sumber Dana');
+    }
     const submitBtn = document.getElementById('fin-sheet-submit-btn');
     if (submitBtn) {
       submitBtn.textContent = isInc ? 'Simpan Pemasukan' : (isSav ? 'Simpan Setoran Tabungan' : 'Simpan Pengeluaran');
@@ -16559,7 +16732,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       amount: amount,
       date: date,
       source_account_id: accountId,
-      destination_account_id: type === 'saving' ? 'acc_savings' : null,
+      destination_account_id: type === 'income' ? accountId : (type === 'saving' ? 'acc_savings' : null),
       goal_id: type === 'saving' ? cat : null,
       commitment_id: null
     });
@@ -16572,7 +16745,9 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       cat: cat,
       desc: desc || (type === 'expense' ? 'Pengeluaran' : (type === 'income' ? 'Pemasukan' : 'Nabung Goal')),
       amount: amount,
-      date: date
+      date: date,
+      source_account_id: accountId,
+      destination_account_id: type === 'income' ? accountId : (type === 'saving' ? 'acc_savings' : null)
     });
     saveFinanceExpenses(expenses, true);
 
@@ -16612,31 +16787,10 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     renderFinanceExpenses();
   }
 
-  // Show only 3-5 most recent transactions on dashboard
+  // Show recent transactions on dashboard using centralized renderFinanceExpenses
   function renderRecentTransactionsSummary() {
-    const container = document.getElementById('finance-tx-container');
-    if (!container) return;
-    const allTxs = getFinanceExpenses();
-    const recent = allTxs.slice(0, 5);
-    if (recent.length === 0) {
-      container.innerHTML = '<div style="font-size:0.78rem;color:var(--text-secondary);text-align:center;padding:16px;border:1px dashed var(--border);border-radius:6px;background:var(--surface-hover)">Belum ada transaksi tercatat. Gunakan tombol <strong>Catat Pengeluaran</strong> atau <strong>+ Pemasukan</strong> di atas.</div>';
-      return;
-    }
-    let html = '';
-    recent.forEach(tx => {
-      const isInc = tx.type === 'income';
-      const meta = isInc ? (FIN_INCOME_META[tx.cat] || { label: tx.cat }) : (FIN_CATEGORY_META[tx.cat] || { label: tx.cat });
-      const amt = formatRupiah(Number(tx.amount) || 0);
-      const iconHtml = renderCategoryIcon(tx.cat, 18, isInc);
-      html += `<div class="fin-tx-row" onclick="deleteExpense('${tx.id}')" title="Tap untuk hapus">
-        <span class="fin-tx-cat" style="display:inline-flex;align-items:center;gap:6px;">${iconHtml} <span>${meta.label}</span></span>
-        <span class="fin-tx-desc">${escHtml(tx.desc || '')}</span>
-        <span class="fin-tx-amt ${isInc ? 'fin-tx-in' : 'fin-tx-out'}">${isInc ? '+' : '-'} ${amt}</span>
-      </div>`;
-    });
-    container.innerHTML = html;
+    renderFinanceExpenses();
   }
-
 
   window.updateFinanceCalculations = updateFinanceCalculations;
   window.runWhatIfSimulation = runWhatIfSimulation;
@@ -16649,6 +16803,11 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   window.submitSheetExpense = submitSheetExpense;
   window.renderAccountsStrip = renderAccountsStrip;
   window.promptEditAccountBalance = promptEditAccountBalance;
+  window.openIncomeModal = openIncomeModal;
+  window.closeIncomeModal = closeIncomeModal;
+  window.selectIncomeModalAccount = selectIncomeModalAccount;
+  window.handleIncomeModalCatChange = handleIncomeModalCatChange;
+  window.handleIncomeModalSubmit = handleIncomeModalSubmit;
 
   // --- Initialization ---
   async function initApp() {
