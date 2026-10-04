@@ -7807,19 +7807,16 @@
   </div>
 </div>
 
-<!-- Modal: Catat Pemasukan / Uang Saku (Detail Sumber & Tracking Tanggal) -->
+<!-- Modal: Catat Pemasukan / Uang Saku (Simple & Clean) -->
 <div class="modal-overlay" id="finance-income-modal" onclick="handleIncomeModalBackdrop(event)">
-  <div class="modal-box" style="max-width: 480px;">
-    <div class="modal-head">
-      <div class="modal-title-wrap">
-        <h3 style="display: flex; align-items: center; gap: 8px;">
-          <span style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; background: rgba(16, 185, 129, 0.15); color: #10b981;">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-          </span>
-          Catat Pemasukan / Uang Saku
-        </h3>
-        <p>Lacak sumber dana dan tanggal penerimaan untuk tracking siklus gajian 21-22.</p>
-      </div>
+  <div class="modal-box" style="max-width: 420px; border-radius: 16px; overflow: hidden;">
+    <div class="modal-head" style="padding: 16px 20px 12px; border-bottom: 1px solid var(--border);">
+      <h3 style="display: flex; align-items: center; gap: 8px; font-size: 1.05rem; font-weight: 700; margin: 0; color: var(--text-primary);">
+        <span style="display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; background: rgba(16, 185, 129, 0.15); color: #10b981;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        </span>
+        Catat Pemasukan
+      </h3>
       <button class="btn-close" onclick="closeIncomeModal()" title="Tutup">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -7829,71 +7826,54 @@
     </div>
 
     <form id="income-modal-form" onsubmit="handleIncomeModalSubmit(event)">
-      <div class="modal-body" style="padding: 16px 20px;">
-        <!-- Preset Chips 1-Click Fill -->
-        <div style="margin-bottom: 14px;">
-          <label class="form-label" style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-secondary); margin-bottom: 6px;">Pilih Cepat Sumber Dana:</label>
-          <div class="finance-quick-chips" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;">
-            <button type="button" class="finance-chip income-chip" onclick="fillIncomeModalPreset('saku_bni', 3500000, 'Uang Saku Magang BNI SSE')">🏦 +3.5jt BNI</button>
-            <button type="button" class="finance-chip income-chip" onclick="fillIncomeModalPreset('maganghub', 500000, 'Insentif MagangHub Kemnaker')">💼 +500rb Kemnaker</button>
-            <button type="button" class="finance-chip income-chip" onclick="fillIncomeModalPreset('freelance', 250000, 'Honor Proyek Freelance')">💻 +250rb Freelance</button>
-            <button type="button" class="finance-chip income-chip" onclick="fillIncomeModalPreset('ortu', 300000, 'Kiriman Orang Tua')">👨‍👩‍👧 +300rb Ortu</button>
-            <button type="button" class="finance-chip income-chip" onclick="fillIncomeModalPreset('hadiah', 100000, 'Bonus / Reward')">🎁 +100rb Bonus</button>
-            <button type="button" class="finance-chip income-chip" onclick="fillIncomeModalPreset('lainnya_inc', 50000, 'Pemasukan Tambahan')">💵 +50rb Lainnya</button>
-          </div>
-        </div>
-
+      <div class="modal-body" style="padding: 18px 20px 14px;">
         <!-- Nominal -->
-        <div class="form-group" style="margin-bottom: 12px;">
-          <label class="form-label" for="inc-modal-amount">Nominal Pemasukan (Rp) <span style="color: #ef4444;">*</span></label>
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label class="form-label" for="inc-modal-amount" style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px;">Nominal (Rp)</label>
           <div style="position: relative;">
-            <span style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-weight: 700; color: #10b981; font-size: 0.95rem;">Rp</span>
-            <input type="text" inputmode="numeric" class="form-control" id="inc-modal-amount" placeholder="Contoh: 3.500.000" oninput="formatMoneyInput(this)" required style="padding-left: 40px; font-size: 1.1rem; font-weight: 800; color: #10b981;">
+            <span style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-weight: 700; color: #10b981; font-size: 1rem;">Rp</span>
+            <input type="text" inputmode="numeric" class="form-control" id="inc-modal-amount" placeholder="0" oninput="formatMoneyInput(this)" required style="padding-left: 44px; font-size: 1.25rem; font-weight: 800; color: #10b981;">
           </div>
         </div>
 
         <!-- Sumber Pemasukan / Kategori -->
-        <div class="form-group" style="margin-bottom: 12px;">
-          <label class="form-label" for="inc-modal-cat">Sumber Pemasukan (Dari Mana?) <span style="color: #ef4444;">*</span></label>
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label class="form-label" for="inc-modal-cat" style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px;">Sumber Dana</label>
           <select class="form-control" id="inc-modal-cat" required onchange="handleIncomeModalCatChange(this)">
-            <option value="saku_bni">🏦 Uang Saku Magang BNI (SSE Menara BNI)</option>
+            <option value="saku_bni">🏦 Uang Saku Magang BNI</option>
             <option value="maganghub">💼 Insentif Kemnaker MagangHub</option>
-            <option value="freelance">💻 Proyek / Jasa Freelance</option>
+            <option value="freelance">💻 Honor Freelance / Proyek</option>
             <option value="ortu">👨‍👩‍👧 Kiriman Keluarga / Orang Tua</option>
-            <option value="hadiah">🎁 Bonus / Hadiah / Reward</option>
-            <option value="investasi">📈 Dividen / Bunga / Investasi</option>
-            <option value="lainnya_inc">💵 Pemasukan Lain-lain</option>
+            <option value="hadiah">🎁 Bonus / Reward</option>
+            <option value="investasi">📈 Investasi / Bunga</option>
+            <option value="lainnya_inc">💵 Pemasukan Lainnya</option>
           </select>
         </div>
 
-        <!-- Tanggal Penerimaan (Untuk Tracking Siklus) -->
-        <div class="form-group" style="margin-bottom: 12px;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-            <label class="form-label" for="inc-modal-date" style="margin-bottom: 0;">Tanggal Diterima (Untuk Tracking) <span style="color: #ef4444;">*</span></label>
-            <div class="fin-date-shortcut">
+        <!-- Tanggal -->
+        <div class="form-group" style="margin-bottom: 14px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <label class="form-label" for="inc-modal-date" style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 0;">Tanggal Diterima</label>
+            <div style="display: flex; gap: 4px;">
               <button type="button" class="fin-date-shortcut-btn" onclick="setIncomeModalDate('today')">Hari Ini</button>
-              <button type="button" class="fin-date-shortcut-btn" onclick="setIncomeModalDate('payday')" style="color: #10b981; font-weight: 700;" title="Pilih tanggal 22 (gajian)">Tgl 22 (Gajian)</button>
-              <button type="button" class="fin-date-shortcut-btn" onclick="setIncomeModalDate('start')" title="Pilih tanggal 21 (awal siklus)">Tgl 21 (Awal)</button>
+              <button type="button" class="fin-date-shortcut-btn" onclick="setIncomeModalDate('payday')" style="color: #10b981; font-weight: 700;">Tgl 22 (Gajian)</button>
             </div>
           </div>
           <input type="date" class="form-control" id="inc-modal-date" required onchange="updateIncomeModalCycleHint()">
-          <span style="font-size: 0.68rem; color: var(--text-tertiary); display: block; margin-top: 4px;" id="inc-modal-cycle-hint">
-            📍 Masuk siklus belanja aktif 21 Sep - 21 Okt (Gajian 22 Okt).
-          </span>
+          <span id="inc-modal-cycle-hint" style="display: none;"></span>
         </div>
 
-        <!-- Keterangan / Deskripsi Rincian -->
-        <div class="form-group" style="margin-bottom: 6px;">
-          <label class="form-label" for="inc-modal-desc">Keterangan / Rincian Sumber</label>
-          <input type="text" class="form-control" id="inc-modal-desc" placeholder="Contoh: Uang saku BNI SSE Pejompongan transfer Wondr">
+        <!-- Keterangan / Catatan -->
+        <div class="form-group" style="margin-bottom: 4px;">
+          <label class="form-label" for="inc-modal-desc" style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px;">Catatan <span style="font-weight: 400; color: var(--text-tertiary);">(Opsional)</span></label>
+          <input type="text" class="form-control" id="inc-modal-desc" placeholder="Misal: Uang saku bulan ini, bonus lembur">
         </div>
       </div>
 
-      <div class="modal-foot" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; background: var(--surface-hover); border-top: 1px solid var(--border);">
-        <button type="button" class="btn-action btn-secondary" onclick="closeIncomeModal()">Batal</button>
-        <button type="submit" class="btn-action" style="background: #10b981; border-color: #10b981; color: #fff; font-weight: 700; padding: 8px 18px; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
-          Simpan Pemasukan
+      <div class="modal-foot" style="display: flex; justify-content: flex-end; gap: 8px; padding: 14px 20px; border-top: 1px solid var(--border); background: var(--surface);">
+        <button type="button" class="btn-action btn-secondary" onclick="closeIncomeModal()" style="padding: 8px 16px;">Batal</button>
+        <button type="submit" class="btn-action" style="background: #10b981; border: none; color: #fff; font-weight: 700; padding: 8px 22px; border-radius: var(--radius-sm); box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);">
+          Simpan
         </button>
       </div>
     </form>
@@ -13021,7 +13001,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     }
   }
 
-  // --- Modal Catat Pemasukan / Uang Saku (Detail Sumber & Tracking Tanggal) ---
+  // --- Modal Catat Pemasukan / Uang Saku (Simple & Clean) ---
   function openIncomeModal(presetCat, presetAmount, presetDesc) {
     const modal = document.getElementById('finance-income-modal');
     if (!modal) return;
@@ -13034,19 +13014,36 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     const cycle = getFinanceCycleRange();
     const todayStr = getWibDateString();
 
-    if (dateEl) {
-      dateEl.value = todayStr;
+    if (presetCat && catEl) {
+      catEl.value = presetCat;
+    } else if (catEl) {
+      catEl.value = 'saku_bni';
     }
 
-    if (presetCat && catEl) catEl.value = presetCat;
-    if (presetAmount && amountEl) amountEl.value = Number(presetAmount).toLocaleString('id-ID');
-    if (presetDesc && descEl) descEl.value = presetDesc;
+    if (presetAmount && amountEl) {
+      amountEl.value = Number(presetAmount).toLocaleString('id-ID');
+    } else if (amountEl && (!amountEl.value || parseMoney(amountEl.value) <= 0)) {
+      amountEl.value = '3.500.000';
+    }
+
+    if (presetDesc && descEl) {
+      descEl.value = presetDesc;
+    } else if (descEl && !descEl.value) {
+      descEl.value = 'Uang Saku Magang BNI';
+    }
+
+    if (dateEl) {
+      dateEl.value = (catEl && catEl.value === 'saku_bni') ? cycle.paydayStr : todayStr;
+    }
 
     updateIncomeModalCycleHint();
     modal.classList.add('active');
 
-    if (amountEl && !presetAmount) {
-      setTimeout(() => amountEl.focus(), 80);
+    if (amountEl) {
+      setTimeout(() => {
+        amountEl.focus();
+        amountEl.select();
+      }, 80);
     }
   }
 
@@ -13083,12 +13080,22 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   function handleIncomeModalCatChange(sel) {
     const descEl = document.getElementById('inc-modal-desc');
     const dateEl = document.getElementById('inc-modal-date');
+    const amountEl = document.getElementById('inc-modal-amount');
+    const cycle = getFinanceCycleRange();
+
     if (sel.value === 'saku_bni') {
-      if (descEl && !descEl.value) descEl.value = 'Uang Saku Magang BNI SSE Menara BNI';
-      const cycle = getFinanceCycleRange();
-      if (dateEl && !dateEl.value) dateEl.value = cycle.paydayStr;
+      if (descEl) descEl.value = 'Uang Saku Magang BNI';
+      if (amountEl && (!amountEl.value || parseMoney(amountEl.value) <= 0)) amountEl.value = '3.500.000';
+      if (dateEl) dateEl.value = cycle.paydayStr;
     } else if (sel.value === 'maganghub') {
-      if (descEl && !descEl.value) descEl.value = 'Insentif Kemnaker MagangHub';
+      if (descEl) descEl.value = 'Insentif Kemnaker MagangHub';
+      if (amountEl && (!amountEl.value || parseMoney(amountEl.value) <= 0)) amountEl.value = '500.000';
+    } else if (sel.value === 'freelance') {
+      if (descEl && !descEl.value) descEl.value = 'Honor Freelance';
+    } else if (sel.value === 'ortu') {
+      if (descEl && !descEl.value) descEl.value = 'Kiriman Keluarga';
+    } else if (sel.value === 'hadiah') {
+      if (descEl && !descEl.value) descEl.value = 'Bonus / Reward';
     }
     updateIncomeModalCycleHint();
   }
