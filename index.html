@@ -2361,6 +2361,12 @@
       align-items: center;
       gap: 6px;
       margin-bottom: 2px;
+      flex-wrap: nowrap;
+    }
+
+    .finance-bento-hero-header .finance-metric-label {
+      white-space: nowrap;
+      flex-shrink: 0;
     }
 
     .fin-bento-safe-badge {
@@ -2373,6 +2379,7 @@
       border: 1px solid rgba(22, 163, 74, 0.28);
       white-space: nowrap;
       display: inline-block;
+      flex-shrink: 0;
     }
 
     .fin-bento-safe-badge.danger {
@@ -6317,19 +6324,14 @@
           <!-- Bento 1: Income -->
           <div class="finance-metric finance-bento-col" id="fin-metric-income">
             <div style="display: flex; justify-content: space-between; align-items: center; gap: 4px;">
-              <span class="finance-metric-label">Pemasukan / Saku</span>
-              <div style="display: flex; align-items: center; gap: 5px;">
-                <button type="button" class="fin-add-income-btn" onclick="openIncomeModal()" title="Catat sumber pemasukan baru">+ Catat</button>
-                <button type="button" class="fin-income-detail-btn" onclick="scrollToIncomeDetail()" title="Lihat detail sumber pemasukan" style="background: none; border: none; font-size: 0.65rem; font-weight: 700; color: #10b981; cursor: pointer; padding: 0;">Detail &rarr;</button>
-              </div>
+              <span class="finance-metric-label">Pemasukan</span>
+              <button type="button" class="fin-add-income-btn" onclick="openIncomeModal()" title="Catat sumber pemasukan baru">+ Catat</button>
             </div>
-            <div style="display: flex; align-items: baseline; gap: 4px; margin: 3px 0 2px;">
-              <span style="font-size: 0.88rem; font-weight: 700; color: var(--text-tertiary);">Rp</span>
-              <input type="text" inputmode="numeric" id="fin-income-input" value="3.500.000" oninput="handleIncomeInput(this)" onchange="handleIncomeChange(this)" onblur="handleIncomeBlur(this)" onkeydown="if(event.key==='Enter'){this.blur();}" style="font-size: 1.12rem; font-weight: 800; color: var(--text-primary); background: transparent; border: none; border-bottom: 1.5px dashed var(--border-strong); width: 100%; outline: none; padding: 0 0 2px;" title="Total pemasukan aktif (klik '+ Catat' untuk menambah rincian sumber)">
-            </div>
+            <div class="finance-metric-val" id="fin-total-income-display" onclick="openIncomeModal()" style="margin: 3px 0 2px; cursor: pointer;" title="Klik untuk catat / rincian sumber pemasukan">Rp 3.500.000</div>
+            <input type="hidden" id="fin-income-input" value="3.500.000">
             <div style="display: flex; justify-content: space-between; align-items: center; gap: 4px;">
-              <span class="finance-metric-sub" id="fin-income-sources-label" title="Total pemasukan tercatat">Tersimpan otomatis</span>
-              <button type="button" onclick="openIncomeModal()" style="background: none; border: none; font-size: 0.65rem; color: #10b981; font-weight: 700; cursor: pointer; padding: 0; text-decoration: underline;" title="Tambah sumber dana baru">+ Sumber</button>
+              <span class="finance-metric-sub" id="fin-income-sources-label" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">1 sumber aktif</span>
+              <button type="button" class="fin-income-detail-btn" onclick="scrollToIncomeDetail()" title="Lihat detail sumber pemasukan" style="background: none; border: none; font-size: 0.65rem; font-weight: 700; color: #10b981; cursor: pointer; padding: 0; white-space: nowrap;">Detail &rarr;</button>
             </div>
           </div>
 
@@ -6343,11 +6345,11 @@
           <!-- Bento 3: Hero - Sisa & Batas Aman Harian -->
           <div class="finance-metric finance-bento-hero" id="fin-metric-remaining">
             <div class="finance-bento-hero-header">
-              <span class="finance-metric-label">
-                <svg class="ic ic-14" aria-hidden="true" style="margin-right: 3px; vertical-align: -2px;"><use href="#i-shield"/></svg>
+              <span class="finance-metric-label" style="white-space: nowrap; display: inline-flex; align-items: center; gap: 4px;">
+                <svg class="ic ic-14" aria-hidden="true" style="margin-right: 2px; vertical-align: -2px;"><use href="#i-shield"/></svg>
                 Sisa &amp; Batas Aman
               </span>
-              <span class="badge fin-bento-safe-badge" id="fin-daily-safe-limit">Batas aman: Rp — / hari</span>
+              <span class="badge fin-bento-safe-badge" id="fin-daily-safe-limit">Batas: Rp — / hari</span>
             </div>
             <div class="finance-metric-val success" id="fin-remaining-budget" style="margin: 3px 0 2px;">Rp 3.500.000</div>
             <span class="finance-metric-sub">Sisa anggaran sampai akhir bulan</span>
@@ -6356,14 +6358,19 @@
 
         <!-- Today's Safe Burn Meter -->
         <div class="finance-today-meter">
-          <div class="finance-meter-header">
-            <span class="finance-meter-title">
-              <span><svg class="ic ic-16" aria-hidden="true"><use href="#i-target"/></svg> Burn Rate Hari Ini:</span>
+          <div class="finance-meter-header" style="display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: nowrap;">
+            <div style="display: inline-flex; align-items: center; gap: 6px; min-width: 0;">
+              <span class="finance-meter-title" style="display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; font-size: 0.76rem; font-weight: 700;">
+                <svg class="ic ic-16" aria-hidden="true" style="color: var(--accent); flex-shrink: 0;"><use href="#i-target"/></svg>
+                Burn Rate Hari Ini
+              </span>
+              <span class="badge" id="fin-today-badge" style="font-size: 0.65rem; padding: 2px 7px; background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); white-space: nowrap; flex-shrink: 0;">Aman</span>
+            </div>
+            <div style="display: inline-flex; align-items: baseline; gap: 3px; font-size: 0.76rem; white-space: nowrap; flex-shrink: 0;">
               <span id="fin-today-spent" style="font-weight: 800; color: var(--text-primary);">Rp 0</span>
-              <span style="font-size: 0.68rem; color: var(--text-tertiary);">dari batas</span>
+              <span style="font-size: 0.68rem; color: var(--text-tertiary);">/ batas</span>
               <span id="fin-today-limit" style="font-weight: 700; color: var(--accent);">Rp —</span>
-            </span>
-            <span class="badge" id="fin-today-badge" style="font-size: 0.68rem; padding: 2px 8px; background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3);">Aman</span>
+            </div>
           </div>
           <div class="finance-meter-gauge-track">
             <div class="finance-meter-gauge-fill" id="fin-today-meter-fill" style="width: 0%; background-color: #10b981;"></div>
@@ -9559,7 +9566,9 @@
         if (incVal > 0) {
           localStorage.setItem(FIN_INCOME_KEY, String(incVal));
           const incEl = document.getElementById('fin-income-input');
+          const incDisplay = document.getElementById('fin-total-income-display');
           if (incEl && document.activeElement !== incEl) incEl.value = incVal.toLocaleString('id-ID');
+          if (incDisplay) incDisplay.textContent = formatRupiah(incVal);
         }
       }
 
@@ -12101,9 +12110,13 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     const savedFilter = localStorage.getItem('mghb_finance_filter');
     if (savedFilter && ['all', 'today', 'week', 'month'].includes(savedFilter)) currentFinanceFilter = savedFilter;
     const incomeInput = document.getElementById('fin-income-input');
+    const incomeDisplay = document.getElementById('fin-total-income-display');
     const localIncome = getFinanceIncome();
     if (incomeInput) {
       incomeInput.value = localIncome.toLocaleString('id-ID');
+    }
+    if (incomeDisplay) {
+      incomeDisplay.textContent = formatRupiah(localIncome);
     }
     // Pull income, expenses, bills, and goals from Supabase (cloud-first merge)
     if (supabaseClient) {
@@ -12115,6 +12128,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
           if (!hasLocalCustom && cloud > 0) {
             localStorage.setItem(FIN_INCOME_KEY, String(cloud));
             if (incomeInput) incomeInput.value = cloud.toLocaleString('id-ID');
+            if (incomeDisplay) incomeDisplay.textContent = formatRupiah(cloud);
             updateFinanceCalculations(true);
           }
         }
@@ -12217,6 +12231,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     const totalRecordedIncome = cycleIncomes.reduce((s, i) => s + (Number(i.amount) || 0), 0);
 
     const incomeInput = document.getElementById('fin-income-input');
+    const incomeDisplay = document.getElementById('fin-total-income-display');
     let income;
     if (totalRecordedIncome > 0) {
       income = totalRecordedIncome;
@@ -12224,9 +12239,13 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       if (syncInputField && incomeInput && document.activeElement !== incomeInput) {
         incomeInput.value = income.toLocaleString('id-ID');
       }
+      if (incomeDisplay) {
+        incomeDisplay.textContent = formatRupiah(income);
+      }
       const sourceEl = document.getElementById('fin-income-sources-label');
       if (sourceEl) {
-        sourceEl.textContent = `${cycleIncomes.length} sumber pemasukan (${formatRupiah(totalRecordedIncome)})`;
+        sourceEl.textContent = `${cycleIncomes.length} sumber aktif`;
+        sourceEl.title = `${cycleIncomes.length} sumber pemasukan (${formatRupiah(totalRecordedIncome)})`;
       }
     } else {
       income = incomeInput ? parseMoney(incomeInput.value) : getFinanceIncome();
@@ -12235,8 +12254,14 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       if (syncInputField && incomeInput && document.activeElement !== incomeInput) {
         incomeInput.value = income.toLocaleString('id-ID');
       }
+      if (incomeDisplay) {
+        incomeDisplay.textContent = formatRupiah(income);
+      }
       const sourceEl = document.getElementById('fin-income-sources-label');
-      if (sourceEl) sourceEl.textContent = 'Baseline otomatis · klik untuk edit';
+      if (sourceEl) {
+        sourceEl.textContent = 'Baseline saku';
+        sourceEl.title = 'Baseline saku (klik "+ Catat" untuk tambah sumber)';
+      }
     }
 
     if (supabaseClient) {
@@ -12291,7 +12316,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     const dailyLimitEl = document.getElementById('fin-daily-safe-limit');
     if (dailyLimitEl) {
       dailyLimitEl.textContent = remaining > 0 
-        ? `Batas aman: ${formatRupiah(safeDailyLimit)}/hari` 
+        ? `Batas: ${formatRupiah(safeDailyLimit)}/hari` 
         : 'Anggaran telah habis!';
       if (remaining <= 0) {
         dailyLimitEl.classList.add('danger');
