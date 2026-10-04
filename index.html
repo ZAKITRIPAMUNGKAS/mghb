@@ -7936,9 +7936,9 @@
           <iconify-icon icon="lucide:wallet" width="13" height="13" style="color:#10B981;vertical-align:middle;"></iconify-icon>
           <span>Tunai:</span> <strong class="fin-account-pill-amt" id="fin-acc-cash-val">Rp 0</strong>
         </div>
-        <div class="fin-account-pill" onclick="promptEditAccountBalance('acc_savings')" role="button" tabindex="0" title="Klik untuk rekonsiliasi saldo Wondr (BNI)">
-          <img src="bni-logo.svg" alt="Wondr by BNI" class="fin-pill-brand-logo">
-          <span>Wondr:</span> <strong class="fin-account-pill-amt" id="fin-acc-savings-val">Rp 0</strong>
+        <div class="fin-account-pill" onclick="promptEditAccountBalance('acc_shopeepay')" role="button" tabindex="0" title="Klik untuk rekonsiliasi saldo ShopeePay">
+          <iconify-icon icon="simple-icons:shopee" width="13" height="13" style="color:#EE4D2D;vertical-align:middle;"></iconify-icon>
+          <span>ShopeePay:</span> <strong class="fin-account-pill-amt" id="fin-acc-shopeepay-val">Rp 0</strong>
         </div>
       </div>
 
@@ -8231,7 +8231,7 @@
                   </div>
                 </div>
                 <div class="fin-health-metric-row">
-                  <span class="fin-health-metric-label">Tabungan &amp; Wondr</span>
+                  <span class="fin-health-metric-label">Tabungan &amp; E-Wallet</span>
                   <div class="fin-health-dots" id="fin-dots-savings">
                     <span class="fin-health-dot"></span><span class="fin-health-dot"></span><span class="fin-health-dot"></span><span class="fin-health-dot"></span><span class="fin-health-dot"></span>
                   </div>
@@ -8577,9 +8577,9 @@
               <iconify-icon icon="lucide:wallet" width="14" height="14" style="color:#10B981;"></iconify-icon>
               <span>Tunai</span>
             </button>
-            <button type="button" class="fin-account-select-chip" data-acc="acc_savings" onclick="selectSheetAccount('acc_savings', this)">
-              <img src="bni-logo.svg" alt="Wondr by BNI" class="fin-pill-brand-logo">
-              <span>Wondr</span>
+            <button type="button" class="fin-account-select-chip" data-acc="acc_shopeepay" onclick="selectSheetAccount('acc_shopeepay', this)">
+              <iconify-icon icon="simple-icons:shopee" width="14" height="14" style="color:#EE4D2D;"></iconify-icon>
+              <span>ShopeePay</span>
             </button>
           </div>
           <input type="hidden" id="fin-sheet-account-id" value="acc_bni">
@@ -9656,9 +9656,9 @@
               <iconify-icon icon="lucide:wallet" width="14" height="14" style="color:#10B981;"></iconify-icon>
               <span>Tunai</span>
             </button>
-            <button type="button" class="fin-account-select-chip" data-acc="acc_savings" onclick="selectIncomeModalAccount('acc_savings', this)">
-              <img src="bni-logo.svg" alt="Wondr by BNI" class="fin-pill-brand-logo">
-              <span>Wondr</span>
+            <button type="button" class="fin-account-select-chip" data-acc="acc_shopeepay" onclick="selectIncomeModalAccount('acc_shopeepay', this)">
+              <iconify-icon icon="simple-icons:shopee" width="14" height="14" style="color:#EE4D2D;"></iconify-icon>
+              <span>ShopeePay</span>
             </button>
           </div>
           <input type="hidden" id="inc-modal-account" value="acc_bni">
@@ -13273,10 +13273,10 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     },
 
     DEFAULT_ACCOUNTS: [
-      { id: 'acc_bni', name: 'Rekening BNI Giro/Taplus', type: 'checking', balance: 3500000, is_liquid: true, icon: 'bni-logo.svg', color: '#007C89' },
-      { id: 'acc_gopay', name: 'GoPay / E-Wallet', type: 'wallet', balance: 150000, is_liquid: true, icon: 'simple-icons:gojek', color: '#00AED6' },
-      { id: 'acc_cash', name: 'Uang Tunai / Dompet', type: 'cash', balance: 100000, is_liquid: true, icon: 'lucide:wallet', color: '#10B981' },
-      { id: 'acc_savings', name: 'Tabungan Wondr (Sinking Fund)', type: 'savings', balance: 500000, is_liquid: false, icon: 'bni-logo.svg', color: '#F59E0B' }
+      { id: 'acc_bni', name: 'Rekening BNI', type: 'checking', balance: 3500000, is_liquid: true, icon: 'bni-logo.svg', color: '#007C89' },
+      { id: 'acc_gopay', name: 'GoPay', type: 'wallet', balance: 150000, is_liquid: true, icon: 'simple-icons:gojek', color: '#00AED6' },
+      { id: 'acc_cash', name: 'Uang Tunai', type: 'cash', balance: 100000, is_liquid: true, icon: 'lucide:wallet', color: '#10B981' },
+      { id: 'acc_shopeepay', name: 'ShopeePay', type: 'wallet', balance: 150000, is_liquid: true, icon: 'simple-icons:shopee', color: '#EE4D2D' }
     ],
 
     DEFAULT_GOALS: [
@@ -13298,7 +13298,22 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
         const raw = localStorage.getItem(this.KEYS.ACCOUNTS);
         if (raw) {
           const parsed = JSON.parse(raw);
-          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            let migrated = false;
+            parsed.forEach(acc => {
+              if (acc.id === 'acc_savings') {
+                acc.id = 'acc_shopeepay';
+                acc.name = 'ShopeePay';
+                acc.type = 'wallet';
+                acc.is_liquid = true;
+                acc.icon = 'simple-icons:shopee';
+                acc.color = '#EE4D2D';
+                migrated = true;
+              }
+            });
+            if (migrated) this.saveAccounts(parsed, false);
+            return parsed;
+          }
         }
       } catch (err) {
         console.warn('FinOS getAccounts error:', err);
@@ -13782,8 +13797,8 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       if (acc.id === 'acc_bni') elId = 'fin-acc-bni-val';
       else if (acc.id === 'acc_gopay') elId = 'fin-acc-gopay-val';
       else if (acc.id === 'acc_cash') elId = 'fin-acc-cash-val';
-      else if (acc.id === 'acc_savings') elId = 'fin-acc-savings-val';
-      const el = document.getElementById(elId);
+      else if (acc.id === 'acc_shopeepay' || acc.id === 'acc_savings') elId = 'fin-acc-shopeepay-val';
+      const el = document.getElementById(elId) || (acc.id === 'acc_shopeepay' ? document.getElementById('fin-acc-savings-val') : null);
       if (el) el.textContent = formatRupiah(acc.balance);
     });
   }
@@ -14295,7 +14310,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     }
     const accounts = FinOS.getAccounts();
     const bni = accounts.find(a => a.id === 'acc_bni') || accounts[0];
-    const sav = accounts.find(a => a.id === 'acc_savings') || accounts[accounts.length - 1];
+    const sav = accounts.find(a => a.id === 'acc_shopeepay' || a.id === 'acc_savings') || accounts[accounts.length - 1];
     if (bni) bni.balance = Math.max(0, (bni.balance || 0) - amount);
     if (sav) sav.balance = (sav.balance || 0) + amount;
     FinOS.saveAccounts(accounts, true);
@@ -14309,7 +14324,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       amount: amount,
       date: getWibDateString(),
       source_account_id: 'acc_bni',
-      destination_account_id: 'acc_savings',
+      destination_account_id: 'acc_shopeepay',
       goal_id: id
     });
     FinOS.saveTransactions(txs, true);
@@ -15557,9 +15572,9 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
         }
       } else if (item.type === 'saving') {
         const srcAccId = item.source_account_id || 'acc_bni';
-        const destAccId = item.destination_account_id || 'acc_savings';
+        const destAccId = item.destination_account_id || 'acc_shopeepay';
         const srcAcc = accounts.find(a => a.id === srcAccId);
-        const destAcc = accounts.find(a => a.id === destAccId);
+        const destAcc = accounts.find(a => a.id === destAccId || a.id === 'acc_shopeepay' || a.id === 'acc_savings');
         if (srcAcc) srcAcc.balance = (Number(srcAcc.balance) || 0) + amount;
         if (destAcc) destAcc.balance = Math.max(0, (Number(destAcc.balance) || 0) - amount);
         FinOS.saveAccounts(accounts, true);
@@ -15592,7 +15607,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   }
 
   function resetFinanceData(silent = false) {
-    if (!silent && !confirm('Reset seluruh data FinOS & Keuangan?\n\nSemua riwayat transaksi akan dihapus, saldo akun dikembalikan ke default (BNI 3,5jt, GoPay 150rb, Tunai 100rb, Tabungan Wondr 500rb), dan seluruh tagihan dikembalikan ke belum lunas.')) {
+    if (!silent && !confirm('Reset seluruh data FinOS & Keuangan?\n\nSemua riwayat transaksi akan dihapus, saldo akun dikembalikan ke default (BNI 3,5jt, GoPay 150rb, Tunai 100rb, ShopeePay 150rb), dan seluruh tagihan dikembalikan ke belum lunas.')) {
       return;
     }
     const finKeys = [
@@ -15737,13 +15752,15 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
           acc_bni: 'BNI Taplus',
           acc_gopay: 'GoPay',
           acc_cash: 'Tunai',
-          acc_savings: 'Wondr'
+          acc_shopeepay: 'ShopeePay',
+          acc_savings: 'ShopeePay'
         };
         const accLogos = {
           acc_bni: '<img src="bni-logo.svg" alt="BNI" style="height:10px;vertical-align:middle;margin-right:3px;">',
           acc_gopay: '<iconify-icon icon="simple-icons:gojek" width="11" height="11" style="color:#00AA13;vertical-align:middle;margin-right:3px;"></iconify-icon>',
           acc_cash: '<iconify-icon icon="lucide:wallet" width="11" height="11" style="color:#10B981;vertical-align:middle;margin-right:3px;"></iconify-icon>',
-          acc_savings: '<img src="bni-logo.svg" alt="Wondr" style="height:10px;vertical-align:middle;margin-right:3px;">'
+          acc_shopeepay: '<iconify-icon icon="simple-icons:shopee" width="11" height="11" style="color:#EE4D2D;vertical-align:middle;margin-right:3px;"></iconify-icon>',
+          acc_savings: '<iconify-icon icon="simple-icons:shopee" width="11" height="11" style="color:#EE4D2D;vertical-align:middle;margin-right:3px;"></iconify-icon>'
         };
         const name = accNames[targetAccId] || targetAccId;
         const logo = accLogos[targetAccId] || '💳 ';
@@ -16127,8 +16144,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     // Default account selection: preset or smart match by category
     let defaultAcc = presetAccount || 'acc_bni';
     if (!presetAccount && catEl) {
-      if (catEl.value === 'investasi') defaultAcc = 'acc_savings';
-      else if (catEl.value === 'hadiah') defaultAcc = 'acc_gopay';
+      if (catEl.value === 'hadiah') defaultAcc = 'acc_gopay';
       else defaultAcc = 'acc_bni';
     }
     selectIncomeModalAccount(defaultAcc);
@@ -16202,7 +16218,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       if (descEl && !descEl.value) descEl.value = 'Bonus / Reward';
       selectIncomeModalAccount('acc_gopay');
     } else if (sel.value === 'investasi') {
-      selectIncomeModalAccount('acc_savings');
+      selectIncomeModalAccount('acc_bni');
     }
     updateIncomeModalCycleHint();
   }
@@ -16412,7 +16428,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     t += `🏛️ EVALUASI ALOKASI ANGGARAN 50/30/20\n`;
     t += `• Needs (Pokok 50%)  : ${formatRupiah(spentNeeds)} / Target ${formatRupiah(targetNeeds)} (${targetNeeds > 0 ? Math.round(spentNeeds / targetNeeds * 100) : 0}%)\n`;
     t += `• Wants (Gaya 30%)   : ${formatRupiah(spentWants)} / Target ${formatRupiah(targetWants)} (${targetWants > 0 ? Math.round(spentWants / targetWants * 100) : 0}%)\n`;
-    t += `• Savings (Wondr 20%): ${formatRupiah(estimatedSavings)} / Target ${formatRupiah(targetSavings)} (${targetSavings > 0 ? Math.round(estimatedSavings / targetSavings * 100) : 0}%)\n\n`;
+    t += `• Savings (Tabungan 20%): ${formatRupiah(estimatedSavings)} / Target ${formatRupiah(targetSavings)} (${targetSavings > 0 ? Math.round(estimatedSavings / targetSavings * 100) : 0}%)\n\n`;
 
     if (cycleIncomes.length > 0) {
       t += `💵 RINCIAN PEMASUKAN TERCATAT (${cycleIncomes.length} POS)\n`;
@@ -16451,7 +16467,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     t += `1. Makan Siang: Kantin Basement Menara BNI (Rp15rb-20rb) hemat ~Rp300rb/bln dibanding pesanan ojol.\n`;
     t += `2. Mobilitas  : Mikrotrans JakLingko JAK-08 / JAK-14 (Rp 0) dari Palmerah / Benhil.\n`;
     t += `3. Air Minum  : Refill tumbler di pantry SSE hemat ±Rp150rb/bln dari beli air kemasan.\n`;
-    t += `4. Rekening   : Amankan sisihan 20% ke rekening Wondr BNI sebelum dana terpakai impulsif.\n\n`;
+    t += `4. Rekening   : Amankan sisihan 20% ke pos tabungan / rekening terpisah sebelum dana terpakai impulsif.\n\n`;
     t += `_Disusun otomatis oleh MGHB Workspace · Zaki Tri Pamungkas_`;
 
     return t;
@@ -16710,7 +16726,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       sourceAcc.balance = (sourceAcc.balance || 0) + amount;
     } else if (type === 'saving') {
       sourceAcc.balance = Math.max(0, (sourceAcc.balance || 0) - amount);
-      const savingsAcc = accounts.find(a => a.id === 'acc_savings') || accounts[accounts.length - 1];
+      const savingsAcc = accounts.find(a => a.id === 'acc_shopeepay' || a.id === 'acc_savings') || accounts[accounts.length - 1];
       if (savingsAcc) savingsAcc.balance = (savingsAcc.balance || 0) + amount;
 
       const goals = FinOS.getGoals();
@@ -16732,7 +16748,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       amount: amount,
       date: date,
       source_account_id: accountId,
-      destination_account_id: type === 'income' ? accountId : (type === 'saving' ? 'acc_savings' : null),
+      destination_account_id: type === 'income' ? accountId : (type === 'saving' ? 'acc_shopeepay' : null),
       goal_id: type === 'saving' ? cat : null,
       commitment_id: null
     });
@@ -16747,7 +16763,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       amount: amount,
       date: date,
       source_account_id: accountId,
-      destination_account_id: type === 'income' ? accountId : (type === 'saving' ? 'acc_savings' : null)
+      destination_account_id: type === 'income' ? accountId : (type === 'saving' ? 'acc_shopeepay' : null)
     });
     saveFinanceExpenses(expenses, true);
 
