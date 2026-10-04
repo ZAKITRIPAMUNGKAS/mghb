@@ -13497,9 +13497,9 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     ],
 
     DEFAULT_GOALS: [
-      { id: 'goal_iphone18', name: 'Tabungan iPhone 18', target: 18000000, saved: 1500000, monthly_allocation: 500000, deadline: '2026-09-30', priority: 1, icon: 'lucide:smartphone', color: '#007C89', is_primary: true },
-      { id: 'goal_darurat', name: 'Dana Darurat Rantau', target: 4500000, saved: 500000, monthly_allocation: 300000, deadline: '', priority: 2, icon: 'lucide:shield-check', color: '#10B981', is_primary: false },
-      { id: 'goal_mudik', name: 'Mudik Solo (Tiket KA PP)', target: 900000, saved: 200000, monthly_allocation: 150000, deadline: '', priority: 3, icon: 'lucide:train', color: '#0284C7', is_primary: false },
+      { id: 'goal_iphone18', name: 'Tabungan iPhone 18', target: 30000000, saved: 0, monthly_allocation: 1000000, deadline: '2026-09-30', priority: 1, icon: 'lucide:smartphone', color: '#007C89', is_primary: true },
+      { id: 'goal_darurat', name: 'Dana Darurat Rantau', target: 4500000, saved: 0, monthly_allocation: 300000, deadline: '', priority: 2, icon: 'lucide:shield-check', color: '#10B981', is_primary: false },
+      { id: 'goal_mudik', name: 'Mudik Solo (Tiket KA PP)', target: 900000, saved: 0, monthly_allocation: 150000, deadline: '', priority: 3, icon: 'lucide:train', color: '#0284C7', is_primary: false },
       { id: 'goal_ortu', name: 'Kirim ke Orang Tua', target: 600000, saved: 0, monthly_allocation: 200000, deadline: '', priority: 4, icon: 'lucide:users', color: '#EC4899', is_primary: false }
     ],
 
@@ -13625,7 +13625,17 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
         const raw = localStorage.getItem(this.KEYS.GOALS);
         if (raw) {
           const parsed = JSON.parse(raw);
-          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            let updated = false;
+            parsed.forEach(g => {
+              if ((g.id === 'goal_iphone18' || (g.name && g.name.toLowerCase().includes('iphone 18'))) && g.target === 18000000) {
+                g.target = 30000000;
+                updated = true;
+              }
+            });
+            if (updated) this.saveGoals(parsed, false);
+            return parsed;
+          }
         }
       } catch (e) {}
       const legacyGoals = typeof getFinanceGoals === 'function' ? getFinanceGoals() : [];
@@ -13800,20 +13810,32 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       const targetWants = Math.round(totalIncome * 0.30);
       const targetSavings = Math.round(totalIncome * 0.20);
 
-      let spentNeeds = paidBills;
+      let spentNeeds = 0;
       let spentWants = 0;
-      let spentSavings = cycleSavings.reduce((s, t) => s + (Number(t.amount) || 0), 0);
+
+      commitments.filter(c => c.is_paid).forEach(c => {
+        const cCat = (c.category || (c.id && c.id.includes('laundry') ? 'laundry' : (c.id && (c.id.includes('kos') || c.id.includes('listrik')) ? 'kos' : 'tagihan'))).toLowerCase();
+        const cAmt = Number(c.amount) || 0;
+        if (['makan', 'transport', 'kos', 'tagihan', 'kesehatan', 'pendidikan', 'listrik', 'kuota'].includes(cCat)) {
+          spentNeeds += cAmt;
+        } else {
+          spentWants += cAmt;
+        }
+      });
 
       cycleExpenses.forEach(e => {
         const amt = Number(e.amount) || 0;
-        if (['makan', 'transport', 'kos', 'kesehatan'].includes(e.category)) {
+        const cat = (e.category || e.cat || 'lainnya').toLowerCase();
+        if (['makan', 'transport', 'kos', 'tagihan', 'kesehatan', 'pendidikan'].includes(cat)) {
           spentNeeds += amt;
-        } else if (['kopi', 'laundry', 'hiburan', 'wisuda'].includes(e.category)) {
-          spentWants += amt;
         } else {
-          spentNeeds += amt;
+          spentWants += amt;
         }
       });
+
+      const totalGoalsSaved = goals.reduce((s, g) => s + (Number(g.saved) || 0), 0);
+      const cycleSavingsTotal = cycleSavings.reduce((s, t) => s + (Number(t.amount) || 0), 0);
+      const spentSavings = Math.max(cycleSavingsTotal, totalGoalsSaved);
 
       const savingsScore = totalIncome > 0 ? Math.min(100, Math.round(((spentSavings + savingsBalance) / Math.max(targetSavings, 1)) * 100)) : 0;
       const remainingBudget = totalIncome - effectiveSpent - unpaidMandatoryBills;
@@ -15543,17 +15565,23 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     const paidBills = bills.filter(b => b.paid).reduce((s, b) => s + (Number(b.amount) || 0), 0);
     const unpaidBills = totalBills - paidBills;
 
-    // Filter ke pengeluaran saja (bukan pemasukan) dalam siklus aktif
-    const expenses = allTxs.filter(item => item.type !== 'income' && item.date >= cycle.startStr && item.date <= maxCycleDate);
-    const totalSpent = expenses.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+    // Filter ke transaksi pengeluaran (belanja) & tabungan dalam siklus aktif
+    const cycleExpenses = allTxs.filter(item => item.type !== 'income' && item.type !== 'saving' && item.date >= cycle.startStr && item.date <= maxCycleDate);
+    const cycleSavings = allTxs.filter(item => item.type === 'saving' && item.date >= cycle.startStr && item.date <= maxCycleDate);
+    const totalSpent = cycleExpenses.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+    const totalCycleSavings = cycleSavings.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+
+    const goals = typeof FinOS !== 'undefined' && FinOS.getGoals ? FinOS.getGoals() : [];
+    const totalGoalsSaved = goals.reduce((s, g) => s + (Number(g.saved) || 0), 0);
+    const realSavings = Math.max(totalCycleSavings, totalGoalsSaved);
 
     // effectiveTotalSpent = pengeluaran manual + tagihan yang sudah dibayar (dicentang)
     // Ini adalah total uang yang sudah benar-benar keluar / dikunci bulan ini
     const effectiveTotalSpent = totalSpent + paidBills;
 
-    // Remaining = income - semua yang sudah keluar/dikunci - tagihan belum lunas
+    // Remaining = income - semua yang sudah keluar/dikunci - tagihan belum lunas - tabungan yang sudah disisihkan
     // Tagihan belum lunas (unpaidBills) masih "wajib dibayar" jadi harus dikurangi dari sisa
-    const remaining = income - effectiveTotalSpent - unpaidBills;
+    const remaining = income - effectiveTotalSpent - unpaidBills - realSavings;
 
     const percentSpent = income > 0 ? Math.min(Math.round((effectiveTotalSpent / income) * 100), 100) : 100;
 
@@ -15596,7 +15624,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
 
     // --- Today's Safe Burn Rate Meter ---
     const todayStr = getWibDateString();
-    const todaySpent = expenses
+    const todaySpent = cycleExpenses
       .filter(e => e.date === todayStr)
       .reduce((s, e) => s + (Number(e.amount) || 0), 0);
 
@@ -15645,20 +15673,33 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     const targetWants = Math.round(income * 0.30);
     const targetSavings = Math.round(income * 0.20);
 
-    let spentNeeds = paidBills; // Paid bills count towards essential Needs
+    let spentNeeds = 0;
     let spentWants = 0;
-    let spentSavings = 0;
 
-    expenses.forEach(e => {
-      const amt = Number(e.amount) || 0;
-      if (['makan', 'transport', 'kos'].includes(e.cat)) {
-        spentNeeds += amt;
-      } else if (['kopi', 'laundry', 'wisuda'].includes(e.cat)) {
-        spentWants += amt;
+    // 1. Tagihan tetap lunas dipetakan ke Needs vs Wants sesuai kategorinya
+    bills.filter(b => b.paid).forEach(b => {
+      const bCat = (b.category || (b.id && b.id.includes('laundry') ? 'laundry' : (b.id && (b.id.includes('kos') || b.id.includes('listrik')) ? 'kos' : 'tagihan'))).toLowerCase();
+      const bAmt = Number(b.amount) || 0;
+      if (['makan', 'transport', 'kos', 'tagihan', 'kesehatan', 'pendidikan', 'listrik', 'kuota'].includes(bCat)) {
+        spentNeeds += bAmt;
       } else {
-        spentSavings += amt;
+        spentWants += bAmt;
       }
     });
+
+    // 2. Transaksi belanja aktual dipetakan ke Needs vs Wants
+    cycleExpenses.forEach(e => {
+      const amt = Number(e.amount) || 0;
+      const cat = (e.cat || e.category || 'lainnya').toLowerCase();
+      if (['makan', 'transport', 'kos', 'tagihan', 'kesehatan', 'pendidikan'].includes(cat)) {
+        spentNeeds += amt;
+      } else {
+        spentWants += amt;
+      }
+    });
+
+    // 3. Tabungan aktual yang sudah benar-benar disisihkan/ditabung (Real Savings)
+    const spentSavings = realSavings;
 
     // Envelope Needs 50%
     const needsPct = targetNeeds > 0 ? Math.round((spentNeeds / targetNeeds) * 100) : 0;
@@ -15696,34 +15737,39 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       wantsFillEl.style.backgroundColor = wantsPct > 100 ? '#ef4444' : '#F15A24';
     }
 
-    // Envelope Savings 20%
-    const estimatedSavings = Math.max(income - spentNeeds - spentWants - unpaidBills, 0);
-    const savingsPct = targetSavings > 0 ? Math.min(Math.round((estimatedSavings / targetSavings) * 100), 100) : 0;
+    // Envelope Savings 20% (Realisasi Tabungan Nyata)
+    const savingsPct = targetSavings > 0 ? Math.round((spentSavings / targetSavings) * 100) : 0;
     const savingsAmtEl = document.getElementById('fin-env-savings-spent');
     const savingsTgtEl = document.getElementById('fin-env-savings-target');
     const savingsStatEl = document.getElementById('fin-env-savings-status');
     const savingsFillEl = document.getElementById('fin-env-savings-fill');
-    if (savingsAmtEl) savingsAmtEl.textContent = formatRupiah(estimatedSavings);
+    if (savingsAmtEl) savingsAmtEl.textContent = formatRupiah(spentSavings);
     if (savingsTgtEl) savingsTgtEl.textContent = `Target: ${formatRupiah(targetSavings)}`;
     if (savingsStatEl) {
       savingsStatEl.textContent = `${savingsPct}%`;
-      savingsStatEl.style.cssText = 'font-size: 0.65rem; padding: 1px 6px; background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16,185,129,0.3);';
+      savingsStatEl.style.cssText = spentSavings >= targetSavings
+        ? 'font-size: 0.65rem; padding: 1px 6px; background: rgba(16, 185, 129, 0.2); color: #059669; border: 1px solid rgba(16,185,129,0.4); font-weight: 700;'
+        : (spentSavings > 0
+          ? 'font-size: 0.65rem; padding: 1px 6px; background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16,185,129,0.3);'
+          : 'font-size: 0.65rem; padding: 1px 6px; background: rgba(148, 163, 184, 0.15); color: #64748b; border: 1px solid rgba(148,163,184,0.3);');
     }
     if (savingsFillEl) {
-      savingsFillEl.style.width = savingsPct + '%';
+      savingsFillEl.style.width = Math.min(savingsPct, 100) + '%';
       savingsFillEl.style.backgroundColor = '#10b981';
     }
 
     // --- Category Breakdown Visual Stacked Bar ---
-    // Gabungkan: pengeluaran manual + tagihan yang sudah dibayar (sebagai kategori 'tagihan')
+    // Gabungkan: pengeluaran belanja manual + tagihan yang sudah dibayar
     const catTotals = {};
-    expenses.forEach(e => {
-      catTotals[e.cat] = (catTotals[e.cat] || 0) + (Number(e.amount) || 0);
+    cycleExpenses.forEach(e => {
+      const cat = (e.cat || e.category || 'lainnya').toLowerCase();
+      catTotals[cat] = (catTotals[cat] || 0) + (Number(e.amount) || 0);
     });
-    // Tagihan yang sudah lunas → masuk kategori 'tagihan'
-    if (paidBills > 0) {
-      catTotals['tagihan'] = (catTotals['tagihan'] || 0) + paidBills;
-    }
+    // Tagihan yang sudah lunas → dipetakan ke kategorinya
+    bills.filter(b => b.paid).forEach(b => {
+      const bCat = (b.category || (b.id && b.id.includes('laundry') ? 'laundry' : (b.id && (b.id.includes('kos') || b.id.includes('listrik')) ? 'kos' : 'tagihan'))).toLowerCase();
+      catTotals[bCat] = (catTotals[bCat] || 0) + (Number(b.amount) || 0);
+    });
 
     const catTotalLabel = document.getElementById('fin-cat-total-label');
     if (catTotalLabel) catTotalLabel.textContent = `Total: ${formatRupiah(effectiveTotalSpent)}`;
@@ -16942,17 +16988,22 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     const cycleIncomes = allTxs.filter(t => t.type === 'income' && t.date >= cycle.startStr && t.date <= maxCycleDate);
     const recordedIncome = cycleIncomes.reduce((s, t) => s + (Number(t.amount) || 0), 0);
     const income = cycleIncomes.length > 0 ? recordedIncome : getFinanceIncome();
-    const expenses = allTxs.filter(t => t.type !== 'income' && t.date >= cycle.startStr && t.date <= maxCycleDate);
+    const cycleExpenses = allTxs.filter(t => t.type !== 'income' && t.type !== 'saving' && t.date >= cycle.startStr && t.date <= maxCycleDate);
+    const cycleSavings = allTxs.filter(t => t.type === 'saving' && t.date >= cycle.startStr && t.date <= maxCycleDate);
     const bills = getFinanceBills();
-    const goals = getFinanceGoals();
+    const goals = typeof FinOS !== 'undefined' && FinOS.getGoals ? FinOS.getGoals() : getFinanceGoals();
     const score = computeHealthScore();
 
-    const totalSpent = expenses.reduce((s, e) => s + (Number(e.amount) || 0), 0);
+    const totalSpent = cycleExpenses.reduce((s, e) => s + (Number(e.amount) || 0), 0);
+    const totalCycleSavings = cycleSavings.reduce((s, t) => s + (Number(t.amount) || 0), 0);
+    const totalGoalsSaved = (goals || []).reduce((s, g) => s + (Number(g.saved) || 0), 0);
+    const spentSavings = Math.max(totalCycleSavings, totalGoalsSaved);
+
     const totalBills = bills.reduce((s, b) => s + (Number(b.amount) || 0), 0);
     const paidBills = bills.filter(b => b.paid).reduce((s, b) => s + (Number(b.amount) || 0), 0);
     const unpaidBills = totalBills - paidBills;
-    const remaining = income - totalSpent - unpaidBills;
     const effectiveTotalSpent = totalSpent + paidBills;
+    const remaining = income - effectiveTotalSpent - unpaidBills - spentSavings;
     const percentSpent = income > 0 ? Math.min(Math.round((effectiveTotalSpent / income) * 100), 100) : 100;
 
     const now = new Date();
@@ -16974,18 +17025,37 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     const targetNeeds = Math.round(income * 0.50);
     const targetWants = Math.round(income * 0.30);
     const targetSavings = Math.round(income * 0.20);
-    let spentNeeds = paidBills;
+    let spentNeeds = 0;
     let spentWants = 0;
-    expenses.forEach(e => {
-      const amt = Number(e.amount) || 0;
-      if (['makan', 'transport', 'kos'].includes(e.cat)) spentNeeds += amt;
-      else if (['kopi', 'laundry', 'wisuda'].includes(e.cat)) spentWants += amt;
+    bills.filter(b => b.paid).forEach(b => {
+      const bCat = (b.category || (b.id && b.id.includes('laundry') ? 'laundry' : (b.id && (b.id.includes('kos') || b.id.includes('listrik')) ? 'kos' : 'tagihan'))).toLowerCase();
+      const bAmt = Number(b.amount) || 0;
+      if (['makan', 'transport', 'kos', 'tagihan', 'kesehatan', 'pendidikan', 'listrik', 'kuota'].includes(bCat)) {
+        spentNeeds += bAmt;
+      } else {
+        spentWants += bAmt;
+      }
     });
-    const estimatedSavings = Math.max(income - spentNeeds - spentWants - unpaidBills, 0);
+    cycleExpenses.forEach(e => {
+      const amt = Number(e.amount) || 0;
+      const cat = (e.cat || e.category || 'lainnya').toLowerCase();
+      if (['makan', 'transport', 'kos', 'tagihan', 'kesehatan', 'pendidikan'].includes(cat)) {
+        spentNeeds += amt;
+      } else {
+        spentWants += amt;
+      }
+    });
 
     // Breakdown
     const catTotals = {};
-    expenses.forEach(e => { catTotals[e.cat] = (catTotals[e.cat] || 0) + (Number(e.amount) || 0); });
+    cycleExpenses.forEach(e => {
+      const cat = (e.cat || e.category || 'lainnya').toLowerCase();
+      catTotals[cat] = (catTotals[cat] || 0) + (Number(e.amount) || 0);
+    });
+    bills.filter(b => b.paid).forEach(b => {
+      const bCat = (b.category || (b.id && b.id.includes('laundry') ? 'laundry' : (b.id && (b.id.includes('kos') || b.id.includes('listrik')) ? 'kos' : 'tagihan'))).toLowerCase();
+      catTotals[bCat] = (catTotals[bCat] || 0) + (Number(b.amount) || 0);
+    });
 
     let t = `📊 RAPORT KEUANGAN BULANAN ANAK RANTAU BNI\n`;
     t += `Unit Penempatan : Divisi Sales Strategy & Execution (SSE)\n`;
@@ -17014,7 +17084,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     t += `🏛️ EVALUASI ALOKASI ANGGARAN 50/30/20\n`;
     t += `• Needs (Pokok 50%)  : ${formatRupiah(spentNeeds)} / Target ${formatRupiah(targetNeeds)} (${targetNeeds > 0 ? Math.round(spentNeeds / targetNeeds * 100) : 0}%)\n`;
     t += `• Wants (Gaya 30%)   : ${formatRupiah(spentWants)} / Target ${formatRupiah(targetWants)} (${targetWants > 0 ? Math.round(spentWants / targetWants * 100) : 0}%)\n`;
-    t += `• Savings (Tabungan 20%): ${formatRupiah(estimatedSavings)} / Target ${formatRupiah(targetSavings)} (${targetSavings > 0 ? Math.round(estimatedSavings / targetSavings * 100) : 0}%)\n\n`;
+    t += `• Savings (Tabungan 20%): ${formatRupiah(spentSavings)} / Target ${formatRupiah(targetSavings)} (${targetSavings > 0 ? Math.round(spentSavings / targetSavings * 100) : 0}%)\n\n`;
 
     if (cycleIncomes.length > 0) {
       t += `💵 RINCIAN PEMASUKAN TERCATAT (${cycleIncomes.length} POS)\n`;
