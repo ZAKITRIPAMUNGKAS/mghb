@@ -10980,8 +10980,8 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       const safeLink = /^https?:\/\//i.test(item.link) ? item.link : '#';
       // Thumbnail: prioritas kartunis Tempo lokal yang tajam & terdistribusi acak (16:9)
       const tempoImage = getTempoCartoonImage(item.title, item.topic, item.source);
-      const isOfficialStorage = item.image && item.image.includes('portal.kemnaker.go.id/storage/');
-      const initialImage = isOfficialStorage ? item.image : tempoImage;
+      const hasRealImage = item.image && /^https?:\/\//.test(item.image);
+      const initialImage = hasRealImage ? item.image : tempoImage;
       const thumbHtml = `
         <div class="news-thumb-wrap">
           <img 
