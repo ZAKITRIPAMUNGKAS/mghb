@@ -8209,7 +8209,21 @@
 
 <!-- TAB: KEUANGAN RANTAU JAKARTA — REDESIGNED HIERARCHY -->
 <main id="view-keuangan" class="tab-content">
-  <div class="fin-layout">
+  <section id="finance-auth-gate" style="max-width:520px;margin:8vh auto;padding:28px;border:1px solid var(--border-color);border-radius:20px;background:var(--surface);">
+    <h2 style="margin-top:0">Keuangan tersimpan aman</h2>
+    <p id="finance-auth-message">Masuk dengan email untuk memuat data keuangan dari Supabase.</p>
+    <form id="finance-auth-form">
+      <label for="finance-auth-email">Email</label>
+      <input id="finance-auth-email" type="email" autocomplete="email" required style="display:block;width:100%;margin:8px 0 14px;padding:12px;border-radius:10px;">
+      <button type="submit" class="btn-primary">Kirim tautan masuk</button>
+      <button id="finance-auth-signout" type="button" style="display:none">Keluar</button>
+    </form>
+  </section>
+  <div id="finance-cloud-error" role="alert" style="display:none;max-width:520px;margin:8vh auto;padding:24px;border-radius:16px;background:var(--surface);">
+    <h2>Data keuangan belum tersedia</h2><p id="finance-cloud-error-text"></p>
+    <button type="button" onclick="retryFinanceCloudLoad()">Coba lagi</button>
+  </div>
+  <div class="fin-layout" style="display:none">
     
     <!-- ═══════════════════════════════════════════════════
     SECTION 1 — FINANCIAL SNAPSHOT (NOW)
@@ -11001,7 +11015,10 @@
       }
     });
 
-    if (tab === 'keuangan') initFinanceManager();
+    if (tab === 'keuangan') {
+      if (financeCloudReady) initFinanceManager();
+      else if (supabaseClient) retryFinanceCloudLoad();
+    }
 
     // Office Rhythm banner hanya tampil di Beranda
     const bannerEl = document.getElementById('office-status-banner');
@@ -11931,6 +11948,30 @@
     }
   }
 
+  let financeCloudReady = false;
+  let financeLoadPromise = null;
+  let financeOwnerId = null;
+  const financeCloudIds = {
+    mghb_accounts: new Set(),
+    mghb_transactions: new Set(),
+    mghb_commitments: new Set(),
+    mghb_financial_goals: new Set()
+  };
+  function saveFinanceSetting(key, value) {
+    if (!supabaseClient || !financeOwnerId) return Promise.reject(new Error('Sesi keuangan belum aktif.'));
+    return supabaseClient.from('mghb_finance_settings').upsert({ owner_id: financeOwnerId, key, value, updated_at: new Date().toISOString() }, { onConflict: 'owner_id,key' });
+  }
+  function reconcileFinanceCollection(table, rows) {
+    if (!supabaseClient || !financeOwnerId || !financeCloudIds[table]) return;
+    const nextIds = new Set((rows || []).map(row => row.id).filter(Boolean));
+    const removed = [...financeCloudIds[table]].filter(id => !nextIds.has(id));
+    if (!removed.length) { financeCloudIds[table] = nextIds; return; }
+    supabaseClient.from(table).delete().eq('owner_id', financeOwnerId).in('id', removed)
+      .then(({ error }) => {
+        if (error) { console.error(`Finance ${table} deletion failed:`, error); showToast('Perubahan belum tersimpan di cloud. Coba lagi.'); return; }
+        financeCloudIds[table] = nextIds;
+      });
+  }
   async function initSupabaseClient(forceTest = false) {
     setDatabaseStatus('connecting', 'Memeriksa koneksi...');
     let url = localStorage.getItem(SUPABASE_URL_KEY);
@@ -11959,14 +12000,16 @@
         supabaseClient = window.supabase.createClient(url, key);
         
         // Verifikasi query universal tanpa AbortSignal.timeout (100% kompatibel di mobile)
-        const queryPromise = supabaseClient.from('mghb_settings').select('key').limit(1);
+        // Settings may intentionally deny legacy finance keys after the finance
+        // migration, so use a non-finance table for a basic connectivity check.
+        const queryPromise = supabaseClient.from('mghb_logbooks').select('id').limit(1);
         const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout koneksi 10 detik')), 10000));
         const { error } = await Promise.race([queryPromise, timeoutPromise]);
         
         if (error) throw error;
 
-        setDatabaseStatus('connected', 'Cloud terhubung');
-        setupRealtimeSubscriptions();
+        setDatabaseStatus('connected', 'Supabase tersambung');
+        // Finance no longer consumes the public legacy-table realtime channel.
         if (forceTest) showToast('Koneksi Supabase PostgreSQL berhasil terhubung!');
         return true;
       } catch (e) {
@@ -11983,6 +12026,91 @@
       return false;
     }
   }
+
+  function setFinanceGate(mode, message = '') {
+    const gate = document.getElementById('finance-auth-gate');
+    const error = document.getElementById('finance-cloud-error');
+    const layout = document.querySelector('#view-keuangan .fin-layout');
+    if (gate) gate.style.display = mode === 'auth' ? '' : 'none';
+    if (error) error.style.display = mode === 'error' ? '' : 'none';
+    if (layout) layout.style.display = mode === 'ready' ? '' : 'none';
+    const msg = document.getElementById('finance-cloud-error-text');
+    if (msg && message) msg.textContent = message;
+    const authMsg = document.getElementById('finance-auth-message');
+    if (authMsg && mode === 'auth' && message) authMsg.textContent = message;
+    const out = document.getElementById('finance-auth-signout');
+    if (out) out.style.display = mode === 'ready' ? '' : 'none';
+  }
+
+  async function loadFinanceFromCloud() {
+    if (!supabaseClient) throw new Error('Supabase belum tersambung.');
+    const { data: sessionData, error: sessionError } = await supabaseClient.auth.getSession();
+    if (sessionError) throw sessionError;
+    if (!sessionData.session) {
+      financeCloudReady = false;
+      setFinanceGate('auth');
+      return false;
+    }
+    financeOwnerId = sessionData.session.user.id;
+    const tables = ['mghb_accounts', 'mghb_transactions', 'mghb_commitments', 'mghb_financial_goals', 'mghb_finance_settings'];
+    const results = await Promise.all(tables.map(table => supabaseClient.from(table).select('*').eq('owner_id', financeOwnerId).limit(1000)));
+    const failed = results.find(result => result.error);
+    if (failed) throw failed.error;
+    const [accounts, transactions, commitments, goals, settings] = results.map(result => result.data || []);
+    financeCloudIds.mghb_accounts = new Set(accounts.map(row => row.id));
+    financeCloudIds.mghb_transactions = new Set(transactions.map(row => row.id));
+    financeCloudIds.mghb_commitments = new Set(commitments.map(row => row.id));
+    financeCloudIds.mghb_financial_goals = new Set(goals.map(row => row.id));
+    const backupKeys = [FinOS.KEYS.ACCOUNTS, FinOS.KEYS.TRANSACTIONS, FinOS.KEYS.COMMITMENTS, FinOS.KEYS.GOALS, FIN_EXPENSES_KEY, FIN_BILLS_KEY, FIN_GOALS_KEY, FIN_INCOME_KEY, FinConfig.KEY];
+    if (!localStorage.getItem('mghb_finance_device_backup_v1')) {
+      const backup = Object.fromEntries(backupKeys.map(key => [key, localStorage.getItem(key)]));
+      localStorage.setItem('mghb_finance_device_backup_v1', JSON.stringify(backup));
+    }
+    FinOS.saveAccounts(accounts.map(a => ({ id:a.id,name:a.name,type:a.type,balance:Number(a.current_balance),is_liquid:a.include_in_liquid,is_active:a.is_active,icon:a.icon||'',color:'#007C89' })), false);
+    FinOS.saveTransactions(transactions.map(t => ({ id:t.id,type:t.tx_type.toLowerCase(),category:t.category_id||'lainnya',description:t.description,amount:Number(t.amount),date:t.tx_date,source_account_id:t.account_id,destination_account_id:t.destination_account_id,goal_id:t.goal_id,commitment_id:t.commitment_id })), false);
+    FinOS.saveCommitments(commitments.map(c => ({ id:c.id,name:c.name,amount:Number(c.amount),due_day:c.due_day,category:c.category_id||'tagihan',is_mandatory:c.is_mandatory,is_active:true,is_paid:c.paid,preferred_account_id:'acc_bni',custom:true })), false);
+    FinOS.saveGoals(goals.map(g => ({ id:g.id,name:g.name,target:Number(g.target_amount),saved:Number(g.current_amount),monthly_allocation:Number(g.monthly_target),deadline:g.target_date||'',priority:{critical:1,high:2,medium:3,low:4}[g.priority]||3,icon:g.icon,color:g.color,is_primary:false })), false);
+    const cfg = settings.find(s => s.key === 'fin_config');
+    if (cfg?.value) { try { localStorage.setItem(FinConfig.KEY, JSON.stringify(cfg.value)); } catch (_) {} }
+    else localStorage.removeItem(FinConfig.KEY);
+    const income = settings.find(s => s.key === 'finance_income');
+    if (income?.value != null) localStorage.setItem(FIN_INCOME_KEY, String(Number(income.value) || 0));
+    else localStorage.removeItem(FIN_INCOME_KEY);
+    financeCloudReady = true;
+    setFinanceGate('ready');
+    return true;
+  }
+
+  async function retryFinanceCloudLoad() {
+    if (financeLoadPromise) return financeLoadPromise;
+    setFinanceGate('error', 'Memuat ulang data keuangan dari Supabase…');
+    financeLoadPromise = (async () => {
+      try {
+        if (!supabaseClient && !(await initSupabaseClient())) throw new Error('Supabase tidak dapat dijangkau.');
+        if (await loadFinanceFromCloud()) initFinanceManager();
+      } catch (error) {
+        financeCloudReady = false;
+        setFinanceGate('error', `${error.message || error}. Jalankan migrasi finance-supabase-auth.sql di Supabase lalu coba lagi.`);
+      } finally {
+        financeLoadPromise = null;
+      }
+    })();
+    return financeLoadPromise;
+  }
+  window.retryFinanceCloudLoad = retryFinanceCloudLoad;
+
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('finance-auth-form')?.addEventListener('submit', async event => {
+      event.preventDefault();
+      if (!supabaseClient) { setFinanceGate('error', 'Supabase belum tersambung.'); return; }
+      const email = document.getElementById('finance-auth-email')?.value.trim();
+      const { error } = await supabaseClient.auth.signInWithOtp({ email, options: { emailRedirectTo: `${location.origin}/keuangan` } });
+      setFinanceGate(error ? 'error' : 'auth', error ? error.message : 'Tautan masuk telah dikirim. Buka email ini pada perangkat yang ingin digunakan.');
+    });
+    document.getElementById('finance-auth-signout')?.addEventListener('click', async () => {
+      await supabaseClient?.auth.signOut(); financeCloudReady = false; setFinanceGate('auth', 'Kamu telah keluar.');
+    });
+  });
 
   function resetToDefaultDbConnection() {
     localStorage.setItem(SUPABASE_URL_KEY, DEFAULT_SUPABASE_URL);
@@ -12038,7 +12166,6 @@
       await initSupabaseClient();
       if (!supabaseClient) throw new Error('Koneksi database belum terverifikasi');
       showToast('Berhasil terhubung ke Supabase PostgreSQL!');
-      syncAllDataWithCloud(false);
     } catch (err) {
       console.error('Database connection test failed:', err);
       showToast('Gagal terhubung: ' + (err.message || 'Periksa kembali URL & Key'));
@@ -12072,6 +12199,7 @@
       }
 
       // 2. Sync Expenses & Pemasukan (Batch Upsert Cepat + Backup Settings)
+      if (!financeCloudReady) {
       const localExpenses = getFinanceExpenses();
       if (localExpenses.length > 0) {
         // Snapshot array lengkap transaksi (termasuk tipe pemasukan) ke settings
@@ -12090,6 +12218,7 @@
           created_at: new Date().toISOString()
         }));
         await supabaseClient.from('mghb_expenses').upsert(expenseRows);
+      }
       }
 
       // 3. Sync Logbooks (Batch Upsert Cepat)
@@ -12114,6 +12243,7 @@
       }
 
       // 4. Sync Tagihan Bulanan Tetap (Batch Upsert Cepat)
+      if (!financeCloudReady) {
       const localBills = getFinanceBills();
       if (localBills.length > 0) {
         const billRows = localBills.map((b, idx) => ({
@@ -12128,6 +12258,7 @@
           updated_at: new Date().toISOString()
         }));
         await supabaseClient.from('mghb_bills').upsert(billRows);
+      }
       }
 
       // 5. Fetch cloud checklists to merge back
@@ -12172,6 +12303,7 @@
       }
 
       // 7. Fetch cloud expenses to merge back (UNION: Data lokal tidak akan terhapus)
+      if (!financeCloudReady) {
       const { data: cloudExpenses } = await supabaseClient.from('mghb_expenses').select('*').order('tx_date', { ascending: false });
       if (cloudExpenses && Array.isArray(cloudExpenses)) {
         const localExpenses = getFinanceExpenses();
@@ -12211,8 +12343,10 @@
           updateFinanceCalculations(false);
         }
       }
+      }
 
       // 8. Fetch cloud bills to merge back (UNION: Tagihan kustom & status lokal dipertahankan)
+      if (!financeCloudReady) {
       const { data: cloudBills } = await supabaseClient.from('mghb_bills').select('*').order('sort_order', { ascending: true });
       if (cloudBills && Array.isArray(cloudBills)) {
         const localBills = getFinanceBills();
@@ -12248,8 +12382,10 @@
         renderFinanceBills();
         updateFinanceCalculations(false);
       }
+      }
 
       // 9. Sync & Fetch cloud goals (Tujuan & Sisihan)
+      if (!financeCloudReady) {
       const localGoals = getFinanceGoals();
       if (localGoals.length > 0 && supabaseClient) {
         // Simpan ke mghb_settings sebagai cadangan terjamin
@@ -12319,6 +12455,7 @@
         saveFinanceGoals(Array.from(localGoalMap.values()));
         renderFinanceGoals();
       }
+      }
 
       // 10. Sync & Fetch Inventaris Rantau (Barang Bawaan & Tambahan)
       const localInvItems = getInventarisItems();
@@ -12350,6 +12487,7 @@
       }
 
       // 11. Sync & Fetch Pemasukan Bulanan (Income)
+      if (!financeCloudReady) {
       const currentIncome = getFinanceIncome();
       if (currentIncome > 0 && supabaseClient) {
         await supabaseClient.from('mghb_settings').upsert({
@@ -12368,6 +12506,7 @@
           if (incEl && document.activeElement !== incEl) incEl.value = incVal.toLocaleString('id-ID');
           if (incDisplay) incDisplay.textContent = formatRupiah(incVal);
         }
+      }
       }
 
       // 12. Sync & Fetch Status Progres Roadmap & Target Mingguan
@@ -14233,18 +14372,14 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       } catch (e) {
         console.warn('FinConfig get error:', e);
       }
-      return this.getDefaults();
+      return financeCloudReady ? Object.assign(this.getDefaults(), { starting_fund: 0 }) : this.getDefaults();
     },
     save(cfg, syncCloud = true) {
       try {
         localStorage.setItem(this.KEY, JSON.stringify(cfg));
       } catch (e) {}
-      if (syncCloud && typeof supabaseClient !== 'undefined' && supabaseClient) {
-        supabaseClient.from('mghb_settings').upsert({
-          key: 'fin_config',
-          value: cfg,
-          updated_at: new Date().toISOString()
-        }).then(() => {}, err => console.warn('Supabase fin_config sync error:', err));
+      if (syncCloud && typeof supabaseClient !== 'undefined' && supabaseClient && financeCloudReady) {
+        saveFinanceSetting('fin_config', cfg).then(({ error }) => { if (error) console.error('Finance settings save failed:', error); });
       }
     }
   };
@@ -14344,38 +14479,14 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
         const raw = localStorage.getItem(this.KEYS.ACCOUNTS);
         if (raw) {
           const parsed = JSON.parse(raw);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            let migrated = false;
-            parsed.forEach(acc => {
-              if (acc.id === 'acc_savings') {
-                acc.id = 'acc_shopeepay';
-                acc.name = 'ShopeePay';
-                acc.type = 'wallet';
-                acc.is_liquid = true;
-                acc.icon = 'simple-icons:shopee';
-                acc.color = '#EE4D2D';
-                migrated = true;
-              }
-            });
-            // Bila semua saldo masih 0 (state default awal belum diisi pengguna), semai nilai aktual pengguna
-            const totalBal = parsed.reduce((s, a) => s + (Number(a.balance) || 0), 0);
-            if (totalBal === 0) {
-              parsed.forEach(acc => {
-                if (acc.id === 'acc_bni') acc.balance = 340000;
-                else if (acc.id === 'acc_gopay') acc.balance = 12000;
-                else if (acc.id === 'acc_cash') acc.balance = 155000;
-                else if (acc.id === 'acc_shopeepay') acc.balance = 8000;
-              });
-              migrated = true;
-            }
-            if (migrated) this.saveAccounts(parsed, false);
+          if (Array.isArray(parsed)) {
             return parsed;
           }
         }
       } catch (err) {
         console.warn('FinOS getAccounts error:', err);
       }
-      return this.DEFAULT_ACCOUNTS;
+      return financeCloudReady ? [] : this.DEFAULT_ACCOUNTS;
     },
 
     saveAccounts(list, syncCloud = true) {
@@ -14383,19 +14494,21 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
         localStorage.setItem(this.KEYS.ACCOUNTS, JSON.stringify(list));
       } catch (e) {}
       if (syncCloud && typeof supabaseClient !== 'undefined' && supabaseClient) {
+        reconcileFinanceCollection('mghb_accounts', list);
         list.forEach((acc, idx) => {
           supabaseClient.from('mghb_accounts').upsert({
+            owner_id: financeOwnerId,
             id: acc.id,
             name: acc.name,
-            account_type: acc.type || 'checking',
-            balance: Number(acc.balance) || 0,
-            is_liquid: acc.is_liquid !== false,
+            type: acc.type || 'checking',
+            initial_balance: Number(acc.initial_balance) || Number(acc.balance) || 0,
+            current_balance: Number(acc.balance) || 0,
+            include_in_liquid: acc.is_liquid !== false,
+            currency: 'IDR',
             is_active: acc.is_active !== false,
-            color: acc.color || '#007C89',
-            icon: acc.icon || '',
             sort_order: idx + 1,
             updated_at: new Date().toISOString()
-          }, { onConflict: 'id' }).then(() => {}, err => console.warn('Supabase acc sync warn:', err));
+          }, { onConflict: 'id' }).then(({ error }) => { if (error) console.error('Finance account save failed:', error); });
         });
       }
     },
@@ -14405,7 +14518,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
         const raw = localStorage.getItem(this.KEYS.COMMITMENTS);
         if (raw) {
           const parsed = JSON.parse(raw);
-          if (Array.isArray(parsed) && parsed.length > 0) {
+          if (Array.isArray(parsed)) {
             let migrated = false;
             parsed.forEach(c => {
               if (c.id === 'bill_kos' && !c.is_paid) {
@@ -14432,7 +14545,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
           preferred_account_id: 'acc_bni'
         }));
       }
-      return this.DEFAULT_COMMITMENTS;
+          return financeCloudReady ? [] : this.DEFAULT_COMMITMENTS;
     },
 
     saveCommitments(list, syncCloud = true) {
@@ -14452,20 +14565,21 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
         localStorage.setItem(FIN_BILLS_KEY, JSON.stringify(legacy));
       } catch (e) {}
       if (syncCloud && typeof supabaseClient !== 'undefined' && supabaseClient) {
+        reconcileFinanceCollection('mghb_commitments', list);
         list.forEach((c, idx) => {
           supabaseClient.from('mghb_commitments').upsert({
+            owner_id: financeOwnerId,
             id: c.id,
             name: c.name,
-            category: c.category || 'tagihan',
+            category_id: c.category || 'tagihan',
             amount: Number(c.amount) || 0,
             due_day: c.due_day || 1,
             is_mandatory: c.is_mandatory !== false,
-            is_active: c.is_active !== false,
-            is_paid: Boolean(c.is_paid),
-            preferred_account_id: c.preferred_account_id || 'acc_bni',
+            is_recurring: true,
+            paid: Boolean(c.is_paid),
             sort_order: idx + 1,
             updated_at: new Date().toISOString()
-          }, { onConflict: 'id' }).then(() => {}, err => console.warn('Supabase comm sync warn:', err));
+          }, { onConflict: 'id' }).then(({ error }) => { if (error) console.error('Finance commitment save failed:', error); });
         });
       }
     },
@@ -14475,7 +14589,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
         const raw = localStorage.getItem(this.KEYS.GOALS);
         if (raw) {
           const parsed = JSON.parse(raw);
-          if (Array.isArray(parsed) && parsed.length > 0) {
+          if (Array.isArray(parsed)) {
             let updated = false;
             parsed.forEach(g => {
               if ((g.id === 'goal_iphone18' || (g.name && g.name.toLowerCase().includes('iphone 18'))) && g.target === 18000000) {
@@ -14503,7 +14617,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
           is_primary: g.id.includes('iphone') || Boolean(g.is_primary)
         }));
       }
-      return this.DEFAULT_GOALS;
+      return financeCloudReady ? [] : this.DEFAULT_GOALS;
     },
 
     saveGoals(list, syncCloud = true) {
@@ -14524,21 +14638,25 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
         localStorage.setItem(FIN_GOALS_KEY, JSON.stringify(legacy));
       } catch (e) {}
       if (syncCloud && typeof supabaseClient !== 'undefined' && supabaseClient) {
+        reconcileFinanceCollection('mghb_financial_goals', list);
         list.forEach((g, idx) => {
           supabaseClient.from('mghb_financial_goals').upsert({
+            owner_id: financeOwnerId,
             id: g.id,
             name: g.name,
             target_amount: Number(g.target) || 0,
-            current_saved: Number(g.saved) || 0,
-            monthly_allocation: Number(g.monthly_allocation) || 0,
-            target_date: g.deadline || null,
-            priority: g.priority || 1,
-            is_primary: Boolean(g.is_primary),
+            current_amount: Number(g.saved) || 0,
+            start_date: getWibDateString(),
+            target_date: g.deadline || '2099-12-31',
+            monthly_target: Number(g.monthly_allocation) || 0,
+            priority: ({1:'critical',2:'high',3:'medium',4:'low'})[g.priority] || 'medium',
+            is_protected: true,
+            status: 'active',
             color: g.color || '#007C89',
             icon: g.icon || '',
             sort_order: idx + 1,
             updated_at: new Date().toISOString()
-          }, { onConflict: 'id' }).then(() => {}, err => console.warn('Supabase goal sync warn:', err));
+          }, { onConflict: 'id' }).then(({ error }) => { if (error) console.error('Finance goal save failed:', error); });
         });
       }
     },
@@ -14588,28 +14706,32 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
         destination_account_id: t.destination_account_id || null
       }));
       if (typeof saveFinanceExpenses === 'function') {
-        saveFinanceExpenses(legacy, syncCloud);
+        saveFinanceExpenses(legacy, false);
       } else {
         try {
           localStorage.setItem(FIN_EXPENSES_KEY, JSON.stringify(legacy));
         } catch (e) {}
       }
       if (syncCloud && typeof supabaseClient !== 'undefined' && supabaseClient) {
-        deduped.slice(0, 50).forEach(tx => {
-          supabaseClient.from('mghb_transactions').upsert({
+        reconcileFinanceCollection('mghb_transactions', deduped);
+        const rows = deduped.map(tx => ({
+            owner_id: financeOwnerId,
             id: tx.id,
-            tx_type: tx.type || 'expense',
-            category: tx.category || 'makan',
+            tx_type: String(tx.type || 'expense').toUpperCase(),
+            category_id: tx.category || 'makan',
             description: tx.description || '',
             amount: Number(tx.amount) || 0,
             tx_date: tx.date || getWibDateString(),
-            source_account_id: tx.source_account_id || 'acc_bni',
+            account_id: tx.source_account_id || 'acc_bni',
             destination_account_id: tx.destination_account_id || null,
             goal_id: tx.goal_id || null,
             commitment_id: tx.commitment_id || null,
             updated_at: new Date().toISOString()
-          }, { onConflict: 'id' }).then(() => {}, err => console.warn('Supabase tx sync warn:', err));
-        });
+          }));
+        if (rows.length) {
+          supabaseClient.from('mghb_transactions').upsert(rows, { onConflict: 'id' })
+            .then(({ error }) => { if (error) { console.error('Finance transaction save failed:', error); showToast('Transaksi belum tersimpan di cloud. Coba lagi.'); } });
+        }
       }
     },
 
@@ -14995,6 +15117,10 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
 
   function renderAccountsStrip() {
     const accounts = FinOS.getAccounts();
+    ['fin-acc-bni-val','fin-acc-gopay-val','fin-acc-cash-val','fin-acc-shopeepay-val','fin-acc-savings-val'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = formatRupiah(0);
+    });
     accounts.forEach(acc => {
       let elId = '';
       if (acc.id === 'acc_bni') elId = 'fin-acc-bni-val';
@@ -15313,19 +15439,24 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   function getFinanceBills() {
     try {
       const stored = localStorage.getItem(FIN_BILLS_KEY);
+      if (!stored && financeCloudReady) return [];
       if (!stored) {
         saveFinanceBills(DEFAULT_BILLS);
         return DEFAULT_BILLS;
       }
       const parsed = JSON.parse(stored);
-      return Array.isArray(parsed) && parsed.length > 0 ? parsed : DEFAULT_BILLS;
+      return Array.isArray(parsed) ? parsed : (financeCloudReady ? [] : DEFAULT_BILLS);
     } catch {
-      return DEFAULT_BILLS;
+      return financeCloudReady ? [] : DEFAULT_BILLS;
     }
   }
 
   function saveFinanceBills(bills) {
     localStorage.setItem(FIN_BILLS_KEY, JSON.stringify(bills));
+    if (financeCloudReady) {
+      FinOS.saveCommitments((bills || []).map(b => ({ id:b.id,name:b.name,amount:Number(b.amount)||0,due_day:Number(b.dueDay)||1,category:'tagihan',is_mandatory:true,is_active:true,is_paid:Boolean(b.paid),custom:Boolean(b.custom) })), true);
+      return;
+    }
     // Background sync to Supabase
     if (supabaseClient) {
       const rows = (bills || []).map((b, idx) => ({
@@ -15589,19 +15720,24 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   function getFinanceGoals() {
     try {
       const stored = localStorage.getItem(FIN_GOALS_KEY);
+      if (!stored && financeCloudReady) return [];
       if (!stored) {
         saveFinanceGoals(DEFAULT_GOALS);
         return DEFAULT_GOALS.slice();
       }
       const parsed = JSON.parse(stored);
-      return Array.isArray(parsed) && parsed.length > 0 ? parsed : DEFAULT_GOALS.slice();
+      return Array.isArray(parsed) ? parsed : (financeCloudReady ? [] : DEFAULT_GOALS.slice());
     } catch {
-      return DEFAULT_GOALS.slice();
+      return financeCloudReady ? [] : DEFAULT_GOALS.slice();
     }
   }
 
   function saveFinanceGoals(goals) {
     localStorage.setItem(FIN_GOALS_KEY, JSON.stringify(goals));
+    if (financeCloudReady) {
+      FinOS.saveGoals((goals || []).map(g => ({ id:g.id,name:g.name,target:Number(g.target)||0,saved:Number(g.saved)||0,monthly_allocation:Number(g.monthly_allocation)||0,deadline:g.deadline||'',priority:g.priority||3,icon:g.icon||'',color:g.color||'#007C89' })), true);
+      return;
+    }
     // Background sync to Supabase
     if (supabaseClient) {
       // 1. Snapshot via mghb_settings (guaranteed fallback)
@@ -16506,6 +16642,10 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   function saveFinanceExpenses(expenses, syncToCloud = true) {
     const deduped = typeof deduplicateTransactions === 'function' ? deduplicateTransactions(expenses || []) : (expenses || []);
     localStorage.setItem(FIN_EXPENSES_KEY, JSON.stringify(deduped));
+    if (financeCloudReady && syncToCloud) {
+      FinOS.saveTransactions(deduped.map(e => ({ id:e.id,type:e.type||'expense',category:e.cat||e.category||'lainnya',description:e.desc||e.description||'',amount:Number(e.amount)||0,date:e.date||e.tx_date||getWibDateString(),source_account_id:e.source_account_id||'acc_bni',destination_account_id:e.destination_account_id||null,goal_id:e.goal_id||null,commitment_id:e.commitment_id||null })), true);
+      return;
+    }
     // Background sync to Supabase (fire-and-forget)
     if (supabaseClient && syncToCloud) {
       // 1. Snapshot array lengkap transaksi (termasuk tipe pemasukan) ke settings
@@ -16625,10 +16765,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     const income = parseMoney(el.value);
     if (income > 0) {
       localStorage.setItem(FIN_INCOME_KEY, String(income));
-      if (supabaseClient) {
-        supabaseClient.from('mghb_settings').upsert({ key: 'finance_income', value: income, updated_at: new Date().toISOString() })
-          .then(() => {}, err => console.warn('Supabase income sync error:', err));
-      }
+      saveFinanceSetting('finance_income', income).then(({ error }) => { if (error) console.error('Finance income save failed:', error); });
       updateFinanceCalculations(true);
       showToast('Pemasukan disimpan: ' + formatRupiah(income));
     }
@@ -16748,6 +16885,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   }
 
   function initFinanceManager() {
+    if (!financeCloudReady) { setFinanceGate('auth'); return; }
     const savedFilter = localStorage.getItem('mghb_finance_filter');
     if (savedFilter && ['all', 'today', 'week', 'month'].includes(savedFilter)) currentFinanceFilter = savedFilter;
     const incomeInput = document.getElementById('fin-income-input');
@@ -16760,7 +16898,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
       incomeDisplay.textContent = formatRupiah(localIncome);
     }
     // Pull income, expenses, bills, and goals from Supabase (cloud-first merge)
-    if (supabaseClient) {
+    if (false && supabaseClient) {
       // Income
       supabaseClient.from('mghb_settings').select('value').eq('key', 'finance_income').maybeSingle().then(({ data }) => {
         if (data && data.value != null) {
@@ -16861,7 +16999,6 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     renderFinanceExpenses();
     renderFinanceHeatmap();
     renderAccountsStrip();
-    FinOS.syncSupabase();
     updateFinanceCalculations(true);
     runWhatIfSimulation();
   }
@@ -17999,6 +18136,9 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
 
     // Set stored income to '0'
     localStorage.setItem(FIN_INCOME_KEY, '0');
+    if (financeCloudReady) {
+      saveFinanceSetting('finance_income', 0).then(({ error }) => { if (error) console.error('Finance income reset failed:', error); });
+    }
     const incomeInput = document.getElementById('fin-income-input');
     if (incomeInput) incomeInput.value = '0';
 
@@ -18065,6 +18205,9 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
 
       saveFinanceExpenses([]);
       localStorage.setItem(FIN_INCOME_KEY, '0');
+      if (financeCloudReady) {
+        saveFinanceSetting('finance_income', 0).then(({ error }) => { if (error) console.error('Finance income reset failed:', error); });
+      }
       const incomeInput = document.getElementById('fin-income-input');
       if (incomeInput) incomeInput.value = '0';
 
@@ -19104,7 +19247,6 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     }
 
     try { checkIncomingSync(); } catch (e) { console.error('checkIncomingSync error:', e); }
-    try { initFinanceManager(); } catch (e) { console.error('initFinanceManager error:', e); }
 
     const state = getStoredState();
 
@@ -19151,7 +19293,13 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     try { updateMetrics(); } catch (e) { console.error('updateMetrics error:', e); }
     try {
       const initialTab = getTabFromLocation();
+      await databaseReady;
+      if (supabaseClient) {
+        const { data: authData } = await supabaseClient.auth.getSession();
+        if (authData?.session && initialTab === 'keuangan') await retryFinanceCloudLoad();
+      }
       selectTab(initialTab, false);
+      if (initialTab === 'keuangan' && !financeCloudReady && supabaseClient) setFinanceGate('auth');
     } catch (e) {
       console.error('selectTab error:', e);
     }
@@ -19159,9 +19307,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     // Trigger initial silent background sync if Supabase is connected
     try {
       await databaseReady;
-      if (supabaseClient) {
-        syncAllDataWithCloud(true);
-      }
+      // Finance is loaded separately through authenticated, owner-scoped queries.
     } catch (e) {
       console.warn('Background sync error:', e);
     }
@@ -19217,7 +19363,6 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
   window.addEventListener('offline', () => setDatabaseStatus('offline', 'Offline / data lokal'));
   window.addEventListener('online', async () => {
     await initSupabaseClient();
-    if (supabaseClient) syncAllDataWithCloud(true);
   });
 
   // --- TransJakarta Transit Explorer ---
