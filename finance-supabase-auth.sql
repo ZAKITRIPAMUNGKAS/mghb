@@ -1,6 +1,8 @@
--- MGHB Finance auth hardening. Run only after enabling Supabase Auth (email OTP).
--- First sign in once and copy that user's UUID from Authentication > Users.
--- Replace OWNER_UUID below with that UUID before running this file.
+-- MGHB Finance shared-PIN setup. The app PIN is 272800 and the same finance
+-- rows are intentionally shared across the user's devices without email login.
+-- This is convenient but NOT private against anyone who has the app/PIN.
+-- Run in Supabase SQL Editor. No replacement or Auth user is required.
+-- Shared owner ID: 00000000-0000-4000-8000-000000272800
 
 -- Create canonical tables when the older project has never provisioned them.
 CREATE TABLE IF NOT EXISTS public.mghb_accounts (
@@ -69,15 +71,26 @@ CREATE TABLE IF NOT EXISTS public.mghb_goals (
   created_at timestamptz NOT NULL DEFAULT now(), updated_at timestamptz NOT NULL DEFAULT now()
 );
 
-ALTER TABLE public.mghb_accounts ADD COLUMN IF NOT EXISTS owner_id uuid REFERENCES auth.users(id);
-ALTER TABLE public.mghb_transactions ADD COLUMN IF NOT EXISTS owner_id uuid REFERENCES auth.users(id);
-ALTER TABLE public.mghb_commitments ADD COLUMN IF NOT EXISTS owner_id uuid REFERENCES auth.users(id);
-ALTER TABLE public.mghb_financial_goals ADD COLUMN IF NOT EXISTS owner_id uuid REFERENCES auth.users(id);
-ALTER TABLE public.mghb_daily_snapshots ADD COLUMN IF NOT EXISTS owner_id uuid REFERENCES auth.users(id);
-ALTER TABLE public.mghb_monthly_closings ADD COLUMN IF NOT EXISTS owner_id uuid REFERENCES auth.users(id);
-ALTER TABLE public.mghb_expenses ADD COLUMN IF NOT EXISTS owner_id uuid REFERENCES auth.users(id);
-ALTER TABLE public.mghb_bills ADD COLUMN IF NOT EXISTS owner_id uuid REFERENCES auth.users(id);
-ALTER TABLE public.mghb_goals ADD COLUMN IF NOT EXISTS owner_id uuid REFERENCES auth.users(id);
+ALTER TABLE public.mghb_accounts ADD COLUMN IF NOT EXISTS owner_id uuid;
+ALTER TABLE public.mghb_transactions ADD COLUMN IF NOT EXISTS owner_id uuid;
+ALTER TABLE public.mghb_commitments ADD COLUMN IF NOT EXISTS owner_id uuid;
+ALTER TABLE public.mghb_financial_goals ADD COLUMN IF NOT EXISTS owner_id uuid;
+ALTER TABLE public.mghb_daily_snapshots ADD COLUMN IF NOT EXISTS owner_id uuid;
+ALTER TABLE public.mghb_monthly_closings ADD COLUMN IF NOT EXISTS owner_id uuid;
+ALTER TABLE public.mghb_expenses ADD COLUMN IF NOT EXISTS owner_id uuid;
+ALTER TABLE public.mghb_bills ADD COLUMN IF NOT EXISTS owner_id uuid;
+ALTER TABLE public.mghb_goals ADD COLUMN IF NOT EXISTS owner_id uuid;
+
+-- Allow a fixed shared UUID even if an earlier Auth-based draft migration was run.
+ALTER TABLE public.mghb_accounts DROP CONSTRAINT IF EXISTS mghb_accounts_owner_id_fkey;
+ALTER TABLE public.mghb_transactions DROP CONSTRAINT IF EXISTS mghb_transactions_owner_id_fkey;
+ALTER TABLE public.mghb_commitments DROP CONSTRAINT IF EXISTS mghb_commitments_owner_id_fkey;
+ALTER TABLE public.mghb_financial_goals DROP CONSTRAINT IF EXISTS mghb_financial_goals_owner_id_fkey;
+ALTER TABLE public.mghb_daily_snapshots DROP CONSTRAINT IF EXISTS mghb_daily_snapshots_owner_id_fkey;
+ALTER TABLE public.mghb_monthly_closings DROP CONSTRAINT IF EXISTS mghb_monthly_closings_owner_id_fkey;
+ALTER TABLE public.mghb_expenses DROP CONSTRAINT IF EXISTS mghb_expenses_owner_id_fkey;
+ALTER TABLE public.mghb_bills DROP CONSTRAINT IF EXISTS mghb_bills_owner_id_fkey;
+ALTER TABLE public.mghb_goals DROP CONSTRAINT IF EXISTS mghb_goals_owner_id_fkey;
 
 CREATE INDEX IF NOT EXISTS idx_mghb_accounts_owner ON public.mghb_accounts(owner_id);
 CREATE INDEX IF NOT EXISTS idx_mghb_transactions_owner_date ON public.mghb_transactions(owner_id, tx_date DESC);
@@ -85,21 +98,21 @@ CREATE INDEX IF NOT EXISTS idx_mghb_commitments_owner ON public.mghb_commitments
 CREATE INDEX IF NOT EXISTS idx_mghb_financial_goals_owner ON public.mghb_financial_goals(owner_id);
 
 CREATE TABLE IF NOT EXISTS public.mghb_finance_settings (
-  owner_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  owner_id uuid NOT NULL,
   key text NOT NULL,
   value jsonb NOT NULL,
   updated_at timestamptz NOT NULL DEFAULT now(),
   PRIMARY KEY (owner_id, key)
 );
+ALTER TABLE public.mghb_finance_settings DROP CONSTRAINT IF EXISTS mghb_finance_settings_owner_id_fkey;
 
--- Preserve existing canonical rows; explicitly assign them to the owner.
--- Replace OWNER_UUID in this statement; do not run it with the placeholder.
-UPDATE public.mghb_accounts SET owner_id = 'OWNER_UUID'::uuid WHERE owner_id IS NULL;
-UPDATE public.mghb_transactions SET owner_id = 'OWNER_UUID'::uuid WHERE owner_id IS NULL;
-UPDATE public.mghb_commitments SET owner_id = 'OWNER_UUID'::uuid WHERE owner_id IS NULL;
-UPDATE public.mghb_financial_goals SET owner_id = 'OWNER_UUID'::uuid WHERE owner_id IS NULL;
-UPDATE public.mghb_daily_snapshots SET owner_id = 'OWNER_UUID'::uuid WHERE owner_id IS NULL;
-UPDATE public.mghb_monthly_closings SET owner_id = 'OWNER_UUID'::uuid WHERE owner_id IS NULL;
+-- Preserve existing canonical rows and assign them to the shared PIN owner.
+UPDATE public.mghb_accounts SET owner_id = '00000000-0000-4000-8000-000000272800'::uuid WHERE owner_id IS NULL;
+UPDATE public.mghb_transactions SET owner_id = '00000000-0000-4000-8000-000000272800'::uuid WHERE owner_id IS NULL;
+UPDATE public.mghb_commitments SET owner_id = '00000000-0000-4000-8000-000000272800'::uuid WHERE owner_id IS NULL;
+UPDATE public.mghb_financial_goals SET owner_id = '00000000-0000-4000-8000-000000272800'::uuid WHERE owner_id IS NULL;
+UPDATE public.mghb_daily_snapshots SET owner_id = '00000000-0000-4000-8000-000000272800'::uuid WHERE owner_id IS NULL;
+UPDATE public.mghb_monthly_closings SET owner_id = '00000000-0000-4000-8000-000000272800'::uuid WHERE owner_id IS NULL;
 
 -- Keep legacy browser/cloud data by importing it once; do not import the old
 -- demonstration balances/goals from supabase-schema.sql as personal amounts.
@@ -110,10 +123,10 @@ VALUES ('acc_bni','Rekening BNI','checking',0,0,true,1),
        ('acc_savings','Tabungan Wondr BNI','savings',0,0,false,4),
        ('acc_shopeepay','ShopeePay','wallet',0,0,true,5)
 ON CONFLICT (id) DO NOTHING;
-UPDATE public.mghb_accounts SET owner_id = 'OWNER_UUID'::uuid WHERE owner_id IS NULL;
+UPDATE public.mghb_accounts SET owner_id = '00000000-0000-4000-8000-000000272800'::uuid WHERE owner_id IS NULL;
 
 INSERT INTO public.mghb_transactions (id, owner_id, tx_type, amount, tx_date, account_id, category_id, description)
-SELECT e.id, 'OWNER_UUID'::uuid,
+SELECT e.id, '00000000-0000-4000-8000-000000272800'::uuid,
        CASE WHEN e.category = 'saku_bni' OR e.category LIKE '%_inc' THEN 'INCOME' ELSE 'EXPENSE' END,
        GREATEST(ABS(e.amount)::bigint, 1), e.tx_date, 'acc_bni', e.category, e.description
 FROM public.mghb_expenses e
@@ -121,12 +134,12 @@ WHERE e.amount <> 0
 ON CONFLICT (id) DO NOTHING;
 
 INSERT INTO public.mghb_commitments (id, owner_id, name, amount, due_day, paid, category_id, sort_order)
-SELECT b.id, 'OWNER_UUID'::uuid, b.name, b.amount::bigint, b.due_day, b.paid, 'tagihan', b.sort_order
+SELECT b.id, '00000000-0000-4000-8000-000000272800'::uuid, b.name, b.amount::bigint, b.due_day, b.paid, 'tagihan', b.sort_order
 FROM public.mghb_bills b
 ON CONFLICT (id) DO NOTHING;
 
 INSERT INTO public.mghb_financial_goals (id, owner_id, name, target_amount, current_amount, start_date, target_date, priority, monthly_target, icon, color, is_protected, status, sort_order)
-SELECT g.id, 'OWNER_UUID'::uuid, g.name, g.target::bigint, g.saved::bigint, current_date,
+SELECT g.id, '00000000-0000-4000-8000-000000272800'::uuid, g.name, g.target::bigint, g.saved::bigint, current_date,
        CASE WHEN g.deadline ~ '^\d{4}-\d{2}-\d{2}$' THEN g.deadline::date ELSE '2099-12-31'::date END,
        'medium', 0, COALESCE(g.icon,''), COALESCE(g.color,'#005E6A'), true, 'active', g.sort_order
 FROM public.mghb_goals g
@@ -134,26 +147,26 @@ ON CONFLICT (id) DO NOTHING;
 
 -- Move user finance settings out of the legacy public settings table.
 INSERT INTO public.mghb_finance_settings (owner_id, key, value)
-SELECT 'OWNER_UUID'::uuid, 'legacy_' || key, value
+SELECT '00000000-0000-4000-8000-000000272800'::uuid, 'legacy_' || key, value
 FROM public.mghb_settings
 WHERE key IN ('finance_income','finance_expenses_backup','finance_goals','fin_config','monthly_budget')
 ON CONFLICT (owner_id, key) DO NOTHING;
 -- Do not promote the schema's known demo income as a real user value.
 INSERT INTO public.mghb_finance_settings (owner_id, key, value)
-SELECT 'OWNER_UUID'::uuid, 'finance_income', value FROM public.mghb_settings
+SELECT '00000000-0000-4000-8000-000000272800'::uuid, 'finance_income', value FROM public.mghb_settings
 WHERE key = 'finance_income' AND value::text <> '3500000'
 ON CONFLICT (owner_id, key) DO NOTHING;
 INSERT INTO public.mghb_finance_settings (owner_id, key, value)
-SELECT 'OWNER_UUID'::uuid, 'fin_config', value FROM public.mghb_settings WHERE key = 'fin_config'
+SELECT '00000000-0000-4000-8000-000000272800'::uuid, 'fin_config', value FROM public.mghb_settings WHERE key = 'fin_config'
 ON CONFLICT (owner_id, key) DO NOTHING;
 -- Legacy rows remain intact as a recoverable source. The application no
 -- longer reads or writes these finance keys after this migration.
 
 -- Legacy finance rows are no longer used by the app after this migration;
 -- restrict them too so the old public policies cannot expose the source copy.
-UPDATE public.mghb_expenses SET owner_id = 'OWNER_UUID'::uuid WHERE owner_id IS NULL;
-UPDATE public.mghb_bills SET owner_id = 'OWNER_UUID'::uuid WHERE owner_id IS NULL;
-UPDATE public.mghb_goals SET owner_id = 'OWNER_UUID'::uuid WHERE owner_id IS NULL;
+UPDATE public.mghb_expenses SET owner_id = '00000000-0000-4000-8000-000000272800'::uuid WHERE owner_id IS NULL;
+UPDATE public.mghb_bills SET owner_id = '00000000-0000-4000-8000-000000272800'::uuid WHERE owner_id IS NULL;
+UPDATE public.mghb_goals SET owner_id = '00000000-0000-4000-8000-000000272800'::uuid WHERE owner_id IS NULL;
 DO $$
 DECLARE t text; p record;
 BEGIN
@@ -162,16 +175,17 @@ BEGIN
       EXECUTE format('DROP POLICY %I ON public.%I', p.policyname, t);
     END LOOP;
     EXECUTE format('ALTER TABLE public.%I ENABLE ROW LEVEL SECURITY', t);
-    EXECUTE format('CREATE POLICY finance_legacy_owner_select ON public.%I FOR SELECT TO authenticated USING (owner_id = auth.uid())', t);
-    EXECUTE format('CREATE POLICY finance_legacy_owner_insert ON public.%I FOR INSERT TO authenticated WITH CHECK (owner_id = auth.uid())', t);
-    EXECUTE format('CREATE POLICY finance_legacy_owner_update ON public.%I FOR UPDATE TO authenticated USING (owner_id = auth.uid()) WITH CHECK (owner_id = auth.uid())', t);
-    EXECUTE format('CREATE POLICY finance_legacy_owner_delete ON public.%I FOR DELETE TO authenticated USING (owner_id = auth.uid())', t);
+    EXECUTE format('CREATE POLICY finance_legacy_shared_select ON public.%I FOR SELECT TO anon, authenticated USING (owner_id = ''00000000-0000-4000-8000-000000272800''::uuid)', t);
+    EXECUTE format('CREATE POLICY finance_legacy_shared_insert ON public.%I FOR INSERT TO anon, authenticated WITH CHECK (owner_id = ''00000000-0000-4000-8000-000000272800''::uuid)', t);
+    EXECUTE format('CREATE POLICY finance_legacy_shared_update ON public.%I FOR UPDATE TO anon, authenticated USING (owner_id = ''00000000-0000-4000-8000-000000272800''::uuid) WITH CHECK (owner_id = ''00000000-0000-4000-8000-000000272800''::uuid)', t);
+    EXECUTE format('CREATE POLICY finance_legacy_shared_delete ON public.%I FOR DELETE TO anon, authenticated USING (owner_id = ''00000000-0000-4000-8000-000000272800''::uuid)', t);
   END LOOP;
 END $$;
 
 -- The general settings table remains available to the other MGHB modules, but
 -- it must no longer expose its old finance keys through its public policy.
 DROP POLICY IF EXISTS "Akses publik settings" ON public.mghb_settings;
+DROP POLICY IF EXISTS "Akses publik settings non-keuangan" ON public.mghb_settings;
 CREATE POLICY "Akses publik settings non-keuangan" ON public.mghb_settings
   FOR ALL
   USING (key <> ALL (ARRAY['finance_income','finance_expenses_backup','finance_goals','fin_config','monthly_budget']))
@@ -185,10 +199,10 @@ BEGIN
       EXECUTE format('DROP POLICY %I ON public.%I', p.policyname, t);
     END LOOP;
     EXECUTE format('ALTER TABLE public.%I ENABLE ROW LEVEL SECURITY', t);
-    EXECUTE format('CREATE POLICY finance_owner_select ON public.%I FOR SELECT TO authenticated USING (owner_id = auth.uid())', t);
-    EXECUTE format('CREATE POLICY finance_owner_insert ON public.%I FOR INSERT TO authenticated WITH CHECK (owner_id = auth.uid())', t);
-    EXECUTE format('CREATE POLICY finance_owner_update ON public.%I FOR UPDATE TO authenticated USING (owner_id = auth.uid()) WITH CHECK (owner_id = auth.uid())', t);
-    EXECUTE format('CREATE POLICY finance_owner_delete ON public.%I FOR DELETE TO authenticated USING (owner_id = auth.uid())', t);
+    EXECUTE format('CREATE POLICY finance_shared_select ON public.%I FOR SELECT TO anon, authenticated USING (owner_id = ''00000000-0000-4000-8000-000000272800''::uuid)', t);
+    EXECUTE format('CREATE POLICY finance_shared_insert ON public.%I FOR INSERT TO anon, authenticated WITH CHECK (owner_id = ''00000000-0000-4000-8000-000000272800''::uuid)', t);
+    EXECUTE format('CREATE POLICY finance_shared_update ON public.%I FOR UPDATE TO anon, authenticated USING (owner_id = ''00000000-0000-4000-8000-000000272800''::uuid) WITH CHECK (owner_id = ''00000000-0000-4000-8000-000000272800''::uuid)', t);
+    EXECUTE format('CREATE POLICY finance_shared_delete ON public.%I FOR DELETE TO anon, authenticated USING (owner_id = ''00000000-0000-4000-8000-000000272800''::uuid)', t);
   END LOOP;
 END $$;
 
@@ -197,11 +211,14 @@ DROP POLICY IF EXISTS finance_settings_owner_select ON public.mghb_finance_setti
 DROP POLICY IF EXISTS finance_settings_owner_insert ON public.mghb_finance_settings;
 DROP POLICY IF EXISTS finance_settings_owner_update ON public.mghb_finance_settings;
 DROP POLICY IF EXISTS finance_settings_owner_delete ON public.mghb_finance_settings;
-CREATE POLICY finance_settings_owner_select ON public.mghb_finance_settings FOR SELECT TO authenticated USING (owner_id = auth.uid());
-CREATE POLICY finance_settings_owner_insert ON public.mghb_finance_settings FOR INSERT TO authenticated WITH CHECK (owner_id = auth.uid());
-CREATE POLICY finance_settings_owner_update ON public.mghb_finance_settings FOR UPDATE TO authenticated USING (owner_id = auth.uid()) WITH CHECK (owner_id = auth.uid());
-CREATE POLICY finance_settings_owner_delete ON public.mghb_finance_settings FOR DELETE TO authenticated USING (owner_id = auth.uid());
+DROP POLICY IF EXISTS finance_settings_shared_select ON public.mghb_finance_settings;
+DROP POLICY IF EXISTS finance_settings_shared_insert ON public.mghb_finance_settings;
+DROP POLICY IF EXISTS finance_settings_shared_update ON public.mghb_finance_settings;
+DROP POLICY IF EXISTS finance_settings_shared_delete ON public.mghb_finance_settings;
+CREATE POLICY finance_settings_shared_select ON public.mghb_finance_settings FOR SELECT TO anon, authenticated USING (owner_id = '00000000-0000-4000-8000-000000272800'::uuid);
+CREATE POLICY finance_settings_shared_insert ON public.mghb_finance_settings FOR INSERT TO anon, authenticated WITH CHECK (owner_id = '00000000-0000-4000-8000-000000272800'::uuid);
+CREATE POLICY finance_settings_shared_update ON public.mghb_finance_settings FOR UPDATE TO anon, authenticated USING (owner_id = '00000000-0000-4000-8000-000000272800'::uuid) WITH CHECK (owner_id = '00000000-0000-4000-8000-000000272800'::uuid);
+CREATE POLICY finance_settings_shared_delete ON public.mghb_finance_settings FOR DELETE TO anon, authenticated USING (owner_id = '00000000-0000-4000-8000-000000272800'::uuid);
 
-REVOKE ALL ON public.mghb_finance_settings FROM anon;
-GRANT SELECT, INSERT, UPDATE, DELETE ON public.mghb_finance_settings TO authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.mghb_finance_settings TO anon, authenticated;
 NOTIFY pgrst, 'reload schema';

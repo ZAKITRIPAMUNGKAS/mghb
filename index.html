@@ -8210,14 +8210,8 @@
 <!-- TAB: KEUANGAN RANTAU JAKARTA — REDESIGNED HIERARCHY -->
 <main id="view-keuangan" class="tab-content">
   <section id="finance-auth-gate" style="max-width:520px;margin:8vh auto;padding:28px;border:1px solid var(--border-color);border-radius:20px;background:var(--surface);">
-    <h2 style="margin-top:0">Keuangan tersimpan aman</h2>
-    <p id="finance-auth-message">Masuk dengan email untuk memuat data keuangan dari Supabase.</p>
-    <form id="finance-auth-form">
-      <label for="finance-auth-email">Email</label>
-      <input id="finance-auth-email" type="email" autocomplete="email" required style="display:block;width:100%;margin:8px 0 14px;padding:12px;border-radius:10px;">
-      <button type="submit" class="btn-primary">Kirim tautan masuk</button>
-      <button id="finance-auth-signout" type="button" style="display:none">Keluar</button>
-    </form>
+    <h2 style="margin-top:0">Memuat Keuangan</h2>
+    <p id="finance-auth-message">Setelah PIN 272800 benar, data keuangan dimuat dari Supabase.</p>
   </section>
   <div id="finance-cloud-error" role="alert" style="display:none;max-width:520px;margin:8vh auto;padding:24px;border-radius:16px;background:var(--surface);">
     <h2>Data keuangan belum tersedia</h2><p id="finance-cloud-error-text"></p>
@@ -11950,7 +11944,8 @@
 
   let financeCloudReady = false;
   let financeLoadPromise = null;
-  let financeOwnerId = null;
+  const FINANCE_SHARED_OWNER_ID = '00000000-0000-4000-8000-000000272800';
+  let financeOwnerId = FINANCE_SHARED_OWNER_ID;
   const financeCloudIds = {
     mghb_accounts: new Set(),
     mghb_transactions: new Set(),
@@ -12031,27 +12026,18 @@
     const gate = document.getElementById('finance-auth-gate');
     const error = document.getElementById('finance-cloud-error');
     const layout = document.querySelector('#view-keuangan .fin-layout');
-    if (gate) gate.style.display = mode === 'auth' ? '' : 'none';
+    if (gate) gate.style.display = (mode === 'auth' || mode === 'loading') ? '' : 'none';
     if (error) error.style.display = mode === 'error' ? '' : 'none';
     if (layout) layout.style.display = mode === 'ready' ? '' : 'none';
     const msg = document.getElementById('finance-cloud-error-text');
     if (msg && message) msg.textContent = message;
     const authMsg = document.getElementById('finance-auth-message');
     if (authMsg && mode === 'auth' && message) authMsg.textContent = message;
-    const out = document.getElementById('finance-auth-signout');
-    if (out) out.style.display = mode === 'ready' ? '' : 'none';
   }
 
   async function loadFinanceFromCloud() {
     if (!supabaseClient) throw new Error('Supabase belum tersambung.');
-    const { data: sessionData, error: sessionError } = await supabaseClient.auth.getSession();
-    if (sessionError) throw sessionError;
-    if (!sessionData.session) {
-      financeCloudReady = false;
-      setFinanceGate('auth');
-      return false;
-    }
-    financeOwnerId = sessionData.session.user.id;
+    financeOwnerId = FINANCE_SHARED_OWNER_ID;
     const tables = ['mghb_accounts', 'mghb_transactions', 'mghb_commitments', 'mghb_financial_goals', 'mghb_finance_settings'];
     const results = await Promise.all(tables.map(table => supabaseClient.from(table).select('*').eq('owner_id', financeOwnerId).limit(1000)));
     const failed = results.find(result => result.error);
@@ -12083,7 +12069,7 @@
 
   async function retryFinanceCloudLoad() {
     if (financeLoadPromise) return financeLoadPromise;
-    setFinanceGate('error', 'Memuat ulang data keuangan dari Supabase…');
+    setFinanceGate('loading', 'Memuat ulang data keuangan dari Supabase…');
     financeLoadPromise = (async () => {
       try {
         if (!supabaseClient && !(await initSupabaseClient())) throw new Error('Supabase tidak dapat dijangkau.');
@@ -12099,18 +12085,6 @@
   }
   window.retryFinanceCloudLoad = retryFinanceCloudLoad;
 
-  document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('finance-auth-form')?.addEventListener('submit', async event => {
-      event.preventDefault();
-      if (!supabaseClient) { setFinanceGate('error', 'Supabase belum tersambung.'); return; }
-      const email = document.getElementById('finance-auth-email')?.value.trim();
-      const { error } = await supabaseClient.auth.signInWithOtp({ email, options: { emailRedirectTo: `${location.origin}/keuangan` } });
-      setFinanceGate(error ? 'error' : 'auth', error ? error.message : 'Tautan masuk telah dikirim. Buka email ini pada perangkat yang ingin digunakan.');
-    });
-    document.getElementById('finance-auth-signout')?.addEventListener('click', async () => {
-      await supabaseClient?.auth.signOut(); financeCloudReady = false; setFinanceGate('auth', 'Kamu telah keluar.');
-    });
-  });
 
   function resetToDefaultDbConnection() {
     localStorage.setItem(SUPABASE_URL_KEY, DEFAULT_SUPABASE_URL);
@@ -19294,10 +19268,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     try {
       const initialTab = getTabFromLocation();
       await databaseReady;
-      if (supabaseClient) {
-        const { data: authData } = await supabaseClient.auth.getSession();
-        if (authData?.session && initialTab === 'keuangan') await retryFinanceCloudLoad();
-      }
+      if (supabaseClient && initialTab === 'keuangan') await retryFinanceCloudLoad();
       selectTab(initialTab, false);
       if (initialTab === 'keuangan' && !financeCloudReady && supabaseClient) setFinanceGate('auth');
     } catch (e) {
@@ -19307,7 +19278,7 @@ Peserta Pemagangan   : Zaki Tri Pamungkas`;
     // Trigger initial silent background sync if Supabase is connected
     try {
       await databaseReady;
-      // Finance is loaded separately through authenticated, owner-scoped queries.
+      // Finance is loaded separately through its shared Supabase owner row.
     } catch (e) {
       console.warn('Background sync error:', e);
     }
