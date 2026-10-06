@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>403 — Sertifikat Tersedia Setelah Event Selesai</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
+  <style>
+    :root {
+      --bg: #090e17;
+      --surface: #111827;
+      --surface-card: rgba(17, 24, 39, 0.82);
+      --border: rgba(255, 255, 255, 0.08);
+      --border-accent: rgba(245, 158, 11, 0.3);
+      --text-main: #f9fafb;
+      --text-muted: #94a3b8;
+      --text-sub: #cbd5e1;
+      --accent: #f59e0b;
+      --accent-glow: rgba(245, 158, 11, 0.15);
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --success: #10b981;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background-color: var(--bg);
+      background-image: 
+        radial-gradient(circle at 50% 15%, rgba(37, 99, 235, 0.12) 0%, transparent 45%),
+        radial-gradient(circle at 80% 80%, rgba(245, 158, 11, 0.08) 0%, transparent 40%);
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+      line-height: 1.5;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 580px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: var(--surface-card);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 40px 32px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.04);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 10%;
+      right: 10%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(245, 158, 11, 0.4), transparent);
+    }
+
+    /* Icon Hero */
+    .icon-wrapper {
+      position: relative;
+      width: 88px;
+      height: 88px;
+      margin: 0 auto 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(37, 99, 235, 0.12));
+      border: 1px solid var(--border-accent);
+      border-radius: 22px;
+      box-shadow: 0 12px 30px var(--accent-glow);
+    }
+
+    .icon-wrapper iconify-icon.main-icon {
+      font-size: 44px;
+      color: var(--accent);
+    }
+
+    .badge-lock {
+      position: absolute;
+      bottom: -6px;
+      right: -6px;
+      width: 28px;
+      height: 28px;
+      background: #1e293b;
+      border: 2px solid var(--bg);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #f59e0b;
+      font-size: 14px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Status Pill */
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.25);
+      border-radius: 9999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #fbbf24;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      background-color: #fbbf24;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #fbbf24;
+      animation: pulse 2s infinite ease-in-out;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    /* Typography */
+    h1 {
+      font-size: 1.55rem;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 12px;
+      letter-spacing: -0.02em;
+      line-height: 1.3;
+    }
+
+    p.subtitle {
+      font-size: 0.95rem;
+      color: var(--text-sub);
+      line-height: 1.6;
+      margin-bottom: 28px;
+    }
+
+    /* Stepper / Timeline */
+    .timeline {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px 20px;
+      margin-bottom: 24px;
+      text-align: left;
+    }
+
+    .timeline-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .step-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 0.88rem;
+    }
+
+    .step-icon {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .step-done {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--success);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .step-current {
+      background: rgba(245, 158, 11, 0.18);
+      color: var(--accent);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+    }
+
+    .step-next {
+      background: rgba(148, 163, 184, 0.1);
+      color: var(--text-muted);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+    }
+
+    .step-text {
+      color: var(--text-sub);
+    }
+
+    .step-text strong {
+      color: var(--text-main);
+      display: block;
+      font-weight: 600;
+    }
+
+    .step-current .step-text strong {
+      color: #fbbf24;
+    }
+
+    /* Info Note */
+    .info-box {
+      background: rgba(37, 99, 235, 0.08);
+      border: 1px dashed rgba(37, 99, 235, 0.3);
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin-bottom: 28px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-align: left;
+      font-size: 0.84rem;
+      color: #93c5fd;
+    }
+
+    .info-box iconify-icon {
+      font-size: 20px;
+      flex-shrink: 0;
+      color: #60a5fa;
+    }
+
+    /* Actions */
+    .action-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), #1d4ed8);
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #1d4ed8, #1e40af);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.45);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      color: var(--text-sub);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-main);
+      border-color: rgba(255, 255, 255, 0.16);
+    }
+
+    /* Footer Meta */
+    .footer-meta {
+      margin-top: 24px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--border);
+      padding-top: 16px;
+    }
+
+    .footer-meta a {
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+
+    .footer-meta a:hover {
+      color: var(--text-main);
+    }
+
+    @media (max-width: 480px) {
+      .card {
+        padding: 30px 20px;
+        border-radius: 20px;
+      }
+      h1 {
+        font-size: 1.35rem;
+      }
+      .footer-meta {
+        flex-direction: column;
+        gap: 8px;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="card">
+      
+      <!-- Icon Hero -->
+      <div class="icon-wrapper">
+        <iconify-icon class="main-icon" icon="lucide:award"></iconify-icon>
+        <div class="badge-lock">
+          <iconify-icon icon="lucide:lock"></iconify-icon>
+        </div>
+      </div>
+
+      <!-- HTTP 403 Status Pill -->
+      <div class="status-pill">
+        <span class="status-dot"></span>
+        HTTP 403 • Akses Ditangguhkan
+      </div>
+
+      <!-- Main Heading & Message -->
+      <h1>Sertifikat Tersedia Setelah Event Selesai</h1>
+      <p class="subtitle">
+        Terima kasih atas partisipasi Anda. E-Sertifikat resmi peserta saat ini sedang dipersiapkan dan akan otomatis terbuka setelah seluruh rangkaian acara resmi ditutup.
+      </p>
+
+      <!-- Progress / Tahapan Rilis -->
+      <div class="timeline">
+        <div class="timeline-title">
+          <iconify-icon icon="lucide:workflow" style="font-size:14px;"></iconify-icon>
+          Status Alur Penerbitan Sertifikat
+        </div>
+        <div class="steps">
+          <div class="step-item">
+            <div class="step-icon step-done">
+              <iconify-icon icon="lucide:check"></iconify-icon>
+            </div>
+            <div class="step-text">
+              <strong>1. Sesi Materi & Pemaparan</strong>
+              <span>Kegiatan seminar / workshop sedang atau telah berlangsung.</span>
+            </div>
+          </div>
+
+          <div class="step-item">
+            <div class="step-icon step-current">
+              <iconify-icon icon="lucide:loader-2" class="spin" style="animation: spin 1s linear infinite;"></iconify-icon>
+            </div>
+            <div class="step-text">
+              <strong>2. Rekapitulasi Presensi & Evaluasi</strong>
+              <span>Panitia sedang memvalidasi daftar hadir dan form umpan balik.</span>
+            </div>
+          </div>
+
+          <div class="step-item">
+            <div class="step-icon step-next">
+              <iconify-icon icon="lucide:file-check"></iconify-icon>
+            </div>
+            <div class="step-text">
+              <strong>3. Penerbitan & Unduh E-Sertifikat</strong>
+              <span>Tersedia otomatis di halaman ini setelah penutupan event.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Syarat Penting -->
+      <div class="info-box">
+        <iconify-icon icon="lucide:info"></iconify-icon>
+        <span>
+          Pastikan Anda telah mengisi <strong>Presensi Kehadiran</strong> dan <strong>Kuesioner Feedback</strong> agar sertifikat dapat digenerate.
+        </span>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="action-group">
+        <button type="button" class="btn btn-primary" onclick="window.location.reload();">
+          <iconify-icon icon="lucide:refresh-cw"></iconify-icon>
+          Cek Ulang Ketersediaan
+        </button>
+
+        <a href="javascript:history.back()" class="btn btn-secondary">
+          <iconify-icon icon="lucide:arrow-left"></iconify-icon>
+          Kembali ke Halaman Sebelumnya
+        </a>
+      </div>
+
+      <!-- Footer Info -->
+      <div class="footer-meta">
+        <span>Kode Error: <code>403_EVENT_IN_PROGRESS</code></span>
+        <a href="mailto:panitia@event.com" title="Hubungi Helpdesk">
+          <iconify-icon icon="lucide:help-circle" style="vertical-align:middle;"></iconify-icon>
+          Bantuan Panitia
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <style>
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+
+</body>
+</html>
