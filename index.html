@@ -11961,8 +11961,8 @@
     let url = localStorage.getItem(SUPABASE_URL_KEY);
     let key = localStorage.getItem(SUPABASE_KEY_KEY);
 
-    // Auto-heal jika ada dummy URL atau placeholder lama
-    if (!url || !key || url.includes('xyzproject') || key.includes('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9')) {
+    // Auto-heal jika ada dummy URL, placeholder lama, atau kredensial yang tidak sesuai kluster resmi
+    if (!url || !key || url.includes('xyzproject') || key.includes('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9') || !url.includes('eosccftxkedjwblznqoc') || !key.startsWith('sb_publishable_')) {
       url = DEFAULT_SUPABASE_URL;
       key = DEFAULT_SUPABASE_KEY;
       localStorage.setItem(SUPABASE_URL_KEY, url);
@@ -12552,6 +12552,16 @@
         const merged = { ...currentTasks, ...cloudRoadmap.value };
         localStorage.setItem('mghb_roadmap_tasks_v1', JSON.stringify(merged));
         renderRoadmapLine();
+      }
+
+      // 13. Sync & Fetch FinOS Finance (Accounts, Transactions, Commitments, Goals, Settings)
+      try {
+        const finOk = await loadFinanceFromCloud();
+        if (finOk && typeof initFinanceManager === 'function') {
+          initFinanceManager();
+        }
+      } catch (finErr) {
+        console.warn('FinOS finance sync in syncAllDataWithCloud:', finErr);
       }
 
       if (!silent) {

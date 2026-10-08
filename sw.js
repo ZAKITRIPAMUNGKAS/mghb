@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mghb-pwa-v32';
+const CACHE_NAME = 'mghb-pwa-v33';
 const STATIC_ASSETS = [
   './',
   './index.html',
@@ -53,6 +53,24 @@ self.addEventListener('fetch', (event) => {
 
   // Handle same-origin static requests
   if (url.origin === self.location.origin) {
+    const isHtml = req.mode === 'navigate' || url.pathname.endsWith('.html') || url.pathname === '/' || url.pathname === '';
+    if (isHtml) {
+      // Network-First untuk dokumen HTML agar update terbaru langsung masuk di HP
+      event.respondWith(
+        fetch(req).then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200) {
+            const responseToCache = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(req, responseToCache));
+          }
+          return networkResponse;
+        }).catch(() => {
+          return caches.match(req).then((cached) => cached || caches.match('./index.html'));
+        })
+      );
+      return;
+    }
+
+    // Aset statis lainnya (gambar, json): Stale-While-Revalidate
     event.respondWith(
       caches.match(req).then((cachedResponse) => {
         const fetchPromise = fetch(req).then((networkResponse) => {
@@ -63,12 +81,7 @@ self.addEventListener('fetch', (event) => {
             });
           }
           return networkResponse;
-        }).catch(() => {
-          // If offline and request is navigation, return index.html
-          if (req.mode === 'navigate') {
-            return caches.match('./index.html');
-          }
-        });
+        }).catch(() => null);
 
         return cachedResponse || fetchPromise;
       })
