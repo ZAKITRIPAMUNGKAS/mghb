@@ -1,0 +1,18 @@
+{
+  "routingDefaults": {
+    "walkSpeed": 1.2,
+    "maxWalkDistance": 1500,
+    "transferSlack": 180,
+    "boardSlack": 60,
+    "alightSlack": 60,
+    "carDecelerationSpeed": 2.0,
+    "carAccelerationSpeed": 2.0,
+    "numItineraries": 5
+  },
+  "updaters": [],
+  "api": {
+    "graphql": {
+      "enabled": true
+    }
+  }
+}

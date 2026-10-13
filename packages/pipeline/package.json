@@ -1,0 +1,27 @@
+{
+  "name": "@laku/pipeline",
+  "version": "1.0.0",
+  "description": "Laku Transit ETL Pipeline — GTFS Merger & Normalizer",
+  "author": "Zaki Tri Pamungkas",
+  "type": "module",
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "tsx src/index.ts",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "csv-parse": "^5.5.6",
+    "csv-stringify": "^6.5.1",
+    "jszip": "^3.10.1",
+    "pg": "^8.13.1",
+    "dotenv": "^16.4.7"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.1",
+    "@types/pg": "^8.11.10",
+    "tsx": "^4.19.2",
+    "typescript": "^5.8.2",
+    "vitest": "^3.0.5"
+  }
+}

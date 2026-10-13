@@ -1,0 +1,7 @@
+{
+  "transitModelTimeZone": "Asia/Jakarta",
+  "osm": {
+    "defaultSpeed": 1.2
+  },
+  "subwayAccessTime": 2.5
+}

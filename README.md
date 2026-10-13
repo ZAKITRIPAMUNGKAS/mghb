@@ -91,3 +91,82 @@ Aplikasi MGHB kini berstatus **Full Progressive Web App (PWA)**:
 ---
 
 *Dikembangkan khusus untuk mendukung efisiensi, kepatuhan, dan kesuksesan pemagangan Zaki Tri Pamungkas di PT Bank Negara Indonesia (Persero) Tbk & Program MagangHub Kemnaker RI.*
+
+---
+
+# 🚆 Laku — Perencana Perjalanan Multimoda Transit Jabodetabek
+
+**Laku** (bahasa Jawa: *"perjalanan"*) adalah subsistem Progressive Web App (PWA) perencana perjalanan transportasi umum terintegrasi Jabodetabek yang menggabungkan seluruh moda utama dalam satu pencarian rute terpadu:
+- **TransJakarta** (BRT Koridor 1–14 & Non-BRT Metrotrans)
+- **Mikrotrans (JakLingko)** (Rute JAK, tarif integrasi Rp0)
+- **KRL Commuter Line** (Bogor, Cikarang, Rangkasbitung, Tangerang, Tanjung Priok)
+- **MRT Jakarta** (North-South Line: Lebak Bulus – Bundaran HI)
+- **LRT Jakarta** (Pegangsaan Dua – Velodrome)
+- **LRT Jabodebek** (Cibubur Line & Bekasi Line)
+- **Angkot Non-Integrasi** (Daftar trayek Satu Data Jakarta & pendataan survei GPS lapangan)
+
+---
+
+## 🏛️ Arsitektur Monorepo (`pnpm`)
+
+Proyek dibangun dengan struktur monorepo terstandarisasi:
+```text
+mghb/
+├── apps/
+│   ├── api/             # Backend API (Hono + Node 22 + TypeScript + Redis + PostGIS)
+│   └── web/             # Frontend PWA (React + Vite + TypeScript + MapLibre GL)
+├── packages/
+│   └── pipeline/        # ETL Data Pipeline (Fetcher, Merger, Normalizer GTFS & Importer)
+├── infra/
+│   ├── docker-compose.yml # PostgreSQL 16 + PostGIS, Redis, OpenTripPlanner 2 (Blue/Green)
+│   └── otp/             # Konfigurasi build-config.json & router-config.json OTP2
+└── data/
+    ├── raw/             # Snapshot GTFS asli harian
+    ├── out/             # gtfs-jabodetabek.zip (feed gabungan terstandarisasi)
+    └── survey-todo.csv  # Daftar antrean trayek angkot untuk survei lapangan
+```
+
+---
+
+## 📋 Aturan Data Real (Zero Hallucination)
+1. **Audit Provenance Wajib**: Setiap entitas data menyimpan dan menampilkan `source_url`, `fetched_at`, dan `method` (`gtfs` | `sync` | `survei`).
+2. **Tanpa Data Fiktif**: Moda yang belum memiliki sumber resmi aktif otomatis disembunyikan dari perencana rute aktif (misal trayek angkot non-integrasi yang masih menunggu hasil survei track GPS).
+
+---
+
+## ⚡ Panduan Menjalankan Sistem Lokal
+
+### 1. Menjalankan Infrastruktur Docker
+```bash
+docker compose -f infra/docker-compose.yml up -d
+```
+Layanan yang dijalankan:
+- PostgreSQL 16 + PostGIS pada port `5432`
+- Redis 7.2 pada port `6379`
+- OpenTripPlanner 2 pada port `8080` (Blue) / `8081` (Green)
+
+### 2. Menjalankan Data Pipeline (ETL GTFS)
+Unduh feed resmi, sinkronisasi jadwal kereta, normalisasi prefix, dan ekspor `gtfs-jabodetabek.zip`:
+```bash
+pnpm pipeline:run
+```
+
+### 3. Menjalankan API & Web App
+```bash
+# Menjalankan seluruh aplikasi secara bersamaan
+pnpm dev
+
+# Atau menjalankan secara terpisah:
+pnpm dev:api   # Hono API pada http://localhost:3000
+pnpm dev:web   # Vite Web pada http://localhost:5173
+```
+
+### 4. Menjalankan Automated Test Suite
+```bash
+# Menjalankan seluruh pengujian unit & integrasi di seluruh workspace
+pnpm test
+
+# Menjalankan 10 kasus uji rute nyata (Agent 2 test cases):
+pnpm --filter @laku/api test
+```
+

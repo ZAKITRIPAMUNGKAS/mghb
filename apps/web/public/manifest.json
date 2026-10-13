@@ -1,0 +1,21 @@
+{
+  "name": "Laku — Perencana Perjalanan Jabodetabek",
+  "short_name": "Laku",
+  "description": "Perencana perjalanan transportasi umum Jabodetabek (TransJakarta, KRL, MRT, LRT)",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F8FAFC",
+  "theme_color": "#005BAC",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
