@@ -11,11 +11,14 @@ coverage/
 .env.local
 .DS_Store
 Thumbs.db
+test-results/
+playwright-report/
 
 # Docker & OTP data
 infra/otp/cache/
 infra/otp/graphs/
 infra/postgres-data/
+data/raw/*.zip
 
 # Python cache
 __pycache__/

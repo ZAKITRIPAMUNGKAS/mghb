@@ -191,6 +191,36 @@
       color: #FFFFFF;
     }
 
+    .preset-chips {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding: 2px 0 4px;
+      scrollbar-width: none;
+    }
+    .preset-chips::-webkit-scrollbar { display: none; }
+    .preset-btn {
+      padding: 4px 10px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      cursor: pointer;
+      white-space: nowrap;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s ease;
+    }
+    .preset-btn:hover {
+      background: var(--primary-subtle);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
     /* Search Box */
     .search-box {
       display: flex;
@@ -434,11 +464,23 @@
       <!-- Mode Filter Bar -->
       <div class="mode-pills">
         <button class="pill-btn active" onclick="setModeFilter('all', this)">Semua Moda</button>
+        <button class="pill-btn" onclick="setModeFilter('bni', this)" style="border-color:#005E6A;color:#005E6A;">🏢 Jaringan BNI</button>
         <button class="pill-btn" onclick="setModeFilter('krl', this)">🚆 KRL</button>
         <button class="pill-btn" onclick="setModeFilter('mrt', this)">🚇 MRT</button>
         <button class="pill-btn" onclick="setModeFilter('lrt', this)">🚊 LRT</button>
         <button class="pill-btn" onclick="setModeFilter('brt', this)">🚌 TransJakarta</button>
         <button class="pill-btn" onclick="setModeFilter('mikrotrans', this)">🚐 Mikrotrans (Rp0)</button>
+      </div>
+
+      <!-- Fast Destination Presets (BNI & Transit Hubs) -->
+      <div class="preset-chips">
+        <span style="font-size:11px;font-weight:700;color:var(--text-muted);display:flex;align-items:center;white-space:nowrap;">Pintasan:</span>
+        <button type="button" class="preset-btn" onclick="setDestinationPreset('bni:HO')" style="color:#005E6A;border-color:#005E6A;background:#E6F4F5;">🏢 Menara BNI</button>
+        <button type="button" class="preset-btn" onclick="setDestinationPreset('krl:PLM')">🚆 Palmerah</button>
+        <button type="button" class="preset-btn" onclick="setDestinationPreset('mrt:DKA')">🚇 Dukuh Atas BNI</button>
+        <button type="button" class="preset-btn" onclick="setDestinationPreset('krl:SUDB')">🏛️ BNI City</button>
+        <button type="button" class="preset-btn" onclick="setDestinationPreset('bni:JKT')">🏢 KC Jakarta Kota</button>
+        <button type="button" class="preset-btn" onclick="setDestinationPreset('mrt:BLM')">🚌 Blok M</button>
       </div>
 
       <!-- Search Inputs -->
@@ -537,7 +579,19 @@
     { id: 'tj:4-14', name: 'Halte Manggarai', lat: -6.2096, lon: 106.8499, mode: 'brt', color: '#DC2626', line: 'Koridor 4' },
     { id: 'tj:9-12', name: 'Halte Cikoko Stasiun Cawang', lat: -6.2438, lon: 106.8584, mode: 'brt', color: '#DC2626', line: 'Koridor 9' },
     { id: 'tj:7-1', name: 'Halte Terminal Kampung Rambutan', lat: -6.3116, lon: 106.8797, mode: 'brt', color: '#DC2626', line: 'Koridor 7' },
-    { id: 'tj:jak10', name: 'Halte Mikrotrans JAK.10 Tanah Abang', lat: -6.1860, lon: 106.8105, mode: 'mikrotrans', color: '#0D9488', line: 'JAK.10' }
+    { id: 'tj:jak10', name: 'Halte Mikrotrans JAK.10 Tanah Abang', lat: -6.1860, lon: 106.8105, mode: 'mikrotrans', color: '#0D9488', line: 'JAK.10' },
+
+    // 🏢 Jaringan Kantor & Hub BNI (Menara BNI & Koridor Transit)
+    { id: 'bni:HO', name: 'Menara BNI Pejompongan (Kantor Pusat SSE)', lat: -6.208821, lon: 106.804108, mode: 'bni', color: '#005E6A', line: 'Kantor Pusat BNI · Divisi SSE (350m ke Palmerah)' },
+    { id: 'bni:PLM', name: 'BNI KCP Stasiun Palmerah', lat: -6.207222, lon: 106.797500, mode: 'bni', color: '#005E6A', line: 'KCP Transit KRL Rangkasbitung Line' },
+    { id: 'bni:DKA', name: 'BNI KC Menara BNI City / Dukuh Atas', lat: -6.202500, lon: 106.822222, mode: 'bni', color: '#005E6A', line: 'Hub Integrasi Transit (KRL, MRT, LRT, Bandara)' },
+    { id: 'bni:BNH', name: 'BNI KCP Bendungan Hilir', lat: -6.214000, lon: 106.817500, mode: 'bni', color: '#005E6A', line: '120m ke Stasiun MRT Bendungan Hilir' },
+    { id: 'bni:JKT', name: 'BNI KC Jakarta Kota (Gedung Heritage)', lat: -6.136200, lon: 106.813500, mode: 'bni', color: '#005E6A', line: 'Kawasan Kota Tua · 150m ke Stasiun Jakarta Kota' },
+    { id: 'bni:MLW', name: 'BNI KC Melawai (Blok M)', lat: -6.244000, lon: 106.801000, mode: 'bni', color: '#005E6A', line: '180m ke Stasiun MRT Blok M BCA & Halte CSW' },
+    { id: 'bni:SNY', name: 'BNI KC Senayan', lat: -6.223000, lon: 106.805000, mode: 'bni', color: '#005E6A', line: '200m ke Stasiun MRT Senayan Mastercard' },
+    { id: 'bni:JNG', name: 'BNI KC Jatinegara', lat: -6.216000, lon: 106.868000, mode: 'bni', color: '#005E6A', line: '180m ke Stasiun KRL & Halte Jatinegara' },
+    { id: 'bni:MRI', name: 'BNI KCP Transit Manggarai', lat: -6.211000, lon: 106.851000, mode: 'bni', color: '#005E6A', line: '100m ke Stasiun Transit Manggarai' },
+    { id: 'bni:JUA', name: 'BNI KC Juanda / Gambir', lat: -6.167000, lon: 106.828500, mode: 'bni', color: '#005E6A', line: '150m ke Stasiun KRL Juanda' }
   ];
 
   // Map & State
@@ -572,8 +626,12 @@
     STATIONS_MASTER.forEach(function(s) {
       if (currentModeFilter !== 'all' && s.mode !== currentModeFilter) return;
 
-      var iconHtml = '<div style="width:10px;height:10px;border-radius:50%;background:'+s.color+';border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,0.4);"></div>';
-      var customIcon = L.divIcon({ html: iconHtml, className: '', iconSize: [14, 14], iconAnchor: [7, 7] });
+      var isBni = s.mode === 'bni';
+      var sz = isBni ? 16 : 10;
+      var iconHtml = isBni
+        ? '<div style="width:16px;height:16px;border-radius:4px;background:#005E6A;border:2px solid #FF5500;box-shadow:0 2px 6px rgba(0,0,0,0.45);display:flex;align-items:center;justify-content:center;color:#fff;font-size:9px;font-weight:900;">B</div>'
+        : '<div style="width:10px;height:10px;border-radius:50%;background:'+s.color+';border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,0.4);"></div>';
+      var customIcon = L.divIcon({ html: iconHtml, className: '', iconSize: [sz, sz], iconAnchor: [sz/2, sz/2] });
 
       var marker = L.marker([s.lat, s.lon], { icon: customIcon }).addTo(map);
       marker.bindTooltip('<strong>' + s.name + '</strong><br>' + s.line, { direction: 'top', offset: [0, -6] });
@@ -653,7 +711,7 @@
     }
   }
 
-  // Multi-Modal Routing Engine (Fast In-Browser Solver)
+  // Multi-Modal Routing Engine (Backend API + Client Solver Fallback)
   window.executePlan = function() {
     if (!fromCoord || !toCoord) {
       alert('Silakan tentukan titik awal dan tujuan (ketik nama halte atau klik langsung pada peta).');
@@ -661,7 +719,7 @@
     }
 
     var container = document.getElementById('itineraries-container');
-    container.innerHTML = '<div style="padding:16px;text-align:center;font-size:13px;color:#64748B;">Menghubungkan jaringan KRL, MRT, LRT, dan TransJakarta...</div>';
+    container.innerHTML = '<div style="padding:16px;text-align:center;font-size:13px;color:#64748B;"><div style="display:inline-block;width:18px;height:18px;border:2.5px solid #CBD5E1;border-top-color:#005BAC;border-radius:50%;animation:spin .6s linear infinite;margin-bottom:6px;"></div><br>Menghubungkan jaringan KRL, MRT, LRT, TransJakarta, dan Mikrotrans...</div>';
 
     // Expand mobile sheet to half
     var panel = document.getElementById('app-panel');
@@ -669,10 +727,58 @@
       panel.className = 'app-sidebar state-half';
     }
 
-    setTimeout(function() {
-      var itineraries = computeMultiModalJourneys(fromCoord, toCoord);
-      renderItineraries(itineraries);
-    }, 150);
+    var didLoadApi = false;
+    var apiUrl = '/plan?from=' + fromCoord[0] + ',' + fromCoord[1] + '&to=' + toCoord[0] + ',' + toCoord[1];
+
+    var controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+    var timer = setTimeout(function() {
+      if (controller) controller.abort();
+      if (!didLoadApi) {
+        var itineraries = computeMultiModalJourneys(fromCoord, toCoord);
+        renderItineraries(itineraries);
+      }
+    }, 1200);
+
+    fetch(apiUrl, controller ? { signal: controller.signal } : {})
+      .then(function(r) { return r.ok ? r.json() : null; })
+      .then(function(json) {
+        if (json && json.itineraries && json.itineraries.length > 0) {
+          didLoadApi = true;
+          clearTimeout(timer);
+          var mappedItins = json.itineraries.map(function(itin) {
+            var legs = (itin.legs || []).map(function(leg) {
+              return {
+                type: leg.type,
+                mode: leg.mode || 'brt',
+                color: leg.route_color || '#005BAC',
+                name: (leg.route_short_name ? leg.route_short_name + ' ' : '') + (leg.route_long_name || ''),
+                from: leg.from_stop_name,
+                to: leg.to_stop_name,
+                duration: Math.round(leg.duration_seconds / 60),
+                desc: leg.description
+              };
+            });
+            return {
+              duration_minutes: Math.round(itin.duration_seconds / 60),
+              walking_distance: itin.walking_distance_meters,
+              transfers: itin.transfers,
+              estimated_fare: itin.estimated_fare_idr,
+              departure_time: itin.departure_time || '07:30',
+              arrival_time: itin.arrival_time || '08:15',
+              legs: legs,
+              pathCoords: [fromCoord, toCoord]
+            };
+          });
+          renderItineraries(mappedItins);
+        }
+      })
+      .catch(function() {
+        if (!didLoadApi) {
+          clearTimeout(timer);
+          var itineraries = computeMultiModalJourneys(fromCoord, toCoord);
+          renderItineraries(itineraries);
+        }
+      });
   };
 
   function haversineM(lat1, lon1, lat2, lon2) {
@@ -859,6 +965,53 @@
     map.fitBounds(routeLine.getBounds(), { padding: [60, 60] });
   }
 
+  // Background GTFS Stops Loader (8.000+ Halte Multimoda)
+  window.ALL_STOPS = [];
+  try {
+    fetch('data/stops.json')
+      .then(function(r) { return r.ok ? r.json() : []; })
+      .then(function(data) {
+        if (!Array.isArray(data)) return;
+        window.ALL_STOPS = data.map(function(s) {
+          var mode = 'brt';
+          var color = '#DC2626';
+          var id = s.stop_id || '';
+          var name = s.stop_name_normalized || s.stop_name_original || '';
+          if (id.startsWith('krl:') || name.startsWith('Stasiun ')) { mode = 'krl'; color = '#D32F2F'; }
+          else if (id.startsWith('mrt:')) { mode = 'mrt'; color = '#004B87'; }
+          else if (id.startsWith('lrt:')) { mode = 'lrt'; color = '#0284C7'; }
+          else if (id.startsWith('JAK') || name.startsWith('JAK.')) { mode = 'mikrotrans'; color = '#0D9488'; }
+          return {
+            id: id,
+            name: name,
+            lat: s.stop_lat,
+            lon: s.stop_lon,
+            mode: mode,
+            color: color,
+            line: mode.toUpperCase()
+          };
+        });
+      })
+      .catch(function() {});
+  } catch (_) {}
+
+  window.setDestinationPreset = function(stopId) {
+    var s = STATIONS_MASTER.find(function(x) { return x.id === stopId; });
+    if (!s) return;
+    toCoord = [s.lat, s.lon];
+    toName = s.name;
+    document.getElementById('p-to-input').value = toName;
+    document.getElementById('p-to-clear').style.display = 'block';
+    var dd = document.getElementById('p-to-dropdown');
+    if (dd) dd.style.display = 'none';
+    updateMapMarkers();
+    if (fromCoord) {
+      executePlan();
+    } else {
+      map.setView([s.lat, s.lon], 15);
+    }
+  };
+
   // Setup Autocomplete
   function setupAutocomplete(inputId, dropdownId, clearId, isOrigin) {
     var input = document.getElementById(inputId);
@@ -877,9 +1030,28 @@
 
       clear.style.display = 'block';
 
-      var matches = STATIONS_MASTER.filter(function(s) {
-        return s.name.toLowerCase().indexOf(val) !== -1 || s.line.toLowerCase().indexOf(val) !== -1;
-      }).slice(0, 8);
+      var masterMatches = STATIONS_MASTER.filter(function(s) {
+        return s.name.toLowerCase().indexOf(val) !== -1 || (s.line && s.line.toLowerCase().indexOf(val) !== -1);
+      });
+
+      var extraMatches = [];
+      if (window.ALL_STOPS && window.ALL_STOPS.length > 0) {
+        extraMatches = window.ALL_STOPS.filter(function(s) {
+          return s.name.toLowerCase().indexOf(val) !== -1;
+        }).slice(0, 15);
+      }
+
+      var seen = {};
+      var matches = [];
+      masterMatches.forEach(function(m) { seen[m.name.toLowerCase()] = true; matches.push(m); });
+      extraMatches.forEach(function(m) {
+        var k = m.name.toLowerCase();
+        if (!seen[k]) {
+          seen[k] = true;
+          matches.push(m);
+        }
+      });
+      matches = matches.slice(0, 8);
 
       dropdown.innerHTML = '';
       if (matches.length === 0) {

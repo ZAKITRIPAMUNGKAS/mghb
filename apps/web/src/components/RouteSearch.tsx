@@ -101,6 +101,50 @@ export const RouteSearch: React.FC<RouteSearchProps> = ({ onSearch, isLoading, e
 
   return (
     <div className="search-box">
+      {/* Fast Shortcuts (Menara BNI & Transit Hubs) */}
+      <div style={{ display: 'flex', gap: 6, overflowX: 'auto', padding: '2px 0 6px', scrollbarWidth: 'none' }}>
+        <button
+          type="button"
+          onClick={() => {
+            setDestQuery('Menara BNI Pejompongan (SSE)');
+            setDestCoord([-6.208821, 106.804108]);
+          }}
+          style={{ padding: '4px 10px', background: '#E6F4F5', border: '1px solid #005E6A', color: '#005E6A', borderRadius: 14, fontSize: 11, fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap' }}
+        >
+          🏢 Menara BNI
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            setDestQuery('Stasiun Palmerah');
+            setDestCoord([-6.207222, 106.797500]);
+          }}
+          style={{ padding: '4px 10px', background: '#F1F5F9', border: '1px solid #CBD5E1', color: '#334155', borderRadius: 14, fontSize: 11, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' }}
+        >
+          🚆 Palmerah
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            setDestQuery('Stasiun MRT Dukuh Atas BNI');
+            setDestCoord([-6.200833, 106.822778]);
+          }}
+          style={{ padding: '4px 10px', background: '#F1F5F9', border: '1px solid #CBD5E1', color: '#334155', borderRadius: 14, fontSize: 11, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' }}
+        >
+          🚇 Dukuh Atas BNI
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            setDestQuery('Stasiun Sudirman Baru (BNI City)');
+            setDestCoord([-6.202500, 106.822222]);
+          }}
+          style={{ padding: '4px 10px', background: '#F1F5F9', border: '1px solid #CBD5E1', color: '#334155', borderRadius: 14, fontSize: 11, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' }}
+        >
+          🏛️ BNI City
+        </button>
+      </div>
+
       {/* Origin Input */}
       <div className="input-row">
         <span className="input-dot origin" />

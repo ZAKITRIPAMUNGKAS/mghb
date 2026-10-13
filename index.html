@@ -3812,7 +3812,7 @@
 
     @media (min-width: 640px) {
       .utility-group-grid {
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
       }
     }
 
@@ -9312,6 +9312,16 @@
               <div style="display: flex; flex-direction: column; gap: 6px; border-top: 1px dashed var(--border); padding-top: 8px;" id="tasks-node-2">
                 <!-- Checklist tasks loaded by JS -->
               </div>
+
+              <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed var(--border);">
+                <a href="transit.html" target="_blank" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; background: rgba(0, 94, 106, 0.08); border: 1.5px solid var(--brand-teal); border-radius: 8px; font-size: 0.72rem; font-weight: 700; color: var(--brand-teal); text-decoration: none;">
+                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+                  </svg>
+                  Buka Peta Multimoda BNI &amp; Transit (transit.html ↗)
+                </a>
+              </div>
             </div>
           </div>
 
@@ -9620,6 +9630,13 @@
         </svg>
         Salin Inventaris
       </button>
+      <a href="transit.html" target="_blank" class="utility-btn" style="text-decoration:none;color:#005BAC;font-weight:700;border-color:#005BAC;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+        </svg>
+        Peta Transit ↗
+      </a>
       <button class="utility-btn" onclick="window.location.reload()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
@@ -13085,7 +13102,7 @@
     { id: 't2', nodeId: 'm1', title: 'Briefing penugasan mentor Bapak Guruh & setup workstation', done: true },
     { id: 't3', nodeId: 'm2', title: 'Pembersihan & validasi basis data leads Cash-In Cash-Out (CICO)', done: true },
     { id: 't4', nodeId: 'm2', title: 'Identifikasi format CIF unik (8 digit alfanumerik) nasabah', done: true },
-    { id: 't5', nodeId: 'm2', title: 'Kompilasi geospasial jaringan KC/KCP BNI dekat koridor transit', done: false },
+    { id: 't5', nodeId: 'm2', title: 'Kompilasi geospasial jaringan KC/KCP BNI dekat koridor transit', done: true },
     { id: 't6', nodeId: 'm3', title: 'Penyusunan PRD & Arsitektur Perangkat Lunak Pre-Sales Area', done: false },
     { id: 't7', nodeId: 'm3', title: 'Implementasi logika portofolio dual-target & mandatory products', done: false },
     { id: 't8', nodeId: 'm4', title: 'Pengisian instrumen evaluasi berkala portal Monev MagangHub', done: false },
