@@ -6,7 +6,8 @@
     { "source": "/inventaris", "destination": "/" },
     { "source": "/keuangan", "destination": "/" },
     { "source": "/logbook", "destination": "/" },
-    { "source": "/toolkit", "destination": "/" }
+    { "source": "/toolkit", "destination": "/" },
+    { "source": "/transit", "destination": "/transit.html" }
   ],
   "headers": [
     {
