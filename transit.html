@@ -570,8 +570,16 @@
 
     <header class="panel-header">
       <div class="brand-badge">
-        <h1>LAKU</h1>
-        <span>Transit Jabodetabek</span>
+        <a href="index.html" title="Kembali ke Asisten Magang BNI" style="display:flex;align-items:center;text-decoration:none;">
+          <img src="transjakarta-logo.svg" alt="TransJakarta" height="22" style="display:block;width:auto;max-height:22px;">
+        </a>
+        <div style="background:#F0F9FF;border:1px solid #BAE6FD;padding:2px 6px;border-radius:6px;display:flex;align-items:center;height:24px;">
+          <img src="jaklingko-logo.svg" alt="JakLingko" height="18" style="display:block;width:auto;max-height:18px;">
+        </div>
+        <div style="display:flex;flex-direction:column;line-height:1.1;margin-left:2px;">
+          <h1 style="font-size:15px;font-weight:800;color:var(--primary);margin:0;letter-spacing:-0.3px;">LAKU TRANSIT</h1>
+          <span style="font-size:9.5px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;">Jabodetabek Multimoda</span>
+        </div>
       </div>
       <div style="display:flex;align-items:center;gap:6px;">
         <button id="radar-toggle" type="button" class="radar-toggle-btn active" onclick="toggleRadar(this)" title="Aktifkan/nonaktifkan pelacakan armada transum secara langsung">
@@ -587,18 +595,19 @@
       <!-- Mode Filter Bar -->
       <div class="mode-pills">
         <button class="pill-btn active" onclick="setModeFilter('all', this)">Semua Moda</button>
-        <button class="pill-btn" onclick="setModeFilter('bni', this)" style="border-color:#005E6A;color:#005E6A;">🏢 Jaringan BNI</button>
-        <button class="pill-btn" onclick="setModeFilter('krl', this)">🚆 KRL</button>
+        <button class="pill-btn" onclick="setModeFilter('mikrotrans', this)" style="border-color:#0D9488;color:#0D9488;background:#F0FDFA;font-weight:800;">🚐 JakLingko (Rp0)</button>
+        <button class="pill-btn" onclick="setModeFilter('brt', this)">🚌 TransJakarta</button>
         <button class="pill-btn" onclick="setModeFilter('mrt', this)">🚇 MRT</button>
         <button class="pill-btn" onclick="setModeFilter('lrt', this)">🚊 LRT</button>
-        <button class="pill-btn" onclick="setModeFilter('brt', this)">🚌 TransJakarta</button>
-        <button class="pill-btn" onclick="setModeFilter('mikrotrans', this)">🚐 Mikrotrans (Rp0)</button>
+        <button class="pill-btn" onclick="setModeFilter('krl', this)">🚆 KRL</button>
+        <button class="pill-btn" onclick="setModeFilter('bni', this)" style="border-color:#005E6A;color:#005E6A;">🏢 Jaringan BNI</button>
       </div>
 
       <!-- Fast Destination Presets (BNI & Transit Hubs) -->
       <div class="preset-chips">
         <span style="font-size:11px;font-weight:700;color:var(--text-muted);display:flex;align-items:center;white-space:nowrap;">Pintasan:</span>
         <button type="button" class="preset-btn" onclick="setDestinationPreset('bni:HO')" style="color:#005E6A;border-color:#005E6A;background:#E6F4F5;">🏢 Menara BNI</button>
+        <button type="button" class="preset-btn" onclick="setDestinationPreset('tj:jak10')" style="color:#0D9488;border-color:#0D9488;background:#F0FDFA;">🚐 JakLingko JAK.10</button>
         <button type="button" class="preset-btn" onclick="setDestinationPreset('krl:PLM')">🚆 Palmerah</button>
         <button type="button" class="preset-btn" onclick="setDestinationPreset('mrt:DKA')">🚇 Dukuh Atas BNI</button>
         <button type="button" class="preset-btn" onclick="setDestinationPreset('krl:SUDB')">🏛️ BNI City</button>
@@ -1609,11 +1618,12 @@
           '</div>' +
         '</div>';
 
+      var badgeLabel = v.mode === 'mikrotrans' ? 'JAKLINGKO' : v.mode.toUpperCase();
       var popupHtml =
         '<div class="vehicle-card-popup">' +
           '<div class="vehicle-card-header">' +
             '<span>' + emoji + ' ' + v.id + '</span>' +
-            '<span class="vehicle-card-badge" style="background:' + v.color + ';">' + v.mode.toUpperCase() + '</span>' +
+            '<span class="vehicle-card-badge" style="background:' + v.color + ';">' + badgeLabel + '</span>' +
           '</div>' +
           '<div class="vehicle-card-body">' +
             '<div style="font-weight:700;color:var(--text-primary);">' + v.line_name + '</div>' +
