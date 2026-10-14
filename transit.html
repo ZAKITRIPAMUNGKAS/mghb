@@ -13,6 +13,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <style>
     :root {
       --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -640,9 +641,6 @@
   </aside>
 </div>
 
-<!-- Leaflet Library -->
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-
 <script>
 (function() {
   'use strict';
@@ -726,19 +724,44 @@
   var stationMarkers = [];
 
   function initMap() {
-    map = L.map('transit-map', { zoomControl: false }).setView([-6.2088, 106.8456], 12);
-    L.control.zoom({ position: 'topright' }).addTo(map);
+    var mapEl = document.getElementById('transit-map');
+    if (!mapEl) return;
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors',
-      maxZoom: 19
-    }).addTo(map);
+    try {
+      map = L.map('transit-map', { zoomControl: false }).setView([-6.2088, 106.8456], 12);
 
-    renderStationMarkers();
+      try {
+        L.control.zoom({ position: 'topright' }).addTo(map);
+      } catch (err) {
+        console.warn('Zoom control error:', err);
+      }
 
-    map.on('click', function(e) {
-      handleMapClick(e.latlng.lat, e.latlng.lng);
-    });
+      var tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors',
+        maxZoom: 19,
+        subdomains: ['a', 'b', 'c']
+      });
+      tileLayer.addTo(map);
+
+      renderStationMarkers();
+
+      map.on('click', function(e) {
+        handleMapClick(e.latlng.lat, e.latlng.lng);
+      });
+
+      // Ensure proper map sizing and tile rendering across layout states
+      setTimeout(function() {
+        if (map) map.invalidateSize();
+      }, 100);
+      setTimeout(function() {
+        if (map) map.invalidateSize();
+      }, 500);
+      window.addEventListener('resize', function() {
+        if (map) map.invalidateSize();
+      });
+    } catch (e) {
+      console.error('initMap error:', e);
+    }
   }
 
   function renderStationMarkers() {
