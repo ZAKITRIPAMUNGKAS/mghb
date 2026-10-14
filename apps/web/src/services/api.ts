@@ -60,3 +60,35 @@ export async function fetchMetadata() {
   if (!res.ok) return null;
   return res.json();
 }
+
+export interface LiveVehicle {
+  id: string;
+  label: string;
+  mode: string;
+  line_id: string;
+  line_name: string;
+  color: string;
+  operator: string;
+  lat: number;
+  lon: number;
+  heading: number;
+  speed_kmh: number;
+  status: string;
+  next_stop: string;
+  eta_mins: number;
+  crowding: 'low' | 'medium' | 'high';
+  crowding_label: string;
+  updated_at: string;
+}
+
+export async function fetchLiveVehicles(mode?: string): Promise<LiveVehicle[]> {
+  const url = `${API_BASE}/vehicles${mode && mode !== 'all' ? `?mode=${encodeURIComponent(mode)}` : ''}`;
+  try {
+    const res = await fetch(url);
+    if (!res.ok) return [];
+    const data = await res.json();
+    return data.vehicles || [];
+  } catch {
+    return [];
+  }
+}

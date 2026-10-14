@@ -79,4 +79,31 @@ describe('Laku Transit API Endpoints', () => {
     expect(json.operators.some((o: any) => o.id === 'tj')).toBe(true);
     expect(json.operators.some((o: any) => o.id === 'krl')).toBe(true);
   });
+
+  it('provides real-time vehicle fleet tracking (GET /vehicles)', async () => {
+    const res = await app.request('/vehicles');
+    expect(res.status).toBe(200);
+    const json = await res.json();
+    expect(json).toHaveProperty('vehicles');
+    expect(Array.isArray(json.vehicles)).toBe(true);
+    expect(json.count).toBeGreaterThan(30);
+
+    const first = json.vehicles[0];
+    expect(first).toHaveProperty('id');
+    expect(first).toHaveProperty('line_id');
+    expect(first).toHaveProperty('mode');
+    expect(first).toHaveProperty('lat');
+    expect(first).toHaveProperty('lon');
+    expect(first).toHaveProperty('heading');
+    expect(first).toHaveProperty('speed_kmh');
+    expect(first).toHaveProperty('crowding');
+  });
+
+  it('filters live vehicles by mode (GET /vehicles?mode=krl)', async () => {
+    const res = await app.request('/vehicles?mode=krl');
+    expect(res.status).toBe(200);
+    const json = await res.json();
+    expect(json.vehicles.length).toBeGreaterThan(0);
+    expect(json.vehicles.every((v: any) => v.mode === 'krl')).toBe(true);
+  });
 });

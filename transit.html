@@ -440,6 +440,121 @@
       justify-content: space-between;
       align-items: center;
     }
+
+    /* Live Fleet Radar & Vehicle Markers */
+    .radar-toggle-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      background: #ECFDF5;
+      border: 1px solid #10B981;
+      border-radius: 16px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #047857;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .radar-toggle-btn:hover {
+      background: #D1FAE5;
+    }
+    .radar-toggle-btn.active {
+      background: #047857;
+      color: #FFFFFF;
+      box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.25);
+    }
+    .radar-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10B981;
+      display: inline-block;
+      box-shadow: 0 0 0 rgba(16, 185, 129, 0.6);
+      animation: radar-pulse 1.8s infinite;
+    }
+    .radar-toggle-btn.active .radar-dot {
+      background: #FFFFFF;
+      box-shadow: 0 0 0 rgba(255, 255, 255, 0.7);
+    }
+    @keyframes radar-pulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+      }
+      70% {
+        box-shadow: 0 0 0 8px rgba(16, 185, 129, 0);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+      }
+    }
+
+    .vehicle-marker {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.6s linear;
+      filter: drop-shadow(0 2px 5px rgba(0,0,0,0.35));
+      cursor: pointer;
+    }
+    .vehicle-marker-inner {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #FFFFFF;
+      font-size: 12px;
+      border: 2px solid #FFFFFF;
+      box-sizing: border-box;
+      position: relative;
+    }
+    .vehicle-arrow {
+      position: absolute;
+      top: -4px;
+      width: 0;
+      height: 0;
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-bottom: 5px solid #FFFFFF;
+    }
+
+    .vehicle-card-popup {
+      font-family: inherit;
+      padding: 4px;
+      min-width: 200px;
+    }
+    .vehicle-card-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 800;
+      font-size: 13px;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    .vehicle-card-badge {
+      font-size: 10px;
+      padding: 1px 6px;
+      border-radius: 4px;
+      color: #fff;
+      font-weight: 700;
+    }
+    .vehicle-card-body {
+      font-size: 11.5px;
+      color: var(--text-secondary);
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .vehicle-stat-row {
+      display: flex;
+      justify-content: space-between;
+      border-top: 1px dashed var(--border-subtle);
+      padding-top: 3px;
+      margin-top: 3px;
+    }
   </style>
 </head>
 <body>
@@ -457,7 +572,14 @@
         <h1>LAKU</h1>
         <span>Transit Jabodetabek</span>
       </div>
-      <div class="pill-status">GTFS Resmi</div>
+      <div style="display:flex;align-items:center;gap:6px;">
+        <button id="radar-toggle" type="button" class="radar-toggle-btn active" onclick="toggleRadar(this)" title="Aktifkan/nonaktifkan pelacakan armada transum secara langsung">
+          <span class="radar-dot"></span>
+          <span>Radar Armada</span>
+          <span id="radar-count" style="background:#059669;color:#fff;padding:1px 5px;border-radius:10px;font-size:10px;">46</span>
+        </button>
+        <div class="pill-status">GTFS Resmi</div>
+      </div>
     </header>
 
     <div class="panel-body">
@@ -1139,6 +1261,7 @@
     document.querySelectorAll('.pill-btn').forEach(function(b) { b.classList.remove('active'); });
     btn.classList.add('active');
     renderStationMarkers();
+    if (isRadarActive) updateFleetRadar();
   };
 
   window.toggleSheet = function() {
@@ -1153,11 +1276,433 @@
     }
   };
 
+  // Live Vehicle Fleet Radar State & Simulation Fallback
+  var isRadarActive = true;
+  var vehicleMarkers = {}; // id -> L.marker
+  var radarRefreshTimer = null;
+
+  var LIVE_CORRIDORS = [
+    {
+      line_id: 'krl:bgr',
+      name: 'KRL Commuter Line — Bogor Line',
+      mode: 'krl',
+      color: '#D32F2F',
+      operator: 'PT Kereta Commuter Indonesia (KCI)',
+      stops: [
+        { name: 'Stasiun Jakarta Kota', lat: -6.137644, lon: 106.814631 },
+        { name: 'Stasiun Juanda', lat: -6.166667, lon: 106.829987 },
+        { name: 'Stasiun Gondangdia', lat: -6.186358, lon: 106.832962 },
+        { name: 'Stasiun Cikini', lat: -6.198358, lon: 106.842778 },
+        { name: 'Stasiun Manggarai', lat: -6.209939, lon: 106.850239 },
+        { name: 'Stasiun Tebet', lat: -6.226343, lon: 106.858273 },
+        { name: 'Stasiun Cawang', lat: -6.242750, lon: 106.858487 },
+        { name: 'Stasiun Pasar Minggu', lat: -6.284144, lon: 106.844439 },
+        { name: 'Stasiun Tanjung Barat', lat: -6.307525, lon: 106.838612 },
+        { name: 'Stasiun Lenteng Agung', lat: -6.330833, lon: 106.834722 },
+        { name: 'Stasiun Universitas Indonesia', lat: -6.360833, lon: 106.831667 },
+        { name: 'Stasiun Depok', lat: -6.405833, lon: 106.818056 },
+        { name: 'Stasiun Citayam', lat: -6.448889, lon: 106.800556 },
+        { name: 'Stasiun Bojong Gede', lat: -6.493056, lon: 106.795278 },
+        { name: 'Stasiun Cilebut', lat: -6.529722, lon: 106.790556 },
+        { name: 'Stasiun Bogor', lat: -6.596111, lon: 106.790278 }
+      ],
+      vehicle_count: 6,
+      prefix: 'KRL-BGR'
+    },
+    {
+      line_id: 'krl:ckr',
+      name: 'KRL Commuter Line — Cikarang Line',
+      mode: 'krl',
+      color: '#1976D2',
+      operator: 'PT Kereta Commuter Indonesia (KCI)',
+      stops: [
+        { name: 'Stasiun Cikarang', lat: -6.255833, lon: 107.151389 },
+        { name: 'Stasiun Tambun', lat: -6.260000, lon: 107.058333 },
+        { name: 'Stasiun Bekasi', lat: -6.236111, lon: 106.999722 },
+        { name: 'Stasiun Kranji', lat: -6.223889, lon: 106.978611 },
+        { name: 'Stasiun Cakung', lat: -6.219722, lon: 106.953056 },
+        { name: 'Stasiun Klender', lat: -6.213611, lon: 106.898889 },
+        { name: 'Stasiun Jatinegara', lat: -6.215000, lon: 106.870278 },
+        { name: 'Stasiun Manggarai', lat: -6.209939, lon: 106.850239 },
+        { name: 'Stasiun Sudirman Baru (BNI City)', lat: -6.202500, lon: 106.822222 },
+        { name: 'Stasiun Sudirman', lat: -6.202222, lon: 106.823611 },
+        { name: 'Stasiun Tanah Abang', lat: -6.185556, lon: 106.811111 },
+        { name: 'Stasiun Duri', lat: -6.155833, lon: 106.801667 },
+        { name: 'Stasiun Kampung Bandan', lat: -6.132500, lon: 106.829167 }
+      ],
+      vehicle_count: 5,
+      prefix: 'KRL-CKR'
+    },
+    {
+      line_id: 'krl:rks',
+      name: 'KRL Commuter Line — Rangkasbitung Line',
+      mode: 'krl',
+      color: '#388E3C',
+      operator: 'PT Kereta Commuter Indonesia (KCI)',
+      stops: [
+        { name: 'Stasiun Tanah Abang', lat: -6.185556, lon: 106.811111 },
+        { name: 'Stasiun Palmerah (Akses Menara BNI)', lat: -6.207222, lon: 106.797500 },
+        { name: 'Stasiun Kebayoran', lat: -6.236944, lon: 106.782500 },
+        { name: 'Stasiun Pondok Ranji', lat: -6.277778, lon: 106.745556 },
+        { name: 'Stasiun Jurang Mangu', lat: -6.289167, lon: 106.726944 },
+        { name: 'Stasiun Sudimara', lat: -6.299444, lon: 106.711667 },
+        { name: 'Stasiun Rawa Buntu', lat: -6.321111, lon: 106.677500 },
+        { name: 'Stasiun Serpong', lat: -6.318889, lon: 106.666667 },
+        { name: 'Stasiun Cisauk', lat: -6.325556, lon: 106.643889 },
+        { name: 'Stasiun Parung Panjang', lat: -6.345833, lon: 106.568056 },
+        { name: 'Stasiun Rangkasbitung', lat: -6.361111, lon: 106.250000 }
+      ],
+      vehicle_count: 5,
+      prefix: 'KRL-RKS'
+    },
+    {
+      line_id: 'mrt:ns',
+      name: 'MRT Jakarta — North-South Line',
+      mode: 'mrt',
+      color: '#004B87',
+      operator: 'PT MRT Jakarta (Perseroda)',
+      stops: [
+        { name: 'Stasiun MRT Lebak Bulus Grab', lat: -6.289167, lon: 106.774444 },
+        { name: 'Stasiun MRT Fatmawati Indomaret', lat: -6.292500, lon: 106.791944 },
+        { name: 'Stasiun MRT Cipete Raya', lat: -6.277778, lon: 106.797222 },
+        { name: 'Stasiun MRT Blok A', lat: -6.255278, lon: 106.797222 },
+        { name: 'Stasiun MRT Blok M BCA', lat: -6.244444, lon: 106.798333 },
+        { name: 'Stasiun MRT ASEAN', lat: -6.238889, lon: 106.798889 },
+        { name: 'Stasiun MRT Senayan Mastercard', lat: -6.225278, lon: 106.802778 },
+        { name: 'Stasiun MRT Istora Mandiri', lat: -6.221111, lon: 106.808056 },
+        { name: 'Stasiun MRT Bendungan Hilir', lat: -6.214722, lon: 106.818889 },
+        { name: 'Stasiun MRT Setiabudi Astra', lat: -6.208889, lon: 106.821111 },
+        { name: 'Stasiun MRT Dukuh Atas BNI', lat: -6.200833, lon: 106.822778 },
+        { name: 'Stasiun MRT Bundaran HI Bank DKI', lat: -6.192500, lon: 106.823056 }
+      ],
+      vehicle_count: 6,
+      prefix: 'MRT-NS'
+    },
+    {
+      line_id: 'lrtb:cbb',
+      name: 'LRT Jabodebek — Cibubur Line',
+      mode: 'lrt',
+      color: '#0284C7',
+      operator: 'PT Kereta Api Indonesia (LRT Jabodebek)',
+      stops: [
+        { name: 'Stasiun LRT Harjamukti (Cibubur)', lat: -6.371389, lon: 106.896667 },
+        { name: 'Stasiun LRT Ciracas', lat: -6.342222, lon: 106.883611 },
+        { name: 'Stasiun LRT Kampung Rambutan', lat: -6.309444, lon: 106.877500 },
+        { name: 'Stasiun LRT TMII', lat: -6.293611, lon: 106.881944 },
+        { name: 'Stasiun LRT Cawang', lat: -6.248333, lon: 106.864722 },
+        { name: 'Stasiun LRT Cikoko', lat: -6.244444, lon: 106.858056 },
+        { name: 'Stasiun LRT Pancoran', lat: -6.242778, lon: 106.843611 },
+        { name: 'Stasiun LRT Kuningan', lat: -6.224167, lon: 106.831111 },
+        { name: 'Stasiun LRT Dukuh Atas', lat: -6.201667, lon: 106.822500 }
+      ],
+      vehicle_count: 4,
+      prefix: 'LRT-CBB'
+    },
+    {
+      line_id: 'lrtj:1',
+      name: 'LRT Jakarta — Line 1',
+      mode: 'lrt',
+      color: '#DC2626',
+      operator: 'PT LRT Jakarta',
+      stops: [
+        { name: 'Stasiun LRT Pegangsaan Dua', lat: -6.155833, lon: 106.913056 },
+        { name: 'Stasiun LRT Boulevard Utara', lat: -6.161111, lon: 106.906944 },
+        { name: 'Stasiun LRT Boulevard Selatan', lat: -6.171111, lon: 106.903889 },
+        { name: 'Stasiun LRT Pulomas', lat: -6.180278, lon: 106.894444 },
+        { name: 'Stasiun LRT Equestrian', lat: -6.186111, lon: 106.890556 },
+        { name: 'Stasiun LRT Velodrome', lat: -6.193056, lon: 106.884722 }
+      ],
+      vehicle_count: 3,
+      prefix: 'LRTJ'
+    },
+    {
+      line_id: 'tj:1',
+      name: 'TransJakarta — Koridor 1 (Blok M - Kota)',
+      mode: 'brt',
+      color: '#DC2626',
+      operator: 'PT Transportasi Jakarta',
+      stops: [
+        { name: 'Halte Blok M', lat: -6.2435, lon: 106.7981 },
+        { name: 'Halte Bundaran Senayan', lat: -6.2272, lon: 106.8016 },
+        { name: 'Halte Gelora Bung Karno', lat: -6.2215, lon: 106.8055 },
+        { name: 'Halte Bendungan Hilir', lat: -6.2147, lon: 106.8188 },
+        { name: 'Halte Dukuh Atas 1', lat: -6.2009, lon: 106.8226 },
+        { name: 'Halte Tosari', lat: -6.1973, lon: 106.8228 },
+        { name: 'Halte Bundaran HI', lat: -6.1925, lon: 106.8231 },
+        { name: 'Halte Monas', lat: -6.1754, lon: 106.8272 },
+        { name: 'Halte Harmoni', lat: -6.1645, lon: 106.8197 },
+        { name: 'Halte Glodok', lat: -6.1462, lon: 106.8152 },
+        { name: 'Halte Kota', lat: -6.1378, lon: 106.8148 }
+      ],
+      vehicle_count: 6,
+      prefix: 'TJ-K1'
+    },
+    {
+      line_id: 'tj:9',
+      name: 'TransJakarta — Koridor 9 (Pinang Ranti - Pluit)',
+      mode: 'brt',
+      color: '#DC2626',
+      operator: 'PT Transportasi Jakarta',
+      stops: [
+        { name: 'Halte Pinang Ranti', lat: -6.2925, lon: 106.8906 },
+        { name: 'Halte Cikoko Stasiun Cawang', lat: -6.2438, lon: 106.8584 },
+        { name: 'Halte Pancoran Tugu', lat: -6.2431, lon: 106.8444 },
+        { name: 'Halte Kuningan Barat', lat: -6.2372, lon: 106.8278 },
+        { name: 'Halte Gatot Subroto Jamsostek', lat: -6.2305, lon: 106.8197 },
+        { name: 'Halte Semanggi', lat: -6.2197, lon: 106.8136 },
+        { name: 'Halte Slipi Petamburan (Dekat Menara BNI)', lat: -6.2045, lon: 106.8005 },
+        { name: 'Halte Slipi Kemanggisan', lat: -6.1950, lon: 106.7972 },
+        { name: 'Halte Tomang Raya', lat: -6.1780, lon: 106.7944 },
+        { name: 'Halte Grogol 2', lat: -6.1667, lon: 106.7889 },
+        { name: 'Halte Pluit', lat: -6.1215, lon: 106.7935 }
+      ],
+      vehicle_count: 5,
+      prefix: 'TJ-K9'
+    },
+    {
+      line_id: 'tj:jak10',
+      name: 'Mikrotrans — JAK.10 (Tanah Abang - Kota)',
+      mode: 'mikrotrans',
+      color: '#0D9488',
+      operator: 'JakLingko Indonesia',
+      stops: [
+        { name: 'Halte Tanah Abang', lat: -6.1860, lon: 106.8105 },
+        { name: 'Halte Cideng Barat', lat: -6.1740, lon: 106.8080 },
+        { name: 'Halte Petojo', lat: -6.1650, lon: 106.8140 },
+        { name: 'Halte Krukut', lat: -6.1520, lon: 106.8160 },
+        { name: 'Halte Stasiun Jakarta Kota', lat: -6.1378, lon: 106.8148 }
+      ],
+      vehicle_count: 3,
+      prefix: 'JAK10'
+    },
+    {
+      line_id: 'tj:jak48a',
+      name: 'Mikrotrans — JAK.48A (Stasiun Tebet - Karet)',
+      mode: 'mikrotrans',
+      color: '#0D9488',
+      operator: 'JakLingko Indonesia',
+      stops: [
+        { name: 'Stasiun Tebet', lat: -6.226343, lon: 106.858273 },
+        { name: 'Casablanca Kuningan', lat: -6.223000, lon: 106.836000 },
+        { name: 'Karet Sudirman', lat: -6.214000, lon: 106.819000 },
+        { name: 'Bendungan Hilir Benhil', lat: -6.213500, lon: 106.814000 },
+        { name: 'Menara BNI Pejompongan', lat: -6.208821, lon: 106.804108 },
+        { name: 'Stasiun Palmerah', lat: -6.207222, lon: 106.797500 }
+      ],
+      vehicle_count: 3,
+      prefix: 'JAK48'
+    }
+  ];
+
+  function calcBearingDegrees(lat1, lon1, lat2, lon2) {
+    var dLon = (lon2 - lon1) * Math.PI / 180;
+    var y = Math.sin(dLon) * Math.cos(lat2 * Math.PI / 180);
+    var x = Math.cos(lat1 * Math.PI / 180) * Math.sin(lat2 * Math.PI / 180) -
+            Math.sin(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.cos(dLon);
+    return Math.round((Math.atan2(y, x) * 180 / Math.PI + 360) % 360);
+  }
+
+  function simulateFleetInBrowser(now) {
+    var fleet = [];
+    LIVE_CORRIDORS.forEach(function(c) {
+      var waypoints = c.stops.concat(c.stops.slice(1, -1).reverse());
+      var segCount = waypoints.length;
+      var segDur = c.mode === 'krl' ? 95 : c.mode === 'mrt' ? 75 : c.mode === 'lrt' ? 80 : 85;
+      var cycleTime = segCount * segDur;
+
+      for (var i = 0; i < c.vehicle_count; i++) {
+        var offset = (i / c.vehicle_count) * cycleTime;
+        var t = (now / 1000 + offset) % cycleTime;
+        var segIdx = Math.floor(t / segDur);
+        var fraction = (t % segDur) / segDur;
+
+        var p1 = waypoints[segIdx];
+        var p2 = waypoints[(segIdx + 1) % segCount];
+
+        var lat = p1.lat + (p2.lat - p1.lat) * fraction;
+        var lon = p1.lon + (p2.lon - p1.lon) * fraction;
+        var heading = calcBearingDegrees(p1.lat, p1.lon, p2.lat, p2.lon);
+
+        var isDwelling = fraction < 0.12;
+        var baseSpeed = c.mode === 'krl' ? 68 : c.mode === 'mrt' ? 60 : c.mode === 'lrt' ? 52 : 32;
+        var speed = isDwelling ? 0 : Math.round(baseSpeed * (0.85 + 0.15 * Math.sin(fraction * Math.PI)));
+        var etaMins = Math.max(1, Math.round((1 - fraction) * (segDur / 60)));
+
+        var crowdingOpts = ['low', 'medium', 'high'];
+        var crowding = crowdingOpts[(i + segIdx) % 3];
+        var crowdingLabel = crowding === 'low' ? 'Banyak Kursi Kosong' : crowding === 'medium' ? 'Sedang / Tersedia Kursi' : 'Padat Penumpang';
+
+        fleet.push({
+          id: c.prefix + '-' + String(i + 1).padStart(2, '0'),
+          label: c.name + ' #' + String(i + 1).padStart(2, '0'),
+          mode: c.mode,
+          line_id: c.line_id,
+          line_name: c.name,
+          color: c.color,
+          operator: c.operator,
+          lat: Number(lat.toFixed(6)),
+          lon: Number(lon.toFixed(6)),
+          heading: heading,
+          speed_kmh: speed,
+          status: isDwelling ? 'Berhenti di Stasiun/Halte' : 'Sedang Melaju',
+          next_stop: p2.name,
+          eta_mins: etaMins,
+          crowding: crowding,
+          crowding_label: crowdingLabel,
+          updated_at: new Date(now).toISOString()
+        });
+      }
+    });
+    return fleet;
+  }
+
+  function getModeEmoji(mode) {
+    if (mode === 'krl') return '🚆';
+    if (mode === 'mrt') return '🚇';
+    if (mode === 'lrt') return '🚊';
+    if (mode === 'brt') return '🚌';
+    if (mode === 'mikrotrans') return '🚐';
+    return '🚍';
+  }
+
+  function renderVehicleMarkers(vehicles) {
+    if (!map) return;
+
+    // Filter vehicles by current mode filter
+    var filtered = vehicles;
+    if (currentModeFilter !== 'all' && currentModeFilter !== 'bni') {
+      filtered = vehicles.filter(function(v) { return v.mode === currentModeFilter; });
+    }
+
+    var activeIds = {};
+    filtered.forEach(function(v) {
+      activeIds[v.id] = true;
+      var emoji = getModeEmoji(v.mode);
+      var innerHtml =
+        '<div class="vehicle-marker" style="transform: rotate(' + v.heading + 'deg);">' +
+          '<div class="vehicle-marker-inner" style="background:' + v.color + ';" title="' + v.label + '">' +
+            '<span class="vehicle-arrow"></span>' +
+            '<span style="transform: rotate(-' + v.heading + 'deg);">' + emoji + '</span>' +
+          '</div>' +
+        '</div>';
+
+      var popupHtml =
+        '<div class="vehicle-card-popup">' +
+          '<div class="vehicle-card-header">' +
+            '<span>' + emoji + ' ' + v.id + '</span>' +
+            '<span class="vehicle-card-badge" style="background:' + v.color + ';">' + v.mode.toUpperCase() + '</span>' +
+          '</div>' +
+          '<div class="vehicle-card-body">' +
+            '<div style="font-weight:700;color:var(--text-primary);">' + v.line_name + '</div>' +
+            '<div style="color:#64748B;">Operasional: ' + v.operator + '</div>' +
+            '<div class="vehicle-stat-row"><span>Status</span><strong style="color:' + (v.speed_kmh > 0 ? '#059669' : '#D97706') + ';">' + v.status + '</strong></div>' +
+            '<div class="vehicle-stat-row"><span>Kecepatan</span><strong>' + v.speed_kmh + ' km/jam</strong></div>' +
+            '<div class="vehicle-stat-row"><span>Menuju Ke</span><strong>' + v.next_stop + '</strong></div>' +
+            '<div class="vehicle-stat-row"><span>Estimasi Tiba (ETA)</span><strong style="color:#005BAC;">±' + v.eta_mins + ' Menit</strong></div>' +
+            '<div class="vehicle-stat-row"><span>Kepadatan Armada</span><strong>' + v.crowding_label + '</strong></div>' +
+          '</div>' +
+        '</div>';
+
+      if (vehicleMarkers[v.id]) {
+        // Move existing marker smoothly
+        vehicleMarkers[v.id].setLatLng([v.lat, v.lon]);
+        var iconEl = vehicleMarkers[v.id].getElement();
+        if (iconEl) {
+          var markerDiv = iconEl.querySelector('.vehicle-marker');
+          if (markerDiv) markerDiv.style.transform = 'rotate(' + v.heading + 'deg)';
+        }
+        vehicleMarkers[v.id].setPopupContent(popupHtml);
+      } else {
+        // Create new marker
+        var customIcon = L.divIcon({
+          html: innerHtml,
+          className: '',
+          iconSize: [28, 28],
+          iconAnchor: [14, 14]
+        });
+        var marker = L.marker([v.lat, v.lon], { icon: customIcon }).addTo(map);
+        marker.bindPopup(popupHtml, { maxWidth: 280, closeButton: false });
+        vehicleMarkers[v.id] = marker;
+      }
+    });
+
+    // Remove markers that are no longer filtered or active
+    Object.keys(vehicleMarkers).forEach(function(id) {
+      if (!activeIds[id]) {
+        map.removeLayer(vehicleMarkers[id]);
+        delete vehicleMarkers[id];
+      }
+    });
+
+    // Update count in badge
+    var countEl = document.getElementById('radar-count');
+    if (countEl) countEl.innerText = filtered.length;
+  }
+
+  function clearAllVehicleMarkers() {
+    Object.keys(vehicleMarkers).forEach(function(id) {
+      map.removeLayer(vehicleMarkers[id]);
+    });
+    vehicleMarkers = {};
+  }
+
+  function updateFleetRadar() {
+    if (!isRadarActive) {
+      clearAllVehicleMarkers();
+      return;
+    }
+
+    var apiEndpoint = '/api/vehicles';
+    var controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+    var fetchTimer = setTimeout(function() {
+      if (controller) controller.abort();
+    }, 1500);
+
+    fetch(apiEndpoint, { signal: controller ? controller.signal : undefined })
+      .then(function(res) {
+        clearTimeout(fetchTimer);
+        if (res.ok) return res.json();
+        // Fallback to /vehicles (Node API)
+        return fetch('/vehicles').then(function(r) { return r.json(); });
+      })
+      .then(function(data) {
+        if (data && data.vehicles && data.vehicles.length > 0) {
+          renderVehicleMarkers(data.vehicles);
+        } else {
+          var simulated = simulateFleetInBrowser(Date.now());
+          renderVehicleMarkers(simulated);
+        }
+      })
+      .catch(function() {
+        clearTimeout(fetchTimer);
+        // Fallback simulation in browser
+        var simulated = simulateFleetInBrowser(Date.now());
+        renderVehicleMarkers(simulated);
+      });
+  }
+
+  window.toggleRadar = function(btn) {
+    isRadarActive = !isRadarActive;
+    if (isRadarActive) {
+      btn.classList.add('active');
+      updateFleetRadar();
+    } else {
+      btn.classList.remove('active');
+      clearAllVehicleMarkers();
+      var countEl = document.getElementById('radar-count');
+      if (countEl) countEl.innerText = '0';
+    }
+  };
+
   // Init
   window.addEventListener('DOMContentLoaded', function() {
     initMap();
     setupAutocomplete('p-from-input', 'p-from-dropdown', 'p-from-clear', true);
     setupAutocomplete('p-to-input', 'p-to-dropdown', 'p-to-clear', false);
+
+    // Start live radar polling loop (every 3 seconds)
+    updateFleetRadar();
+    radarRefreshTimer = setInterval(updateFleetRadar, 3000);
   });
 })();
 </script>

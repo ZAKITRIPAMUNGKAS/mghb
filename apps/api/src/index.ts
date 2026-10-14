@@ -6,6 +6,7 @@ import { stopsRoute } from './routes/stops.js';
 import { routesRoute } from './routes/routes.js';
 import { planRoute } from './routes/plan.js';
 import { metaRoute } from './routes/meta.js';
+import { vehiclesRoute } from './routes/vehicles.js';
 
 export const app = new Hono();
 
@@ -28,6 +29,7 @@ app.get('/', (c) => c.json({
     routes_list: '/routes?mode={mode}',
     route_detail: '/routes/{id}',
     plan_journey: '/plan?from={lat,lon}&to={lat,lon}&time={time}',
+    vehicles_live: '/vehicles?mode={mode}',
     metadata: '/meta'
   }
 }));
@@ -39,6 +41,7 @@ app.route('/stops', stopsRoute);
 app.route('/routes', routesRoute);
 app.route('/plan', planRoute);
 app.route('/meta', metaRoute);
+app.route('/vehicles', vehiclesRoute);
 
 const PORT = parseInt(process.env.PORT || '3000', 10);
 
